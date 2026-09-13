@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import VehicleCard from "../../components/VehicleCard";
 import Icon from "../../components/Icon";
@@ -7,6 +8,10 @@ import type { EditSearchValue } from "../../components/EditSearchModal";
 import LocationPickerSheet from "../../components/LocationPickerSheet";
 import DatePickerSheet from "../../components/DatePickerSheet";
 import { vehicles as allVehicles, type Vehicle } from "../../data/mockData";
+import { formatTripDate } from "../../lib/formatTripDate";
+
+const DEFAULT_PICKUP = "Thimphu, Clock Tower Square";
+const DEFAULT_DROPOFF = "Paro, Airport";
 
 type SortOption = "recommended" | "price-low" | "price-high" | "rating";
 
@@ -39,14 +44,20 @@ function formatDate(d: Date) {
 }
 
 export default function SearchResults() {
-  const [search, setSearch] = useState<EditSearchValue>({
-    tripMode: "one-way",
-    pickup: "Thimphu, Clock Tower Square",
-    dropoff: "Paro, Airport",
-    pickupDate: new Date(),
-    pickupTime: "10:00",
-    dropoffDate: null,
-    dropoffTime: "13:00",
+  const [initialParams] = useSearchParams();
+
+  const [search, setSearch] = useState<EditSearchValue>(() => {
+    const pickupDateParam = initialParams.get("pickupDate");
+    const dropoffDateParam = initialParams.get("dropoffDate");
+    return {
+      tripMode: initialParams.get("tripMode") === "return" ? "return" : "one-way",
+      pickup: initialParams.get("pickup") || DEFAULT_PICKUP,
+      dropoff: initialParams.get("dropoff") || DEFAULT_DROPOFF,
+      pickupDate: pickupDateParam ? new Date(pickupDateParam) : new Date(),
+      pickupTime: initialParams.get("pickupTime") || "10:00",
+      dropoffDate: dropoffDateParam ? new Date(dropoffDateParam) : null,
+      dropoffTime: initialParams.get("dropoffTime") || "13:00",
+    };
   });
   const [editOpen, setEditOpen] = useState(false); // mobile full-screen sheet
   const [desktopEditOpen, setDesktopEditOpen] = useState(false); // desktop inline row
@@ -66,11 +77,28 @@ export default function SearchResults() {
   const [sort, setSort] = useState<SortOption>("recommended");
 
   const [filterOpen, setFilterOpen] = useState(false);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(() => {
+    const category = initialParams.get("category");
+    return category ? [category] : [];
+  });
   const [selectedFuels, setSelectedFuels] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState(80);
 
-  const results = useMemo(() => sortVehicles(allVehicles, sort), [sort]);
+  const results = useMemo(() => {
+    const filtered = allVehicles.filter((v) => {
+      if (selectedTypes.length > 0 && !selectedTypes.includes(v.category)) return false;
+      if (selectedFuels.length > 0 && !selectedFuels.includes(v.fuel)) return false;
+      if (v.pricePerDay > maxPrice) return false;
+      return true;
+    });
+    return sortVehicles(filtered, sort);
+  }, [sort, selectedTypes, selectedFuels, maxPrice]);
+
+  const tripQuery = new URLSearchParams({
+    pickup: search.pickup,
+    dropoff: search.dropoff,
+    date: formatTripDate(search.pickupDate, search.pickupTime),
+  }).toString();
 
   function toggle(list: string[], value: string, setList: (v: string[]) => void) {
     setList(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
@@ -384,11 +412,29 @@ export default function SearchResults() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-                  {results.map((vehicle) => (
-                    <VehicleCard key={vehicle.id} vehicle={vehicle} />
-                  ))}
-                </div>
+                {results.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-[color:var(--color-border)] py-16 text-center">
+                    <Icon name="car" size={32} className="text-[color:var(--color-muted)]" />
+                    <p className="text-sm font-semibold text-[#222]">No vehicles match these filters</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedTypes([]);
+                        setSelectedFuels([]);
+                        setMaxPrice(80);
+                      }}
+                      className="text-sm font-semibold text-[#222] underline"
+                    >
+                      Clear filters
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                    {results.map((vehicle) => (
+                      <VehicleCard key={vehicle.id} vehicle={vehicle} tripQuery={tripQuery} />
+                    ))}
+                  </div>
+                )}
               </>
             )}
           </div>

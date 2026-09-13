@@ -12,6 +12,7 @@ import { routes } from "../../lib/routes";
 import type { BookingType } from "../../lib/routes";
 import { vehicles, recentSearches, popularCarTypes, faqs } from "../../data/mockData";
 import { useAuth } from "../../lib/auth";
+import { formatTripDate } from "../../lib/formatTripDate";
 
 type TripMode = "one-way" | "return";
 
@@ -51,14 +52,35 @@ export default function Home() {
   }
 
   function handleSearch() {
-    navigate(`${routes.search}?type=${type}`);
+    const params = new URLSearchParams({
+      type,
+      tripMode,
+      pickup,
+      dropoff,
+      pickupDate: pickupDate.toISOString(),
+      pickupTime,
+    });
+    if (dropoffDate) params.set("dropoffDate", dropoffDate.toISOString());
+    params.set("dropoffTime", dropoffTime);
+    navigate(`${routes.search}?${params.toString()}`);
   }
 
   function handleRecentSearch(vehicleId: string, recentPickup: string, recentDropoff: string) {
     // A recent search already implies pickup, drop-off and the vehicle —
     // jump straight to that vehicle instead of re-running a fresh search.
-    navigate(`${routes.vehicle(vehicleId)}?pickup=${encodeURIComponent(recentPickup)}&dropoff=${encodeURIComponent(recentDropoff)}`);
+    const params = new URLSearchParams({
+      pickup: recentPickup,
+      dropoff: recentDropoff,
+      date: formatTripDate(pickupDate, pickupTime),
+    });
+    navigate(`${routes.vehicle(vehicleId)}?${params.toString()}`);
   }
+
+  const tripQuery = new URLSearchParams({
+    pickup,
+    dropoff,
+    date: formatTripDate(pickupDate, pickupTime),
+  }).toString();
 
   // While "driving", the rider homepage/search isn't relevant — send the
   // driver straight to their dashboard, even on a direct nav/refresh of "/".
@@ -257,7 +279,7 @@ export default function Home() {
                   onClick={() => handleRecentSearch(s.vehicleId, s.pickup, s.dropoff)}
                   className="flex h-[79px] shrink-0 items-center gap-3 rounded-xl bg-white px-3 py-2.5 text-left shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_14px_rgba(25,32,36,0.22)]"
                 >
-                  <VehicleImage category={vehicle?.category} className="size-[60px] shrink-0 rounded-lg" />
+                  <VehicleImage vehicleId={vehicle?.id} category={vehicle?.category} className="size-[60px] shrink-0 rounded-lg" />
                   <span className="flex flex-col gap-1.5">
                     <span className="whitespace-nowrap text-sm font-semibold text-[rgba(0,0,0,0.87)]">
                       {s.title}
@@ -275,7 +297,7 @@ export default function Home() {
           <h2 className="mb-4 text-lg font-bold text-[rgba(0,0,0,0.87)] md:text-2xl">Popular cars</h2>
           <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
             {vehicles.map((v) => (
-              <VehicleCard key={v.id} vehicle={v} className="w-[240px] shrink-0 md:w-[270px]" />
+              <VehicleCard key={v.id} vehicle={v} tripQuery={tripQuery} className="w-[240px] shrink-0 md:w-[270px]" />
             ))}
           </div>
         </section>
@@ -285,16 +307,18 @@ export default function Home() {
           <h2 className="mb-4 text-lg font-bold text-[rgba(0,0,0,0.87)] md:text-2xl">Popular car types</h2>
           <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-2">
             {popularCarTypes.map((t) => (
-              <div
-                key={t.name}
-                className="group relative size-[164px] shrink-0 cursor-pointer overflow-hidden rounded-xl bg-neutral-100 transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0px_10px_24px_rgba(0,0,0,0.15)]"
+              <button
+                key={t.category}
+                type="button"
+                onClick={() => navigate(`${routes.search}?category=${encodeURIComponent(t.category)}`)}
+                className="group relative size-[164px] shrink-0 cursor-pointer overflow-hidden rounded-xl bg-neutral-100 text-left transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0px_10px_24px_rgba(0,0,0,0.15)]"
               >
-                <VehicleImage category={t.name} className="size-full transition-transform duration-300 group-hover:scale-110" />
+                <VehicleImage category={t.category} className="size-full transition-transform duration-300 group-hover:scale-110" />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/0 to-black/0" />
                 <span className="pointer-events-none absolute bottom-4 left-4 text-base font-semibold text-white">
-                  {t.name}
+                  {t.label}
                 </span>
-              </div>
+              </button>
             ))}
           </div>
         </section>

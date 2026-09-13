@@ -6,31 +6,34 @@ const accentByCategory: Record<string, string> = {
   "Two Wheels": "#a8a29e",
 };
 
-// Real, license-free product photography for the categories we found a
-// clean plain-background shot for; a generic flat illustration (below)
-// covers the rest so no card is left without a matching image.
-const photoByCategory: Record<string, string> = {
-  "Prime SUV": "/vehicles/prime-suv.jpg",
-  Bus: "/vehicles/bus.png",
+// Real, license-free product photography (plain background, no landscape)
+// for each specific vehicle we have a matching photo for. Anything without
+// one — a category browse tile, or a vehicle we haven't photographed —
+// falls back to the flat illustration below, tinted by category.
+const photoByVehicleId: Record<string, string> = {
+  "toyota-prado-gx": "/vehicles/toyota-prado-gx.jpg",
+  "toyota-coaster-bus": "/vehicles/toyota-coaster-bus.jpg",
+  "toyota-hiace-bus": "/vehicles/toyota-hiace-bus.jpg",
+  "hyundai-santa-fe": "/vehicles/hyundai-santa-fe.jpg",
+  "toyota-innova": "/vehicles/toyota-innova.jpg",
+  "hyundai-creta": "/vehicles/hyundai-creta.jpg",
+  "royal-enfield-meteor": "/vehicles/royal-enfield.jpg",
 };
 
 export default function VehicleImage({
+  vehicleId,
   category,
   className = "",
 }: {
+  vehicleId?: string;
   category?: string;
   className?: string;
 }) {
-  const photo = category && photoByCategory[category];
+  const photo = vehicleId && photoByVehicleId[vehicleId];
   if (photo) {
     return (
       <div className={`flex items-center justify-center bg-neutral-100 ${className}`}>
-        <img
-          src={photo}
-          alt={category}
-          loading="lazy"
-          className="h-full w-full object-contain p-3"
-        />
+        <img src={photo} alt={category ?? ""} loading="lazy" className="h-full w-full object-contain p-2" />
       </div>
     );
   }

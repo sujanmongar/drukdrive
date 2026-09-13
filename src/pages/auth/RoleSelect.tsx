@@ -29,7 +29,7 @@ export default function RoleSelect() {
           <Icon
             name="car"
             size={22}
-            className={role === "customer" ? "text-[#222]" : "text-[#bfc7cd]"}
+            className={role === "customer" ? "text-[#222]" : "text-[color:var(--color-muted)]"}
           />
         </div>
         <p className="mt-1 text-sm text-[rgba(0,0,0,0.87)]">Book a ride and travel around Bhutan.</p>
@@ -47,7 +47,7 @@ export default function RoleSelect() {
           <Icon
             name="user"
             size={22}
-            className={role === "driver" ? "text-[#222]" : "text-[#bfc7cd]"}
+            className={role === "driver" ? "text-[#222]" : "text-[color:var(--color-muted)]"}
           />
         </div>
         <p className="mt-1 text-sm text-[rgba(0,0,0,0.87)]">

@@ -1,10 +1,12 @@
 // Dummy data for the DrukDrive prototype. No backend — everything here is
 // static fixture data used to make the flows feel real.
 
+export type VehicleCategory = "Prime SUV" | "Sedan SUV" | "Mini Bus" | "Bus" | "Two Wheels";
+
 export type Vehicle = {
   id: string;
   name: string;
-  category: "Prime SUV" | "Sedan SUV" | "Mini Bus" | "Bus" | "Two Wheels";
+  category: VehicleCategory;
   seats: number;
   fuel: "Petrol" | "Diesel" | "Electric";
   location: string;
@@ -13,13 +15,12 @@ export type Vehicle = {
   strikePrice?: number;
   rating: number;
   reviewCount: number;
-  image: string;
 };
 
 export const vehicles: Vehicle[] = [
   {
     id: "toyota-prado-gx",
-    name: "Grand Terrain SUV",
+    name: "Toyota Prado GX",
     category: "Prime SUV",
     seats: 5,
     fuel: "Petrol",
@@ -29,12 +30,10 @@ export const vehicles: Vehicle[] = [
     strikePrice: 68,
     rating: 4.8,
     reviewCount: 132,
-    image:
-      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=800&auto=format&fit=crop",
   },
   {
     id: "toyota-coaster-bus",
-    name: "Highland Coach Liner",
+    name: "Toyota Coaster Bus",
     category: "Bus",
     seats: 21,
     fuel: "Diesel",
@@ -43,8 +42,6 @@ export const vehicles: Vehicle[] = [
     pricePerDay: 56,
     rating: 4.6,
     reviewCount: 58,
-    image:
-      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800&auto=format&fit=crop",
   },
   {
     id: "toyota-hiace-bus",
@@ -57,8 +54,6 @@ export const vehicles: Vehicle[] = [
     pricePerDay: 53,
     rating: 4.5,
     reviewCount: 41,
-    image:
-      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=800&auto=format&fit=crop",
   },
   {
     id: "hyundai-santa-fe",
@@ -72,12 +67,10 @@ export const vehicles: Vehicle[] = [
     strikePrice: 60,
     rating: 4.7,
     reviewCount: 96,
-    image:
-      "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=800&auto=format&fit=crop",
   },
   {
-    id: "toyota-fortuner",
-    name: "Summit Peak SUV",
+    id: "toyota-innova",
+    name: "Toyota Innova Crysta",
     category: "Prime SUV",
     seats: 7,
     fuel: "Diesel",
@@ -86,15 +79,37 @@ export const vehicles: Vehicle[] = [
     pricePerDay: 62,
     rating: 4.9,
     reviewCount: 210,
-    image:
-      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    id: "hyundai-creta",
+    name: "Hyundai Creta",
+    category: "Sedan SUV",
+    seats: 5,
+    fuel: "Petrol",
+    location: "Paro",
+    type: "Tourist Standard Vehicle",
+    pricePerDay: 50,
+    rating: 4.6,
+    reviewCount: 74,
+  },
+  {
+    id: "royal-enfield-meteor",
+    name: "Royal Enfield Meteor 350",
+    category: "Two Wheels",
+    seats: 2,
+    fuel: "Petrol",
+    location: "Thimphu",
+    type: "Self Drive Vehicle",
+    pricePerDay: 22,
+    rating: 4.7,
+    reviewCount: 39,
   },
 ];
 
 export const recentSearches = [
   {
     id: "s1",
-    title: "Grand Terrain SUV",
+    title: "Toyota Prado GX",
     subtitle: "Thimphu → Punakha, 11 Dec",
     vehicleId: "toyota-prado-gx",
     pickup: "Thimphu, Druk School",
@@ -118,27 +133,11 @@ export const recentSearches = [
   },
 ];
 
-export const popularCarTypes = [
-  {
-    name: "Prime SUV",
-    image:
-      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=400&auto=format&fit=crop",
-  },
-  {
-    name: "Mini Bus",
-    image:
-      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=400&auto=format&fit=crop",
-  },
-  {
-    name: "Highland Coach Liner",
-    image:
-      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=400&auto=format&fit=crop",
-  },
-  {
-    name: "Sedan SUV",
-    image:
-      "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=400&auto=format&fit=crop",
-  },
+export const popularCarTypes: { category: VehicleCategory; label: string }[] = [
+  { category: "Prime SUV", label: "Prime SUV" },
+  { category: "Mini Bus", label: "Mini Bus" },
+  { category: "Bus", label: "Bus" },
+  { category: "Sedan SUV", label: "Sedan SUV" },
 ];
 
 export const faqs = [
@@ -158,8 +157,7 @@ export const faqs = [
 
 export type Booking = {
   id: string;
-  vehicle: string;
-  image: string;
+  vehicleId: string;
   pickup: string;
   dropoff: string;
   date: string;
@@ -171,9 +169,7 @@ export type Booking = {
 export const bookings: Booking[] = [
   {
     id: "GI1671177263",
-    vehicle: "Grand Terrain SUV",
-    image:
-      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=400&auto=format&fit=crop",
+    vehicleId: "toyota-prado-gx",
     pickup: "Thimphu, Druk School",
     dropoff: "Punakha, Taxi Parking",
     date: "Thu 24 Sep, 10:00",
@@ -183,9 +179,7 @@ export const bookings: Booking[] = [
   },
   {
     id: "GI1671177201",
-    vehicle: "Hyundai Santa Fe",
-    image:
-      "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=400&auto=format&fit=crop",
+    vehicleId: "hyundai-santa-fe",
     pickup: "Paro Airport",
     dropoff: "Thimphu, City Centre",
     date: "12 Oct, 13:00",
@@ -195,9 +189,7 @@ export const bookings: Booking[] = [
   },
   {
     id: "GI1671176980",
-    vehicle: "Toyota Hiace Bus",
-    image:
-      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=400&auto=format&fit=crop",
+    vehicleId: "toyota-hiace-bus",
     pickup: "Thimphu, Clock Tower Square",
     dropoff: "Thimphu, Clock Tower Square",
     date: "27 Nov, 09:34",
@@ -216,7 +208,7 @@ export type Notification = {
 };
 
 export const notifications: Notification[] = [
-  { id: "n1", title: "Booking confirmed", body: "Your ride with Grand Terrain SUV is confirmed for 24 Sep.", time: "2h ago", read: false },
+  { id: "n1", title: "Booking confirmed", body: "Your ride with Toyota Prado GX is confirmed for 24 Sep.", time: "2h ago", read: false },
   { id: "n2", title: "Payment received", body: "We received your payment of $58.00 for booking GI1671177263.", time: "2h ago", read: false },
   { id: "n3", title: "Driver assigned", body: "Karma Dorji has been assigned as your driver.", time: "1d ago", read: true },
   { id: "n4", title: "Trip completed", body: "Hope you enjoyed your trip! Rate your experience.", time: "3d ago", read: true },
@@ -270,15 +262,19 @@ export const financeSummary = {
   ],
 };
 
-export const driverVehicles = [
+export const driverVehicles: {
+  id: string;
+  name: string;
+  plate: string;
+  category: VehicleCategory;
+  status: "Active" | "Under review";
+}[] = [
   {
     id: "v1",
-    name: "Grand Terrain SUV",
+    name: "Toyota Prado GX",
     plate: "BP-1-A2345",
     category: "Prime SUV",
     status: "Active",
-    image:
-      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=400&auto=format&fit=crop",
   },
   {
     id: "v2",
@@ -286,8 +282,6 @@ export const driverVehicles = [
     plate: "BP-3-C1102",
     category: "Mini Bus",
     status: "Under review",
-    image:
-      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=400&auto=format&fit=crop",
   },
 ];
 
@@ -310,8 +304,7 @@ export const currentUser = {
 export type DriverBooking = {
   id: string;
   riderName: string;
-  vehicle: string;
-  image: string;
+  vehicleId: string;
   pickup: string;
   dropoff: string;
   date: string;
@@ -322,9 +315,7 @@ export const driverBookings: DriverBooking[] = [
   {
     id: "HBTTB5984458",
     riderName: "Sonam Wangmo",
-    vehicle: "Grand Terrain V8",
-    image:
-      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=400&auto=format&fit=crop",
+    vehicleId: "v1",
     pickup: "International Airport, Paro",
     dropoff: "Terminal, Phuentsholing",
     date: "Sat 12 Dec' 22, 10:00",
@@ -333,9 +324,7 @@ export const driverBookings: DriverBooking[] = [
   {
     id: "HBTTB0982764",
     riderName: "Tenzin Namgay",
-    vehicle: "Maruti Ertiga",
-    image:
-      "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=400&auto=format&fit=crop",
+    vehicleId: "v2",
     pickup: "Terminal, Phuentsholing",
     dropoff: "Terminal, Phuentsholing",
     date: "Mon 08 Dec' 22, 08:00",
@@ -344,9 +333,7 @@ export const driverBookings: DriverBooking[] = [
   {
     id: "HBTTB9283434",
     riderName: "Karma Choden",
-    vehicle: "Hyundai i20",
-    image:
-      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=400&auto=format&fit=crop",
+    vehicleId: "v1",
     pickup: "Clock Tower, Thimphu",
     dropoff: "International Airport, Paro",
     date: "Wed 19 Dec' 22, 11:00",
@@ -370,25 +357,10 @@ export const driverNotifications: DriverNotification[] = [
 ];
 
 // Selectable vehicle templates shown when adding a new vehicle.
-export const vehicleTemplates = [
-  {
-    id: "prado-v8",
-    name: "Grand Terrain V8",
-    image:
-      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=400&auto=format&fit=crop",
-  },
-  {
-    id: "prado-gx",
-    name: "Grand Terrain GX",
-    image:
-      "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=400&auto=format&fit=crop",
-  },
-  {
-    id: "fortuner",
-    name: "Summit Peak SUV",
-    image:
-      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=400&auto=format&fit=crop",
-  },
+export const vehicleTemplates: { id: string; name: string; category: VehicleCategory }[] = [
+  { id: "prado-v8", name: "Toyota Prado V8", category: "Prime SUV" },
+  { id: "prado-gx", name: "Toyota Prado GX", category: "Prime SUV" },
+  { id: "innova", name: "Toyota Innova Crysta", category: "Prime SUV" },
 ];
 
 // Selectable locations for the pick-up/drop-off location picker.

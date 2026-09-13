@@ -18,23 +18,30 @@ export default function Confirmation() {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
-  const booking = bookings.find((b) => b.id === id) ?? bookings[0];
 
-  // If we arrived straight from checkout (vehicleId/total in the URL), that's
-  // the live booking that was just made — prefer its real numbers over the
-  // static mock record. Landing here from My Bookings has no vehicleId, so it
-  // falls back to the historical mock booking's own total.
+  // Arriving straight from checkout (vehicleId in the URL) means this is the
+  // booking that was just made — build the display entirely from that live
+  // vehicle + trip params. Arriving from My Bookings has no vehicleId, so we
+  // fall back to the static historical record for that id.
   const vehicleId = searchParams.get("vehicleId");
+  const liveVehicle = vehicleId ? vehicles.find((v) => v.id === vehicleId) : undefined;
+  const historicalBooking = bookings.find((b) => b.id === id) ?? bookings[0];
+  const historicalVehicle = vehicles.find((v) => v.id === historicalBooking.vehicleId) ?? vehicles[0];
+
+  const vehicle = liveVehicle ?? historicalVehicle;
   const totalParam = searchParams.get("total");
-  const vehicle = vehicleId ? vehicles.find((v) => v.id === vehicleId) : undefined;
-  const displayTotal = totalParam
-    ? Number(totalParam)
-    : vehicle
-      ? computeFare(vehicle.pricePerDay).total
-      : booking.total;
+  const displayTotal = totalParam ? Number(totalParam) : liveVehicle ? computeFare(liveVehicle.pricePerDay).total : historicalBooking.total;
+
+  const pickup = liveVehicle ? searchParams.get("pickup") || vehicle.location : historicalBooking.pickup;
+  const dropoff = liveVehicle ? searchParams.get("dropoff") || vehicle.location : historicalBooking.dropoff;
+  const date = liveVehicle ? searchParams.get("date") || "" : historicalBooking.date;
+  const status = liveVehicle ? "Upcoming" : historicalBooking.status;
+  const bookingType = liveVehicle ? "Daily Rides" : historicalBooking.bookingType;
+  const bookingId = liveVehicle ? id ?? historicalBooking.id : historicalBooking.id;
+
   const invoiceUrl = totalParam
-    ? `${routes.invoice(booking.id)}?total=${totalParam}`
-    : routes.invoice(booking.id);
+    ? `${routes.invoice(bookingId)}?${searchParams.toString()}`
+    : routes.invoice(bookingId);
 
   return (
     <PageShell noFooter>
@@ -50,18 +57,18 @@ export default function Confirmation() {
         <div className="mt-8 rounded-xl border border-[#e5ebf0] p-6 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <VehicleImage className="size-16 rounded-lg" />
+              <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-16 rounded-lg" />
               <div>
-                <p className="text-base font-bold text-[#222]">{booking.vehicle}</p>
-                <p className="text-xs text-[color:var(--color-muted)]">{booking.bookingType}</p>
+                <p className="text-base font-bold text-[#222]">{vehicle.name}</p>
+                <p className="text-xs text-[color:var(--color-muted)]">{bookingType}</p>
               </div>
             </div>
             <span
               className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                statusStyles[booking.status] ?? "bg-[#f4f6f8] text-[#333]"
+                statusStyles[status] ?? "bg-[#f4f6f8] text-[#333]"
               }`}
             >
-              {booking.status}
+              {status}
             </span>
           </div>
 
@@ -72,21 +79,21 @@ export default function Confirmation() {
               <Icon name="location" size={18} className="mt-0.5 shrink-0 text-[#333]" />
               <div>
                 <p className="text-xs font-semibold text-[#747474]">Pickup</p>
-                <p className="text-sm text-[#222]">{booking.pickup}</p>
+                <p className="text-sm text-[#222]">{pickup}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <Icon name="location" size={18} className="mt-0.5 shrink-0 text-[#333]" />
               <div>
                 <p className="text-xs font-semibold text-[#747474]">Drop-off</p>
-                <p className="text-sm text-[#222]">{booking.dropoff}</p>
+                <p className="text-sm text-[#222]">{dropoff}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <Icon name="calendar" size={18} className="mt-0.5 shrink-0 text-[#333]" />
               <div>
                 <p className="text-xs font-semibold text-[#747474]">Date &amp; time</p>
-                <p className="text-sm text-[#222]">{booking.date}</p>
+                <p className="text-sm text-[#222]">{date}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -102,7 +109,7 @@ export default function Confirmation() {
 
           <div className="flex items-center justify-between">
             <p className="text-xs font-semibold text-[#747474]">Booking reference</p>
-            <p className="font-mono text-sm font-bold tracking-wide text-[#222]">{booking.id}</p>
+            <p className="font-mono text-sm font-bold tracking-wide text-[#222]">{bookingId}</p>
           </div>
         </div>
 

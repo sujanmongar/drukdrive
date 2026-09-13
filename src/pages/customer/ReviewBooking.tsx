@@ -4,11 +4,15 @@ import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import VehicleImage from "../../components/VehicleImage";
+import BookingStepper from "../../components/BookingStepper";
 import PriceSummarySheet from "../../components/PriceSummarySheet";
 import { vehicles, currentUser } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { RENTAL_DAYS, computeFare } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
+
+const DEFAULT_PICKUP = "Thimphu, Druk School";
+const DEFAULT_DROPOFF = "Punakha, Taxi Parking";
 
 export default function ReviewBooking() {
   const navigate = useNavigate();
@@ -19,16 +23,34 @@ export default function ReviewBooking() {
   const vehicle = vehicles.find((v) => v.id === vehicleId) ?? vehicles[0];
   const { baseFare, taxes, total } = computeFare(vehicle.pricePerDay);
 
+  const pickup = searchParams.get("pickup") || DEFAULT_PICKUP;
+  const dropoff = searchParams.get("dropoff") || DEFAULT_DROPOFF;
+  const date = searchParams.get("date") || "";
+
   const [title, setTitle] = useState("Mr");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [pickupAddress, setPickupAddress] = useState("");
-  const [dropoffAddress, setDropoffAddress] = useState("");
+  const [pickupAddress, setPickupAddress] = useState(pickup);
+  const [dropoffAddress, setDropoffAddress] = useState(dropoff);
   const [priceSummaryOpen, setPriceSummaryOpen] = useState(false);
+  const [touched, setTouched] = useState(false);
+
+  const isValid = fullName.trim() !== "" && email.trim() !== "" && phone.trim() !== "";
 
   function handleProceed() {
-    navigate(`${routes.payment}?vehicleId=${vehicle.id}`);
+    if (!isValid) {
+      setTouched(true);
+      return;
+    }
+    const params = new URLSearchParams({
+      vehicleId: vehicle.id,
+      pickup: pickupAddress,
+      dropoff: dropoffAddress,
+      date,
+      total: total.toFixed(2),
+    });
+    navigate(`${routes.payment}?${params.toString()}`);
   }
 
   const inputClass =
@@ -47,12 +69,15 @@ export default function ReviewBooking() {
           Review Your Booking
         </button>
 
+        <div className="mb-6">
+          <BookingStepper current={2} />
+        </div>
+
         <div className="flex flex-col gap-4 rounded-xl bg-neutral-50 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs text-[color:var(--color-muted)]">Pick up</p>
-            <p className="text-sm font-bold text-[#222]">
-              {vehicle.location}, near {vehicle.name.split(" ")[0]} depot
-            </p>
+            <p className="text-sm font-bold text-[#222]">{pickup}</p>
+            {date && <p className="mt-0.5 text-xs text-[color:var(--color-muted)]">{date}</p>}
           </div>
           <div className="flex flex-col items-center gap-1 text-xs text-[color:var(--color-muted)]">
             <Icon name="car" size={16} />
@@ -60,13 +85,13 @@ export default function ReviewBooking() {
           </div>
           <div className="sm:text-right">
             <p className="text-xs text-[color:var(--color-muted)]">Drop off</p>
-            <p className="text-sm font-bold text-[#222]">Same location</p>
+            <p className="text-sm font-bold text-[#222]">{dropoff}</p>
           </div>
         </div>
 
         <div className="mt-4 rounded-xl border border-[color:var(--color-border)] p-4">
           <div className="flex items-center gap-4">
-            <VehicleImage category={vehicle.category} className="size-16 shrink-0 rounded-lg" />
+            <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-16 shrink-0 rounded-lg" />
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <p className="text-base font-bold text-[#222]">{vehicle.name}</p>
@@ -119,8 +144,9 @@ export default function ReviewBooking() {
               placeholder="Enter full name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className={inputClass}
+              className={`${inputClass} ${touched && !fullName.trim() ? "border-[color:var(--color-danger)]" : ""}`}
             />
+            {touched && !fullName.trim() && <p className="mt-1 text-xs text-[color:var(--color-danger)]">Full name is required.</p>}
           </label>
         </div>
 
@@ -132,8 +158,9 @@ export default function ReviewBooking() {
               placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={inputClass}
+              className={`${inputClass} ${touched && !email.trim() ? "border-[color:var(--color-danger)]" : ""}`}
             />
+            {touched && !email.trim() && <p className="mt-1 text-xs text-[color:var(--color-danger)]">Email is required.</p>}
           </label>
           <label>
             <span className={labelClass}>Phone</span>
@@ -142,8 +169,9 @@ export default function ReviewBooking() {
               placeholder="Enter phone number"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className={inputClass}
+              className={`${inputClass} ${touched && !phone.trim() ? "border-[color:var(--color-danger)]" : ""}`}
             />
+            {touched && !phone.trim() && <p className="mt-1 text-xs text-[color:var(--color-danger)]">Phone number is required.</p>}
           </label>
           <label>
             <span className={labelClass}>Pickup address</span>

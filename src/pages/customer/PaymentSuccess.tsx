@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Button from "../../components/Button";
@@ -8,12 +9,16 @@ import { vehicles, currentUser } from "../../data/mockData";
 import { computeFare } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
 
-// Reuse the existing dummy booking id from mockData.ts so Confirmation/Invoice
-// have a matching record to look up (this is a static prototype, no backend).
-const BOOKING_ID = "GI1671177263";
-
 function todayFormatted() {
   return new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).replace(/ /g, "-");
+}
+
+// A fresh, realistic-looking booking id for this just-completed purchase —
+// generated once per successful payment (this is a static prototype with no
+// backend to issue a real one) and carried into Confirmation/Invoice so
+// every screen after checkout is describing the same booking.
+function generateBookingId() {
+  return `GI${Date.now()}`;
 }
 
 export default function PaymentSuccess() {
@@ -21,15 +26,27 @@ export default function PaymentSuccess() {
   const { format } = useCurrency();
   const vehicleId = searchParams.get("vehicleId");
   const vehicle = vehicles.find((v) => v.id === vehicleId) ?? vehicles[0];
+  const pickup = searchParams.get("pickup") || vehicle.location;
+  const dropoff = searchParams.get("dropoff") || vehicle.location;
+  const date = searchParams.get("date") || todayFormatted();
 
   const totalParam = searchParams.get("total");
   const total = totalParam ? Number(totalParam) : computeFare(vehicle.pricePerDay).total;
 
-  const confirmationParams = new URLSearchParams({ vehicleId: vehicle.id, total: total.toFixed(2) });
-  const invoiceUrl = `${routes.invoice(BOOKING_ID)}?${confirmationParams.toString()}`;
+  const [bookingId] = useState(generateBookingId);
+
+  const followOnParams = new URLSearchParams({
+    vehicleId: vehicle.id,
+    total: total.toFixed(2),
+    pickup,
+    dropoff,
+    date,
+  });
+  const invoiceUrl = `${routes.invoice(bookingId)}?${followOnParams.toString()}`;
+  const confirmationUrl = `${routes.confirmation(bookingId)}?${followOnParams.toString()}`;
 
   const receiptRows = [
-    { label: "Transactions ID", value: `HBTTB${BOOKING_ID.slice(-7)}` },
+    { label: "Transactions ID", value: `HBTTB${bookingId.slice(-7)}` },
     { label: "Date", value: todayFormatted() },
     { label: "Mode of Payment", value: "Credit Card" },
     { label: "Transaction Status", value: "Success", accent: true },
@@ -39,10 +56,16 @@ export default function PaymentSuccess() {
     { label: "Payment Amount", value: format(total) },
   ];
 
+  const emailHref = `mailto:${currentUser.email}?subject=${encodeURIComponent(
+    `DrukDrive receipt — ${bookingId}`,
+  )}&body=${encodeURIComponent(
+    `Booking ${bookingId}\nVehicle: ${vehicle.name}\nPickup: ${pickup}\nDrop-off: ${dropoff}\nDate: ${date}\nAmount paid: ${format(total)}`,
+  )}`;
+
   const actions = [
-    { icon: "download" as const, label: "Save as PDF" },
-    { icon: "download" as const, label: "Print Receipt" },
-    { icon: "mail" as const, label: "Email Receipt" },
+    { icon: "download" as const, label: "Save as PDF", onClick: () => window.print() },
+    { icon: "download" as const, label: "Print Receipt", onClick: () => window.print() },
+    { icon: "mail" as const, label: "Email Receipt", href: emailHref },
   ];
 
   return (
@@ -75,16 +98,28 @@ export default function PaymentSuccess() {
         </div>
 
         <div className="mt-5 flex flex-wrap items-center justify-center gap-6">
-          {actions.map((a) => (
-            <button
-              key={a.label}
-              type="button"
-              className="flex items-center gap-1.5 text-sm font-medium text-[color:var(--color-muted)] hover:text-[#222]"
-            >
-              <Icon name={a.icon} size={16} />
-              {a.label}
-            </button>
-          ))}
+          {actions.map((a) =>
+            a.href ? (
+              <a
+                key={a.label}
+                href={a.href}
+                className="flex items-center gap-1.5 text-sm font-medium text-[color:var(--color-muted)] hover:text-[#222]"
+              >
+                <Icon name={a.icon} size={16} />
+                {a.label}
+              </a>
+            ) : (
+              <button
+                key={a.label}
+                type="button"
+                onClick={a.onClick}
+                className="flex items-center gap-1.5 text-sm font-medium text-[color:var(--color-muted)] hover:text-[#222]"
+              >
+                <Icon name={a.icon} size={16} />
+                {a.label}
+              </button>
+            ),
+          )}
         </div>
 
         <div className="mt-8 flex flex-col gap-3">
@@ -92,6 +127,9 @@ export default function PaymentSuccess() {
             Book Another Cab
           </Button>
           <div className="flex gap-3">
+            <Button variant="ghost" size="md" to={confirmationUrl} fullWidth>
+              View Confirmation
+            </Button>
             <Button variant="ghost" size="md" to={invoiceUrl} fullWidth>
               View Invoice
             </Button>

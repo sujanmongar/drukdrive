@@ -1,11 +1,23 @@
 import PageShell from "../components/PageShell";
+import Button from "../components/Button";
+import Icon from "../components/Icon";
+import { routes } from "../lib/routes";
 
 export default function NotFound() {
   return (
     <PageShell>
-      <div className="mx-auto max-w-[1440px] px-4 py-16 md:px-[60px]">
-        <h1 className="text-2xl font-bold text-[#222]">NotFound</h1>
-        <p className="mt-2 text-sm text-[color:var(--color-muted)]">Placeholder — to be implemented.</p>
+      <div className="mx-auto flex min-h-[60svh] max-w-[560px] flex-col items-center justify-center px-4 py-16 text-center">
+        <div className="flex size-16 items-center justify-center rounded-full bg-[#f4f6f8]">
+          <Icon name="car" size={28} className="text-[color:var(--color-muted)]" />
+        </div>
+        <p className="mt-6 text-sm font-bold uppercase tracking-wide text-[color:var(--color-muted)]">404</p>
+        <h1 className="mt-2 text-2xl font-bold text-[#222] md:text-3xl">Page not found</h1>
+        <p className="mt-2 max-w-sm text-sm text-[color:var(--color-muted)]">
+          The page you're looking for doesn't exist or may have moved.
+        </p>
+        <Button variant="primary" size="lg" to={routes.home} className="mt-8">
+          Back to home
+        </Button>
       </div>
     </PageShell>
   );

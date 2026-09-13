@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
@@ -20,6 +20,23 @@ export default function Otp() {
   const state = location.state as LocationState;
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [secondsLeft, setSecondsLeft] = useState(30);
+  const [justResent, setJustResent] = useState(false);
+
+  useEffect(() => {
+    if (secondsLeft <= 0) return;
+    const timer = setInterval(() => setSecondsLeft((s) => s - 1), 1000);
+    return () => clearInterval(timer);
+  }, [secondsLeft]);
+
+  function handleResend() {
+    if (secondsLeft > 0) return;
+    setDigits(Array(OTP_LENGTH).fill(""));
+    inputRefs.current[0]?.focus();
+    setSecondsLeft(30);
+    setJustResent(true);
+    setTimeout(() => setJustResent(false), 3000);
+  }
 
   const handleChange = (index: number, value: string) => {
     const char = value.replace(/\D/g, "").slice(-1);
@@ -43,7 +60,7 @@ export default function Otp() {
     e.preventDefault();
     login();
     if (state?.role === "driver") {
-      navigate(routes.providerProfile);
+      navigate(routes.providerBookings);
     } else {
       navigate(routes.home);
     }
@@ -72,10 +89,19 @@ export default function Otp() {
 
   const resendRow = (
     <div className="mt-6 flex items-center justify-between text-sm text-[rgba(0,0,0,0.87)]">
-      <span>Time remaining 30s</span>
+      <span>{secondsLeft > 0 ? `Time remaining ${secondsLeft}s` : justResent ? "OTP resent" : ""}</span>
       <span className="flex items-center gap-2">
         <span className="text-[#929292]">Didn&rsquo;t receive?</span>
-        <span className="cursor-not-allowed font-semibold text-[#bfc7cd]">Resend OTP</span>
+        <button
+          type="button"
+          onClick={handleResend}
+          disabled={secondsLeft > 0}
+          className={`font-semibold ${
+            secondsLeft > 0 ? "cursor-not-allowed text-[color:var(--color-muted)]" : "text-[#222] underline"
+          }`}
+        >
+          Resend OTP
+        </button>
       </span>
     </div>
   );
@@ -113,7 +139,7 @@ export default function Otp() {
               <Icon name="arrow-left" size={22} />
             </button>
           </div>
-          <h1 className="mb-1 text-[28px] font-bold leading-tight text-[#222]">Verify your mobile number</h1>
+          <h1 className="mb-1 text-[34px] font-bold leading-tight text-[#222]">Verify your mobile number</h1>
           <p className="mb-6 text-sm text-[rgba(0,0,0,0.87)]">
             OTP has been sent to <span className="text-lg font-bold">{currentUser.phone}</span>
           </p>

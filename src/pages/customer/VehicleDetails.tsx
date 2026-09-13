@@ -1,26 +1,37 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import VehicleImage from "../../components/VehicleImage";
+import BookingStepper from "../../components/BookingStepper";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { RENTAL_DAYS, computeFare } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
+import { formatTripDate } from "../../lib/formatTripDate";
+
+const DEFAULT_PICKUP = "Thimphu, Druk School";
+const DEFAULT_DROPOFF = "Punakha, Taxi Parking";
 
 export default function VehicleDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { format } = useCurrency();
   const [summaryOpen, setSummaryOpen] = useState(false);
 
   const vehicle = vehicles.find((v) => v.id === id) ?? vehicles[0];
 
+  const pickup = searchParams.get("pickup") || DEFAULT_PICKUP;
+  const dropoff = searchParams.get("dropoff") || DEFAULT_DROPOFF;
+  const date = searchParams.get("date") || formatTripDate(new Date(), "10:00");
+
   const { baseFare: basePrice, taxes, total } = computeFare(vehicle.pricePerDay);
 
   function handleContinue() {
-    navigate(`${routes.reviewBooking}?vehicleId=${vehicle.id}`);
+    const params = new URLSearchParams({ vehicleId: vehicle.id, pickup, dropoff, date });
+    navigate(`${routes.reviewBooking}?${params.toString()}`);
   }
 
   return (
@@ -35,11 +46,28 @@ export default function VehicleDetails() {
           Back to results
         </button>
 
+        <div className="mb-6">
+          <BookingStepper current={1} />
+        </div>
+
+        <div className="mb-6 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-xl bg-neutral-50 px-4 py-3 text-sm">
+          <span className="flex items-center gap-1.5 text-[#222]">
+            <Icon name="location" size={15} className="text-[color:var(--color-muted)]" />
+            <span className="font-semibold">{pickup}</span>
+            <Icon name="chevron-right" size={13} className="text-[color:var(--color-muted)]" />
+            <span className="font-semibold">{dropoff}</span>
+          </span>
+          <span className="flex items-center gap-1.5 text-[color:var(--color-muted)]">
+            <Icon name="calendar" size={15} />
+            {date}
+          </span>
+        </div>
+
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* Left: gallery + details */}
           <div className="min-w-0 flex-1">
             <div className="overflow-hidden rounded-xl">
-              <VehicleImage category={vehicle.category} className="h-[240px] w-full sm:h-[340px] md:h-[420px]" />
+              <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="h-[240px] w-full sm:h-[340px] md:h-[420px]" />
             </div>
 
             <div className="mt-5 flex flex-wrap items-start justify-between gap-3">

@@ -31,7 +31,9 @@ export default function Payment() {
   const labelClasses = "mb-1.5 block text-xs font-semibold text-[#333]";
 
   const handlePay = () => {
-    const params = new URLSearchParams({ vehicleId: vehicle.id, total: total.toFixed(2) });
+    const params = new URLSearchParams(searchParams);
+    params.set("vehicleId", vehicle.id);
+    params.set("total", total.toFixed(2));
     navigate(`${routes.paymentVerify}?${params.toString()}`);
   };
 
@@ -50,7 +52,7 @@ export default function Payment() {
         <BookingStepper current={3} />
 
         <div className="mt-8 flex items-center gap-4 rounded-xl bg-neutral-50 p-4">
-          <VehicleImage category={vehicle.category} className="size-14 shrink-0 rounded-lg" />
+          <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-14 shrink-0 rounded-lg" />
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-sm font-bold text-[#222]">{vehicle.name}</p>

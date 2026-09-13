@@ -23,6 +23,7 @@ export const routes = {
 
   // customer account
   accountBookings: "/account/bookings",
+  accountWishlist: "/account/wishlist",
   accountNotifications: "/account/notifications",
   accountReviews: "/account/reviews",
   accountFinance: "/account/finance",
@@ -32,6 +33,7 @@ export const routes = {
   // service provider (driver) dashboard
   providerProfile: "/provider/profile",
   providerBookings: "/provider/bookings",
+  providerBookingDetail: (id: string = ":id") => `/provider/bookings/${id}`,
   providerNotifications: "/provider/notifications",
   providerReviews: "/provider/reviews",
   providerVehicles: "/provider/vehicles",

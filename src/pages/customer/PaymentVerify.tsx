@@ -8,12 +8,8 @@ import { routes } from "../../lib/routes";
 export default function PaymentVerify() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const vehicleId = searchParams.get("vehicleId");
-  const total = searchParams.get("total");
 
-  const forwardParams = new URLSearchParams();
-  if (vehicleId) forwardParams.set("vehicleId", vehicleId);
-  if (total) forwardParams.set("total", total);
+  const forwardParams = new URLSearchParams(searchParams);
   const successUrl = forwardParams.toString()
     ? `${routes.paymentSuccess}?${forwardParams.toString()}`
     : routes.paymentSuccess;

@@ -6,7 +6,7 @@ import ProfileHero from "../../../components/ProfileHero";
 import StatusBadge from "../../../components/StatusBadge";
 import Icon from "../../../components/Icon";
 import VehicleImage from "../../../components/VehicleImage";
-import { bookings } from "../../../data/mockData";
+import { bookings, vehicles } from "../../../data/mockData";
 import { routes } from "../../../lib/routes";
 import { accountTabs } from "./_tabs";
 
@@ -63,7 +63,9 @@ export default function AccountBookings() {
           </div>
         ) : (
           <div className="mt-6 overflow-hidden rounded-xl border border-[color:var(--color-border)]">
-            {filtered.map((b, i) => (
+            {filtered.map((b, i) => {
+              const vehicle = vehicles.find((v) => v.id === b.vehicleId) ?? vehicles[0];
+              return (
               <Link
                 key={b.id}
                 to={routes.confirmation(b.id)}
@@ -72,11 +74,11 @@ export default function AccountBookings() {
                 }`}
               >
                 <div className="flex items-center gap-3 sm:w-48 sm:shrink-0">
-                  <VehicleImage className="size-12 rounded-lg" />
+                  <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-12 rounded-lg" />
                   <div>
                     <p className="text-xs text-[color:var(--color-muted)]">Booking ID</p>
                     <p className="text-sm font-bold text-[color:var(--color-success)]">#{b.id}</p>
-                    <p className="text-xs font-medium text-[#333]">{b.vehicle}</p>
+                    <p className="text-xs font-medium text-[#333]">{vehicle.name}</p>
                   </div>
                 </div>
 
@@ -98,7 +100,8 @@ export default function AccountBookings() {
                   <Icon name="chevron-right" size={18} className="text-[color:var(--color-muted)]" />
                 </div>
               </Link>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

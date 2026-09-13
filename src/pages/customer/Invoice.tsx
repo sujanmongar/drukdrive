@@ -3,7 +3,7 @@ import PageShell from "../../components/PageShell";
 import Button from "../../components/Button";
 import Icon from "../../components/Icon";
 import { routes } from "../../lib/routes";
-import { bookings, currentUser } from "../../data/mockData";
+import { bookings, vehicles, currentUser } from "../../data/mockData";
 import { TAX_RATE, RENTAL_DAYS } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
 
@@ -11,12 +11,24 @@ export default function Invoice() {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
-  const booking = bookings.find((b) => b.id === id) ?? bookings[0];
 
-  // Prefer the real total carried over from a live checkout (see
-  // Confirmation.tsx); fall back to the static mock booking's total when
-  // this invoice was reached from My Bookings instead.
-  const total = Number(searchParams.get("total")) || booking.total;
+  // Arriving straight from checkout (vehicleId in the URL) means this is the
+  // booking that was just made — build the line item from that live vehicle
+  // instead of the static mock record, which would show whatever booking
+  // happens to share this id (or bookings[0]) rather than what was actually
+  // bought. Arriving from My Bookings has no vehicleId, so it falls back to
+  // the static historical record for that id.
+  const vehicleId = searchParams.get("vehicleId");
+  const liveVehicle = vehicleId ? vehicles.find((v) => v.id === vehicleId) : undefined;
+  const historicalBooking = bookings.find((b) => b.id === id) ?? bookings[0];
+
+  const vehicleName = liveVehicle ? liveVehicle.name : (vehicles.find((v) => v.id === historicalBooking.vehicleId) ?? vehicles[0]).name;
+  const bookingId = liveVehicle ? id ?? historicalBooking.id : historicalBooking.id;
+  const bookingDate = liveVehicle ? searchParams.get("date") || "" : historicalBooking.date;
+
+  // Prefer the real total carried over from a live checkout; fall back to
+  // the static mock booking's total when reached from My Bookings instead.
+  const total = Number(searchParams.get("total")) || historicalBooking.total;
 
   // Back out a plausible base fare / tax split for the itemized display.
   const baseFare = Math.round((total / (1 + TAX_RATE)) * 100) / 100;
@@ -51,13 +63,13 @@ export default function Invoice() {
           <div className="mt-5 flex flex-wrap items-start justify-between gap-4 border-b border-[#e5ebf0] pb-6 text-sm">
             <div>
               <p className="text-[color:var(--color-muted)]">
-                Invoice No: <span className="font-semibold text-[#222]">DD-{booking.id}</span>
+                Invoice No: <span className="font-semibold text-[#222]">DD-{bookingId}</span>
               </p>
               <p className="text-[color:var(--color-muted)]">
-                Booking ID: <span className="font-semibold text-[#222]">{booking.id}</span>
+                Booking ID: <span className="font-semibold text-[#222]">{bookingId}</span>
               </p>
               <p className="text-[color:var(--color-muted)]">
-                Date: <span className="font-semibold text-[#222]">{booking.date}</span>
+                Date: <span className="font-semibold text-[#222]">{bookingDate}</span>
               </p>
             </div>
           </div>
@@ -97,7 +109,7 @@ export default function Invoice() {
               </thead>
               <tbody>
                 <tr className="border-b border-[#e5ebf0]">
-                  <td className="py-3 text-[#222]">{booking.vehicle}</td>
+                  <td className="py-3 text-[#222]">{vehicleName}</td>
                   <td className="py-3 text-[#222]">{RENTAL_DAYS} Day{RENTAL_DAYS > 1 ? "s" : ""}</td>
                   <td className="py-3 text-right text-[#222]">{format(baseFare)}</td>
                   <td className="py-3 text-right text-[#222]">{format(baseFare)}</td>
@@ -137,7 +149,7 @@ export default function Invoice() {
           <div className="grid grid-cols-1 gap-2 border-t border-[#e5ebf0] py-6 text-sm sm:grid-cols-2">
             <div className="flex justify-between sm:block">
               <span className="text-[color:var(--color-muted)]">Transaction Date</span>
-              <span className="ml-2 font-semibold text-[#222] sm:ml-0 sm:block">{booking.date}</span>
+              <span className="ml-2 font-semibold text-[#222] sm:ml-0 sm:block">{bookingDate}</span>
             </div>
             <div className="flex justify-between sm:block">
               <span className="text-[color:var(--color-muted)]">Method</span>
@@ -145,7 +157,7 @@ export default function Invoice() {
             </div>
             <div className="flex justify-between sm:block">
               <span className="text-[color:var(--color-muted)]">Transaction ID</span>
-              <span className="ml-2 font-semibold text-[#222] sm:ml-0 sm:block">HBTTB{booking.id.slice(-7)}</span>
+              <span className="ml-2 font-semibold text-[#222] sm:ml-0 sm:block">HBTTB{bookingId.slice(-7)}</span>
             </div>
             <div className="flex justify-between sm:block">
               <span className="text-[color:var(--color-muted)]">Status</span>

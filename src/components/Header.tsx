@@ -11,6 +11,7 @@ import NotificationsDropdown from "./NotificationsDropdown";
 
 const customerLinks: { to: string; label: string; icon: IconName }[] = [
   { to: routes.accountBookings, label: "Bookings", icon: "car" },
+  { to: routes.accountWishlist, label: "Wishlist", icon: "heart" },
   { to: routes.accountNotifications, label: "Notifications", icon: "bell" },
   { to: routes.accountReviews, label: "Reviews", icon: "star" },
   { to: routes.accountFinance, label: "Finance", icon: "wallet" },

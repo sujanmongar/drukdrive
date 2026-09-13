@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 const STORAGE_KEY = "drukdrive:wishlist";
 
 type WishlistContextValue = {
+  ids: string[];
   isSaved: (id: string) => boolean;
   toggle: (id: string) => void;
 };
@@ -29,6 +30,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
+      ids,
       isSaved: (id: string) => ids.includes(id),
       toggle: (id: string) =>
         setIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])),

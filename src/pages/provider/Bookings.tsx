@@ -6,7 +6,7 @@ import ProfileHero from "../../components/ProfileHero";
 import StatusBadge from "../../components/StatusBadge";
 import Icon from "../../components/Icon";
 import VehicleImage from "../../components/VehicleImage";
-import { driverBookings } from "../../data/mockData";
+import { driverBookings, driverVehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
 
@@ -64,20 +64,22 @@ export default function ProviderBookings() {
           </div>
         ) : (
           <div className="mt-6 overflow-hidden rounded-xl border border-[color:var(--color-border)]">
-            {filtered.map((b, i) => (
+            {filtered.map((b, i) => {
+              const vehicle = driverVehicles.find((v) => v.id === b.vehicleId) ?? driverVehicles[0];
+              return (
               <Link
                 key={b.id}
-                to={routes.providerBookings}
+                to={routes.providerBookingDetail(b.id)}
                 className={`flex flex-col gap-3 p-4 hover:bg-neutral-50 sm:flex-row sm:items-center sm:gap-6 sm:p-5 ${
                   i !== 0 ? "border-t border-[color:var(--color-border)]" : ""
                 }`}
               >
                 <div className="flex items-center gap-3 sm:w-48 sm:shrink-0">
-                  <VehicleImage className="size-12 rounded-lg" />
+                  <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-12 rounded-lg" />
                   <div>
                     <p className="text-xs text-[color:var(--color-muted)]">Booking ID</p>
                     <p className="text-sm font-bold text-[color:var(--color-success)]">#{b.id}</p>
-                    <p className="text-xs font-medium text-[#333]">{b.vehicle}</p>
+                    <p className="text-xs font-medium text-[#333]">{vehicle.name}</p>
                   </div>
                 </div>
 
@@ -99,7 +101,8 @@ export default function ProviderBookings() {
                   <Icon name="chevron-right" size={18} className="text-[color:var(--color-muted)]" />
                 </div>
               </Link>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
