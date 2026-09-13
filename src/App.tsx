@@ -27,6 +27,7 @@ const AccountReviews = lazy(() => import("./pages/customer/profile/Reviews"));
 const AccountFinance = lazy(() => import("./pages/customer/profile/Finance"));
 const AccountProfile = lazy(() => import("./pages/customer/profile/Account"));
 const AccountProfileEdit = lazy(() => import("./pages/customer/profile/AccountEdit"));
+const AccountPreferences = lazy(() => import("./pages/customer/profile/Preferences"));
 
 const ProviderProfile = lazy(() => import("./pages/provider/Profile"));
 const ProviderBookings = lazy(() => import("./pages/provider/Bookings"));
@@ -38,6 +39,7 @@ const ProviderVehicleAdd = lazy(() => import("./pages/provider/VehicleAdd"));
 const ProviderFinance = lazy(() => import("./pages/provider/Finance"));
 const ProviderAccount = lazy(() => import("./pages/provider/Account"));
 const ProviderAccountEdit = lazy(() => import("./pages/provider/AccountEdit"));
+const ProviderPreferences = lazy(() => import("./pages/provider/Preferences"));
 
 const NotFound = lazy(() => import("./pages/NotFound"));
 const StaticPage = lazy(() => import("./pages/StaticPage"));
@@ -134,6 +136,14 @@ export default function App() {
             </RouteGuard>
           }
         />
+        <Route
+          path={routes.accountPreferences}
+          element={
+            <RouteGuard role="customer">
+              <AccountPreferences />
+            </RouteGuard>
+          }
+        />
 
         {/* Service provider (driver) dashboard — requires being signed in as a driver */}
         <Route
@@ -213,6 +223,14 @@ export default function App() {
           element={
             <RouteGuard role="driver">
               <ProviderAccountEdit />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path={routes.providerPreferences}
+          element={
+            <RouteGuard role="driver">
+              <ProviderPreferences />
             </RouteGuard>
           }
         />

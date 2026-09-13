@@ -29,6 +29,7 @@ export const routes = {
   accountFinance: "/account/finance",
   accountProfile: "/account/profile",
   accountProfileEdit: "/account/profile/edit",
+  accountPreferences: "/account/preferences",
 
   // service provider (driver) dashboard
   providerProfile: "/provider/profile",
@@ -41,6 +42,7 @@ export const routes = {
   providerFinance: "/provider/finance",
   providerAccount: "/provider/account",
   providerAccountEdit: "/provider/account/edit",
+  providerPreferences: "/provider/preferences",
 
   // static / informational
   about: "/about",

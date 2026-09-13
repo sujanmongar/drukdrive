@@ -30,7 +30,7 @@ const cards: AccountCard[] = [
     icon: "info",
     title: "Global preferences",
     description: "Set your default language, currency, and timezone",
-    to: routes.accountProfileEdit,
+    to: routes.accountPreferences,
   },
 ];
 
