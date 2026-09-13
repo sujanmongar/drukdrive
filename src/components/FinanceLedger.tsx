@@ -7,10 +7,15 @@ const ledgerTabs: LedgerTab[] = ["Ledger", "Report", "Credit Notes", "Debit Note
 
 // Same wallet, same ledger, whichever hat the account is wearing — shared by
 // the customer Finance page and the driver Finance page.
+const statusFilters = ["All", "Credited", "Processed", "Pending"] as const;
+type StatusFilter = (typeof statusFilters)[number];
+
 export default function FinanceLedger() {
   const [tab, setTab] = useState<LedgerTab>("Ledger");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
+  const [filterOpen, setFilterOpen] = useState(false);
 
-  const rows = useMemo(() => {
+  const allRows = useMemo(() => {
     let balance = 0;
     return financeSummary.transactions.map((t) => {
       const debit = t.amount < 0 ? Math.abs(t.amount) : 0;
@@ -19,6 +24,11 @@ export default function FinanceLedger() {
       return { ...t, debit, credit, balance };
     });
   }, []);
+
+  const rows = useMemo(
+    () => (statusFilter === "All" ? allRows : allRows.filter((r) => r.status === statusFilter)),
+    [allRows, statusFilter],
+  );
 
   const totalDebit = rows.reduce((s, r) => s + r.debit, 0);
   const totalCredit = rows.reduce((s, r) => s + r.credit, 0);
@@ -42,16 +52,51 @@ export default function FinanceLedger() {
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          className="flex items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-4 py-2 text-sm font-medium text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
-        >
-          <Icon name="filter" size={16} />
-          Filter
-        </button>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setFilterOpen((v) => !v)}
+            className={`flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium transition-colors ${
+              statusFilter !== "All"
+                ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
+                : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
+            }`}
+          >
+            <Icon name="filter" size={16} />
+            {statusFilter === "All" ? "Filter" : statusFilter}
+          </button>
+          {filterOpen && (
+            <>
+              <button aria-label="Close" className="fixed inset-0 z-10 cursor-default" onClick={() => setFilterOpen(false)} />
+              <div className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
+                {statusFilters.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => {
+                      setStatusFilter(s);
+                      setFilterOpen(false);
+                    }}
+                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
+                      statusFilter === s ? "bg-neutral-100 font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-neutral-50"
+                    }`}
+                  >
+                    {s}
+                    {statusFilter === s && <Icon name="check" size={14} />}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
-      {tab === "Ledger" ? (
+      {tab === "Ledger" ? rows.length === 0 ? (
+        <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
+          <Icon name="wallet" size={32} className="text-[color:var(--color-muted)]" />
+          <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No {statusFilter.toLowerCase()} transactions</p>
+        </div>
+      ) : (
         <div className="mt-6 overflow-x-auto rounded-xl border border-[color:var(--color-border)]">
           <table className="w-full min-w-[720px] text-sm">
             <thead>
