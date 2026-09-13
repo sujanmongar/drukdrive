@@ -2,6 +2,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Button from "../../components/Button";
 import Icon from "../../components/Icon";
+import DrukDriveLogo from "../../components/DrukDriveLogo";
 import { routes } from "../../lib/routes";
 import { bookings, vehicles } from "../../data/mockData";
 import { useCurrentUser } from "../../lib/currentUser";
@@ -60,9 +61,7 @@ export default function Invoice() {
 
         <div className="rounded-xl border border-[color:var(--color-border)] p-8 shadow-[0px_1px_3px_rgba(25,32,36,0.16)] print:border-0 print:p-0 print:shadow-none">
           <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-neutral-50 px-5 py-4">
-            <p className="text-lg uppercase text-[color:var(--color-ink)]" style={{ fontFamily: "'Manrope', sans-serif", letterSpacing: "-0.5px" }}>
-              DrukDrive
-            </p>
+            <DrukDriveLogo className="h-6 w-auto text-[color:var(--color-ink)]" />
             <p className="text-lg font-bold text-[color:var(--color-ink)]">Invoice</p>
           </div>
 

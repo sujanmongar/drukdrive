@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import Icon from "./Icon";
 import type { IconName } from "./Icon";
+import DrukDriveLogo from "./DrukDriveLogo";
 import { routes } from "../lib/routes";
 import { useCurrentUser } from "../lib/currentUser";
 import { useAuth } from "../lib/auth";
@@ -33,21 +34,12 @@ const switchTarget: Record<Role, { role: Role; label: string; to: string; icon: 
   driver: { role: "customer", label: "Switch to Riding", to: routes.home, icon: "user" },
 };
 
-// Matches the wordmark treatment on sujanmongar.com: Manrope, regular
-// weight, tight negative tracking, all caps.
-const wordmarkStyle = { fontFamily: "'Manrope', sans-serif", letterSpacing: "-0.5px" };
-
 function Logo() {
   const { role } = useAuth();
   const homeHref = role === "driver" ? routes.providerBookings : routes.home;
   return (
-    <Link to={homeHref} className="flex items-center gap-2 shrink-0">
-      <span className="flex size-8 items-center justify-center rounded-lg bg-[color:var(--color-ink)] text-white">
-        <Icon name="car" size={18} />
-      </span>
-      <span className="text-xl uppercase text-[color:var(--color-ink)]" style={wordmarkStyle}>
-        DrukDrive
-      </span>
+    <Link to={homeHref} className="flex shrink-0 items-center">
+      <DrukDriveLogo className="h-7 w-auto text-[color:var(--color-ink)]" />
     </Link>
   );
 }
@@ -180,8 +172,8 @@ export default function Header({ transparent = false }: { transparent?: boolean 
         >
           <Icon name="menu" size={24} />
         </button>
-        <Link to={homeHref} className="text-xl uppercase text-[color:var(--color-ink)]" style={wordmarkStyle}>
-          DrukDrive
+        <Link to={homeHref} className="flex items-center">
+          <DrukDriveLogo className="h-5 w-auto text-[color:var(--color-ink)]" />
         </Link>
         <div className="flex items-center gap-1">
           <CurrencySwitcher />
@@ -210,9 +202,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
           />
           <div className="absolute left-0 top-0 h-full w-[78%] max-w-[320px] bg-white p-5 shadow-xl">
             <div className="mb-6 flex items-center justify-between">
-              <span className="text-lg uppercase text-[color:var(--color-ink)]" style={wordmarkStyle}>
-                DrukDrive
-              </span>
+              <DrukDriveLogo className="h-5 w-auto text-[color:var(--color-ink)]" />
               <button onClick={() => setMenuOpen(false)} aria-label="Close menu">
                 <Icon name="close" size={22} />
               </button>
