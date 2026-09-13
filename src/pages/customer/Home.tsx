@@ -4,6 +4,7 @@ import PageShell from "../../components/PageShell";
 import BookingTypeTabs from "../../components/BookingTypeTabs";
 import VehicleCard from "../../components/VehicleCard";
 import Icon from "../../components/Icon";
+import HeroBlobs from "../../components/HeroBlobs";
 import { routes } from "../../lib/routes";
 import type { BookingType } from "../../lib/routes";
 import { vehicles, recentSearches, popularCarTypes, faqs } from "../../data/mockData";
@@ -26,14 +27,12 @@ export default function Home() {
     <PageShell>
       <section className="relative overflow-hidden">
         {/* decorative blob background, hero area only */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] overflow-hidden md:h-[651px]">
-          <div className="absolute -left-24 -top-24 size-[300px] rounded-full bg-[#f7e6c4] opacity-70 blur-3xl md:size-[520px]" />
-          <div className="absolute -right-24 top-6 size-[260px] rounded-full bg-[#f7e6c4] opacity-60 blur-3xl md:size-[480px] md:top-10" />
-          <div className="absolute left-1/3 top-52 size-[180px] rounded-full bg-[#f7e6c4] opacity-40 blur-3xl md:size-[300px] md:top-40" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] overflow-hidden md:h-[651px]">
+          <HeroBlobs type={type} />
         </div>
 
-        <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-6 md:px-[60px] md:pb-24 md:pt-16">
-          <h1 className="max-w-md text-2xl font-bold leading-tight text-[rgba(0,0,0,0.87)] md:max-w-[46%] md:text-[32px] md:leading-[1.2]">
+        <div className="relative mx-auto max-w-[1440px] px-4 pb-10 pt-6 md:px-[60px] md:pb-24 md:pt-16">
+          <h1 className="max-w-[280px] text-xl font-bold leading-snug text-[rgba(0,0,0,0.87)] sm:max-w-md sm:text-2xl md:max-w-[46%] md:text-[32px] md:leading-[1.2]">
             Where you want to go? - search now.
           </h1>
 
@@ -197,7 +196,7 @@ export default function Home() {
 
         {/* Company blurb */}
         <section className="py-8 md:py-10">
-          <h2 className="mb-3 text-lg font-bold text-[rgba(0,0,0,0.87)] md:text-2xl">Heavenly Bhutan Travels</h2>
+          <h2 className="mb-3 text-lg font-bold text-[rgba(0,0,0,0.87)] md:text-2xl">DrukDrive</h2>
           <p className="max-w-[1044px] text-sm leading-[1.2] text-[color:var(--color-muted)]">
             DrukDrive partners with trusted local operators across Bhutan to make it easy to find, compare and
             book the right vehicle for your trip — from daily rides around Thimphu to outstation transfers and

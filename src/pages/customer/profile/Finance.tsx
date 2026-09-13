@@ -1,78 +1,119 @@
+import { useMemo, useState } from "react";
 import PageShell from "../../../components/PageShell";
 import SecondaryTabs from "../../../components/SecondaryTabs";
+import ProfileHero from "../../../components/ProfileHero";
 import Icon from "../../../components/Icon";
-import StatusBadge from "../../../components/StatusBadge";
 import { financeSummary } from "../../../data/mockData";
 import { accountTabs } from "./_tabs";
 
-const summaryCards = [
-  { key: "totalEarnings", label: "Total Spend", icon: "wallet" as const },
-  { key: "pending", label: "Pending", icon: "clock" as const },
-  { key: "withdrawn", label: "Refunded", icon: "check-circle" as const },
-];
+type LedgerTab = "Ledger" | "Report" | "Credit Notes" | "Debit Notes";
+const ledgerTabs: LedgerTab[] = ["Ledger", "Report", "Credit Notes", "Debit Notes"];
 
 export default function AccountFinance() {
+  const [tab, setTab] = useState<LedgerTab>("Ledger");
+
+  const rows = useMemo(() => {
+    let balance = 0;
+    return financeSummary.transactions.map((t) => {
+      const debit = t.amount < 0 ? Math.abs(t.amount) : 0;
+      const credit = t.amount > 0 ? t.amount : 0;
+      balance += credit - debit;
+      return { ...t, debit, credit, balance };
+    });
+  }, []);
+
+  const totalDebit = rows.reduce((s, r) => s + r.debit, 0);
+  const totalCredit = rows.reduce((s, r) => s + r.credit, 0);
+
   return (
     <PageShell>
-      <SecondaryTabs tabs={accountTabs} />
+      <ProfileHero />
+      <div className="mt-6 md:mt-8">
+        <SecondaryTabs tabs={accountTabs} />
+      </div>
 
       <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
-        <h1 className="text-2xl font-bold text-[#222]">Finance</h1>
-        <p className="mt-1 text-sm text-[color:var(--color-muted)]">
-          An overview of your payments and transactions.
-        </p>
+        <h2 className="text-2xl font-bold text-[#222]">Finance</h2>
 
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {summaryCards.map((card) => (
-            <div
-              key={card.key}
-              className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]"
-            >
-              <div className="flex items-center gap-2 text-[color:var(--color-muted)]">
-                <Icon name={card.icon} size={16} />
-                <span className="text-xs font-semibold">{card.label}</span>
-              </div>
-              <p className="mt-2 text-2xl font-bold text-[#222]">
-                ${financeSummary[card.key as keyof typeof financeSummary] as number}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-8">
-          <h2 className="text-base font-bold text-[#222]">Transactions</h2>
-
-          <div className="mt-4 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
-            <div className="hidden grid-cols-[1fr_140px_120px_120px] gap-3 border-b border-[color:var(--color-border)] px-5 py-3 text-xs font-semibold text-[color:var(--color-muted)] sm:grid">
-              <span>Description</span>
-              <span>Date</span>
-              <span className="text-right">Amount</span>
-              <span className="text-right">Status</span>
-            </div>
-
-            <div className="divide-y divide-[color:var(--color-border)]">
-              {financeSummary.transactions.map((t) => (
-                <div
-                  key={t.id}
-                  className="flex flex-col gap-2 px-5 py-4 sm:grid sm:grid-cols-[1fr_140px_120px_120px] sm:items-center sm:gap-3"
-                >
-                  <span className="text-sm font-medium text-[#222]">{t.label}</span>
-                  <span className="text-xs text-[color:var(--color-muted)] sm:text-sm">{t.date}</span>
-                  <span
-                    className={`text-sm font-bold sm:text-right ${
-                      t.amount >= 0 ? "text-[color:var(--color-success)]" : "text-[color:var(--color-danger)]"
-                    }`}
-                  >
-                    {t.amount >= 0 ? "+" : "-"}${Math.abs(t.amount)}
-                  </span>
-                  <span className="sm:text-right">
-                    <StatusBadge status={t.status} />
-                  </span>
-                </div>
-              ))}
-            </div>
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex gap-2 overflow-x-auto">
+            {ledgerTabs.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTab(t)}
+                className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                  tab === t
+                    ? "border-[#222] bg-[#222] text-white"
+                    : "border-[color:var(--color-border)] text-[#222] hover:border-[#222]"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
           </div>
+          <button
+            type="button"
+            className="flex items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-4 py-2 text-sm font-medium text-[#222] hover:border-[#222]"
+          >
+            <Icon name="filter" size={16} />
+            Filter
+          </button>
         </div>
+
+        {tab === "Ledger" ? (
+          <div className="mt-6 overflow-x-auto rounded-xl border border-[color:var(--color-border)]">
+            <table className="w-full min-w-[720px] text-sm">
+              <thead>
+                <tr className="border-b border-[color:var(--color-border)] bg-neutral-50 text-left text-xs font-semibold text-[color:var(--color-muted)]">
+                  <th className="px-4 py-3 font-semibold">Date</th>
+                  <th className="px-4 py-3 font-semibold">Reference Number</th>
+                  <th className="px-4 py-3 font-semibold">Particulars</th>
+                  <th className="px-4 py-3 text-right font-semibold">Debit</th>
+                  <th className="px-4 py-3 text-right font-semibold">Credit</th>
+                  <th className="px-4 py-3 text-right font-semibold">Running Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr key={r.id} className="border-b border-[color:var(--color-border)] last:border-b-0">
+                    <td className="whitespace-nowrap px-4 py-3 text-[#333]">{r.date}</td>
+                    <td className="whitespace-nowrap px-4 py-3 font-medium text-[#2276e3]">{r.id.toUpperCase()}</td>
+                    <td className="px-4 py-3 text-[#222]">{r.label}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-right text-[#222]">
+                      {r.debit ? r.debit.toFixed(2) : "0"}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-3 text-right text-[#222]">
+                      {r.credit ? r.credit.toFixed(2) : "0"}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-3 text-right font-medium text-[#222]">
+                      {r.balance.toFixed(2)} {r.balance >= 0 ? "Cr" : "Dr"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr className="bg-neutral-50">
+                  <td className="px-4 py-3 text-center font-bold text-[#222]" colSpan={3}>
+                    Total
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-[#222]">
+                    {totalDebit.toFixed(2)}
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-[#222]">
+                    {totalCredit.toFixed(2)}
+                  </td>
+                  <td />
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        ) : (
+          <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
+            <Icon name="wallet" size={32} className="text-[color:var(--color-muted)]" />
+            <p className="mt-3 text-sm font-semibold text-[#222]">No {tab.toLowerCase()} yet</p>
+          </div>
+        )}
       </div>
     </PageShell>
   );

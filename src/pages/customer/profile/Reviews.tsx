@@ -1,6 +1,8 @@
 import PageShell from "../../../components/PageShell";
 import SecondaryTabs from "../../../components/SecondaryTabs";
+import ProfileHero from "../../../components/ProfileHero";
 import Icon from "../../../components/Icon";
+import Button from "../../../components/Button";
 import { reviews } from "../../../data/mockData";
 import { accountTabs } from "./_tabs";
 
@@ -26,21 +28,25 @@ export default function AccountReviews() {
 
   return (
     <PageShell>
-      <SecondaryTabs tabs={accountTabs} />
+      <ProfileHero />
+      <div className="mt-6 md:mt-8">
+        <SecondaryTabs tabs={accountTabs} />
+      </div>
 
       <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-[#222]">My Reviews</h1>
-            <p className="mt-1 text-sm text-[color:var(--color-muted)]">
-              Reviews you've left for your trips.
-            </p>
+            <h2 className="text-2xl font-bold text-[#222]">Reviews</h2>
+            {reviews.length > 0 && (
+              <p className="mt-1 flex items-center gap-1.5 text-sm text-[color:var(--color-muted)]">
+                <Icon name="star" size={14} className="fill-current text-amber-400" />
+                <span className="font-semibold text-[#222]">{avgRating}</span> avg. of {reviews.length}
+              </p>
+            )}
           </div>
-          <div className="flex items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-4 py-2.5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
-            <Icon name="star" size={18} className="fill-current text-amber-400" />
-            <span className="text-lg font-bold text-[#222]">{avgRating}</span>
-            <span className="text-xs text-[color:var(--color-muted)]">avg. of {reviews.length}</span>
-          </div>
+          <Button variant="primary" size="sm">
+            Write review
+          </Button>
         </div>
 
         {reviews.length === 0 ? (

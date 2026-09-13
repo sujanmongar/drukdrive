@@ -6,6 +6,7 @@ import Icon from "../../components/Icon";
 import { routes } from "../../lib/routes";
 import { vehicles } from "../../data/mockData";
 import { RENTAL_DAYS, computeFare } from "../../lib/pricing";
+import { useCurrency } from "../../lib/currency";
 
 type PaymentMethod = "netbanking" | "card" | "wallet";
 
@@ -19,6 +20,7 @@ const methods: { id: PaymentMethod; label: string; icon: "bank" | "credit-card" 
 
 export default function Payment() {
   const navigate = useNavigate();
+  const { format } = useCurrency();
   const [searchParams] = useSearchParams();
   const vehicleId = searchParams.get("vehicleId");
   const vehicle = vehicles.find((v) => v.id === vehicleId) ?? vehicles[0];
@@ -202,11 +204,11 @@ export default function Payment() {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between text-[#333]">
                 <span>Base fare &times; {RENTAL_DAYS} days</span>
-                <span>${baseFare.toFixed(2)}</span>
+                <span>{format(baseFare)}</span>
               </div>
               <div className="flex justify-between text-[#333]">
                 <span>Taxes &amp; fees (10%)</span>
-                <span>${taxes.toFixed(2)}</span>
+                <span>{format(taxes)}</span>
               </div>
             </div>
 
@@ -214,11 +216,11 @@ export default function Payment() {
 
             <div className="flex justify-between text-base font-bold text-[#222]">
               <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+              <span>{format(total)}</span>
             </div>
 
             <Button variant="primary" size="lg" fullWidth className="mt-5" onClick={handlePay}>
-              Pay ${total.toFixed(2)}
+              Pay {format(total)}
             </Button>
           </aside>
         </div>

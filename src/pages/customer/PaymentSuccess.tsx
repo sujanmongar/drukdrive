@@ -5,6 +5,7 @@ import Icon from "../../components/Icon";
 import { routes } from "../../lib/routes";
 import { vehicles } from "../../data/mockData";
 import { computeFare } from "../../lib/pricing";
+import { useCurrency } from "../../lib/currency";
 
 // Reuse the existing dummy booking id from mockData.ts so Confirmation/Invoice
 // have a matching record to look up (this is a static prototype, no backend).
@@ -12,6 +13,7 @@ const BOOKING_ID = "GI1671177263";
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
+  const { format } = useCurrency();
   const vehicleId = searchParams.get("vehicleId");
   const vehicle = vehicles.find((v) => v.id === vehicleId) ?? vehicles[0];
 
@@ -28,7 +30,7 @@ export default function PaymentSuccess() {
 
         <h1 className="mt-6 text-2xl font-bold text-[#222] md:text-3xl">Payment successful!</h1>
         <p className="mt-2 max-w-sm text-sm text-[color:var(--color-muted)]">
-          We&apos;ve received your payment of <span className="font-semibold text-[#333]">${total.toFixed(2)}</span>{" "}
+          We&apos;ve received your payment of <span className="font-semibold text-[#333]">{format(total)}</span>{" "}
           for the {vehicle.name}. A confirmation has been sent to your email.
         </p>
 

@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 import Icon from "./Icon";
 import type { Vehicle } from "../data/mockData";
 import { routes } from "../lib/routes";
+import { useCurrency } from "../lib/currency";
 
 export default function VehicleCard({ vehicle, className = "" }: { vehicle: Vehicle; className?: string }) {
+  const { format } = useCurrency();
   return (
     <div
       className={`w-full shrink-0 overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] ${className}`}
@@ -47,10 +49,10 @@ export default function VehicleCard({ vehicle, className = "" }: { vehicle: Vehi
         <div className="flex items-end justify-between">
           <div>
             <div className="flex items-baseline gap-1">
-              <span className="text-xl font-extrabold text-[#222]">${vehicle.pricePerDay}</span>
+              <span className="text-xl font-extrabold text-[#222]">{format(vehicle.pricePerDay)}</span>
               <span className="text-xs text-[#222]">/day</span>
               {vehicle.strikePrice && (
-                <span className="text-xs text-red-500 line-through">${vehicle.strikePrice}</span>
+                <span className="text-xs text-red-500 line-through">{format(vehicle.strikePrice)}</span>
               )}
             </div>
             <p className="text-[10px] text-[color:var(--color-muted)]">incl. taxes & fees</p>

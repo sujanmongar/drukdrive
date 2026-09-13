@@ -1,3 +1,5 @@
+import { currencies, useCurrency } from "../lib/currency";
+
 const columns = [
   {
     title: "Company",
@@ -14,6 +16,14 @@ const columns = [
 ];
 
 export default function Footer() {
+  const { currency, setCurrency } = useCurrency();
+  const active = currencies.find((c) => c.code === currency)!;
+
+  function cycleCurrency() {
+    const i = currencies.findIndex((c) => c.code === currency);
+    setCurrency(currencies[(i + 1) % currencies.length].code);
+  }
+
   return (
     <footer className="mt-auto bg-[#161616] text-white">
       <div className="mx-auto grid max-w-[1440px] grid-cols-2 gap-x-6 gap-y-10 px-6 py-10 md:grid-cols-5 md:px-[60px] md:py-12">
@@ -59,8 +69,12 @@ export default function Footer() {
           <button className="flex flex-1 items-center justify-between rounded-lg border border-white/40 px-4 py-2.5 text-sm font-semibold">
             English
           </button>
-          <button className="flex flex-1 items-center justify-between gap-2 rounded-lg border border-white/40 px-4 py-2.5 text-sm font-semibold">
-            🇧🇹 BTN
+          <button
+            type="button"
+            onClick={cycleCurrency}
+            className="flex flex-1 items-center justify-between gap-2 rounded-lg border border-white/40 px-4 py-2.5 text-sm font-semibold"
+          >
+            {active.flag} {active.code}
           </button>
         </div>
       </div>

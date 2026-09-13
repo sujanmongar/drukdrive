@@ -4,6 +4,7 @@ const styles: Record<string, string> = {
   Cancelled: "bg-red-50 text-[color:var(--color-danger)]",
   Active: "bg-green-50 text-[color:var(--color-success)]",
   "Under review": "bg-amber-50 text-amber-700",
+  "Not confirmed": "bg-blue-50 text-blue-700",
   Pending: "bg-amber-50 text-amber-700",
   Credited: "bg-green-50 text-[color:var(--color-success)]",
   Processed: "bg-blue-50 text-blue-700",

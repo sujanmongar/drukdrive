@@ -5,13 +5,16 @@ import "./index.css";
 import App from "./App.tsx";
 import ScrollToTop from "./components/ScrollToTop.tsx";
 import { AuthProvider } from "./lib/auth.tsx";
+import { CurrencyProvider } from "./lib/currency.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <ScrollToTop />
-        <App />
+        <CurrencyProvider>
+          <ScrollToTop />
+          <App />
+        </CurrencyProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>,

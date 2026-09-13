@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PageShell from "../../../components/PageShell";
 import SecondaryTabs from "../../../components/SecondaryTabs";
+import ProfileHero from "../../../components/ProfileHero";
 import Icon from "../../../components/Icon";
 import { notifications as initialNotifications, type Notification } from "../../../data/mockData";
 import { accountTabs } from "./_tabs";
@@ -20,12 +21,15 @@ export default function AccountNotifications() {
 
   return (
     <PageShell>
-      <SecondaryTabs tabs={accountTabs} />
+      <ProfileHero />
+      <div className="mt-6 md:mt-8">
+        <SecondaryTabs tabs={accountTabs} />
+      </div>
 
       <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-[#222]">Notifications</h1>
+            <h2 className="text-2xl font-bold text-[#222]">Notifications</h2>
             <p className="mt-1 text-sm text-[color:var(--color-muted)]">
               {unreadCount > 0 ? `You have ${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}.` : "You're all caught up."}
             </p>

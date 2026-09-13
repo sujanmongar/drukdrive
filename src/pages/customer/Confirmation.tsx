@@ -5,6 +5,7 @@ import Icon from "../../components/Icon";
 import { routes } from "../../lib/routes";
 import { bookings, vehicles } from "../../data/mockData";
 import { computeFare } from "../../lib/pricing";
+import { useCurrency } from "../../lib/currency";
 
 const statusStyles: Record<string, string> = {
   Upcoming: "bg-[color:var(--color-info-bg)] text-[color:var(--color-info-text)]",
@@ -15,6 +16,7 @@ const statusStyles: Record<string, string> = {
 export default function Confirmation() {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
+  const { format } = useCurrency();
   const booking = bookings.find((b) => b.id === id) ?? bookings[0];
 
   // If we arrived straight from checkout (vehicleId/total in the URL), that's
@@ -94,7 +96,7 @@ export default function Confirmation() {
               <Icon name="credit-card" size={18} className="mt-0.5 shrink-0 text-[#333]" />
               <div>
                 <p className="text-xs font-semibold text-[#747474]">Amount paid</p>
-                <p className="text-sm text-[#222]">${displayTotal.toFixed(2)}</p>
+                <p className="text-sm text-[#222]">{format(displayTotal)}</p>
               </div>
             </div>
           </div>

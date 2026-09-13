@@ -5,10 +5,12 @@ import Icon from "../../components/Icon";
 import { routes } from "../../lib/routes";
 import { bookings, currentUser } from "../../data/mockData";
 import { TAX_RATE } from "../../lib/pricing";
+import { useCurrency } from "../../lib/currency";
 
 export default function Invoice() {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
+  const { format } = useCurrency();
   const booking = bookings.find((b) => b.id === id) ?? bookings[0];
 
   // Prefer the real total carried over from a live checkout (see
@@ -84,11 +86,11 @@ export default function Invoice() {
                       {booking.bookingType} booking fare
                     </span>
                   </td>
-                  <td className="py-3 text-right text-[#222]">${baseFare.toFixed(2)}</td>
+                  <td className="py-3 text-right text-[#222]">{format(baseFare)}</td>
                 </tr>
                 <tr className="border-b border-[#e5ebf0]">
                   <td className="py-3 text-[#222]">Taxes &amp; fees (10%)</td>
-                  <td className="py-3 text-right text-[#222]">${taxes.toFixed(2)}</td>
+                  <td className="py-3 text-right text-[#222]">{format(taxes)}</td>
                 </tr>
               </tbody>
             </table>
@@ -97,16 +99,16 @@ export default function Invoice() {
               <div className="w-full max-w-[220px] space-y-2">
                 <div className="flex justify-between text-sm text-[#333]">
                   <span>Subtotal</span>
-                  <span>${baseFare.toFixed(2)}</span>
+                  <span>{format(baseFare)}</span>
                 </div>
                 <div className="flex justify-between text-sm text-[#333]">
                   <span>Tax</span>
-                  <span>${taxes.toFixed(2)}</span>
+                  <span>{format(taxes)}</span>
                 </div>
                 <div className="h-px bg-[#e5ebf0]" />
                 <div className="flex justify-between text-base font-bold text-[#222]">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>{format(total)}</span>
                 </div>
               </div>
             </div>

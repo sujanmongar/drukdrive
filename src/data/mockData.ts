@@ -294,4 +294,9 @@ export const currentUser = {
   phone: "+975 17 123 456",
   referenceId: "GI1671177263",
   avatar: "https://i.pravatar.cc/160?img=68",
+  location: "Zilukha, Thimphu",
+  joinedYear: 2022,
+  gender: "Male",
+  address: "Chang Gidaphu, Thimphu",
+  bio: "I love exploring Bhutan's mountain roads.",
 };

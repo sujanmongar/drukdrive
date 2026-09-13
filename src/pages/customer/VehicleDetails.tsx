@@ -6,10 +6,12 @@ import Button from "../../components/Button";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { RENTAL_DAYS, computeFare } from "../../lib/pricing";
+import { useCurrency } from "../../lib/currency";
 
 export default function VehicleDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { format } = useCurrency();
   const [summaryOpen, setSummaryOpen] = useState(false);
 
   const vehicle = vehicles.find((v) => v.id === id) ?? vehicles[0];
@@ -111,15 +113,15 @@ export default function VehicleDetails() {
                   <span>
                     Base fare × {RENTAL_DAYS} days
                   </span>
-                  <span className="font-medium text-[#222]">${basePrice.toFixed(2)}</span>
+                  <span className="font-medium text-[#222]">{format(basePrice)}</span>
                 </div>
                 <div className="flex justify-between text-[#333]">
                   <span>Taxes & fees (10%)</span>
-                  <span className="font-medium text-[#222]">${taxes.toFixed(2)}</span>
+                  <span className="font-medium text-[#222]">{format(taxes)}</span>
                 </div>
                 <div className="mt-1 flex justify-between border-t border-[color:var(--color-border)] pt-3 text-base font-extrabold text-[#222]">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>{format(total)}</span>
                 </div>
               </div>
               <Button variant="primary" size="lg" fullWidth className="mt-5" onClick={handleContinue}>
@@ -136,11 +138,11 @@ export default function VehicleDetails() {
           <div className="mb-3 flex flex-col gap-2 border-b border-[color:var(--color-border)] pb-3 text-sm">
             <div className="flex justify-between text-[#333]">
               <span>Base fare × {RENTAL_DAYS} days</span>
-              <span className="font-medium text-[#222]">${basePrice.toFixed(2)}</span>
+              <span className="font-medium text-[#222]">{format(basePrice)}</span>
             </div>
             <div className="flex justify-between text-[#333]">
               <span>Taxes & fees (10%)</span>
-              <span className="font-medium text-[#222]">${taxes.toFixed(2)}</span>
+              <span className="font-medium text-[#222]">{format(taxes)}</span>
             </div>
           </div>
         )}
@@ -151,7 +153,7 @@ export default function VehicleDetails() {
             className="flex flex-col items-start"
           >
             <span className="flex items-center gap-1 text-lg font-extrabold text-[#222]">
-              ${total.toFixed(2)}
+              {format(total)}
               <Icon name={summaryOpen ? "chevron-down" : "chevron-right"} size={14} className="text-[color:var(--color-muted)]" />
             </span>
             <span className="text-[11px] text-[color:var(--color-muted)]">incl. taxes & fees</span>

@@ -9,5 +9,4 @@ export const accountTabs: SecondaryTab[] = [
   { to: routes.accountReviews, label: "Reviews", icon: "star" },
   { to: routes.accountFinance, label: "Finance", icon: "wallet" },
   { to: routes.accountProfile, label: "Account", icon: "user" },
-  { to: routes.accountProfileEdit, label: "Edit Profile", icon: "edit" },
 ];
