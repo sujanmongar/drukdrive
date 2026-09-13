@@ -7,9 +7,10 @@ import BookingStepper from "../../components/BookingStepper";
 import BookingRouteCard from "../../components/BookingRouteCard";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
-import { computeFare } from "../../lib/pricing";
+import { computeFare, RENTAL_DAYS } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
 import { useAuth } from "../../lib/auth";
+import { useCurrentUser } from "../../lib/currentUser";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 const DEFAULT_PICKUP = "Thimphu, Druk School";
@@ -28,19 +29,22 @@ export default function ReviewBooking() {
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
   const { isLoggedIn } = useAuth();
+  const { user } = useCurrentUser();
 
   const vehicleId = searchParams.get("vehicleId");
   const vehicle = vehicles.find((v) => v.id === vehicleId) ?? vehicles[0];
-  const { total } = computeFare(vehicle.pricePerDay);
+  const { baseFare, taxes, total } = computeFare(vehicle.pricePerDay);
 
   const pickup = searchParams.get("pickup") || DEFAULT_PICKUP;
   const dropoff = searchParams.get("dropoff") || DEFAULT_DROPOFF;
   const date = searchParams.get("date") || "";
 
-  const [title, setTitle] = useState("Mr");
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
+  // Already signed in? Skip retyping — pull the traveler's details straight
+  // from their account instead of starting from blank fields.
+  const [title, setTitle] = useState(isLoggedIn && user.gender === "Female" ? "Ms" : "Mr");
+  const [fullName, setFullName] = useState(isLoggedIn ? user.name : "");
+  const [phone, setPhone] = useState(isLoggedIn ? user.phone : "");
+  const [email, setEmail] = useState(isLoggedIn ? user.email : "");
   const [pickupAddress, setPickupAddress] = useState(pickup);
   const [dropoffAddress, setDropoffAddress] = useState("");
   const [touched, setTouched] = useState(false);
@@ -101,7 +105,7 @@ export default function ReviewBooking() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[1320px] px-4 py-6 pb-10 md:px-[60px] md:py-10">
+      <div className="mx-auto max-w-[1100px] px-4 py-6 pb-10 md:px-[60px] md:py-10">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -115,9 +119,9 @@ export default function ReviewBooking() {
           <BookingStepper current={2} />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
           {/* Left: booking details + personal info */}
-          <div className="min-w-0">
+          <div className="min-w-0 max-w-[640px]">
             <BookingRouteCard vehicle={vehicle} pickup={pickup} dropoff={dropoff} date={date} />
 
             <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
@@ -244,7 +248,37 @@ export default function ReviewBooking() {
                   <p className="text-xl font-extrabold text-[color:var(--color-ink)]">{format(netPayable)}</p>
                   <p className="text-xs text-[color:var(--color-muted)]">Inclusive of taxes and fees</p>
                 </div>
-                <span className="text-xs font-semibold text-[color:var(--color-link)]">Fare summary</span>
+                <div className="group relative">
+                  <button
+                    type="button"
+                    className="cursor-help text-xs font-semibold text-[color:var(--color-link)] underline decoration-dotted underline-offset-2"
+                  >
+                    Fare summary
+                  </button>
+                  <div className="invisible absolute right-0 top-full z-30 mt-2 w-60 rounded-xl border border-[color:var(--color-border)] bg-white p-4 opacity-0 shadow-[var(--shadow-popup)] transition-opacity duration-150 group-hover:visible group-hover:opacity-100">
+                    <p className="text-xs font-bold text-[color:var(--color-ink)]">Fare breakdown</p>
+                    <div className="mt-2.5 flex flex-col gap-2 text-xs">
+                      <div className="flex justify-between text-[color:var(--color-ink-soft)]">
+                        <span>Base fare × {RENTAL_DAYS} days</span>
+                        <span className="font-medium text-[color:var(--color-ink)]">{format(baseFare)}</span>
+                      </div>
+                      <div className="flex justify-between text-[color:var(--color-ink-soft)]">
+                        <span>Taxes &amp; fees</span>
+                        <span className="font-medium text-[color:var(--color-ink)]">{format(taxes)}</span>
+                      </div>
+                      {discount > 0 && (
+                        <div className="flex justify-between font-medium text-[color:var(--color-success)]">
+                          <span>Discount</span>
+                          <span>-{format(discount)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between border-t border-[color:var(--color-border)] pt-2 text-sm font-bold text-[color:var(--color-ink)]">
+                        <span>Total</span>
+                        <span>{format(netPayable)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="mt-4 flex flex-col gap-2.5">

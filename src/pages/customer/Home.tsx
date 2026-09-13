@@ -313,7 +313,12 @@ export default function Home() {
                 onClick={() => navigate(`${routes.search}?category=${encodeURIComponent(t.category)}`)}
                 className="group relative size-[164px] shrink-0 cursor-pointer overflow-hidden rounded-xl bg-neutral-100 text-left transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0px_10px_24px_rgba(0,0,0,0.15)]"
               >
-                <VehicleImage category={t.category} className="size-full transition-transform duration-300 group-hover:scale-110" />
+                <VehicleImage
+                  vehicleId={t.vehicleId}
+                  category={t.category}
+                  fit="cover"
+                  className="size-full transition-transform duration-300 group-hover:scale-110"
+                />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/0 to-black/0" />
                 <span className="pointer-events-none absolute bottom-4 left-4 text-base font-semibold text-white">
                   {t.label}

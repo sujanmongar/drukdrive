@@ -60,7 +60,9 @@ export default function Invoice() {
 
         <div className="rounded-xl border border-[color:var(--color-border)] p-8 shadow-[0px_1px_3px_rgba(25,32,36,0.16)] print:border-0 print:p-0 print:shadow-none">
           <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-neutral-50 px-5 py-4">
-            <p className="text-lg font-extrabold text-[color:var(--color-ink)]">DrukDrive</p>
+            <p className="text-lg uppercase text-[color:var(--color-ink)]" style={{ fontFamily: "'Manrope', sans-serif", letterSpacing: "-0.5px" }}>
+              DrukDrive
+            </p>
             <p className="text-lg font-bold text-[color:var(--color-ink)]">Invoice</p>
           </div>
 

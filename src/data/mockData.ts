@@ -133,11 +133,11 @@ export const recentSearches = [
   },
 ];
 
-export const popularCarTypes: { category: VehicleCategory; label: string }[] = [
-  { category: "Prime SUV", label: "Prime SUV" },
-  { category: "Mini Bus", label: "Mini Bus" },
-  { category: "Bus", label: "Bus" },
-  { category: "Sedan SUV", label: "Sedan SUV" },
+export const popularCarTypes: { category: VehicleCategory; label: string; vehicleId: string }[] = [
+  { category: "Prime SUV", label: "Prime SUV", vehicleId: "toyota-prado-gx" },
+  { category: "Mini Bus", label: "Mini Bus", vehicleId: "toyota-hiace-bus" },
+  { category: "Bus", label: "Bus", vehicleId: "toyota-coaster-bus" },
+  { category: "Sedan SUV", label: "Sedan SUV", vehicleId: "hyundai-santa-fe" },
 ];
 
 export const faqs = [

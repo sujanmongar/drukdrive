@@ -33,6 +33,10 @@ const switchTarget: Record<Role, { role: Role; label: string; to: string; icon: 
   driver: { role: "customer", label: "Switch to Riding", to: routes.home, icon: "user" },
 };
 
+// Matches the wordmark treatment on sujanmongar.com: Manrope, regular
+// weight, tight negative tracking, all caps.
+const wordmarkStyle = { fontFamily: "'Manrope', sans-serif", letterSpacing: "-0.5px" };
+
 function Logo() {
   const { role } = useAuth();
   const homeHref = role === "driver" ? routes.providerBookings : routes.home;
@@ -41,7 +45,9 @@ function Logo() {
       <span className="flex size-8 items-center justify-center rounded-lg bg-[color:var(--color-ink)] text-white">
         <Icon name="car" size={18} />
       </span>
-      <span className="text-xl font-extrabold tracking-tight text-[color:var(--color-ink)]">DrukDrive</span>
+      <span className="text-xl uppercase text-[color:var(--color-ink)]" style={wordmarkStyle}>
+        DrukDrive
+      </span>
     </Link>
   );
 }
@@ -174,7 +180,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
         >
           <Icon name="menu" size={24} />
         </button>
-        <Link to={homeHref} className="text-xl font-extrabold tracking-tight text-[color:var(--color-ink)]">
+        <Link to={homeHref} className="text-xl uppercase text-[color:var(--color-ink)]" style={wordmarkStyle}>
           DrukDrive
         </Link>
         <div className="flex items-center gap-1">
@@ -204,7 +210,9 @@ export default function Header({ transparent = false }: { transparent?: boolean 
           />
           <div className="absolute left-0 top-0 h-full w-[78%] max-w-[320px] bg-white p-5 shadow-xl">
             <div className="mb-6 flex items-center justify-between">
-              <span className="text-lg font-extrabold text-[color:var(--color-ink)]">DrukDrive</span>
+              <span className="text-lg uppercase text-[color:var(--color-ink)]" style={wordmarkStyle}>
+                DrukDrive
+              </span>
               <button onClick={() => setMenuOpen(false)} aria-label="Close menu">
                 <Icon name="close" size={22} />
               </button>

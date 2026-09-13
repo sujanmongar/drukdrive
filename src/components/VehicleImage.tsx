@@ -24,16 +24,26 @@ export default function VehicleImage({
   vehicleId,
   category,
   className = "",
+  fit = "contain",
 }: {
   vehicleId?: string;
   category?: string;
   className?: string;
+  /** "contain" (default) keeps the whole car visible with padding — right
+   * for cards/thumbnails. "cover" fills the frame edge-to-edge — right for
+   * fixed-aspect hero tiles like the "Popular car types" grid. */
+  fit?: "contain" | "cover";
 }) {
   const photo = vehicleId && photoByVehicleId[vehicleId];
   if (photo) {
     return (
-      <div className={`flex items-center justify-center bg-neutral-100 ${className}`}>
-        <img src={photo} alt={category ?? ""} loading="lazy" className="h-full w-full object-contain p-2" />
+      <div className={`flex items-center justify-center overflow-hidden bg-neutral-100 ${className}`}>
+        <img
+          src={photo}
+          alt={category ?? ""}
+          loading="lazy"
+          className={fit === "cover" ? "h-full w-full object-cover" : "h-full w-full object-contain p-2"}
+        />
       </div>
     );
   }
