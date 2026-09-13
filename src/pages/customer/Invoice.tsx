@@ -3,7 +3,8 @@ import PageShell from "../../components/PageShell";
 import Button from "../../components/Button";
 import Icon from "../../components/Icon";
 import { routes } from "../../lib/routes";
-import { bookings, vehicles, currentUser } from "../../data/mockData";
+import { bookings, vehicles } from "../../data/mockData";
+import { useCurrentUser } from "../../lib/currentUser";
 import { TAX_RATE, RENTAL_DAYS } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
@@ -13,6 +14,7 @@ export default function Invoice() {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
+  const { user: currentUser } = useCurrentUser();
 
   // Arriving straight from checkout (vehicleId in the URL) means this is the
   // booking that was just made — build the line item from that live vehicle

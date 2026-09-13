@@ -6,7 +6,8 @@ import ProfileHero from "../../components/ProfileHero";
 import StatusBadge from "../../components/StatusBadge";
 import Icon from "../../components/Icon";
 import VehicleImage from "../../components/VehicleImage";
-import { driverBookings, driverVehicles } from "../../data/mockData";
+import { driverBookings } from "../../data/mockData";
+import { useDriverVehicles } from "../../lib/driverVehicles";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
@@ -15,6 +16,7 @@ type Filter = "Current" | "Past";
 
 export default function ProviderBookings() {
   usePageTitle("Driver Bookings");
+  const { vehicles: driverVehicles } = useDriverVehicles();
   const [filter, setFilter] = useState<Filter>("Current");
 
   const groups = useMemo(

@@ -4,7 +4,7 @@ import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import { routes } from "../../lib/routes";
-import { currentUser } from "../../data/mockData";
+import { useCurrentUser } from "../../lib/currentUser";
 import { useAuth } from "../../lib/auth";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
@@ -19,6 +19,7 @@ export default function Otp() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
+  const { user: currentUser } = useCurrentUser();
   const state = location.state as LocationState;
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Icon from "./Icon";
 import VehicleImage from "./VehicleImage";
 import type { Vehicle } from "../data/mockData";
@@ -18,11 +18,18 @@ export default function VehicleCard({
 }) {
   const { format } = useCurrency();
   const { isSaved, toggle } = useWishlist();
+  const navigate = useNavigate();
   const saved = isSaved(vehicle.id);
   const detailsHref = tripQuery ? `${routes.vehicle(vehicle.id)}?${tripQuery}` : routes.vehicle(vehicle.id);
   return (
     <div
-      className={`w-full shrink-0 overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] ${className}`}
+      role="link"
+      tabIndex={0}
+      onClick={() => navigate(detailsHref)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") navigate(detailsHref);
+      }}
+      className={`w-full shrink-0 cursor-pointer overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] ${className}`}
     >
       <div className="relative h-[178px] w-full">
         <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full" />
@@ -32,6 +39,7 @@ export default function VehicleCard({
           aria-pressed={saved}
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             toggle(vehicle.id);
           }}
           className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-white/90 transition-transform active:scale-90"
@@ -70,9 +78,9 @@ export default function VehicleCard({
             {vehicle.rating} ({vehicle.reviewCount})
           </span>
         </div>
-        <div className="flex items-end justify-between">
-          <div>
-            <div className="flex items-baseline gap-1">
+        <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-2">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
               <span className="text-xl font-extrabold text-[color:var(--color-ink)]">{format(vehicle.pricePerDay)}</span>
               <span className="text-xs text-[color:var(--color-ink)]">/day</span>
               {vehicle.strikePrice && (
@@ -83,7 +91,8 @@ export default function VehicleCard({
           </div>
           <Link
             to={detailsHref}
-            className="rounded-xl bg-[color:var(--color-ink)] px-5 py-2.5 text-xs font-bold text-white hover:bg-black"
+            onClick={(e) => e.stopPropagation()}
+            className="shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-2.5 text-xs font-bold text-white hover:bg-black"
           >
             Book Now
           </Link>

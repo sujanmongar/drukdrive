@@ -1,18 +1,39 @@
+import { Link } from "react-router-dom";
 import { currencies, useCurrency } from "../lib/currency";
+import { routes } from "../lib/routes";
 
 const columns = [
   {
     title: "Company",
-    links: ["About", "Blog", "Privacy", "Terms & Conditions"],
+    links: [
+      { label: "About", to: routes.about },
+      { label: "Blog", to: routes.blog },
+      { label: "Privacy", to: routes.privacyPolicy },
+      { label: "Terms & Conditions", to: routes.termsOfService },
+    ],
   },
   {
     title: "Contact",
-    links: ["Help/FAQ", "Affiliates", "Advertise with us"],
+    links: [
+      { label: "Help/FAQ", to: routes.help },
+      { label: "Affiliates", to: routes.affiliates },
+      { label: "Advertise with us", to: routes.advertise },
+    ],
   },
   {
     title: "More",
-    links: ["Rewards", "Partners"],
+    links: [
+      { label: "Rewards", to: routes.rewards },
+      { label: "Partners", to: routes.partners },
+    ],
   },
+];
+
+const bottomLinks = [
+  { label: "Terms & Conditions", to: routes.termsOfService },
+  { label: "Privacy Policy", to: routes.privacyPolicy },
+  { label: "Refund Policy", to: routes.refundPolicy },
+  { label: "Career", to: routes.careers },
 ];
 
 export default function Footer() {
@@ -32,8 +53,10 @@ export default function Footer() {
             <p className="mb-3 text-sm font-semibold">{col.title}</p>
             <ul className="flex flex-col gap-2">
               {col.links.map((l) => (
-                <li key={l} className="text-xs text-white/70">
-                  {l}
+                <li key={l.label}>
+                  <Link to={l.to} className="text-xs text-white/70 hover:text-white hover:underline">
+                    {l.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -66,13 +89,13 @@ export default function Footer() {
         </div>
 
         <div className="col-span-2 flex flex-row gap-3 md:col-span-1 md:flex-col">
-          <button className="flex flex-1 items-center justify-between rounded-lg border border-white/40 px-4 py-2.5 text-sm font-semibold">
+          <div className="flex flex-1 items-center justify-between rounded-lg border border-white/40 px-4 py-2.5 text-sm font-semibold">
             English
-          </button>
+          </div>
           <button
             type="button"
             onClick={cycleCurrency}
-            className="flex flex-1 items-center justify-between gap-2 rounded-lg border border-white/40 px-4 py-2.5 text-sm font-semibold"
+            className="flex flex-1 items-center justify-between gap-2 rounded-lg border border-white/40 px-4 py-2.5 text-sm font-semibold hover:bg-white/5"
           >
             {active.flag} {active.code}
           </button>
@@ -81,10 +104,11 @@ export default function Footer() {
 
       <div className="mx-auto flex max-w-[1440px] flex-col gap-3 border-t border-white/10 px-6 py-5 text-[11px] text-white/60 md:flex-row md:items-center md:justify-between md:px-[60px]">
         <div className="flex flex-wrap gap-x-3 gap-y-1">
-          <span>Terms & Conditions</span>
-          <span>Privacy Policy</span>
-          <span>Refund Policy</span>
-          <span>Career</span>
+          {bottomLinks.map((l) => (
+            <Link key={l.label} to={l.to} className="hover:text-white hover:underline">
+              {l.label}
+            </Link>
+          ))}
         </div>
         <p>Copyright © 2024 - {new Date().getFullYear()} DrukDrive. All rights reserved.</p>
       </div>

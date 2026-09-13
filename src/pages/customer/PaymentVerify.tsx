@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
 import BookingRouteCard from "../../components/BookingRouteCard";
@@ -118,9 +118,18 @@ export default function PaymentVerify() {
 
             <p className="mt-4 max-w-md text-xs text-[color:var(--color-muted)]">
               By continuing to pay, I understand and agree with the{" "}
-              <span className="font-semibold text-[color:var(--color-link)]">privacy policy</span>, the{" "}
-              <span className="font-semibold text-[color:var(--color-link)]">user agreement</span> and{" "}
-              <span className="font-semibold text-[color:var(--color-link)]">terms of service</span> of DrukDrive.
+              <Link to={routes.privacyPolicy} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
+                privacy policy
+              </Link>
+              , the{" "}
+              <Link to={routes.userAgreement} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
+                user agreement
+              </Link>{" "}
+              and{" "}
+              <Link to={routes.termsOfService} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
+                terms of service
+              </Link>{" "}
+              of DrukDrive.
             </p>
           </div>
 

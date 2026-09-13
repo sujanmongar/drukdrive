@@ -204,9 +204,17 @@ export default function ReviewBooking() {
 
             <p className="mt-4 text-xs text-[color:var(--color-muted)]">
               By proceeding to book, I Agree to DrukDrive&rsquo;s{" "}
-              <span className="font-semibold text-[color:var(--color-link)]">Privacy Policy</span>,{" "}
-              <span className="font-semibold text-[color:var(--color-link)]">User Agreement</span> and{" "}
-              <span className="font-semibold text-[color:var(--color-link)]">Terms of Service</span>
+              <Link to={routes.privacyPolicy} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
+                Privacy Policy
+              </Link>
+              ,{" "}
+              <Link to={routes.userAgreement} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
+                User Agreement
+              </Link>{" "}
+              and{" "}
+              <Link to={routes.termsOfService} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
+                Terms of Service
+              </Link>
             </p>
 
             <h2 className="mt-10 text-lg font-bold text-[color:var(--color-ink)]">Read before you book!</h2>

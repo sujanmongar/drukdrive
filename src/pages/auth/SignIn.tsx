@@ -162,8 +162,14 @@ export default function SignIn() {
       </p>
       <p className="mt-6 text-center text-xs leading-relaxed text-[color:var(--color-ink-87)]">
         By continuing, you agree our{" "}
-        <span className="font-semibold text-[color:var(--color-link)] underline">Terms of Services</span> and{" "}
-        <span className="font-semibold text-[color:var(--color-link)] underline">Privacy Policy</span>.
+        <Link to={routes.termsOfService} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
+          Terms of Services
+        </Link>{" "}
+        and{" "}
+        <Link to={routes.privacyPolicy} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
+          Privacy Policy
+        </Link>
+        .
       </p>
     </>
   );

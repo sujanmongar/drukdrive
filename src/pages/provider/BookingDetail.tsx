@@ -4,13 +4,15 @@ import Button from "../../components/Button";
 import Icon from "../../components/Icon";
 import VehicleImage from "../../components/VehicleImage";
 import StatusBadge from "../../components/StatusBadge";
-import { driverBookings, driverVehicles } from "../../data/mockData";
+import { driverBookings } from "../../data/mockData";
+import { useDriverVehicles } from "../../lib/driverVehicles";
 import { routes } from "../../lib/routes";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 export default function ProviderBookingDetail() {
   usePageTitle("Booking Details");
   const { id } = useParams<{ id: string }>();
+  const { vehicles: driverVehicles } = useDriverVehicles();
   const booking = driverBookings.find((b) => b.id === id) ?? driverBookings[0];
   const vehicle = driverVehicles.find((v) => v.id === booking.vehicleId) ?? driverVehicles[0];
 

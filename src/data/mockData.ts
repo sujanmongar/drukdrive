@@ -262,18 +262,26 @@ export const financeSummary = {
   ],
 };
 
-export const driverVehicles: {
+export type DriverVehicle = {
   id: string;
   name: string;
   plate: string;
   category: VehicleCategory;
+  seats: number;
+  fuel: "Petrol" | "Diesel" | "Electric";
+  pricePerDay: number;
   status: "Active" | "Under review";
-}[] = [
+};
+
+export const driverVehicles: DriverVehicle[] = [
   {
     id: "toyota-prado-gx",
     name: "Toyota Prado GX",
     plate: "BP-1-A2345",
     category: "Prime SUV",
+    seats: 5,
+    fuel: "Petrol",
+    pricePerDay: 58,
     status: "Active",
   },
   {
@@ -281,6 +289,9 @@ export const driverVehicles: {
     name: "Toyota Hiace Bus",
     plate: "BP-3-C1102",
     category: "Mini Bus",
+    seats: 9,
+    fuel: "Diesel",
+    pricePerDay: 53,
     status: "Under review",
   },
 ];

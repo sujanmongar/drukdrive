@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Icon from "./Icon";
-import { currentUser } from "../data/mockData";
+import { useCurrentUser } from "../lib/currentUser";
 import { routes } from "../lib/routes";
 
 export default function ProfileHero({
@@ -10,6 +10,7 @@ export default function ProfileHero({
   editHref?: string;
   reviewHref?: string;
 }) {
+  const { user: currentUser } = useCurrentUser();
   return (
     <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-4 pt-8 sm:flex-row sm:items-start sm:justify-between md:px-[60px] md:pt-10">
       <div className="flex items-start gap-5">

@@ -1,12 +1,14 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import SecondaryTabs from "../../components/SecondaryTabs";
 import ProfileHero from "../../components/ProfileHero";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import VehicleImage from "../../components/VehicleImage";
-import { vehicleTemplates } from "../../data/mockData";
+import { vehicleTemplates, type VehicleCategory } from "../../data/mockData";
+import { useDriverVehicles } from "../../lib/driverVehicles";
+import { currencies } from "../../lib/currency";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
@@ -15,6 +17,31 @@ const selectClass =
   "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)]";
 const inputClass = selectClass;
 const labelClass = "mb-1.5 block text-xs font-medium text-[color:var(--color-muted)]";
+
+const vehicleTypes = ["SUV", "Sedan", "Hatchback", "Bus", "Minibus", "Minivan"] as const;
+type VehicleType = (typeof vehicleTypes)[number];
+
+const categoryByType: Record<VehicleType, VehicleCategory> = {
+  SUV: "Prime SUV",
+  Sedan: "Sedan SUV",
+  Hatchback: "Sedan SUV",
+  Bus: "Bus",
+  Minibus: "Mini Bus",
+  Minivan: "Mini Bus",
+};
+
+const seatsByType: Record<VehicleType, number> = {
+  SUV: 7,
+  Sedan: 5,
+  Hatchback: 5,
+  Bus: 21,
+  Minibus: 9,
+  Minivan: 7,
+};
+
+// mockData prices are USD; the on-page price field is shown in BTN (Nu.) to
+// match the reference design, so convert both ways through this fixed rate.
+const BTN_RATE = currencies.find((c) => c.code === "BTN")!.rateFromUsd;
 
 function YesNo({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -45,21 +72,58 @@ function Dropzone({ label }: { label: string }) {
 }
 
 export default function ProviderVehicleAdd() {
-  usePageTitle("Add Vehicle");
   const navigate = useNavigate();
-  const [type, setType] = useState("SUV");
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get("edit");
+  const { vehicles: driverVehicles, addVehicle, updateVehicle } = useDriverVehicles();
+  const editingVehicle = editId ? driverVehicles.find((v) => v.id === editId) : undefined;
+  usePageTitle(editingVehicle ? `Edit ${editingVehicle.name}` : "Add Vehicle");
+
+  const [vehicleName, setVehicleName] = useState(editingVehicle?.name ?? "");
+  const [type, setType] = useState<VehicleType>(
+    (Object.entries(categoryByType).find(([, cat]) => cat === editingVehicle?.category)?.[0] as VehicleType) ?? "SUV",
+  );
   const [brand, setBrand] = useState("Toyota");
-  const [selectedTemplate, setSelectedTemplate] = useState(vehicleTemplates[0].id);
   const [modelYear, setModelYear] = useState("2022");
   const [transmission, setTransmission] = useState("Automatic");
-  const [fuelType, setFuelType] = useState("Petrol");
+  const [fuelType, setFuelType] = useState<string>(editingVehicle?.fuel ?? "Petrol");
+  const [seats, setSeats] = useState(String(editingVehicle?.seats ?? seatsByType[type]));
   const [hasAc, setHasAc] = useState(true);
-  const [vehicleNumber, setVehicleNumber] = useState("");
+  const [vehicleNumber, setVehicleNumber] = useState(editingVehicle?.plate ?? "");
   const [hasInsurance, setHasInsurance] = useState(true);
-  const [price, setPrice] = useState("3000");
+  const [price, setPrice] = useState(
+    editingVehicle ? String(Math.round(editingVehicle.pricePerDay * BTN_RATE)) : "3000",
+  );
+  const [touched, setTouched] = useState(false);
+
+  // Keep the seat count's default in step with the vehicle type, unless
+  // editing an existing vehicle whose seat count should stay as-is.
+  useEffect(() => {
+    if (!editingVehicle) setSeats(String(seatsByType[type]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type]);
+
+  const isValid = vehicleName.trim() !== "" && vehicleNumber.trim() !== "" && Number(price) > 0;
 
   function handleSave() {
-    // No backend — simulate a save by returning to the vehicle list.
+    if (!isValid) {
+      setTouched(true);
+      return;
+    }
+    const payload = {
+      name: vehicleName.trim(),
+      plate: vehicleNumber.trim(),
+      category: categoryByType[type],
+      seats: Number(seats) || seatsByType[type],
+      fuel: fuelType as "Petrol" | "Diesel" | "Electric",
+      pricePerDay: Math.round((Number(price) / BTN_RATE) * 100) / 100,
+      status: editingVehicle?.status ?? ("Under review" as const),
+    };
+    if (editingVehicle) {
+      updateVehicle(editingVehicle.id, payload);
+    } else {
+      addVehicle(payload);
+    }
     navigate(routes.providerVehicles);
   }
 
@@ -79,13 +143,26 @@ export default function ProviderVehicleAdd() {
         </div>
 
         <div className="mt-6 max-w-2xl rounded-xl border border-[color:var(--color-border)] p-6">
-          <h3 className="text-base font-bold text-[color:var(--color-ink)]">Add vehicle</h3>
+          <h3 className="text-base font-bold text-[color:var(--color-ink)]">
+            {editingVehicle ? "Edit vehicle" : "Add vehicle"}
+          </h3>
+
+          <label className="mt-5 block">
+            <span className={labelClass}>Vehicle name *</span>
+            <input
+              type="text"
+              placeholder="e.g. Toyota Prado GX"
+              value={vehicleName}
+              onChange={(e) => setVehicleName(e.target.value)}
+              className={`${inputClass} ${touched && !vehicleName.trim() ? "border-[color:var(--color-danger)]" : ""}`}
+            />
+          </label>
 
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label>
               <span className={labelClass}>Type</span>
-              <select value={type} onChange={(e) => setType(e.target.value)} className={selectClass}>
-                {["SUV", "Sedan", "Hatchback", "Bus", "Minibus", "Minivan"].map((t) => (
+              <select value={type} onChange={(e) => setType(e.target.value as VehicleType)} className={selectClass}>
+                {vehicleTypes.map((t) => (
                   <option key={t}>{t}</option>
                 ))}
               </select>
@@ -101,15 +178,19 @@ export default function ProviderVehicleAdd() {
           </div>
 
           <div className="mt-5">
-            <p className="mb-2 text-sm text-[color:var(--color-ink-soft)]">Select your vehicle from the listed below.</p>
+            <p className="mb-2 text-sm text-[color:var(--color-ink-soft)]">Or pick a common model to prefill the name.</p>
             <div className="flex flex-wrap gap-3">
               {vehicleTemplates.map((v) => (
                 <button
                   key={v.id}
                   type="button"
-                  onClick={() => setSelectedTemplate(v.id)}
+                  onClick={() => {
+                    setVehicleName(v.name);
+                    const matchedType = (Object.entries(categoryByType).find(([, cat]) => cat === v.category)?.[0] as VehicleType) ?? "SUV";
+                    setType(matchedType);
+                  }}
                   className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors ${
-                    selectedTemplate === v.id ? "border-[color:var(--color-ink)] ring-1 ring-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"
+                    vehicleName === v.name ? "border-[color:var(--color-ink)] ring-1 ring-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"
                   }`}
                 >
                   <span className="text-sm font-semibold text-[color:var(--color-ink)]">{v.name}</span>
@@ -148,20 +229,32 @@ export default function ProviderVehicleAdd() {
                 ))}
               </select>
             </label>
-            <div>
-              <span className={labelClass}>Do you have AC in your vehicle?</span>
-              <YesNo value={hasAc} onChange={setHasAc} />
-            </div>
+            <label>
+              <span className={labelClass}>Seats</span>
+              <input
+                type="number"
+                min={1}
+                max={40}
+                value={seats}
+                onChange={(e) => setSeats(e.target.value)}
+                className={inputClass}
+              />
+            </label>
+          </div>
+
+          <div className="mt-5">
+            <span className={labelClass}>Do you have AC in your vehicle?</span>
+            <YesNo value={hasAc} onChange={setHasAc} />
           </div>
 
           <label className="mt-5 block">
-            <span className={labelClass}>Vehicle number</span>
+            <span className={labelClass}>Vehicle number *</span>
             <input
               type="text"
               placeholder="BP-1-F0987"
               value={vehicleNumber}
               onChange={(e) => setVehicleNumber(e.target.value)}
-              className={inputClass}
+              className={`${inputClass} ${touched && !vehicleNumber.trim() ? "border-[color:var(--color-danger)]" : ""}`}
             />
           </label>
 
@@ -197,6 +290,9 @@ export default function ProviderVehicleAdd() {
               </div>
               <span className="text-sm text-[color:var(--color-muted)]">per day</span>
             </div>
+            {touched && !(Number(price) > 0) && (
+              <p className="mt-2 text-xs text-[color:var(--color-danger)]">Enter a price greater than 0.</p>
+            )}
           </div>
 
           <div className="mt-6 flex gap-3">

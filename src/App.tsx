@@ -40,6 +40,7 @@ const ProviderAccount = lazy(() => import("./pages/provider/Account"));
 const ProviderAccountEdit = lazy(() => import("./pages/provider/AccountEdit"));
 
 const NotFound = lazy(() => import("./pages/NotFound"));
+const StaticPage = lazy(() => import("./pages/StaticPage"));
 
 function PageFallback() {
   return (
@@ -215,6 +216,20 @@ export default function App() {
             </RouteGuard>
           }
         />
+
+        {/* Static / informational */}
+        <Route path={routes.about} element={<StaticPage />} />
+        <Route path={routes.blog} element={<StaticPage />} />
+        <Route path={routes.privacyPolicy} element={<StaticPage />} />
+        <Route path={routes.termsOfService} element={<StaticPage />} />
+        <Route path={routes.userAgreement} element={<StaticPage />} />
+        <Route path={routes.refundPolicy} element={<StaticPage />} />
+        <Route path={routes.help} element={<StaticPage />} />
+        <Route path={routes.affiliates} element={<StaticPage />} />
+        <Route path={routes.advertise} element={<StaticPage />} />
+        <Route path={routes.rewards} element={<StaticPage />} />
+        <Route path={routes.partners} element={<StaticPage />} />
+        <Route path={routes.careers} element={<StaticPage />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import Icon from "./Icon";
 import type { IconName } from "./Icon";
 import { routes } from "../lib/routes";
-import { currentUser } from "../data/mockData";
+import { useCurrentUser } from "../lib/currentUser";
 import { useAuth } from "../lib/auth";
 import type { Role } from "../lib/auth";
 import CurrencySwitcher from "./CurrencySwitcher";
@@ -48,6 +48,7 @@ function Logo() {
 
 function AccountMenu({ onSignOut }: { onSignOut: () => void }) {
   const [open, setOpen] = useState(false);
+  const { user: currentUser } = useCurrentUser();
   const { role, switchRole } = useAuth();
   const navigate = useNavigate();
   const links = role === "driver" ? driverLinks : customerLinks;
@@ -125,6 +126,7 @@ function AccountMenu({ onSignOut }: { onSignOut: () => void }) {
 
 export default function Header({ transparent = false }: { transparent?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user: currentUser } = useCurrentUser();
   const { isLoggedIn, logout, role } = useAuth();
   const navigate = useNavigate();
   const links = role === "driver" ? driverLinks : customerLinks;

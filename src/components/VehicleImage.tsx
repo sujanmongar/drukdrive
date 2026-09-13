@@ -11,13 +11,13 @@ const accentByCategory: Record<string, string> = {
 // one — a category browse tile, or a vehicle we haven't photographed —
 // falls back to the flat illustration below, tinted by category.
 const photoByVehicleId: Record<string, string> = {
-  "toyota-prado-gx": "/vehicles/toyota-prado-gx.jpg",
-  "toyota-coaster-bus": "/vehicles/toyota-coaster-bus.jpg",
-  "toyota-hiace-bus": "/vehicles/toyota-hiace-bus.jpg",
-  "hyundai-santa-fe": "/vehicles/hyundai-santa-fe.jpg",
-  "toyota-innova": "/vehicles/toyota-innova.jpg",
-  "hyundai-creta": "/vehicles/hyundai-creta.jpg",
-  "royal-enfield-meteor": "/vehicles/royal-enfield.jpg",
+  "toyota-prado-gx": "/vehicles/toyota-prado-gx.webp",
+  "toyota-coaster-bus": "/vehicles/toyota-coaster-bus.webp",
+  "toyota-hiace-bus": "/vehicles/toyota-hiace-bus.webp",
+  "hyundai-santa-fe": "/vehicles/hyundai-santa-fe.webp",
+  "toyota-innova": "/vehicles/toyota-innova.webp",
+  "hyundai-creta": "/vehicles/hyundai-creta.webp",
+  "royal-enfield-meteor": "/vehicles/royal-enfield.webp",
 };
 
 export default function VehicleImage({

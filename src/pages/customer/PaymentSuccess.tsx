@@ -5,7 +5,8 @@ import Button from "../../components/Button";
 import Icon from "../../components/Icon";
 import BookingStepper from "../../components/BookingStepper";
 import { routes } from "../../lib/routes";
-import { vehicles, currentUser } from "../../data/mockData";
+import { vehicles } from "../../data/mockData";
+import { useCurrentUser } from "../../lib/currentUser";
 import { computeFare } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
@@ -26,6 +27,7 @@ export default function PaymentSuccess() {
   usePageTitle("Booking successful");
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
+  const { user: currentUser } = useCurrentUser();
   const vehicleId = searchParams.get("vehicleId");
   const vehicle = vehicles.find((v) => v.id === vehicleId) ?? vehicles[0];
   const pickup = searchParams.get("pickup") || vehicle.location;

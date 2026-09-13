@@ -41,6 +41,20 @@ export const routes = {
   providerFinance: "/provider/finance",
   providerAccount: "/provider/account",
   providerAccountEdit: "/provider/account/edit",
+
+  // static / informational
+  about: "/about",
+  blog: "/blog",
+  privacyPolicy: "/legal/privacy",
+  termsOfService: "/legal/terms",
+  userAgreement: "/legal/user-agreement",
+  refundPolicy: "/legal/refund-policy",
+  help: "/help",
+  affiliates: "/affiliates",
+  advertise: "/advertise",
+  rewards: "/rewards",
+  partners: "/partners",
+  careers: "/careers",
 } as const;
 
 export type BookingType = "daily" | "outstation" | "rental" | "self-drive";
