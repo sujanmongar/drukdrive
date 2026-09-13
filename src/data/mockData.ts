@@ -270,14 +270,14 @@ export const driverVehicles: {
   status: "Active" | "Under review";
 }[] = [
   {
-    id: "v1",
+    id: "toyota-prado-gx",
     name: "Toyota Prado GX",
     plate: "BP-1-A2345",
     category: "Prime SUV",
     status: "Active",
   },
   {
-    id: "v2",
+    id: "toyota-hiace-bus",
     name: "Toyota Hiace Bus",
     plate: "BP-3-C1102",
     category: "Mini Bus",
@@ -315,7 +315,7 @@ export const driverBookings: DriverBooking[] = [
   {
     id: "HBTTB5984458",
     riderName: "Sonam Wangmo",
-    vehicleId: "v1",
+    vehicleId: "toyota-prado-gx",
     pickup: "International Airport, Paro",
     dropoff: "Terminal, Phuentsholing",
     date: "Sat 12 Dec' 22, 10:00",
@@ -324,7 +324,7 @@ export const driverBookings: DriverBooking[] = [
   {
     id: "HBTTB0982764",
     riderName: "Tenzin Namgay",
-    vehicleId: "v2",
+    vehicleId: "toyota-hiace-bus",
     pickup: "Terminal, Phuentsholing",
     dropoff: "Terminal, Phuentsholing",
     date: "Mon 08 Dec' 22, 08:00",
@@ -333,7 +333,7 @@ export const driverBookings: DriverBooking[] = [
   {
     id: "HBTTB9283434",
     riderName: "Karma Choden",
-    vehicleId: "v1",
+    vehicleId: "toyota-prado-gx",
     pickup: "Clock Tower, Thimphu",
     dropoff: "International Airport, Paro",
     date: "Wed 19 Dec' 22, 11:00",
