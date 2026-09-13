@@ -9,6 +9,7 @@ import { CurrencyProvider } from "./lib/currency.tsx";
 import { WishlistProvider } from "./lib/wishlist.tsx";
 import { CurrentUserProvider } from "./lib/currentUser.tsx";
 import { DriverVehiclesProvider } from "./lib/driverVehicles.tsx";
+import { ReviewsProvider } from "./lib/reviews.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -18,8 +19,10 @@ createRoot(document.getElementById("root")!).render(
           <CurrencyProvider>
             <WishlistProvider>
               <DriverVehiclesProvider>
-                <ScrollToTop />
-                <App />
+                <ReviewsProvider>
+                  <ScrollToTop />
+                  <App />
+                </ReviewsProvider>
               </DriverVehiclesProvider>
             </WishlistProvider>
           </CurrencyProvider>

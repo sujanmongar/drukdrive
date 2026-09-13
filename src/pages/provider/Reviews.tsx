@@ -1,9 +1,11 @@
+import { useState } from "react";
 import PageShell from "../../components/PageShell";
 import SecondaryTabs from "../../components/SecondaryTabs";
 import ProfileHero from "../../components/ProfileHero";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
-import { reviews } from "../../data/mockData";
+import WriteReviewModal from "../../components/WriteReviewModal";
+import { useReviews } from "../../lib/reviews";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
@@ -25,6 +27,8 @@ function Stars({ rating }: { rating: number }) {
 
 export default function ProviderReviews() {
   usePageTitle("Driver Reviews");
+  const { reviews } = useReviews();
+  const [writing, setWriting] = useState(false);
   const avgRating = reviews.length
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : "0.0";
@@ -47,7 +51,7 @@ export default function ProviderReviews() {
               </p>
             )}
           </div>
-          <Button variant="primary" size="sm">
+          <Button variant="primary" size="sm" onClick={() => setWriting(true)}>
             Write review
           </Button>
         </div>
@@ -60,10 +64,7 @@ export default function ProviderReviews() {
         ) : (
           <div className="mt-6 flex flex-col gap-4">
             {reviews.map((r) => (
-              <div
-                key={r.id}
-                className="flex gap-4 rounded-xl border border-[color:var(--color-border)] p-4"
-              >
+              <div key={r.id} className="flex gap-4 rounded-xl border border-[color:var(--color-border)] p-4">
                 <img src={r.avatar} alt={r.author} className="size-11 shrink-0 rounded-full object-cover" />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center justify-between gap-2">
@@ -80,6 +81,8 @@ export default function ProviderReviews() {
           </div>
         )}
       </div>
+
+      {writing && <WriteReviewModal onClose={() => setWriting(false)} />}
     </PageShell>
   );
 }

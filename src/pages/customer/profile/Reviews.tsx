@@ -1,9 +1,11 @@
+import { useState } from "react";
 import PageShell from "../../../components/PageShell";
 import SecondaryTabs from "../../../components/SecondaryTabs";
 import ProfileHero from "../../../components/ProfileHero";
 import Icon from "../../../components/Icon";
 import Button from "../../../components/Button";
-import { reviews } from "../../../data/mockData";
+import WriteReviewModal from "../../../components/WriteReviewModal";
+import { useReviews } from "../../../lib/reviews";
 import { accountTabs } from "./_tabs";
 import { usePageTitle } from "../../../hooks/usePageTitle";
 
@@ -24,6 +26,8 @@ function Stars({ rating }: { rating: number }) {
 
 export default function AccountReviews() {
   usePageTitle("Reviews");
+  const { reviews } = useReviews();
+  const [writing, setWriting] = useState(false);
   const avgRating = reviews.length
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : "0.0";
@@ -46,7 +50,7 @@ export default function AccountReviews() {
               </p>
             )}
           </div>
-          <Button variant="primary" size="sm">
+          <Button variant="primary" size="sm" onClick={() => setWriting(true)}>
             Write review
           </Button>
         </div>
@@ -79,6 +83,8 @@ export default function AccountReviews() {
           </div>
         )}
       </div>
+
+      {writing && <WriteReviewModal onClose={() => setWriting(false)} />}
     </PageShell>
   );
 }

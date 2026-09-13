@@ -5,11 +5,12 @@ import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import VehicleImage from "../../components/VehicleImage";
 import BookingStepper from "../../components/BookingStepper";
-import { vehicles, reviews } from "../../data/mockData";
+import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { RENTAL_DAYS, computeFare } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
 import { useWishlist } from "../../lib/wishlist";
+import { useReviews } from "../../lib/reviews";
 import { formatTripDate } from "../../lib/formatTripDate";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
@@ -29,6 +30,7 @@ export default function VehicleDetails() {
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
   const { isSaved, toggle } = useWishlist();
+  const { reviews } = useReviews();
   const [summaryOpen, setSummaryOpen] = useState(false);
 
   const vehicle = vehicles.find((v) => v.id === id) ?? vehicles[0];
