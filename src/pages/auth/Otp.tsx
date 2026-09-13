@@ -5,6 +5,7 @@ import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import { routes } from "../../lib/routes";
 import { currentUser } from "../../data/mockData";
+import { useAuth } from "../../lib/auth";
 
 const OTP_LENGTH = 6;
 
@@ -15,6 +16,7 @@ type LocationState = {
 export default function Otp() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { login } = useAuth();
   const state = location.state as LocationState;
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -39,6 +41,7 @@ export default function Otp() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    login();
     if (state?.role === "driver") {
       navigate(routes.providerProfile);
     } else {

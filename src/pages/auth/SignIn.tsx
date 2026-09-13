@@ -5,6 +5,7 @@ import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import { routes } from "../../lib/routes";
 import { currentUser } from "../../data/mockData";
+import { useAuth, DEMO_EMAIL, DEMO_PASSWORD } from "../../lib/auth";
 
 type Method = "email" | "phone";
 
@@ -13,6 +14,7 @@ const inputClass =
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [method, setMethod] = useState<Method>("email");
   const [email, setEmail] = useState(currentUser.email);
   const [phone, setPhone] = useState(currentUser.phone);
@@ -25,6 +27,7 @@ export default function SignIn() {
     if (method === "phone") {
       navigate(routes.otp, { state: { role: "customer" } });
     } else {
+      login();
       navigate(routes.home);
     }
   };
@@ -112,6 +115,23 @@ export default function SignIn() {
     </div>
   );
 
+  const demoHint = method === "email" && (
+    <button
+      type="button"
+      onClick={() => {
+        setEmail(DEMO_EMAIL);
+        setPassword(DEMO_PASSWORD);
+      }}
+      className="mt-3 flex w-full items-start gap-2 rounded-xl bg-[color:var(--color-info-bg)] px-3.5 py-3 text-left text-xs text-[color:var(--color-info-text)]"
+    >
+      <Icon name="info" size={16} className="mt-0.5 shrink-0" />
+      <span>
+        Demo credentials — <span className="font-semibold">{DEMO_EMAIL}</span> /{" "}
+        <span className="font-semibold">{DEMO_PASSWORD}</span>. Tap to autofill.
+      </span>
+    </button>
+  );
+
   const rememberAndForgot = (
     <div className="mt-4 flex items-center justify-between">
       <label className="flex cursor-pointer items-center gap-2 text-sm text-[#222]">
@@ -163,6 +183,7 @@ export default function SignIn() {
           <form onSubmit={handleSubmit} className="flex flex-col">
             {methodTabs}
             {fields}
+            {demoHint}
             {rememberAndForgot}
             <Button type="submit" size="lg" fullWidth className="mt-6">
               Continue
@@ -182,6 +203,7 @@ export default function SignIn() {
           <form onSubmit={handleSubmit} className="flex flex-col">
             {methodTabs}
             {fields}
+            {demoHint}
             {rememberAndForgot}
             <Button type="submit" size="lg" fullWidth className="mt-6">
               Continue
