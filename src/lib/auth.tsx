@@ -9,11 +9,18 @@ export const DEMO_EMAIL = "karmadorji@gmail.com";
 export const DEMO_PASSWORD = "druk1234";
 
 const STORAGE_KEY = "drukdrive:isLoggedIn";
+const ROLE_KEY = "drukdrive:role";
+
+// One account, two hats — like Airbnb's host/guest switch. "customer" books
+// rides; "driver" manages their own vehicle(s) and the bookings against it.
+export type Role = "customer" | "driver";
 
 type AuthContextValue = {
   isLoggedIn: boolean;
   login: () => void;
   logout: () => void;
+  role: Role;
+  switchRole: (r: Role) => void;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -27,6 +34,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   });
 
+  const [role, setRole] = useState<Role>(() => {
+    try {
+      return (localStorage.getItem(ROLE_KEY) as Role) || "customer";
+    } catch {
+      return "customer";
+    }
+  });
+
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, String(isLoggedIn));
@@ -35,13 +50,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(ROLE_KEY, role);
+    } catch {
+      // ignore
+    }
+  }, [role]);
+
   const value = useMemo(
     () => ({
       isLoggedIn,
       login: () => setIsLoggedIn(true),
       logout: () => setIsLoggedIn(false),
+      role,
+      switchRole: (r: Role) => setRole(r),
     }),
-    [isLoggedIn],
+    [isLoggedIn, role],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

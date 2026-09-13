@@ -41,7 +41,8 @@ export type IconName =
   | "edit"
   | "logout"
   | "download"
-  | "info";
+  | "info"
+  | "more";
 
 const paths: Record<IconName, ReactElement> = {
   location: (
@@ -192,6 +193,13 @@ const paths: Record<IconName, ReactElement> = {
     <>
       <circle cx="12" cy="12" r="9" />
       <path d="M12 11v5M12 8v.01" />
+    </>
+  ),
+  more: (
+    <>
+      <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none" />
     </>
   ),
 };

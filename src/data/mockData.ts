@@ -300,3 +300,90 @@ export const currentUser = {
   address: "Chang Gidaphu, Thimphu",
   bio: "I love exploring Bhutan's mountain roads.",
 };
+
+// Bookings other riders have made against this driver's vehicle(s) — shown
+// on the driver dashboard, distinct from `bookings` (this same person's own
+// rides as a rider, shown on the customer side).
+export type DriverBooking = {
+  id: string;
+  riderName: string;
+  vehicle: string;
+  image: string;
+  pickup: string;
+  dropoff: string;
+  date: string;
+  status: "Upcoming" | "Confirmed" | "Cancelled";
+};
+
+export const driverBookings: DriverBooking[] = [
+  {
+    id: "HBTTB5984458",
+    riderName: "Sonam Wangmo",
+    vehicle: "Prado V8",
+    image:
+      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=400&auto=format&fit=crop",
+    pickup: "International Airport, Paro",
+    dropoff: "Terminal, Phuentsholing",
+    date: "Sat 12 Dec' 22, 10:00",
+    status: "Upcoming",
+  },
+  {
+    id: "HBTTB0982764",
+    riderName: "Tenzin Namgay",
+    vehicle: "Maruti Ertiga",
+    image:
+      "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=400&auto=format&fit=crop",
+    pickup: "Terminal, Phuentsholing",
+    dropoff: "Terminal, Phuentsholing",
+    date: "Mon 08 Dec' 22, 08:00",
+    status: "Confirmed",
+  },
+  {
+    id: "HBTTB9283434",
+    riderName: "Karma Choden",
+    vehicle: "Hyundai i20",
+    image:
+      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=400&auto=format&fit=crop",
+    pickup: "Clock Tower, Thimphu",
+    dropoff: "International Airport, Paro",
+    date: "Wed 19 Dec' 22, 11:00",
+    status: "Cancelled",
+  },
+];
+
+export type DriverNotification = { id: string; title: string; body: string };
+
+export const driverNotifications: DriverNotification[] = [
+  {
+    id: "dn1",
+    title: "You have booking in hold",
+    body: "Trip from Paro to Thimphu Wed 24 Jan 2023 to Sun 28 Jan 2023",
+  },
+  {
+    id: "dn2",
+    title: "You have booking in hold",
+    body: "Trip from Paro to Thimphu Wed 24 Jan 2023 to Sun 28 Jan 2023",
+  },
+];
+
+// Selectable vehicle templates shown when adding a new vehicle.
+export const vehicleTemplates = [
+  {
+    id: "prado-v8",
+    name: "Prado V8",
+    image:
+      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=400&auto=format&fit=crop",
+  },
+  {
+    id: "prado-gx",
+    name: "Prado GX",
+    image:
+      "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=400&auto=format&fit=crop",
+  },
+  {
+    id: "fortuner",
+    name: "Fortuner",
+    image:
+      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=400&auto=format&fit=crop",
+  },
+];

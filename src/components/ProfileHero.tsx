@@ -3,7 +3,13 @@ import Icon from "./Icon";
 import { currentUser } from "../data/mockData";
 import { routes } from "../lib/routes";
 
-export default function ProfileHero({ editHref = routes.accountProfileEdit }: { editHref?: string }) {
+export default function ProfileHero({
+  editHref = routes.accountProfileEdit,
+  reviewHref = routes.accountReviews,
+}: {
+  editHref?: string;
+  reviewHref?: string;
+}) {
   return (
     <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-4 pt-8 sm:flex-row sm:items-start sm:justify-between md:px-[60px] md:pt-10">
       <div className="flex items-start gap-5">
@@ -31,7 +37,7 @@ export default function ProfileHero({ editHref = routes.accountProfileEdit }: { 
         </div>
       </div>
       <Link
-        to={routes.accountReviews}
+        to={reviewHref}
         className="flex items-center gap-1.5 text-sm font-semibold text-[#222] underline sm:pt-1"
       >
         <Icon name="edit" size={16} />

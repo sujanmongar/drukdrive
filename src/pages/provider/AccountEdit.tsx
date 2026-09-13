@@ -1,136 +1,130 @@
-import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import SecondaryTabs from "../../components/SecondaryTabs";
+import ProfileHero from "../../components/ProfileHero";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import { currentUser } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
 
-const inputClasses =
-  "w-full rounded-xl border border-[color:var(--color-border)] px-4 py-2.5 text-sm text-[#222] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[#222]";
-const labelClasses = "mb-1.5 block text-xs font-semibold text-[#222]";
+function maskEmail(email: string) {
+  const [user, domain] = email.split("@");
+  return `${user.slice(0, 3)}***@${domain}`;
+}
+
+const [defaultFirstName, ...defaultRest] = currentUser.name.split(" ");
+const defaultLastName = defaultRest.join(" ");
 
 export default function ProviderAccountEdit() {
   const navigate = useNavigate();
-  const [name, setName] = useState(currentUser.name);
-  const [email, setEmail] = useState(currentUser.email);
-  const [phone, setPhone] = useState(currentUser.phone);
-  const [avatar, setAvatar] = useState(currentUser.avatar);
+  const [first, setFirst] = useState(defaultFirstName);
+  const [last, setLast] = useState(defaultLastName);
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    // No backend — simulate a save and return to the account overview.
+  function handleSave() {
+    // No backend — simulate a save by returning to the account overview.
     navigate(routes.providerAccount);
   }
 
+  const infoRows = [
+    { label: "Gender", value: currentUser.gender },
+    { label: "Email address", value: maskEmail(currentUser.email) },
+    { label: "Phone number", value: currentUser.phone },
+    { label: "Address", value: currentUser.address },
+    { label: "Bio", value: currentUser.bio },
+  ];
+
   return (
     <PageShell>
-      <SecondaryTabs tabs={providerTabs} />
+      <ProfileHero editHref={routes.providerAccountEdit} reviewHref={routes.providerReviews} />
+      <div className="mt-6 md:mt-8">
+        <SecondaryTabs tabs={providerTabs} />
+      </div>
 
-      <div className="mx-auto max-w-[720px] px-4 py-8 md:px-[60px] md:py-10">
-        <button
-          type="button"
-          onClick={() => navigate(routes.providerAccount)}
-          className="flex items-center gap-1.5 text-sm font-semibold text-[color:var(--color-muted)] hover:text-[#222]"
-        >
-          <Icon name="arrow-left" size={16} />
-          Back to Account
-        </button>
+      <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-1.5 text-sm text-[color:var(--color-muted)]">
+              <Link to={routes.providerAccount} className="hover:text-[#222]">
+                Account
+              </Link>
+              <Icon name="chevron-right" size={14} />
+              <span>Personal info</span>
+            </div>
+            <h2 className="mt-1 text-2xl font-bold text-[#222]">Personal Info</h2>
+          </div>
+          <Button variant="secondary" size="sm" onClick={() => navigate(-1)}>
+            Back
+          </Button>
+        </div>
 
-        <h1 className="mt-4 text-2xl font-bold text-[#222]">Edit Account</h1>
-        <p className="mt-1 text-sm text-[color:var(--color-muted)]">
-          Update your personal details. Your reference ID cannot be changed.
-        </p>
-
-        <form
-          onSubmit={handleSubmit}
-          className="mt-6 flex flex-col gap-5 rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)] sm:p-6"
-        >
-          <div className="flex items-center gap-4">
-            <img src={avatar} alt={name} className="size-16 shrink-0 rounded-full object-cover" />
-            <label
-              htmlFor="avatar"
-              className="flex cursor-pointer items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-4 py-2.5 text-sm font-semibold text-[#222] hover:border-[#222]"
+        <div className="mt-6 max-w-2xl">
+          <div className="flex items-center justify-between border-b border-[color:var(--color-border)] pb-5">
+            <div>
+              <p className="text-sm font-semibold text-[#222]">Legal name</p>
+              <p className="text-xs text-[color:var(--color-muted)]">
+                This is the name on your travel document, which could be a license or a passport.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setFirst(defaultFirstName);
+                setLast(defaultLastName);
+              }}
+              className="shrink-0 text-sm font-medium text-[#222] underline"
             >
-              <Icon name="upload" size={16} />
-              Change photo
+              Cancel
+            </button>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <label className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-[color:var(--color-muted)]">First name</span>
               <input
-                id="avatar"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) setAvatar(URL.createObjectURL(file));
-                }}
+                type="text"
+                value={first}
+                onChange={(e) => setFirst(e.target.value)}
+                className="rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm font-semibold text-[#222] outline-none focus:border-[#222]"
+              />
+            </label>
+            <label className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-[color:var(--color-muted)]">Last name</span>
+              <input
+                type="text"
+                value={last}
+                onChange={(e) => setLast(e.target.value)}
+                className="rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm font-semibold text-[#222] outline-none focus:border-[#222]"
               />
             </label>
           </div>
 
-          <div>
-            <label className={labelClasses} htmlFor="name">
-              Full name
-            </label>
-            <input
-              id="name"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className={inputClasses}
-            />
+          <Button variant="primary" size="sm" className="mt-4" onClick={handleSave}>
+            Save
+          </Button>
+
+          <div className="mt-2">
+            {infoRows.map((row) => (
+              <div
+                key={row.label}
+                className="flex items-center justify-between border-b border-[color:var(--color-border)] py-5"
+              >
+                <div>
+                  <p className="text-xs font-medium text-[color:var(--color-muted)]">{row.label}</p>
+                  <p className="mt-0.5 text-sm font-semibold text-[#222]">{row.value}</p>
+                </div>
+                <button type="button" className="shrink-0 text-sm font-medium text-[#222] underline">
+                  Edit
+                </button>
+              </div>
+            ))}
           </div>
 
-          <div>
-            <label className={labelClasses} htmlFor="email">
-              Email address
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={inputClasses}
-            />
-          </div>
-
-          <div>
-            <label className={labelClasses} htmlFor="phone">
-              Phone number
-            </label>
-            <input
-              id="phone"
-              type="tel"
-              required
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className={inputClasses}
-            />
-          </div>
-
-          <div>
-            <label className={labelClasses} htmlFor="referenceId">
-              Reference ID
-            </label>
-            <input
-              id="referenceId"
-              disabled
-              value={currentUser.referenceId}
-              className={`${inputClasses} cursor-not-allowed bg-neutral-50 font-mono text-[color:var(--color-muted)]`}
-            />
-          </div>
-
-          <div className="mt-2 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-            <Button type="button" variant="secondary" onClick={() => navigate(routes.providerAccount)}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary">
-              Save changes
-            </Button>
-          </div>
-        </form>
+          <Button variant="danger" size="sm" className="mt-8">
+            Delete account
+          </Button>
+        </div>
       </div>
     </PageShell>
   );

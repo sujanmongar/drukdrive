@@ -24,10 +24,14 @@ export default function Home() {
   }
 
   return (
-    <PageShell>
-      <section className="relative overflow-hidden">
+    <PageShell transparentHeader>
+      {/* Negative margin pulls this section up behind the (transparent) header
+          so the hero background paints all the way to the top of the
+          viewport; the matching padding keeps the visible content in the
+          same place it would otherwise be. */}
+      <section className="relative -mt-16 overflow-hidden pt-16 md:-mt-[94px] md:pt-[94px]">
         {/* decorative blob background, hero area only */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] overflow-hidden md:h-[651px]">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[484px] overflow-hidden md:h-[745px]">
           <HeroBlobs type={type} />
         </div>
 
