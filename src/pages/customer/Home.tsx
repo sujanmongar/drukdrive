@@ -103,7 +103,7 @@ export default function Home() {
 
         <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 gap-8 px-4 pb-10 pt-6 md:grid-cols-[1fr_auto] md:items-center md:px-[60px] md:pb-24 md:pt-16">
           <div>
-            <h1 className="max-w-[280px] text-2xl font-bold leading-snug text-[rgba(0,0,0,0.87)] sm:max-w-md sm:text-3xl md:max-w-[420px] md:text-[40px] md:leading-[1.1]">
+            <h1 className="max-w-[280px] text-2xl font-bold leading-snug text-[color:var(--color-ink-87)] sm:max-w-md sm:text-3xl md:max-w-[420px] md:text-[40px] md:leading-[1.1]">
               Go anywhere in Bhutan.
             </h1>
 
@@ -111,7 +111,7 @@ export default function Home() {
               <BookingTypeTabs value={type} onChange={setType} />
 
               {showTripModeTabs && (
-                <div className="mt-4 flex gap-4 border-b border-[#e5ebf0]">
+                <div className="mt-4 flex gap-4 border-b border-[color:var(--color-border)]">
                   {(["one-way", "return"] as TripMode[]).map((m) => {
                     const active = tripMode === m;
                     return (
@@ -120,7 +120,7 @@ export default function Home() {
                         type="button"
                         onClick={() => setTripMode(m)}
                         className={`pb-2 text-sm transition-colors ${
-                          active ? "border-b-2 border-[#222] font-bold text-[#222]" : "text-[#747474]"
+                          active ? "border-b-2 border-[color:var(--color-ink)] font-bold text-[color:var(--color-ink)]" : "text-[color:var(--color-muted)]"
                         }`}
                       >
                         {m === "one-way" ? "One Way" : "Return"}
@@ -135,12 +135,12 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
-                    className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left transition-colors hover:border-[#222]"
+                    className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left transition-colors hover:border-[color:var(--color-ink)]"
                   >
-                    <Icon name="location" size={20} className="shrink-0 text-[#222]" />
+                    <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                     <span className="flex flex-col gap-1">
-                      <span className="text-[11px] text-[#333]">Pick up location</span>
-                      <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">{pickup}</span>
+                      <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up location</span>
+                      <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{pickup}</span>
                     </span>
                   </button>
                   {activeField === "pickup" && (
@@ -160,12 +160,12 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => setActiveField(activeField === "dropoff" ? null : "dropoff")}
-                    className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left transition-colors hover:border-[#222]"
+                    className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left transition-colors hover:border-[color:var(--color-ink)]"
                   >
-                    <Icon name="location" size={20} className="shrink-0 text-[#222]" />
+                    <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                     <span className="flex flex-col gap-1">
-                      <span className="text-[11px] text-[#333]">Drop off location</span>
-                      <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">{dropoff}</span>
+                      <span className="text-[11px] text-[color:var(--color-ink-soft)]">Drop off location</span>
+                      <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{dropoff}</span>
                     </span>
                   </button>
                   {activeField === "dropoff" && (
@@ -182,30 +182,30 @@ export default function Home() {
                 </div>
 
                 <div ref={dateAnchorRef} className="relative">
-                  <div className="flex overflow-hidden rounded-xl border border-[#e5ebf0]">
+                  <div className="flex overflow-hidden rounded-xl border border-[color:var(--color-border)]">
                     <button
                       type="button"
                       onClick={() => setActiveField(activeField === "date" ? null : "date")}
                       className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
                     >
-                      <Icon name="calendar" size={20} className="shrink-0 text-[#222]" />
+                      <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                       <span className="flex flex-col gap-1">
-                        <span className="text-[11px] text-[#333]">Pick up date</span>
-                        <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">
+                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up date</span>
+                        <span className="text-sm font-bold text-[color:var(--color-ink-87)]">
                           {pickupDate.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })}
                         </span>
                       </span>
                     </button>
-                    <div className="w-px bg-[#e5ebf0]" />
+                    <div className="w-px bg-[color:var(--color-border)]" />
                     <button
                       type="button"
                       onClick={() => setActiveField(activeField === "date" ? null : "date")}
                       className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
                     >
-                      <Icon name="clock" size={20} className="shrink-0 text-[#222]" />
+                      <Icon name="clock" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                       <span className="flex flex-col gap-1">
-                        <span className="text-[11px] text-[#333]">Pick up time</span>
-                        <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">{pickupTime}</span>
+                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up time</span>
+                        <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{pickupTime}</span>
                       </span>
                     </button>
                   </div>
@@ -235,7 +235,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={handleSearch}
-                className="mt-4 w-full rounded-xl bg-[#222] py-4 text-base font-bold text-white transition-all hover:bg-black active:scale-[0.99]"
+                className="mt-4 w-full rounded-xl bg-[color:var(--color-ink)] py-4 text-base font-bold text-white transition-all hover:bg-black active:scale-[0.99]"
               >
                 Search
               </button>
@@ -257,7 +257,7 @@ export default function Home() {
                 <Icon name="star" size={18} className="fill-current text-amber-400" />
               </span>
               <div>
-                <p className="text-sm font-extrabold text-[#222]">4.8 / 5 average rating</p>
+                <p className="text-sm font-extrabold text-[color:var(--color-ink)]">4.8 / 5 average rating</p>
                 <p className="text-xs text-[color:var(--color-muted)]">From 600+ verified rides across Bhutan</p>
               </div>
             </div>
@@ -268,7 +268,7 @@ export default function Home() {
       <div className="mx-auto max-w-[1440px] px-4 md:px-[60px]">
         {/* Recent searches */}
         <section className="py-8 md:py-10">
-          <h2 className="mb-4 text-lg font-bold text-[rgba(0,0,0,0.87)] md:text-2xl">Recent searches</h2>
+          <h2 className="mb-4 text-lg font-bold text-[color:var(--color-ink-87)] md:text-2xl">Recent searches</h2>
           <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-1">
             {recentSearches.map((s) => {
               const vehicle = vehicles.find((v) => v.id === s.vehicleId);
@@ -281,10 +281,10 @@ export default function Home() {
                 >
                   <VehicleImage vehicleId={vehicle?.id} category={vehicle?.category} className="size-[60px] shrink-0 rounded-lg" />
                   <span className="flex flex-col gap-1.5">
-                    <span className="whitespace-nowrap text-sm font-semibold text-[rgba(0,0,0,0.87)]">
+                    <span className="whitespace-nowrap text-sm font-semibold text-[color:var(--color-ink-87)]">
                       {s.title}
                     </span>
-                    <span className="whitespace-nowrap text-xs text-[rgba(0,0,0,0.87)]">{s.subtitle}</span>
+                    <span className="whitespace-nowrap text-xs text-[color:var(--color-ink-87)]">{s.subtitle}</span>
                   </span>
                 </button>
               );
@@ -294,7 +294,7 @@ export default function Home() {
 
         {/* Popular cars */}
         <section className="py-8 md:py-10">
-          <h2 className="mb-4 text-lg font-bold text-[rgba(0,0,0,0.87)] md:text-2xl">Popular cars</h2>
+          <h2 className="mb-4 text-lg font-bold text-[color:var(--color-ink-87)] md:text-2xl">Popular cars</h2>
           <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
             {vehicles.map((v) => (
               <VehicleCard key={v.id} vehicle={v} tripQuery={tripQuery} className="w-[240px] shrink-0 md:w-[270px]" />
@@ -304,7 +304,7 @@ export default function Home() {
 
         {/* Popular car types */}
         <section className="py-8 md:py-10">
-          <h2 className="mb-4 text-lg font-bold text-[rgba(0,0,0,0.87)] md:text-2xl">Popular car types</h2>
+          <h2 className="mb-4 text-lg font-bold text-[color:var(--color-ink-87)] md:text-2xl">Popular car types</h2>
           <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-2">
             {popularCarTypes.map((t) => (
               <button
@@ -325,24 +325,24 @@ export default function Home() {
 
         {/* FAQ */}
         <section className="py-8 md:py-10">
-          <h2 className="mb-4 text-lg font-bold text-[rgba(0,0,0,0.87)] md:text-2xl">
+          <h2 className="mb-4 text-lg font-bold text-[color:var(--color-ink-87)] md:text-2xl">
             Frequently asked questions
           </h2>
           <div className="grid grid-cols-1 gap-x-10 md:grid-cols-2">
             {faqs.map((f, i) => {
               const open = openFaqs.has(i);
               return (
-                <div key={f.q} className="border-b border-[#e5ebf0] py-4">
+                <div key={f.q} className="border-b border-[color:var(--color-border)] py-4">
                   <button
                     type="button"
                     onClick={() => toggleFaq(i)}
                     className="flex w-full items-center justify-between gap-4 text-left"
                   >
-                    <span className="text-sm text-[rgba(0,0,0,0.87)]">{f.q}</span>
+                    <span className="text-sm text-[color:var(--color-ink-87)]">{f.q}</span>
                     <Icon
                       name="chevron-down"
                       size={16}
-                      className={`shrink-0 text-[rgba(0,0,0,0.87)] transition-transform duration-200 ${
+                      className={`shrink-0 text-[color:var(--color-ink-87)] transition-transform duration-200 ${
                         open ? "rotate-180" : ""
                       }`}
                     />
@@ -362,7 +362,7 @@ export default function Home() {
 
         {/* Company blurb */}
         <section className="py-8 md:py-10">
-          <h2 className="mb-3 text-lg font-bold text-[rgba(0,0,0,0.87)] md:text-2xl">DrukDrive</h2>
+          <h2 className="mb-3 text-lg font-bold text-[color:var(--color-ink-87)] md:text-2xl">DrukDrive</h2>
           <p className="max-w-[1044px] text-sm leading-[1.2] text-[color:var(--color-muted)]">
             DrukDrive partners with trusted local operators across Bhutan to make it easy to find, compare and
             book the right vehicle for your trip — from daily rides around Thimphu to outstation transfers and

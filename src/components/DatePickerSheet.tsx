@@ -50,7 +50,7 @@ function MonthGrid({
 
   return (
     <div>
-      <p className="mb-3 text-base font-bold text-[#222]">
+      <p className="mb-3 text-base font-bold text-[color:var(--color-ink)]">
         {MONTH_NAMES[month]} {year}
       </p>
       <div className="grid grid-cols-7 gap-y-2 text-center">
@@ -72,10 +72,10 @@ function MonthGrid({
                 past
                   ? "text-neutral-300"
                   : isPickup || isDropoff
-                    ? "bg-[#222] font-bold text-white"
+                    ? "bg-[color:var(--color-ink)] font-bold text-white"
                     : inRange
-                      ? "bg-neutral-100 text-[#222]"
-                      : "text-[#222] hover:bg-neutral-100"
+                      ? "bg-neutral-100 text-[color:var(--color-ink)]"
+                      : "text-[color:var(--color-ink)] hover:bg-neutral-100"
               }`}
             >
               {d}
@@ -152,9 +152,9 @@ export default function DatePickerSheet({
     <>
       <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] p-4 md:p-3">
         <button type="button" onClick={onClose} aria-label="Close" className="md:hidden">
-          <Icon name="close" size={22} className="text-[#222]" />
+          <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />
         </button>
-        <p className="text-sm font-semibold text-[#222]">Select {mode === "range" ? "dates" : "a date"}</p>
+        <p className="text-sm font-semibold text-[color:var(--color-ink)]">Select {mode === "range" ? "dates" : "a date"}</p>
         <span className="w-[22px] md:hidden" />
       </div>
 
@@ -183,7 +183,7 @@ export default function DatePickerSheet({
         <div className={`mb-4 flex ${mode === "range" ? "divide-x divide-[color:var(--color-border)]" : ""}`}>
           <div className="flex-1 pr-3">
             <p className="text-xs text-[color:var(--color-muted)]">Pick up</p>
-            <p className="text-sm font-bold text-[#222]">{pickupDate ? formatShort(pickupDate) : "Select date"}</p>
+            <p className="text-sm font-bold text-[color:var(--color-ink)]">{pickupDate ? formatShort(pickupDate) : "Select date"}</p>
             <select
               value={pickupTime}
               onChange={(e) => setPickupTime(e.target.value)}
@@ -197,7 +197,7 @@ export default function DatePickerSheet({
           {mode === "range" && (
             <div className="flex-1 pl-3">
               <p className="text-xs text-[color:var(--color-muted)]">Drop off</p>
-              <p className="text-sm font-bold text-[#222]">
+              <p className="text-sm font-bold text-[color:var(--color-ink)]">
                 {dropoffDate ? formatShort(dropoffDate) : "Select date"}
               </p>
               <select
@@ -216,7 +216,7 @@ export default function DatePickerSheet({
           type="button"
           onClick={handleConfirm}
           disabled={!pickupDate || (mode === "range" && !dropoffDate)}
-          className="w-full rounded-xl bg-[#222] py-4 text-base font-bold text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-xl bg-[color:var(--color-ink)] py-4 text-base font-bold text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-40"
         >
           Select
         </button>

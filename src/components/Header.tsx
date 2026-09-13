@@ -38,10 +38,10 @@ function Logo() {
   const homeHref = role === "driver" ? routes.providerBookings : routes.home;
   return (
     <Link to={homeHref} className="flex items-center gap-2 shrink-0">
-      <span className="flex size-8 items-center justify-center rounded-lg bg-[#222] text-white">
+      <span className="flex size-8 items-center justify-center rounded-lg bg-[color:var(--color-ink)] text-white">
         <Icon name="car" size={18} />
       </span>
-      <span className="text-xl font-extrabold tracking-tight text-[#222]">DrukDrive</span>
+      <span className="text-xl font-extrabold tracking-tight text-[color:var(--color-ink)]">DrukDrive</span>
     </Link>
   );
 }
@@ -78,7 +78,7 @@ function AccountMenu({ onSignOut }: { onSignOut: () => void }) {
             <div className="flex items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3">
               <img src={currentUser.avatar} alt="" className="size-9 rounded-full object-cover" />
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-[#222]">{currentUser.name}</p>
+                <p className="truncate text-sm font-semibold text-[color:var(--color-ink)]">{currentUser.name}</p>
                 <p className="truncate text-xs text-[color:var(--color-muted)]">{currentUser.email}</p>
               </div>
             </div>
@@ -86,7 +86,7 @@ function AccountMenu({ onSignOut }: { onSignOut: () => void }) {
             <button
               type="button"
               onClick={handleSwitch}
-              className="flex w-full items-center gap-2.5 border-b border-[color:var(--color-border)] px-4 py-3 text-left text-sm font-semibold text-[#222] hover:bg-neutral-50"
+              className="flex w-full items-center gap-2.5 border-b border-[color:var(--color-border)] px-4 py-3 text-left text-sm font-semibold text-[color:var(--color-ink)] hover:bg-neutral-50"
             >
               <Icon name={target.icon} size={17} />
               {target.label}
@@ -98,7 +98,7 @@ function AccountMenu({ onSignOut }: { onSignOut: () => void }) {
                   key={l.to}
                   to={l.to}
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#333] hover:bg-neutral-50"
+                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[color:var(--color-ink-soft)] hover:bg-neutral-50"
                 >
                   <Icon name={l.icon} size={17} />
                   {l.label}
@@ -153,7 +153,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
           ) : (
             <Link
               to={routes.signIn}
-              className="flex h-[44px] items-center gap-2 rounded-full border border-[#e5ebf0] bg-white px-4 text-sm font-semibold text-[#222] hover:border-[#222]"
+              className="flex h-[44px] items-center gap-2 rounded-full border border-[color:var(--color-border)] bg-white px-4 text-sm font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
             >
               <Icon name="user" size={16} />
               Login / Signup
@@ -172,7 +172,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
         >
           <Icon name="menu" size={24} />
         </button>
-        <Link to={homeHref} className="text-xl font-extrabold tracking-tight text-[#222]">
+        <Link to={homeHref} className="text-xl font-extrabold tracking-tight text-[color:var(--color-ink)]">
           DrukDrive
         </Link>
         <div className="flex items-center gap-1">
@@ -181,7 +181,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
             <Link
               to={role === "driver" ? routes.providerAccount : routes.accountProfile}
               aria-label="Account"
-              className="flex size-[28px] items-center justify-center rounded-full border-2 border-[#222] bg-white"
+              className="flex size-[28px] items-center justify-center rounded-full border-2 border-[color:var(--color-ink)] bg-white"
             >
               <Icon name="user" size={14} />
             </Link>
@@ -202,7 +202,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
           />
           <div className="absolute left-0 top-0 h-full w-[78%] max-w-[320px] bg-white p-5 shadow-xl">
             <div className="mb-6 flex items-center justify-between">
-              <span className="text-lg font-extrabold text-[#222]">DrukDrive</span>
+              <span className="text-lg font-extrabold text-[color:var(--color-ink)]">DrukDrive</span>
               <button onClick={() => setMenuOpen(false)} aria-label="Close menu">
                 <Icon name="close" size={22} />
               </button>
@@ -224,7 +224,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
                       to={l.to}
                       onClick={() => setMenuOpen(false)}
                       className={({ isActive }) =>
-                        `flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium ${isActive ? "bg-neutral-100 text-[#222]" : "text-[#333]"}`
+                        `flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium ${isActive ? "bg-neutral-100 text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)]"}`
                       }
                     >
                       <Icon name={l.icon} size={17} />
@@ -248,7 +248,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
                 <Link
                   to={routes.signIn}
                   onClick={() => setMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 rounded-full border border-[#222] px-4 py-3 text-sm font-semibold text-[#222]"
+                  className="flex items-center justify-center gap-2 rounded-full border border-[color:var(--color-ink)] px-4 py-3 text-sm font-semibold text-[color:var(--color-ink)]"
                 >
                   <Icon name="user" size={16} />
                   Login / Signup
@@ -275,7 +275,7 @@ function MobileSwitchButton({ onNavigated }: { onNavigated: () => void }) {
         onNavigated();
         navigate(target.to);
       }}
-      className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#222] px-4 py-2.5 text-sm font-semibold text-[#222]"
+      className="flex w-full items-center justify-center gap-2 rounded-xl border border-[color:var(--color-ink)] px-4 py-2.5 text-sm font-semibold text-[color:var(--color-ink)]"
     >
       <Icon name={target.icon} size={16} />
       {target.label}

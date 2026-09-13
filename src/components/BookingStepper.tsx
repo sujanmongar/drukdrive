@@ -17,7 +17,7 @@ export default function BookingStepper({ current, allDone = false }: { current: 
                   done
                     ? "border-[color:var(--color-success)] bg-[color:var(--color-success)] text-white"
                     : active
-                      ? "border-[#222] text-[#222]"
+                      ? "border-[color:var(--color-ink)] text-[color:var(--color-ink)]"
                       : "border-[color:var(--color-border)] text-[color:var(--color-muted)]"
                 }`}
               >
@@ -25,7 +25,7 @@ export default function BookingStepper({ current, allDone = false }: { current: 
               </div>
               <span
                 className={`whitespace-nowrap text-[11px] font-medium ${
-                  done || active ? "text-[#222]" : "text-[color:var(--color-muted)]"
+                  done || active ? "text-[color:var(--color-ink)]" : "text-[color:var(--color-muted)]"
                 }`}
               >
                 {label}

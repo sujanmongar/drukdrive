@@ -46,7 +46,7 @@ export default function Footer() {
             {["VISA", "MC", "PayPal", "GPay"].map((p) => (
               <span
                 key={p}
-                className="flex h-8 items-center rounded bg-white px-2 text-[10px] font-bold text-[#222]"
+                className="flex h-8 items-center rounded bg-white px-2 text-[10px] font-bold text-[color:var(--color-ink)]"
               >
                 {p}
               </span>

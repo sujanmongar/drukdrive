@@ -36,13 +36,13 @@ export default function EditSearchModal({
       <div className="flex h-full w-full flex-col bg-white sm:h-auto sm:max-w-[440px] sm:rounded-2xl">
         <div className="flex items-center gap-4 border-b border-[color:var(--color-border)] p-4">
           <button type="button" onClick={onClose} aria-label="Close">
-            <Icon name="close" size={22} className="text-[#222]" />
+            <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />
           </button>
-          <h2 className="text-lg font-bold text-[#222]">Edit your search</h2>
+          <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Edit your search</h2>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
-          <div className="flex gap-5 border-b border-[#e5ebf0]">
+          <div className="flex gap-5 border-b border-[color:var(--color-border)]">
             {(["one-way", "return"] as const).map((m) => {
               const active = value.tripMode === m;
               return (
@@ -51,7 +51,7 @@ export default function EditSearchModal({
                   type="button"
                   onClick={() => setValue((v) => ({ ...v, tripMode: m }))}
                   className={`pb-2.5 text-sm transition-colors ${
-                    active ? "border-b-2 border-[#222] font-bold text-[#222]" : "text-[#747474]"
+                    active ? "border-b-2 border-[color:var(--color-ink)] font-bold text-[color:var(--color-ink)]" : "text-[color:var(--color-muted)]"
                   }`}
                 >
                   {m === "one-way" ? "One Way" : "Return"}
@@ -64,51 +64,51 @@ export default function EditSearchModal({
             <button
               type="button"
               onClick={() => setActiveField("pickup")}
-              className="flex h-[58px] items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left hover:border-[#222]"
+              className="flex h-[58px] items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left hover:border-[color:var(--color-ink)]"
             >
-              <Icon name="location" size={20} className="shrink-0 text-[#222]" />
+              <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
               <span className="flex flex-col gap-1">
-                <span className="text-[11px] text-[#333]">Pick up location</span>
-                <span className="text-sm font-bold text-[#222]">{value.pickup}</span>
+                <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up location</span>
+                <span className="text-sm font-bold text-[color:var(--color-ink)]">{value.pickup}</span>
               </span>
             </button>
             <button
               type="button"
               onClick={() => setActiveField("dropoff")}
-              className="flex h-[58px] items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left hover:border-[#222]"
+              className="flex h-[58px] items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left hover:border-[color:var(--color-ink)]"
             >
-              <Icon name="location" size={20} className="shrink-0 text-[#222]" />
+              <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
               <span className="flex flex-col gap-1">
-                <span className="text-[11px] text-[#333]">Drop off location</span>
-                <span className="text-sm font-bold text-[#222]">{value.dropoff}</span>
+                <span className="text-[11px] text-[color:var(--color-ink-soft)]">Drop off location</span>
+                <span className="text-sm font-bold text-[color:var(--color-ink)]">{value.dropoff}</span>
               </span>
             </button>
 
             {value.tripMode === "return" ? (
-              <div className="flex overflow-hidden rounded-xl border border-[#e5ebf0]">
+              <div className="flex overflow-hidden rounded-xl border border-[color:var(--color-border)]">
                 <button
                   type="button"
                   onClick={() => setActiveField("date")}
                   className="flex h-14 flex-1 items-center gap-2 px-3 text-left hover:bg-neutral-50"
                 >
-                  <Icon name="calendar" size={20} className="shrink-0 text-[#222]" />
+                  <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                   <span className="flex flex-col gap-1">
-                    <span className="text-[11px] text-[#333]">Pick up</span>
-                    <span className="text-sm font-bold text-[#222]">
+                    <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up</span>
+                    <span className="text-sm font-bold text-[color:var(--color-ink)]">
                       {formatDate(value.pickupDate)}, {value.pickupTime}
                     </span>
                   </span>
                 </button>
-                <div className="w-px bg-[#e5ebf0]" />
+                <div className="w-px bg-[color:var(--color-border)]" />
                 <button
                   type="button"
                   onClick={() => setActiveField("date")}
                   className="flex h-14 flex-1 items-center gap-2 px-3 text-left hover:bg-neutral-50"
                 >
-                  <Icon name="calendar" size={20} className="shrink-0 text-[#222]" />
+                  <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                   <span className="flex flex-col gap-1">
-                    <span className="text-[11px] text-[#333]">Drop off</span>
-                    <span className="text-sm font-bold text-[#222]">
+                    <span className="text-[11px] text-[color:var(--color-ink-soft)]">Drop off</span>
+                    <span className="text-sm font-bold text-[color:var(--color-ink)]">
                       {value.dropoffDate ? `${formatDate(value.dropoffDate)}, ${value.dropoffTime}` : "Select"}
                     </span>
                   </span>
@@ -118,12 +118,12 @@ export default function EditSearchModal({
               <button
                 type="button"
                 onClick={() => setActiveField("date")}
-                className="flex h-14 items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left hover:bg-neutral-50"
+                className="flex h-14 items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left hover:bg-neutral-50"
               >
-                <Icon name="calendar" size={20} className="shrink-0 text-[#222]" />
+                <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                 <span className="flex flex-col gap-1">
-                  <span className="text-[11px] text-[#333]">Pick up</span>
-                  <span className="text-sm font-bold text-[#222]">
+                  <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up</span>
+                  <span className="text-sm font-bold text-[color:var(--color-ink)]">
                     {formatDate(value.pickupDate)}, {value.pickupTime}
                   </span>
                 </span>
@@ -136,7 +136,7 @@ export default function EditSearchModal({
           <button
             type="button"
             onClick={() => onSearch(value)}
-            className="w-full rounded-xl bg-[#222] py-4 text-base font-bold text-white transition-colors hover:bg-black"
+            className="w-full rounded-xl bg-[color:var(--color-ink)] py-4 text-base font-bold text-white transition-colors hover:bg-black"
           >
             Search
           </button>

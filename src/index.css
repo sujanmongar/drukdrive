@@ -11,9 +11,15 @@
   --color-border: #e5ebf0;
 
   --color-success: #00b53a;
+  --color-success-bg: #e6f8ea;
   --color-danger: #e84b3c;
+  --color-danger-bg: #fde8e6;
+  --color-warning: #b45309;
+  --color-warning-bg: #fef3c7;
   --color-info-bg: #cff4fc;
   --color-info-text: #055160;
+  --color-link: #2276e3;
+  --color-placeholder: #bfc7cd;
 
   --color-cream: #f8e8c8;
 

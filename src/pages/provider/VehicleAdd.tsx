@@ -9,9 +9,10 @@ import VehicleImage from "../../components/VehicleImage";
 import { vehicleTemplates } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 const selectClass =
-  "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm text-[#222] outline-none focus:border-[#222]";
+  "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)]";
 const inputClass = selectClass;
 const labelClass = "mb-1.5 block text-xs font-medium text-[color:var(--color-muted)]";
 
@@ -19,12 +20,12 @@ function YesNo({ value, onChange }: { value: boolean; onChange: (v: boolean) => 
   return (
     <div className="flex items-center gap-6">
       {[true, false].map((v) => (
-        <label key={String(v)} className="flex cursor-pointer items-center gap-2 text-sm text-[#222]">
+        <label key={String(v)} className="flex cursor-pointer items-center gap-2 text-sm text-[color:var(--color-ink)]">
           <input
             type="radio"
             checked={value === v}
             onChange={() => onChange(v)}
-            className="size-4 accent-[#222]"
+            className="size-4 accent-[color:var(--color-ink)]"
           />
           {v ? "Yes" : "No"}
         </label>
@@ -37,13 +38,14 @@ function Dropzone({ label }: { label: string }) {
   return (
     <div className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[color:var(--color-border)] py-10 text-center">
       <Icon name="upload" size={22} className="text-[color:var(--color-muted)]" />
-      <p className="text-sm font-semibold text-[#222]">Drag your photo here</p>
+      <p className="text-sm font-semibold text-[color:var(--color-ink)]">Drag your photo here</p>
       <p className="text-xs text-[color:var(--color-muted)]">{label}</p>
     </div>
   );
 }
 
 export default function ProviderVehicleAdd() {
+  usePageTitle("Add Vehicle");
   const navigate = useNavigate();
   const [type, setType] = useState("SUV");
   const [brand, setBrand] = useState("Toyota");
@@ -70,14 +72,14 @@ export default function ProviderVehicleAdd() {
 
       <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-[#222]">My Vehicle</h2>
+          <h2 className="text-2xl font-bold text-[color:var(--color-ink)]">My Vehicle</h2>
           <Button variant="secondary" size="sm" to={routes.providerVehicles}>
             Cancel
           </Button>
         </div>
 
         <div className="mt-6 max-w-2xl rounded-xl border border-[color:var(--color-border)] p-6">
-          <h3 className="text-base font-bold text-[#222]">Add vehicle</h3>
+          <h3 className="text-base font-bold text-[color:var(--color-ink)]">Add vehicle</h3>
 
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label>
@@ -99,7 +101,7 @@ export default function ProviderVehicleAdd() {
           </div>
 
           <div className="mt-5">
-            <p className="mb-2 text-sm text-[#333]">Select your vehicle from the listed below.</p>
+            <p className="mb-2 text-sm text-[color:var(--color-ink-soft)]">Select your vehicle from the listed below.</p>
             <div className="flex flex-wrap gap-3">
               {vehicleTemplates.map((v) => (
                 <button
@@ -107,10 +109,10 @@ export default function ProviderVehicleAdd() {
                   type="button"
                   onClick={() => setSelectedTemplate(v.id)}
                   className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors ${
-                    selectedTemplate === v.id ? "border-[#222] ring-1 ring-[#222]" : "border-[color:var(--color-border)]"
+                    selectedTemplate === v.id ? "border-[color:var(--color-ink)] ring-1 ring-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"
                   }`}
                 >
-                  <span className="text-sm font-semibold text-[#222]">{v.name}</span>
+                  <span className="text-sm font-semibold text-[color:var(--color-ink)]">{v.name}</span>
                   <VehicleImage vehicleId={v.id} category={v.category} className="size-10 rounded-md" />
                 </button>
               ))}
@@ -180,10 +182,10 @@ export default function ProviderVehicleAdd() {
           </div>
 
           <div className="mt-6">
-            <h3 className="text-base font-bold text-[#222]">Set your price</h3>
+            <h3 className="text-base font-bold text-[color:var(--color-ink)]">Set your price</h3>
             <p className="text-sm text-[color:var(--color-muted)]">You can change it anytime</p>
             <div className="mt-3 flex flex-col items-center gap-1 rounded-xl bg-[color:var(--color-info-bg)] py-6">
-              <div className="flex items-center gap-1 text-2xl font-extrabold text-[#222]">
+              <div className="flex items-center gap-1 text-2xl font-extrabold text-[color:var(--color-ink)]">
                 <span>Nu.</span>
                 <input
                   type="text"

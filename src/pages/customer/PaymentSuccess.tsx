@@ -8,6 +8,7 @@ import { routes } from "../../lib/routes";
 import { vehicles, currentUser } from "../../data/mockData";
 import { computeFare } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 function todayFormatted() {
   return new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).replace(/ /g, "-");
@@ -22,6 +23,7 @@ function generateBookingId() {
 }
 
 export default function PaymentSuccess() {
+  usePageTitle("Booking successful");
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
   const vehicleId = searchParams.get("vehicleId");
@@ -81,7 +83,7 @@ export default function PaymentSuccess() {
         <div className="mt-8 flex flex-col items-center text-center">
           <Icon name="check-circle" size={64} className="text-[color:var(--color-success)]" />
           <h1 className="mt-4 text-2xl font-bold text-[color:var(--color-success)]">Booking Successful</h1>
-          <p className="mt-2 max-w-sm text-sm text-[#333]">
+          <p className="mt-2 max-w-sm text-sm text-[color:var(--color-ink-soft)]">
             We are processing the same and you will be notified via email.
           </p>
         </div>
@@ -95,7 +97,7 @@ export default function PaymentSuccess() {
               }`}
             >
               <span className="text-[color:var(--color-muted)]">{row.label}</span>
-              <span className={`font-bold ${row.accent ? "text-[color:var(--color-success)]" : "text-[#222]"}`}>
+              <span className={`font-bold ${row.accent ? "text-[color:var(--color-success)]" : "text-[color:var(--color-ink)]"}`}>
                 {row.value}
               </span>
             </div>
@@ -108,7 +110,7 @@ export default function PaymentSuccess() {
               <a
                 key={a.label}
                 href={a.href}
-                className="flex items-center gap-1.5 text-sm font-medium text-[color:var(--color-muted)] hover:text-[#222]"
+                className="flex items-center gap-1.5 text-sm font-medium text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
               >
                 <Icon name={a.icon} size={16} />
                 {a.label}
@@ -118,7 +120,7 @@ export default function PaymentSuccess() {
                 key={a.label}
                 type="button"
                 onClick={a.onClick}
-                className="flex items-center gap-1.5 text-sm font-medium text-[color:var(--color-muted)] hover:text-[#222]"
+                className="flex items-center gap-1.5 text-sm font-medium text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
               >
                 <Icon name={a.icon} size={16} />
                 {a.label}

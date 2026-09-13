@@ -2,8 +2,10 @@ import PageShell from "../components/PageShell";
 import Button from "../components/Button";
 import Icon from "../components/Icon";
 import { routes } from "../lib/routes";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 export default function NotFound() {
+  usePageTitle("Page not found");
   return (
     <PageShell>
       <div className="mx-auto flex min-h-[60svh] max-w-[560px] flex-col items-center justify-center px-4 py-16 text-center">
@@ -11,7 +13,7 @@ export default function NotFound() {
           <Icon name="car" size={28} className="text-[color:var(--color-muted)]" />
         </div>
         <p className="mt-6 text-sm font-bold uppercase tracking-wide text-[color:var(--color-muted)]">404</p>
-        <h1 className="mt-2 text-2xl font-bold text-[#222] md:text-3xl">Page not found</h1>
+        <h1 className="mt-2 text-2xl font-bold text-[color:var(--color-ink)] md:text-3xl">Page not found</h1>
         <p className="mt-2 max-w-sm text-sm text-[color:var(--color-muted)]">
           The page you're looking for doesn't exist or may have moved.
         </p>

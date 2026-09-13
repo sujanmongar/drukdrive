@@ -32,12 +32,12 @@ export default function CurrencySwitcher({ className = "" }: { className?: strin
                   setOpen(false);
                 }}
                 className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-neutral-50 ${
-                  c.code === currency ? "font-semibold text-[#222]" : "text-[#333]"
+                  c.code === currency ? "font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)]"
                 }`}
               >
                 <span className="text-base leading-none">{c.flag}</span>
                 {c.code}
-                {c.code === currency && <Icon name="check" size={14} className="ml-auto text-[#222]" />}
+                {c.code === currency && <Icon name="check" size={14} className="ml-auto text-[color:var(--color-ink)]" />}
               </button>
             ))}
           </div>

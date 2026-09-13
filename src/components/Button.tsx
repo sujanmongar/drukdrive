@@ -8,9 +8,9 @@ const base =
   "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-[#222] text-white hover:bg-black",
-  secondary: "bg-white text-[#222] border border-[#222] hover:bg-neutral-50",
-  ghost: "bg-transparent text-[#222] border border-[color:var(--color-border)] hover:bg-neutral-50",
+  primary: "bg-[color:var(--color-ink)] text-white hover:bg-black",
+  secondary: "bg-white text-[color:var(--color-ink)] border border-[color:var(--color-ink)] hover:bg-neutral-50",
+  ghost: "bg-transparent text-[color:var(--color-ink)] border border-[color:var(--color-border)] hover:bg-neutral-50",
   danger: "bg-[color:var(--color-danger)] text-white hover:opacity-90",
 };
 

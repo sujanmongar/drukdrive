@@ -40,7 +40,7 @@ export default function NotificationsDropdown({
           <button aria-label="Close" className="fixed inset-0 z-40 cursor-default" onClick={() => setOpen(false)} />
           <div className="absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
             <div className="border-b border-[color:var(--color-border)] px-4 py-3">
-              <p className="text-sm font-bold text-[#222]">Notifications</p>
+              <p className="text-sm font-bold text-[color:var(--color-ink)]">Notifications</p>
             </div>
             {items.length === 0 ? (
               <p className="px-4 py-6 text-center text-sm text-[color:var(--color-muted)]">No notifications yet</p>
@@ -48,7 +48,7 @@ export default function NotificationsDropdown({
               <div>
                 {items.map((n) => (
                   <div key={n.id} className="border-b border-[color:var(--color-border)] px-4 py-3 last:border-b-0">
-                    <p className="text-sm font-semibold text-[#222]">{n.title}</p>
+                    <p className="text-sm font-semibold text-[color:var(--color-ink)]">{n.title}</p>
                     <p className="mt-0.5 line-clamp-2 text-xs text-[color:var(--color-muted)]">{n.body}</p>
                   </div>
                 ))}
@@ -57,7 +57,7 @@ export default function NotificationsDropdown({
             <Link
               to={viewAllHref}
               onClick={() => setOpen(false)}
-              className="block px-4 py-3 text-center text-sm font-semibold text-[#222] hover:bg-neutral-50"
+              className="block px-4 py-3 text-center text-sm font-semibold text-[color:var(--color-ink)] hover:bg-neutral-50"
             >
               View all
             </Link>

@@ -7,12 +7,14 @@ import BookingRouteCard from "../../components/BookingRouteCard";
 import { routes } from "../../lib/routes";
 import { vehicles } from "../../data/mockData";
 import { useCurrency } from "../../lib/currency";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 type PaymentMethod = "netbanking" | "card";
 
 const banks = ["Bank of Bhutan", "Bhutan National Bank", "Druk PNB Bank", "T Bank"];
 
 export default function Payment() {
+  usePageTitle("Payment");
   const navigate = useNavigate();
   const { format } = useCurrency();
   const [searchParams] = useSearchParams();
@@ -38,8 +40,8 @@ export default function Payment() {
   const [cardCvv, setCardCvv] = useState("");
 
   const inputClasses =
-    "w-full rounded-lg border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm text-[#222] placeholder:text-[color:var(--color-muted)] outline-none focus:border-[#222] focus:ring-2 focus:ring-[#222]/10";
-  const labelClasses = "mb-1.5 block text-xs font-semibold text-[#333]";
+    "w-full rounded-lg border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm text-[color:var(--color-ink)] placeholder:text-[color:var(--color-muted)] outline-none focus:border-[color:var(--color-ink)] focus:ring-2 focus:ring-[color:var(--color-ink)]/10";
+  const labelClasses = "mb-1.5 block text-xs font-semibold text-[color:var(--color-ink-soft)]";
 
   function handlePay() {
     const params = new URLSearchParams(searchParams);
@@ -54,7 +56,7 @@ export default function Payment() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="mb-6 inline-flex cursor-pointer items-center gap-2 text-sm font-semibold text-[#333] hover:text-[#222]"
+          className="mb-6 inline-flex cursor-pointer items-center gap-2 text-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
         >
           <Icon name="arrow-left" size={18} />
           Back
@@ -67,12 +69,12 @@ export default function Payment() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
           {/* Left: payment methods */}
           <div className="min-w-0">
-            <h2 className="text-lg font-bold text-[#222]">Choose your payment method</h2>
+            <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Choose your payment method</h2>
 
             <div className="mt-4 flex flex-col gap-3">
               {/* Net Banking */}
               <div
-                className={`rounded-xl bg-neutral-50 p-4 transition-colors ${method === "netbanking" ? "ring-2 ring-[#222]" : ""}`}
+                className={`rounded-xl bg-neutral-50 p-4 transition-colors ${method === "netbanking" ? "ring-2 ring-[color:var(--color-ink)]" : ""}`}
               >
                 <button
                   type="button"
@@ -81,16 +83,16 @@ export default function Payment() {
                 >
                   <span className="flex items-center gap-3">
                     <span
-                      className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${method === "netbanking" ? "border-[#222]" : "border-[color:var(--color-border)]"}`}
+                      className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${method === "netbanking" ? "border-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"}`}
                     >
-                      {method === "netbanking" && <span className="size-2.5 rounded-full bg-[#222]" />}
+                      {method === "netbanking" && <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />}
                     </span>
                     <span className="text-left">
-                      <span className="block text-sm font-bold text-[#222]">Net Banking</span>
+                      <span className="block text-sm font-bold text-[color:var(--color-ink)]">Net Banking</span>
                       <span className="block text-xs text-[color:var(--color-muted)]">All the major banks available</span>
                     </span>
                   </span>
-                  <Icon name="bank" size={22} className="shrink-0 text-[#222]" />
+                  <Icon name="bank" size={22} className="shrink-0 text-[color:var(--color-ink)]" />
                 </button>
 
                 {method === "netbanking" && (
@@ -119,7 +121,7 @@ export default function Payment() {
                     <button
                       type="button"
                       onClick={handlePay}
-                      className="mt-1 w-full rounded-xl bg-[#222] py-3.5 text-sm font-bold text-white transition-colors hover:bg-black"
+                      className="mt-1 w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-sm font-bold text-white transition-colors hover:bg-black"
                     >
                       Pay {format(amountDue)}
                     </button>
@@ -129,7 +131,7 @@ export default function Payment() {
 
               {/* Card */}
               <div
-                className={`rounded-xl bg-neutral-50 p-4 transition-colors ${method === "card" ? "ring-2 ring-[#222]" : ""}`}
+                className={`rounded-xl bg-neutral-50 p-4 transition-colors ${method === "card" ? "ring-2 ring-[color:var(--color-ink)]" : ""}`}
               >
                 <button
                   type="button"
@@ -138,12 +140,12 @@ export default function Payment() {
                 >
                   <span className="flex items-center gap-3">
                     <span
-                      className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${method === "card" ? "border-[#222]" : "border-[color:var(--color-border)]"}`}
+                      className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${method === "card" ? "border-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"}`}
                     >
-                      {method === "card" && <span className="size-2.5 rounded-full bg-[#222]" />}
+                      {method === "card" && <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />}
                     </span>
                     <span className="text-left">
-                      <span className="block text-sm font-bold text-[#222]">Debit/Credit/ATM Card</span>
+                      <span className="block text-sm font-bold text-[color:var(--color-ink)]">Debit/Credit/ATM Card</span>
                       <span className="block text-xs text-[color:var(--color-muted)]">Visa, Mastercard, Rupay and more</span>
                     </span>
                   </span>
@@ -223,7 +225,7 @@ export default function Payment() {
                     <button
                       type="button"
                       onClick={handlePay}
-                      className="mt-1 w-full rounded-xl bg-[#222] py-3.5 text-sm font-bold text-white transition-colors hover:bg-black"
+                      className="mt-1 w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-sm font-bold text-white transition-colors hover:bg-black"
                     >
                       Pay {format(amountDue)}
                     </button>
@@ -236,16 +238,16 @@ export default function Payment() {
           {/* Right: booking summary sidebar */}
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="flex flex-col gap-4">
-              <h2 className="text-lg font-bold text-[#222]">Your Booking</h2>
+              <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Your Booking</h2>
               <BookingRouteCard vehicle={vehicle} pickup={pickup} dropoff={dropoff} date={date} />
 
               {travelerName && (
                 <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-4">
-                  <p className="flex items-center gap-1.5 text-sm font-bold text-[#222]">
+                  <p className="flex items-center gap-1.5 text-sm font-bold text-[color:var(--color-ink)]">
                     <Icon name="user" size={15} />
                     Travelers
                   </p>
-                  <p className="mt-2 text-sm font-semibold uppercase text-[#222]">{travelerName}</p>
+                  <p className="mt-2 text-sm font-semibold uppercase text-[color:var(--color-ink)]">{travelerName}</p>
                   <p className="text-xs text-[color:var(--color-muted)]">
                     {travelerEmail}
                     {travelerPhone && ` | ${travelerPhone}`}
@@ -254,7 +256,7 @@ export default function Payment() {
               )}
 
               <div className="flex items-center justify-between rounded-xl border border-[color:var(--color-border)] bg-white p-4">
-                <p className="text-base font-bold text-[#222]">Grand Total</p>
+                <p className="text-base font-bold text-[color:var(--color-ink)]">Grand Total</p>
                 <p className="text-base font-bold text-[color:var(--color-success)]">{format(amountDue)}</p>
               </div>
             </div>

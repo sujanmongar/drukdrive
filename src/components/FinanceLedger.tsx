@@ -34,8 +34,8 @@ export default function FinanceLedger() {
               onClick={() => setTab(t)}
               className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                 tab === t
-                  ? "border-[#222] bg-[#222] text-white"
-                  : "border-[color:var(--color-border)] text-[#222] hover:border-[#222]"
+                  ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
+                  : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
               }`}
             >
               {t}
@@ -44,7 +44,7 @@ export default function FinanceLedger() {
         </div>
         <button
           type="button"
-          className="flex items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-4 py-2 text-sm font-medium text-[#222] hover:border-[#222]"
+          className="flex items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-4 py-2 text-sm font-medium text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
         >
           <Icon name="filter" size={16} />
           Filter
@@ -67,16 +67,16 @@ export default function FinanceLedger() {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.id} className="border-b border-[color:var(--color-border)] last:border-b-0">
-                  <td className="whitespace-nowrap px-4 py-3 text-[#333]">{r.date}</td>
-                  <td className="whitespace-nowrap px-4 py-3 font-medium text-[#2276e3]">{r.id.toUpperCase()}</td>
-                  <td className="px-4 py-3 text-[#222]">{r.label}</td>
-                  <td className="whitespace-nowrap px-4 py-3 text-right text-[#222]">
+                  <td className="whitespace-nowrap px-4 py-3 text-[color:var(--color-ink-soft)]">{r.date}</td>
+                  <td className="whitespace-nowrap px-4 py-3 font-medium text-[color:var(--color-link)]">{r.id.toUpperCase()}</td>
+                  <td className="px-4 py-3 text-[color:var(--color-ink)]">{r.label}</td>
+                  <td className="whitespace-nowrap px-4 py-3 text-right text-[color:var(--color-ink)]">
                     {r.debit ? r.debit.toFixed(2) : "0"}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-right text-[#222]">
+                  <td className="whitespace-nowrap px-4 py-3 text-right text-[color:var(--color-ink)]">
                     {r.credit ? r.credit.toFixed(2) : "0"}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-right font-medium text-[#222]">
+                  <td className="whitespace-nowrap px-4 py-3 text-right font-medium text-[color:var(--color-ink)]">
                     {r.balance.toFixed(2)} {r.balance >= 0 ? "Cr" : "Dr"}
                   </td>
                 </tr>
@@ -84,13 +84,13 @@ export default function FinanceLedger() {
             </tbody>
             <tfoot>
               <tr className="bg-neutral-50">
-                <td className="px-4 py-3 text-center font-bold text-[#222]" colSpan={3}>
+                <td className="px-4 py-3 text-center font-bold text-[color:var(--color-ink)]" colSpan={3}>
                   Total
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-[#222]">
+                <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-[color:var(--color-ink)]">
                   {totalDebit.toFixed(2)}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-[#222]">
+                <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-[color:var(--color-ink)]">
                   {totalCredit.toFixed(2)}
                 </td>
                 <td />
@@ -101,7 +101,7 @@ export default function FinanceLedger() {
       ) : (
         <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
           <Icon name="wallet" size={32} className="text-[color:var(--color-muted)]" />
-          <p className="mt-3 text-sm font-semibold text-[#222]">No {tab.toLowerCase()} yet</p>
+          <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No {tab.toLowerCase()} yet</p>
         </div>
       )}
     </>

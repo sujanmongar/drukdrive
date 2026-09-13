@@ -5,6 +5,7 @@ import AccountCardsGrid from "../../components/AccountCardsGrid";
 import type { AccountCard } from "../../components/AccountCardsGrid";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 const cards: AccountCard[] = [
   {
@@ -34,6 +35,7 @@ const cards: AccountCard[] = [
 ];
 
 export default function ProviderAccount() {
+  usePageTitle("Driver Account");
   return (
     <PageShell>
       <ProfileHero editHref={routes.providerAccountEdit} reviewHref={routes.providerReviews} />
@@ -42,7 +44,7 @@ export default function ProviderAccount() {
       </div>
 
       <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
-        <h2 className="text-2xl font-bold text-[#222]">Account</h2>
+        <h2 className="text-2xl font-bold text-[color:var(--color-ink)]">Account</h2>
         <AccountCardsGrid cards={cards} />
       </div>
     </PageShell>

@@ -3,8 +3,10 @@ import SecondaryTabs from "../../../components/SecondaryTabs";
 import ProfileHero from "../../../components/ProfileHero";
 import FinanceLedger from "../../../components/FinanceLedger";
 import { accountTabs } from "./_tabs";
+import { usePageTitle } from "../../../hooks/usePageTitle";
 
 export default function AccountFinance() {
+  usePageTitle("Finance");
   return (
     <PageShell>
       <ProfileHero />
@@ -13,7 +15,7 @@ export default function AccountFinance() {
       </div>
 
       <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
-        <h2 className="text-2xl font-bold text-[#222]">Finance</h2>
+        <h2 className="text-2xl font-bold text-[color:var(--color-ink)]">Finance</h2>
         <FinanceLedger />
       </div>
     </PageShell>

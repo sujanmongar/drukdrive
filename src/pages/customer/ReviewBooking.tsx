@@ -10,6 +10,7 @@ import { routes } from "../../lib/routes";
 import { computeFare } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
 import { useAuth } from "../../lib/auth";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 const DEFAULT_PICKUP = "Thimphu, Druk School";
 const DEFAULT_DROPOFF = "Punakha, Taxi Parking";
@@ -22,6 +23,7 @@ const PROMO_CODES: Record<string, number> = {
 };
 
 export default function ReviewBooking() {
+  usePageTitle("Review your booking");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
@@ -90,8 +92,8 @@ export default function ReviewBooking() {
   }
 
   const inputClass =
-    "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm text-[#222] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[#222]";
-  const labelClass = "mb-1.5 block text-xs font-medium text-[#333]";
+    "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-ink)]";
+  const labelClass = "mb-1.5 block text-xs font-medium text-[color:var(--color-ink-soft)]";
   const errorClass = "border-[color:var(--color-danger)]";
 
   const payButtonLabel =
@@ -103,7 +105,7 @@ export default function ReviewBooking() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="mb-4 flex items-center gap-2 text-lg font-bold text-[#222]"
+          className="mb-4 flex items-center gap-2 text-lg font-bold text-[color:var(--color-ink)]"
         >
           <Icon name="chevron-left" size={22} />
           Review Your Booking
@@ -119,7 +121,7 @@ export default function ReviewBooking() {
             <BookingRouteCard vehicle={vehicle} pickup={pickup} dropoff={dropoff} date={date} />
 
             <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-lg font-bold text-[#222]">Personal Information</h2>
+              <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Personal Information</h2>
               {!isLoggedIn && (
                 <Link
                   to={routes.signIn}
@@ -202,21 +204,21 @@ export default function ReviewBooking() {
 
             <p className="mt-4 text-xs text-[color:var(--color-muted)]">
               By proceeding to book, I Agree to DrukDrive&rsquo;s{" "}
-              <span className="font-semibold text-[#2276e3]">Privacy Policy</span>,{" "}
-              <span className="font-semibold text-[#2276e3]">User Agreement</span> and{" "}
-              <span className="font-semibold text-[#2276e3]">Terms of Service</span>
+              <span className="font-semibold text-[color:var(--color-link)]">Privacy Policy</span>,{" "}
+              <span className="font-semibold text-[color:var(--color-link)]">User Agreement</span> and{" "}
+              <span className="font-semibold text-[color:var(--color-link)]">Terms of Service</span>
             </p>
 
-            <h2 className="mt-10 text-lg font-bold text-[#222]">Read before you book!</h2>
+            <h2 className="mt-10 text-lg font-bold text-[color:var(--color-ink)]">Read before you book!</h2>
             <div className="mt-4 rounded-xl border border-[color:var(--color-border)] p-5">
-              <h3 className="text-sm font-bold text-[#222]">Safety precautions</h3>
-              <ul className="mt-2 list-disc space-y-1.5 pl-4 text-sm text-[#333]">
+              <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Safety precautions</h3>
+              <ul className="mt-2 list-disc space-y-1.5 pl-4 text-sm text-[color:var(--color-ink-soft)]">
                 <li>Our cabs are sanitised before pickup, however you may request the driver to sanitise before you board.</li>
                 <li>Maintain social distancing and avoid touching your mouth, eyes or nose without sanitising your hands.</li>
                 <li>Avoid travel in case you&rsquo;re experiencing any symptoms of illness.</li>
               </ul>
-              <h3 className="mt-4 text-sm font-bold text-[#222]">Other information</h3>
-              <ul className="mt-2 list-disc space-y-1.5 pl-4 text-sm text-[#333]">
+              <h3 className="mt-4 text-sm font-bold text-[color:var(--color-ink)]">Other information</h3>
+              <ul className="mt-2 list-disc space-y-1.5 pl-4 text-sm text-[color:var(--color-ink-soft)]">
                 <li>AC will be switched off in hilly areas.</li>
                 <li>If you opt for partial payment, please pay the balance to the driver within 45 min from pickup time.</li>
                 <li>Only one pick-up, one drop and one pit stop for a meal is included.</li>
@@ -227,14 +229,14 @@ export default function ReviewBooking() {
           {/* Right: price summary sidebar */}
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
-              <h2 className="text-lg font-bold text-[#222]">Price Summary</h2>
+              <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Price Summary</h2>
 
               <div className="mt-3 flex items-baseline justify-between">
                 <div>
-                  <p className="text-xl font-extrabold text-[#222]">{format(netPayable)}</p>
+                  <p className="text-xl font-extrabold text-[color:var(--color-ink)]">{format(netPayable)}</p>
                   <p className="text-xs text-[color:var(--color-muted)]">Inclusive of taxes and fees</p>
                 </div>
-                <span className="text-xs font-semibold text-[#2276e3]">Fare summary</span>
+                <span className="text-xs font-semibold text-[color:var(--color-link)]">Fare summary</span>
               </div>
 
               <div className="mt-4 flex flex-col gap-2.5">
@@ -256,18 +258,18 @@ export default function ReviewBooking() {
                     <span className="flex items-start gap-3">
                       <span
                         className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${
-                          paymentOption === opt.value ? "border-[#222]" : "border-[color:var(--color-border)]"
+                          paymentOption === opt.value ? "border-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"
                         }`}
                       >
-                        {paymentOption === opt.value && <span className="size-2.5 rounded-full bg-[#222]" />}
+                        {paymentOption === opt.value && <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />}
                       </span>
                       <span>
-                        <span className="block text-sm font-bold text-[#222]">{opt.label}</span>
+                        <span className="block text-sm font-bold text-[color:var(--color-ink)]">{opt.label}</span>
                         {opt.hint && <span className="block text-xs text-[color:var(--color-muted)]">{opt.hint}</span>}
                       </span>
                     </span>
                     {opt.amount !== null ? (
-                      <span className="shrink-0 text-sm font-bold text-[#222]">{format(opt.amount)}</span>
+                      <span className="shrink-0 text-sm font-bold text-[color:var(--color-ink)]">{format(opt.amount)}</span>
                     ) : (
                       <Icon name="info" size={16} className="shrink-0 text-[color:var(--color-muted)]" />
                     )}
@@ -279,7 +281,7 @@ export default function ReviewBooking() {
                 {payButtonLabel}
               </Button>
 
-              <h3 className="mt-6 text-sm font-bold text-[#222]">Offer (Optional)</h3>
+              <h3 className="mt-6 text-sm font-bold text-[color:var(--color-ink)]">Offer (Optional)</h3>
               <div className="mt-2 rounded-xl border border-[color:var(--color-border)] p-3">
                 <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase text-[color:var(--color-muted)]">
                   <Icon name="info" size={13} />
@@ -291,12 +293,12 @@ export default function ReviewBooking() {
                     placeholder="Got a promo code? enter here"
                     value={promoInput}
                     onChange={(e) => setPromoInput(e.target.value)}
-                    className="min-w-0 flex-1 rounded-lg border border-[color:var(--color-border)] px-3 py-2 text-sm text-[#222] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[#222]"
+                    className="min-w-0 flex-1 rounded-lg border border-[color:var(--color-border)] px-3 py-2 text-sm text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-ink)]"
                   />
                   <button
                     type="button"
                     onClick={applyPromo}
-                    className="shrink-0 rounded-lg bg-[#222] px-4 py-2 text-sm font-bold text-white hover:bg-black"
+                    className="shrink-0 rounded-lg bg-[color:var(--color-ink)] px-4 py-2 text-sm font-bold text-white hover:bg-black"
                   >
                     Apply
                   </button>

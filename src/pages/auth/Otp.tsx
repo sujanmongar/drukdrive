@@ -6,6 +6,7 @@ import Button from "../../components/Button";
 import { routes } from "../../lib/routes";
 import { currentUser } from "../../data/mockData";
 import { useAuth } from "../../lib/auth";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 const OTP_LENGTH = 6;
 
@@ -14,6 +15,7 @@ type LocationState = {
 } | null;
 
 export default function Otp() {
+  usePageTitle("Verify OTP");
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
@@ -79,16 +81,16 @@ export default function Otp() {
           onKeyDown={(e) => handleKeyDown(i, e)}
           inputMode="numeric"
           maxLength={1}
-          className={`size-[48px] rounded-2xl border text-center text-xl font-bold text-[rgba(0,0,0,0.87)] outline-none transition-colors sm:size-[56px] ${
-            digit ? "border-[rgba(0,0,0,0.87)]" : "border-[#e5ebf0]"
-          } focus:border-[rgba(0,0,0,0.87)]`}
+          className={`size-[48px] rounded-2xl border text-center text-xl font-bold text-[color:var(--color-ink-87)] outline-none transition-colors sm:size-[56px] ${
+            digit ? "border-[color:var(--color-ink-87)]" : "border-[color:var(--color-border)]"
+          } focus:border-[color:var(--color-ink-87)]`}
         />
       ))}
     </div>
   );
 
   const resendRow = (
-    <div className="mt-6 flex items-center justify-between text-sm text-[rgba(0,0,0,0.87)]">
+    <div className="mt-6 flex items-center justify-between text-sm text-[color:var(--color-ink-87)]">
       <span>{secondsLeft > 0 ? `Time remaining ${secondsLeft}s` : justResent ? "OTP resent" : ""}</span>
       <span className="flex items-center gap-2">
         <span className="text-[#929292]">Didn&rsquo;t receive?</span>
@@ -97,7 +99,7 @@ export default function Otp() {
           onClick={handleResend}
           disabled={secondsLeft > 0}
           className={`font-semibold ${
-            secondsLeft > 0 ? "cursor-not-allowed text-[color:var(--color-muted)]" : "text-[#222] underline"
+            secondsLeft > 0 ? "cursor-not-allowed text-[color:var(--color-muted)]" : "text-[color:var(--color-ink)] underline"
           }`}
         >
           Resend OTP
@@ -110,17 +112,17 @@ export default function Otp() {
     <PageShell noFooter>
       <div className="mx-auto flex min-h-[75vh] w-full max-w-[1440px] items-center justify-center bg-neutral-50 px-4 py-12 md:px-[60px]">
         {/* Desktop */}
-        <div className="relative hidden w-full max-w-[440px] flex-col rounded-xl border border-[#e5ebf0] bg-white p-8 shadow-[0px_2px_14px_rgba(0,0,0,0.1)] md:flex">
+        <div className="relative hidden w-full max-w-[440px] flex-col rounded-xl border border-[color:var(--color-border)] bg-white p-8 shadow-[0px_2px_14px_rgba(0,0,0,0.1)] md:flex">
           <button
             type="button"
             onClick={() => navigate(-1)}
             aria-label="Back"
-            className="absolute left-6 top-6 text-[#222]"
+            className="absolute left-6 top-6 text-[color:var(--color-ink)]"
           >
             <Icon name="chevron-left" size={22} />
           </button>
-          <h1 className="mb-1 mt-8 text-2xl font-bold text-[rgba(0,0,0,0.87)]">Verify your mobile number</h1>
-          <p className="mb-6 text-sm text-[rgba(0,0,0,0.87)]">
+          <h1 className="mb-1 mt-8 text-2xl font-bold text-[color:var(--color-ink-87)]">Verify your mobile number</h1>
+          <p className="mb-6 text-sm text-[color:var(--color-ink-87)]">
             OTP has been sent to <span className="text-lg font-bold">{currentUser.phone}</span>
           </p>
           <form onSubmit={handleSubmit} className="flex flex-col">
@@ -135,12 +137,12 @@ export default function Otp() {
         {/* Mobile */}
         <div className="w-full max-w-md md:hidden">
           <div className="mb-8 flex items-center">
-            <button type="button" onClick={() => navigate(-1)} aria-label="Back" className="text-[#222]">
+            <button type="button" onClick={() => navigate(-1)} aria-label="Back" className="text-[color:var(--color-ink)]">
               <Icon name="arrow-left" size={22} />
             </button>
           </div>
-          <h1 className="mb-1 text-[34px] font-bold leading-tight text-[#222]">Verify your mobile number</h1>
-          <p className="mb-6 text-sm text-[rgba(0,0,0,0.87)]">
+          <h1 className="mb-1 text-[34px] font-bold leading-tight text-[color:var(--color-ink)]">Verify your mobile number</h1>
+          <p className="mb-6 text-sm text-[color:var(--color-ink-87)]">
             OTP has been sent to <span className="text-lg font-bold">{currentUser.phone}</span>
           </p>
           <form onSubmit={handleSubmit} className="flex flex-col">

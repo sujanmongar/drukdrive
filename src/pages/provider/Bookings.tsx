@@ -9,10 +9,12 @@ import VehicleImage from "../../components/VehicleImage";
 import { driverBookings, driverVehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 type Filter = "Current" | "Past";
 
 export default function ProviderBookings() {
+  usePageTitle("Driver Bookings");
   const [filter, setFilter] = useState<Filter>("Current");
 
   const groups = useMemo(
@@ -34,8 +36,8 @@ export default function ProviderBookings() {
 
       <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-[#222]">Bookings</h2>
-          <span className="text-sm font-semibold text-[#222] underline">
+          <h2 className="text-2xl font-bold text-[color:var(--color-ink)]">Bookings</h2>
+          <span className="text-sm font-semibold text-[color:var(--color-ink)] underline">
             See all booking ({driverBookings.length})
           </span>
         </div>
@@ -48,8 +50,8 @@ export default function ProviderBookings() {
               onClick={() => setFilter(f)}
               className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                 filter === f
-                  ? "border-[#222] bg-[#222] text-white"
-                  : "border-[color:var(--color-border)] text-[#222] hover:border-[#222]"
+                  ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
+                  : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
               }`}
             >
               {f} ({groups[f].length})
@@ -60,7 +62,7 @@ export default function ProviderBookings() {
         {filtered.length === 0 ? (
           <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
             <Icon name="car" size={32} className="text-[color:var(--color-muted)]" />
-            <p className="mt-3 text-sm font-semibold text-[#222]">No {filter.toLowerCase()} bookings</p>
+            <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No {filter.toLowerCase()} bookings</p>
           </div>
         ) : (
           <div className="mt-6 overflow-hidden rounded-xl border border-[color:var(--color-border)]">
@@ -79,19 +81,19 @@ export default function ProviderBookings() {
                   <div>
                     <p className="text-xs text-[color:var(--color-muted)]">Booking ID</p>
                     <p className="text-sm font-bold text-[color:var(--color-success)]">#{b.id}</p>
-                    <p className="text-xs font-medium text-[#333]">{vehicle.name}</p>
+                    <p className="text-xs font-medium text-[color:var(--color-ink-soft)]">{vehicle.name}</p>
                   </div>
                 </div>
 
                 <div className="flex flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
                   <div>
                     <p className="text-xs text-[color:var(--color-muted)]">Pick up</p>
-                    <p className="text-sm font-bold text-[#222]">{b.pickup}</p>
+                    <p className="text-sm font-bold text-[color:var(--color-ink)]">{b.pickup}</p>
                   </div>
                   <Icon name="chevron-right" size={16} className="hidden shrink-0 text-[color:var(--color-muted)] sm:block" />
                   <div>
                     <p className="text-xs text-[color:var(--color-muted)]">Drop off</p>
-                    <p className="text-sm font-bold text-[#222]">{b.dropoff}</p>
+                    <p className="text-sm font-bold text-[color:var(--color-ink)]">{b.dropoff}</p>
                   </div>
                   <p className="text-xs text-[color:var(--color-muted)] sm:ml-auto">{b.date}</p>
                 </div>

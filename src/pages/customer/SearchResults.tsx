@@ -9,6 +9,7 @@ import LocationPickerSheet from "../../components/LocationPickerSheet";
 import DatePickerSheet from "../../components/DatePickerSheet";
 import { vehicles as allVehicles, type Vehicle } from "../../data/mockData";
 import { formatTripDate } from "../../lib/formatTripDate";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 const DEFAULT_PICKUP = "Thimphu, Clock Tower Square";
 const DEFAULT_DROPOFF = "Paro, Airport";
@@ -44,6 +45,7 @@ function formatDate(d: Date) {
 }
 
 export default function SearchResults() {
+  usePageTitle("Search results");
   const [initialParams] = useSearchParams();
 
   const [search, setSearch] = useState<EditSearchValue>(() => {
@@ -123,15 +125,15 @@ export default function SearchResults() {
   const filterPanel = (
     <div className="flex flex-col gap-6">
       <div>
-        <h3 className="mb-3 text-sm font-bold text-[#222]">Vehicle Type</h3>
+        <h3 className="mb-3 text-sm font-bold text-[color:var(--color-ink)]">Vehicle Type</h3>
         <div className="flex flex-col gap-2.5">
           {vehicleTypeOptions.map((option) => (
-            <label key={option} className="flex cursor-pointer items-center gap-2.5 text-sm text-[#222]">
+            <label key={option} className="flex cursor-pointer items-center gap-2.5 text-sm text-[color:var(--color-ink)]">
               <input
                 type="checkbox"
                 checked={selectedTypes.includes(option)}
                 onChange={() => toggle(selectedTypes, option, setSelectedTypes)}
-                className="size-4 rounded border-[color:var(--color-border)] accent-[#222]"
+                className="size-4 rounded border-[color:var(--color-border)] accent-[color:var(--color-ink)]"
               />
               {option}
             </label>
@@ -140,15 +142,15 @@ export default function SearchResults() {
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-bold text-[#222]">Fuel Type</h3>
+        <h3 className="mb-3 text-sm font-bold text-[color:var(--color-ink)]">Fuel Type</h3>
         <div className="flex flex-col gap-2.5">
           {fuelOptions.map((option) => (
-            <label key={option} className="flex cursor-pointer items-center gap-2.5 text-sm text-[#222]">
+            <label key={option} className="flex cursor-pointer items-center gap-2.5 text-sm text-[color:var(--color-ink)]">
               <input
                 type="checkbox"
                 checked={selectedFuels.includes(option)}
                 onChange={() => toggle(selectedFuels, option, setSelectedFuels)}
-                className="size-4 rounded border-[color:var(--color-border)] accent-[#222]"
+                className="size-4 rounded border-[color:var(--color-border)] accent-[color:var(--color-ink)]"
               />
               {option}
             </label>
@@ -157,30 +159,30 @@ export default function SearchResults() {
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-bold text-[#222]">Max Price / day</h3>
+        <h3 className="mb-3 text-sm font-bold text-[color:var(--color-ink)]">Max Price / day</h3>
         <input
           type="range"
           min={40}
           max={80}
           value={maxPrice}
           onChange={(e) => setMaxPrice(Number(e.target.value))}
-          className="w-full accent-[#222]"
+          className="w-full accent-[color:var(--color-ink)]"
         />
         <div className="mt-1 flex justify-between text-xs text-[color:var(--color-muted)]">
           <span>$40</span>
-          <span className="font-semibold text-[#222]">${maxPrice}</span>
+          <span className="font-semibold text-[color:var(--color-ink)]">${maxPrice}</span>
           <span>$80</span>
         </div>
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-bold text-[#222]">Minimum Rating</h3>
+        <h3 className="mb-3 text-sm font-bold text-[color:var(--color-ink)]">Minimum Rating</h3>
         <div className="flex gap-2">
           {[3, 4, 4.5].map((r) => (
             <button
               key={r}
               type="button"
-              className="flex items-center gap-1 rounded-lg border border-[color:var(--color-border)] px-2.5 py-1.5 text-xs font-medium text-[#222] hover:border-[#222]"
+              className="flex items-center gap-1 rounded-lg border border-[color:var(--color-border)] px-2.5 py-1.5 text-xs font-medium text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
             >
               <Icon name="star" size={12} className="fill-current text-amber-400" />
               {r}+
@@ -198,7 +200,7 @@ export default function SearchResults() {
         <div className="rounded-xl border border-[color:var(--color-border)] bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
           <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
-              <div className="flex flex-wrap items-center gap-2 text-sm text-[#222]">
+              <div className="flex flex-wrap items-center gap-2 text-sm text-[color:var(--color-ink)]">
                 <Icon name="location" size={16} className="shrink-0 text-[color:var(--color-muted)]" />
                 <span className="font-semibold">{search.pickup}</span>
                 <Icon name="chevron-right" size={14} className="text-[color:var(--color-muted)]" />
@@ -214,7 +216,7 @@ export default function SearchResults() {
             <button
               type="button"
               onClick={() => setEditOpen(true)}
-              className="flex shrink-0 items-center gap-1.5 self-start rounded-xl border border-[#222] px-4 py-2 text-xs font-bold text-[#222] hover:bg-neutral-50 sm:self-auto md:hidden"
+              className="flex shrink-0 items-center gap-1.5 self-start rounded-xl border border-[color:var(--color-ink)] px-4 py-2 text-xs font-bold text-[color:var(--color-ink)] hover:bg-neutral-50 sm:self-auto md:hidden"
             >
               <Icon name="edit" size={13} />
               Edit Search
@@ -226,7 +228,7 @@ export default function SearchResults() {
               onClick={() => setDesktopEditOpen((v) => !v)}
               aria-label="Edit search"
               className={`hidden shrink-0 items-center justify-center rounded-xl p-3 transition-colors md:flex ${
-                desktopEditOpen ? "bg-[#222] text-white" : "bg-neutral-100 text-[#222] hover:bg-neutral-200"
+                desktopEditOpen ? "bg-[color:var(--color-ink)] text-white" : "bg-neutral-100 text-[color:var(--color-ink)] hover:bg-neutral-200"
               }`}
             >
               <Icon name="edit" size={16} />
@@ -240,12 +242,12 @@ export default function SearchResults() {
                 <button
                   type="button"
                   onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
-                  className="flex h-[52px] w-full items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left hover:border-[#222]"
+                  className="flex h-[52px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left hover:border-[color:var(--color-ink)]"
                 >
-                  <Icon name="location" size={18} className="shrink-0 text-[#222]" />
+                  <Icon name="location" size={18} className="shrink-0 text-[color:var(--color-ink)]" />
                   <span className="flex flex-col gap-0.5">
-                    <span className="text-[10px] text-[#333]">Pick up location</span>
-                    <span className="text-sm font-bold text-[#222]">{search.pickup}</span>
+                    <span className="text-[10px] text-[color:var(--color-ink-soft)]">Pick up location</span>
+                    <span className="text-sm font-bold text-[color:var(--color-ink)]">{search.pickup}</span>
                   </span>
                 </button>
                 {activeField === "pickup" && (
@@ -265,12 +267,12 @@ export default function SearchResults() {
                 <button
                   type="button"
                   onClick={() => setActiveField(activeField === "dropoff" ? null : "dropoff")}
-                  className="flex h-[52px] w-full items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left hover:border-[#222]"
+                  className="flex h-[52px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left hover:border-[color:var(--color-ink)]"
                 >
-                  <Icon name="location" size={18} className="shrink-0 text-[#222]" />
+                  <Icon name="location" size={18} className="shrink-0 text-[color:var(--color-ink)]" />
                   <span className="flex flex-col gap-0.5">
-                    <span className="text-[10px] text-[#333]">Drop off location</span>
-                    <span className="text-sm font-bold text-[#222]">{search.dropoff}</span>
+                    <span className="text-[10px] text-[color:var(--color-ink-soft)]">Drop off location</span>
+                    <span className="text-sm font-bold text-[color:var(--color-ink)]">{search.dropoff}</span>
                   </span>
                 </button>
                 {activeField === "dropoff" && (
@@ -290,12 +292,12 @@ export default function SearchResults() {
                 <button
                   type="button"
                   onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                  className="flex h-[52px] w-full items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left hover:border-[#222]"
+                  className="flex h-[52px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left hover:border-[color:var(--color-ink)]"
                 >
-                  <Icon name="calendar" size={18} className="shrink-0 text-[#222]" />
+                  <Icon name="calendar" size={18} className="shrink-0 text-[color:var(--color-ink)]" />
                   <span className="flex flex-col gap-0.5">
-                    <span className="text-[10px] text-[#333]">Pick up date</span>
-                    <span className="text-sm font-bold text-[#222]">
+                    <span className="text-[10px] text-[color:var(--color-ink-soft)]">Pick up date</span>
+                    <span className="text-sm font-bold text-[color:var(--color-ink)]">
                       {formatDate(search.pickupDate)}, {search.pickupTime}
                     </span>
                   </span>
@@ -326,7 +328,7 @@ export default function SearchResults() {
               <button
                 type="button"
                 onClick={handleDesktopUpdate}
-                className="flex items-center gap-2 rounded-xl bg-[#222] px-6 py-3.5 text-sm font-bold text-white hover:bg-black"
+                className="flex items-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-6 py-3.5 text-sm font-bold text-white hover:bg-black"
               >
                 <Icon name="search" size={16} />
                 Update
@@ -339,7 +341,7 @@ export default function SearchResults() {
           {/* Desktop filter sidebar */}
           <aside className="hidden w-[280px] shrink-0 lg:block">
             <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
-              <h2 className="mb-4 text-base font-bold text-[#222]">Filters</h2>
+              <h2 className="mb-4 text-base font-bold text-[color:var(--color-ink)]">Filters</h2>
               {filterPanel}
             </div>
           </aside>
@@ -348,7 +350,7 @@ export default function SearchResults() {
             {loading ? (
               <div className="flex flex-col items-center justify-center gap-3 py-24">
                 <div
-                  className="size-10 animate-spin rounded-full border-4 border-[#e5ebf0] border-t-[#222]"
+                  className="size-10 animate-spin rounded-full border-4 border-[color:var(--color-border)] border-t-[color:var(--color-ink)]"
                   role="status"
                   aria-label="Loading results"
                 />
@@ -357,14 +359,14 @@ export default function SearchResults() {
             ) : (
               <>
                 <div className="mb-4 flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold text-[#222]">{results.length} vehicles found</p>
+                  <p className="text-sm font-semibold text-[color:var(--color-ink)]">{results.length} vehicles found</p>
 
                   <div className="flex items-center gap-2">
                     {/* Mobile / tablet filter trigger */}
                     <button
                       type="button"
                       onClick={() => setFilterOpen(true)}
-                      className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 py-2 text-xs font-semibold text-[#222] hover:border-[#222] lg:hidden"
+                      className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 py-2 text-xs font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)] lg:hidden"
                     >
                       <Icon name="filter" size={15} />
                       Filter
@@ -375,7 +377,7 @@ export default function SearchResults() {
                       <button
                         type="button"
                         onClick={() => setSortOpen((v) => !v)}
-                        className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 py-2 text-xs font-semibold text-[#222] hover:border-[#222]"
+                        className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 py-2 text-xs font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
                       >
                         <Icon name="sort" size={15} />
                         Sort by
@@ -398,7 +400,7 @@ export default function SearchResults() {
                                   setSortOpen(false);
                                 }}
                                 className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
-                                  sort === opt.value ? "bg-[#f4f4f4] font-semibold text-[#222]" : "text-[#333] hover:bg-neutral-50"
+                                  sort === opt.value ? "bg-[#f4f4f4] font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-neutral-50"
                                 }`}
                               >
                                 {opt.label}
@@ -415,7 +417,7 @@ export default function SearchResults() {
                 {results.length === 0 ? (
                   <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-[color:var(--color-border)] py-16 text-center">
                     <Icon name="car" size={32} className="text-[color:var(--color-muted)]" />
-                    <p className="text-sm font-semibold text-[#222]">No vehicles match these filters</p>
+                    <p className="text-sm font-semibold text-[color:var(--color-ink)]">No vehicles match these filters</p>
                     <button
                       type="button"
                       onClick={() => {
@@ -423,7 +425,7 @@ export default function SearchResults() {
                         setSelectedFuels([]);
                         setMaxPrice(80);
                       }}
-                      className="text-sm font-semibold text-[#222] underline"
+                      className="text-sm font-semibold text-[color:var(--color-ink)] underline"
                     >
                       Clear filters
                     </button>
@@ -445,9 +447,9 @@ export default function SearchResults() {
       {filterOpen && (
         <div className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden">
           <div className="flex items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
-            <h2 className="text-base font-bold text-[#222]">Filters</h2>
+            <h2 className="text-base font-bold text-[color:var(--color-ink)]">Filters</h2>
             <button type="button" onClick={() => setFilterOpen(false)} aria-label="Close filters">
-              <Icon name="close" size={20} className="text-[#222]" />
+              <Icon name="close" size={20} className="text-[color:var(--color-ink)]" />
             </button>
           </div>
           <div className="flex-1 overflow-y-auto px-4 py-5">{filterPanel}</div>
@@ -455,7 +457,7 @@ export default function SearchResults() {
             <button
               type="button"
               onClick={() => setFilterOpen(false)}
-              className="w-full rounded-xl bg-[#222] py-3.5 text-sm font-bold text-white hover:bg-black"
+              className="w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-sm font-bold text-white hover:bg-black"
             >
               Show {results.length} vehicles
             </button>

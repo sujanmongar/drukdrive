@@ -10,6 +10,7 @@ import { routes } from "../../lib/routes";
 import { RENTAL_DAYS, computeFare } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
 import { formatTripDate } from "../../lib/formatTripDate";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 const DEFAULT_PICKUP = "Thimphu, Druk School";
 const DEFAULT_DROPOFF = "Punakha, Taxi Parking";
@@ -22,6 +23,7 @@ export default function VehicleDetails() {
   const [summaryOpen, setSummaryOpen] = useState(false);
 
   const vehicle = vehicles.find((v) => v.id === id) ?? vehicles[0];
+  usePageTitle(vehicle.name);
 
   const pickup = searchParams.get("pickup") || DEFAULT_PICKUP;
   const dropoff = searchParams.get("dropoff") || DEFAULT_DROPOFF;
@@ -40,7 +42,7 @@ export default function VehicleDetails() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="mb-4 flex items-center gap-1.5 text-sm font-medium text-[#222] hover:underline"
+          className="mb-4 flex items-center gap-1.5 text-sm font-medium text-[color:var(--color-ink)] hover:underline"
         >
           <Icon name="arrow-left" size={16} />
           Back to results
@@ -51,7 +53,7 @@ export default function VehicleDetails() {
         </div>
 
         <div className="mb-6 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-xl bg-neutral-50 px-4 py-3 text-sm">
-          <span className="flex items-center gap-1.5 text-[#222]">
+          <span className="flex items-center gap-1.5 text-[color:var(--color-ink)]">
             <Icon name="location" size={15} className="text-[color:var(--color-muted)]" />
             <span className="font-semibold">{pickup}</span>
             <Icon name="chevron-right" size={13} className="text-[color:var(--color-muted)]" />
@@ -73,7 +75,7 @@ export default function VehicleDetails() {
             <div className="mt-5 flex flex-wrap items-start justify-between gap-3">
               <div>
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <h1 className="text-2xl font-extrabold text-[#222] md:text-3xl">{vehicle.name}</h1>
+                  <h1 className="text-2xl font-extrabold text-[color:var(--color-ink)] md:text-3xl">{vehicle.name}</h1>
                   <span className="rounded-full bg-[color:var(--color-info-bg)] px-2.5 py-1 text-[10px] font-semibold uppercase text-[color:var(--color-info-text)]">
                     {vehicle.category}
                   </span>
@@ -87,7 +89,7 @@ export default function VehicleDetails() {
               </div>
               <div className="flex items-center gap-1.5 rounded-lg bg-[#f8f8f8] px-3 py-1.5">
                 <Icon name="star" size={16} className="fill-current text-amber-400" />
-                <span className="text-sm font-bold text-[#222]">{vehicle.rating}</span>
+                <span className="text-sm font-bold text-[color:var(--color-ink)]">{vehicle.rating}</span>
                 <span className="text-sm text-[color:var(--color-muted)]">({vehicle.reviewCount} reviews)</span>
               </div>
             </div>
@@ -95,33 +97,33 @@ export default function VehicleDetails() {
             {/* Specs */}
             <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
               <div className="flex flex-col items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] py-4">
-                <Icon name="seat" size={20} className="text-[#222]" />
-                <span className="text-sm font-semibold text-[#222]">{vehicle.seats} Seats</span>
+                <Icon name="seat" size={20} className="text-[color:var(--color-ink)]" />
+                <span className="text-sm font-semibold text-[color:var(--color-ink)]">{vehicle.seats} Seats</span>
               </div>
               <div className="flex flex-col items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] py-4">
-                <Icon name="fuel" size={20} className="text-[#222]" />
-                <span className="text-sm font-semibold text-[#222]">{vehicle.fuel}</span>
+                <Icon name="fuel" size={20} className="text-[color:var(--color-ink)]" />
+                <span className="text-sm font-semibold text-[color:var(--color-ink)]">{vehicle.fuel}</span>
               </div>
               <div className="flex flex-col items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] py-4">
-                <Icon name="car" size={20} className="text-[#222]" />
-                <span className="text-sm font-semibold text-[#222]">{vehicle.category}</span>
+                <Icon name="car" size={20} className="text-[color:var(--color-ink)]" />
+                <span className="text-sm font-semibold text-[color:var(--color-ink)]">{vehicle.category}</span>
               </div>
               <div className="flex flex-col items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] py-4">
-                <Icon name="clock" size={20} className="text-[#222]" />
-                <span className="text-sm font-semibold text-[#222]">{RENTAL_DAYS} Days</span>
+                <Icon name="clock" size={20} className="text-[color:var(--color-ink)]" />
+                <span className="text-sm font-semibold text-[color:var(--color-ink)]">{RENTAL_DAYS} Days</span>
               </div>
             </div>
 
             {/* Description */}
             <div className="mt-8">
-              <h2 className="mb-2 text-lg font-bold text-[#222]">About this vehicle</h2>
-              <p className="text-sm leading-relaxed text-[#333]">
+              <h2 className="mb-2 text-lg font-bold text-[color:var(--color-ink)]">About this vehicle</h2>
+              <p className="text-sm leading-relaxed text-[color:var(--color-ink-soft)]">
                 The {vehicle.name} is a well-maintained {vehicle.category.toLowerCase()} built for Bhutan's mountain
                 roads, offering a comfortable ride between Thimphu, Paro and Punakha with confident handling on
                 winding highway passes. Every trip includes an experienced local driver who knows the road
                 conditions and permit checkpoints, so you can relax and take in the views.
               </p>
-              <p className="mt-3 text-sm leading-relaxed text-[#333]">
+              <p className="mt-3 text-sm leading-relaxed text-[color:var(--color-ink-soft)]">
                 Regularly serviced and cleaned between rentals, this vehicle comes with {vehicle.seats} comfortable
                 seats, ample luggage space and a {vehicle.fuel.toLowerCase()} engine suited to both city driving and
                 longer outstation journeys.
@@ -132,19 +134,19 @@ export default function VehicleDetails() {
           {/* Right: sticky booking summary (desktop) */}
           <div className="hidden w-[340px] shrink-0 lg:block">
             <div className="sticky top-24 rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
-              <h2 className="text-base font-bold text-[#222]">Fare Summary</h2>
+              <h2 className="text-base font-bold text-[color:var(--color-ink)]">Fare Summary</h2>
               <div className="mt-4 flex flex-col gap-2.5 text-sm">
-                <div className="flex justify-between text-[#333]">
+                <div className="flex justify-between text-[color:var(--color-ink-soft)]">
                   <span>
                     Base fare × {RENTAL_DAYS} days
                   </span>
-                  <span className="font-medium text-[#222]">{format(basePrice)}</span>
+                  <span className="font-medium text-[color:var(--color-ink)]">{format(basePrice)}</span>
                 </div>
-                <div className="flex justify-between text-[#333]">
+                <div className="flex justify-between text-[color:var(--color-ink-soft)]">
                   <span>Taxes & fees (10%)</span>
-                  <span className="font-medium text-[#222]">{format(taxes)}</span>
+                  <span className="font-medium text-[color:var(--color-ink)]">{format(taxes)}</span>
                 </div>
-                <div className="mt-1 flex justify-between border-t border-[color:var(--color-border)] pt-3 text-base font-extrabold text-[#222]">
+                <div className="mt-1 flex justify-between border-t border-[color:var(--color-border)] pt-3 text-base font-extrabold text-[color:var(--color-ink)]">
                   <span>Total</span>
                   <span>{format(total)}</span>
                 </div>
@@ -161,13 +163,13 @@ export default function VehicleDetails() {
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
         {summaryOpen && (
           <div className="mb-3 flex flex-col gap-2 border-b border-[color:var(--color-border)] pb-3 text-sm">
-            <div className="flex justify-between text-[#333]">
+            <div className="flex justify-between text-[color:var(--color-ink-soft)]">
               <span>Base fare × {RENTAL_DAYS} days</span>
-              <span className="font-medium text-[#222]">{format(basePrice)}</span>
+              <span className="font-medium text-[color:var(--color-ink)]">{format(basePrice)}</span>
             </div>
-            <div className="flex justify-between text-[#333]">
+            <div className="flex justify-between text-[color:var(--color-ink-soft)]">
               <span>Taxes & fees (10%)</span>
-              <span className="font-medium text-[#222]">{format(taxes)}</span>
+              <span className="font-medium text-[color:var(--color-ink)]">{format(taxes)}</span>
             </div>
           </div>
         )}
@@ -177,7 +179,7 @@ export default function VehicleDetails() {
             onClick={() => setSummaryOpen((v) => !v)}
             className="flex flex-col items-start"
           >
-            <span className="flex items-center gap-1 text-lg font-extrabold text-[#222]">
+            <span className="flex items-center gap-1 text-lg font-extrabold text-[color:var(--color-ink)]">
               {format(total)}
               <Icon name={summaryOpen ? "chevron-down" : "chevron-right"} size={14} className="text-[color:var(--color-muted)]" />
             </span>

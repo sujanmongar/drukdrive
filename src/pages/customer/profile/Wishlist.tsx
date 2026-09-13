@@ -6,8 +6,10 @@ import Icon from "../../../components/Icon";
 import { vehicles } from "../../../data/mockData";
 import { useWishlist } from "../../../lib/wishlist";
 import { accountTabs } from "./_tabs";
+import { usePageTitle } from "../../../hooks/usePageTitle";
 
 export default function AccountWishlist() {
+  usePageTitle("Wishlist");
   const { ids } = useWishlist();
   const saved = vehicles.filter((v) => ids.includes(v.id));
 
@@ -19,13 +21,13 @@ export default function AccountWishlist() {
       </div>
 
       <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
-        <h2 className="text-2xl font-bold text-[#222]">Wishlist</h2>
+        <h2 className="text-2xl font-bold text-[color:var(--color-ink)]">Wishlist</h2>
         <p className="mt-1 text-sm text-[color:var(--color-muted)]">Vehicles you've saved for later.</p>
 
         {saved.length === 0 ? (
           <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
             <Icon name="heart" size={32} className="text-[color:var(--color-muted)]" />
-            <p className="mt-3 text-sm font-semibold text-[#222]">No saved vehicles yet</p>
+            <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No saved vehicles yet</p>
             <p className="mt-1 max-w-xs text-sm text-[color:var(--color-muted)]">
               Tap the heart icon on any vehicle to save it here for later.
             </p>

@@ -34,7 +34,7 @@ export default function LocationPickerSheet({
     <>
       <div className="flex items-center gap-4 border-b border-[color:var(--color-border)] p-4 md:p-3">
         <button type="button" onClick={onClose} aria-label="Close" className="md:hidden">
-          <Icon name="close" size={22} className="text-[#222]" />
+          <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />
         </button>
         <input
           autoFocus
@@ -42,7 +42,7 @@ export default function LocationPickerSheet({
           placeholder={label}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full bg-transparent text-base text-[#222] outline-none placeholder:text-[color:var(--color-muted)] md:text-sm"
+          className="w-full bg-transparent text-base text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] md:text-sm"
         />
       </div>
       <div className="flex-1 overflow-y-auto">
@@ -56,9 +56,9 @@ export default function LocationPickerSheet({
               onClick={() => onSelect(`${loc.city}, ${loc.name}`)}
               className="flex w-full items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3.5 text-left hover:bg-neutral-50 md:px-3 md:py-2.5"
             >
-              <Icon name="location" size={18} className="shrink-0 -rotate-45 text-[#222]" />
+              <Icon name="location" size={18} className="shrink-0 -rotate-45 text-[color:var(--color-ink)]" />
               <span>
-                <span className="block text-sm font-bold text-[#222]">{loc.name}</span>
+                <span className="block text-sm font-bold text-[color:var(--color-ink)]">{loc.name}</span>
                 <span className="block text-xs text-[color:var(--color-muted)]">{loc.city}</span>
               </span>
             </button>

@@ -1,14 +1,14 @@
 const styles: Record<string, string> = {
-  Upcoming: "bg-blue-50 text-blue-700",
-  Completed: "bg-green-50 text-[color:var(--color-success)]",
-  Cancelled: "bg-red-50 text-[color:var(--color-danger)]",
-  Active: "bg-green-50 text-[color:var(--color-success)]",
-  "Under review": "bg-amber-50 text-amber-700",
-  "Not confirmed": "bg-blue-50 text-blue-700",
-  Confirmed: "bg-green-50 text-[color:var(--color-success)]",
-  Pending: "bg-amber-50 text-amber-700",
-  Credited: "bg-green-50 text-[color:var(--color-success)]",
-  Processed: "bg-blue-50 text-blue-700",
+  Upcoming: "bg-[color:var(--color-info-bg)] text-[color:var(--color-info-text)]",
+  Completed: "bg-[color:var(--color-success-bg)] text-[color:var(--color-success)]",
+  Cancelled: "bg-[color:var(--color-danger-bg)] text-[color:var(--color-danger)]",
+  Active: "bg-[color:var(--color-success-bg)] text-[color:var(--color-success)]",
+  "Under review": "bg-[color:var(--color-warning-bg)] text-[color:var(--color-warning)]",
+  "Not confirmed": "bg-[color:var(--color-info-bg)] text-[color:var(--color-info-text)]",
+  Confirmed: "bg-[color:var(--color-success-bg)] text-[color:var(--color-success)]",
+  Pending: "bg-[color:var(--color-warning-bg)] text-[color:var(--color-warning)]",
+  Credited: "bg-[color:var(--color-success-bg)] text-[color:var(--color-success)]",
+  Processed: "bg-[color:var(--color-info-bg)] text-[color:var(--color-info-text)]",
 };
 
 export default function StatusBadge({ status }: { status: string }) {

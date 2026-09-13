@@ -13,11 +13,11 @@ export default function AccountCardsGrid({ cards }: { cards: AccountCard[] }) {
         <Link
           key={c.title}
           to={c.to}
-          className="flex flex-col gap-4 rounded-xl border border-[color:var(--color-border)] p-6 hover:border-[#222]"
+          className="flex flex-col gap-4 rounded-xl border border-[color:var(--color-border)] p-6 hover:border-[color:var(--color-ink)]"
         >
-          <Icon name={c.icon} size={26} className="text-[#222]" />
+          <Icon name={c.icon} size={26} className="text-[color:var(--color-ink)]" />
           <div>
-            <p className="text-base font-bold text-[#222]">{c.title}</p>
+            <p className="text-base font-bold text-[color:var(--color-ink)]">{c.title}</p>
             <p className="mt-1 text-sm text-[color:var(--color-muted)]">{c.description}</p>
           </div>
         </Link>

@@ -39,24 +39,24 @@ export default function VehicleCard({
           <Icon
             name="heart"
             size={16}
-            className={`transition-colors ${saved ? "fill-current text-[color:var(--color-danger)]" : "text-[#222]"}`}
+            className={`transition-colors ${saved ? "fill-current text-[color:var(--color-danger)]" : "text-[color:var(--color-ink)]"}`}
           />
         </button>
       </div>
       <div className="p-4">
         <div className="mb-1.5 flex flex-wrap items-center gap-2">
-          <p className="text-base font-bold text-[#222]">{vehicle.name}</p>
+          <p className="text-base font-bold text-[color:var(--color-ink)]">{vehicle.name}</p>
           <span className="rounded-full bg-[color:var(--color-info-bg)] px-2 py-0.5 text-[9px] font-semibold uppercase text-[color:var(--color-info-text)]">
             {vehicle.category}
           </span>
         </div>
-        <div className="mb-2 flex items-center gap-1.5 text-xs text-[#222]">
+        <div className="mb-2 flex items-center gap-1.5 text-xs text-[color:var(--color-ink)]">
           <Icon name="location" size={14} />
           {vehicle.location}
           <span className="text-[color:var(--color-muted)]">•</span>
           {vehicle.type}
         </div>
-        <div className="mb-3 flex items-center gap-3 text-xs text-[#222]">
+        <div className="mb-3 flex items-center gap-3 text-xs text-[color:var(--color-ink)]">
           <span className="flex items-center gap-1">
             <Icon name="seat" size={15} />
             {vehicle.seats} Seats
@@ -73,8 +73,8 @@ export default function VehicleCard({
         <div className="flex items-end justify-between">
           <div>
             <div className="flex items-baseline gap-1">
-              <span className="text-xl font-extrabold text-[#222]">{format(vehicle.pricePerDay)}</span>
-              <span className="text-xs text-[#222]">/day</span>
+              <span className="text-xl font-extrabold text-[color:var(--color-ink)]">{format(vehicle.pricePerDay)}</span>
+              <span className="text-xs text-[color:var(--color-ink)]">/day</span>
               {vehicle.strikePrice && (
                 <span className="text-xs text-red-500 line-through">{format(vehicle.strikePrice)}</span>
               )}
@@ -83,7 +83,7 @@ export default function VehicleCard({
           </div>
           <Link
             to={detailsHref}
-            className="rounded-xl bg-[#222] px-5 py-2.5 text-xs font-bold text-white hover:bg-black"
+            className="rounded-xl bg-[color:var(--color-ink)] px-5 py-2.5 text-xs font-bold text-white hover:bg-black"
           >
             Book Now
           </Link>

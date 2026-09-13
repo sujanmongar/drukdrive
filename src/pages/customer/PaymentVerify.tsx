@@ -6,6 +6,7 @@ import BookingRouteCard from "../../components/BookingRouteCard";
 import { routes } from "../../lib/routes";
 import { vehicles } from "../../data/mockData";
 import { useCurrency } from "../../lib/currency";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 const OTP_LENGTH = 6;
 const COUNTDOWN_SECONDS = 113; // matches the "Time left: 1:53" reference
@@ -17,6 +18,7 @@ function formatCountdown(seconds: number) {
 }
 
 export default function PaymentVerify() {
+  usePageTitle("Verify payment");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
@@ -73,7 +75,7 @@ export default function PaymentVerify() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
           {/* Left: OTP form */}
           <div className="flex min-w-0 flex-col items-center pt-6 text-center lg:items-start lg:pt-10 lg:text-left">
-            <h1 className="text-2xl font-bold text-[#222] md:text-3xl">OTP Verification</h1>
+            <h1 className="text-2xl font-bold text-[color:var(--color-ink)] md:text-3xl">OTP Verification</h1>
             <p className="mt-3 max-w-sm text-sm text-[color:var(--color-muted)]">
               An OTP has been sent to your mobile number and email associated with your account. OTP is valid for
               the next {Math.ceil(COUNTDOWN_SECONDS / 60)} minutes only.
@@ -91,9 +93,9 @@ export default function PaymentVerify() {
                   onKeyDown={(e) => handleKeyDown(i, e)}
                   inputMode="numeric"
                   maxLength={1}
-                  className={`size-[48px] rounded-2xl border text-center text-xl font-bold text-[#222] outline-none transition-colors sm:size-[56px] ${
-                    digit ? "border-[#222]" : "border-[color:var(--color-border)]"
-                  } ${touched && !isComplete ? "border-[color:var(--color-danger)]" : ""} focus:border-[#222]`}
+                  className={`size-[48px] rounded-2xl border text-center text-xl font-bold text-[color:var(--color-ink)] outline-none transition-colors sm:size-[56px] ${
+                    digit ? "border-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"
+                  } ${touched && !isComplete ? "border-[color:var(--color-danger)]" : ""} focus:border-[color:var(--color-ink)]`}
                 />
               ))}
             </div>
@@ -109,26 +111,26 @@ export default function PaymentVerify() {
             <button
               type="button"
               onClick={handlePay}
-              className="mt-6 w-full max-w-md rounded-xl bg-[#222] py-4 text-base font-bold text-white transition-colors hover:bg-black"
+              className="mt-6 w-full max-w-md rounded-xl bg-[color:var(--color-ink)] py-4 text-base font-bold text-white transition-colors hover:bg-black"
             >
               Pay {format(amountDue)} Now
             </button>
 
             <p className="mt-4 max-w-md text-xs text-[color:var(--color-muted)]">
               By continuing to pay, I understand and agree with the{" "}
-              <span className="font-semibold text-[#2276e3]">privacy policy</span>, the{" "}
-              <span className="font-semibold text-[#2276e3]">user agreement</span> and{" "}
-              <span className="font-semibold text-[#2276e3]">terms of service</span> of DrukDrive.
+              <span className="font-semibold text-[color:var(--color-link)]">privacy policy</span>, the{" "}
+              <span className="font-semibold text-[color:var(--color-link)]">user agreement</span> and{" "}
+              <span className="font-semibold text-[color:var(--color-link)]">terms of service</span> of DrukDrive.
             </p>
           </div>
 
           {/* Right: booking summary sidebar */}
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="flex flex-col gap-4">
-              <h2 className="text-lg font-bold text-[#222]">Your Booking</h2>
+              <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Your Booking</h2>
               <BookingRouteCard vehicle={vehicle} pickup={pickup} dropoff={dropoff} date={date} />
               <div className="flex items-center justify-between rounded-xl border border-[color:var(--color-border)] bg-white p-4">
-                <p className="text-base font-bold text-[#222]">Grand Total</p>
+                <p className="text-base font-bold text-[color:var(--color-ink)]">Grand Total</p>
                 <p className="text-base font-bold text-[color:var(--color-success)]">{format(amountDue)}</p>
               </div>
             </div>

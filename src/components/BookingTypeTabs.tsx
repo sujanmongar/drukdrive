@@ -21,8 +21,8 @@ export default function BookingTypeTabs({
             onClick={() => onChange(t)}
             className={`shrink-0 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
               active
-                ? "bg-[#222] font-bold text-white"
-                : "border border-[#222] text-[#222] hover:bg-neutral-50"
+                ? "bg-[color:var(--color-ink)] font-bold text-white"
+                : "border border-[color:var(--color-ink)] text-[color:var(--color-ink)] hover:bg-neutral-50"
             }`}
           >
             {bookingTypeLabels[t]}

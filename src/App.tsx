@@ -45,7 +45,7 @@ function PageFallback() {
   return (
     <div className="flex min-h-[60svh] items-center justify-center">
       <div
-        className="size-8 animate-spin rounded-full border-4 border-[color:var(--color-border)] border-t-[#222]"
+        className="size-8 animate-spin rounded-full border-4 border-[color:var(--color-border)] border-t-[color:var(--color-ink)]"
         role="status"
         aria-label="Loading"
       />

@@ -8,6 +8,7 @@ import Button from "../../components/Button";
 import { currentUser } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 function maskEmail(email: string) {
   const [user, domain] = email.split("@");
@@ -18,6 +19,7 @@ const [defaultFirstName, ...defaultRest] = currentUser.name.split(" ");
 const defaultLastName = defaultRest.join(" ");
 
 export default function ProviderAccountEdit() {
+  usePageTitle("Edit Driver Account");
   const navigate = useNavigate();
   const [first, setFirst] = useState(defaultFirstName);
   const [last, setLast] = useState(defaultLastName);
@@ -46,13 +48,13 @@ export default function ProviderAccountEdit() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-1.5 text-sm text-[color:var(--color-muted)]">
-              <Link to={routes.providerAccount} className="hover:text-[#222]">
+              <Link to={routes.providerAccount} className="hover:text-[color:var(--color-ink)]">
                 Account
               </Link>
               <Icon name="chevron-right" size={14} />
               <span>Personal info</span>
             </div>
-            <h2 className="mt-1 text-2xl font-bold text-[#222]">Personal Info</h2>
+            <h2 className="mt-1 text-2xl font-bold text-[color:var(--color-ink)]">Personal Info</h2>
           </div>
           <Button variant="secondary" size="sm" onClick={() => navigate(-1)}>
             Back
@@ -62,7 +64,7 @@ export default function ProviderAccountEdit() {
         <div className="mt-6 max-w-2xl">
           <div className="flex items-center justify-between border-b border-[color:var(--color-border)] pb-5">
             <div>
-              <p className="text-sm font-semibold text-[#222]">Legal name</p>
+              <p className="text-sm font-semibold text-[color:var(--color-ink)]">Legal name</p>
               <p className="text-xs text-[color:var(--color-muted)]">
                 This is the name on your travel document, which could be a license or a passport.
               </p>
@@ -73,7 +75,7 @@ export default function ProviderAccountEdit() {
                 setFirst(defaultFirstName);
                 setLast(defaultLastName);
               }}
-              className="shrink-0 text-sm font-medium text-[#222] underline"
+              className="shrink-0 text-sm font-medium text-[color:var(--color-ink)] underline"
             >
               Cancel
             </button>
@@ -86,7 +88,7 @@ export default function ProviderAccountEdit() {
                 type="text"
                 value={first}
                 onChange={(e) => setFirst(e.target.value)}
-                className="rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm font-semibold text-[#222] outline-none focus:border-[#222]"
+                className="rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm font-semibold text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)]"
               />
             </label>
             <label className="flex flex-col gap-1.5">
@@ -95,7 +97,7 @@ export default function ProviderAccountEdit() {
                 type="text"
                 value={last}
                 onChange={(e) => setLast(e.target.value)}
-                className="rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm font-semibold text-[#222] outline-none focus:border-[#222]"
+                className="rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm font-semibold text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)]"
               />
             </label>
           </div>
@@ -112,9 +114,9 @@ export default function ProviderAccountEdit() {
               >
                 <div>
                   <p className="text-xs font-medium text-[color:var(--color-muted)]">{row.label}</p>
-                  <p className="mt-0.5 text-sm font-semibold text-[#222]">{row.value}</p>
+                  <p className="mt-0.5 text-sm font-semibold text-[color:var(--color-ink)]">{row.value}</p>
                 </div>
-                <button type="button" className="shrink-0 text-sm font-medium text-[#222] underline">
+                <button type="button" className="shrink-0 text-sm font-medium text-[color:var(--color-ink)] underline">
                   Edit
                 </button>
               </div>
