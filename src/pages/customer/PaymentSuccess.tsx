@@ -30,14 +30,18 @@ export default function PaymentSuccess() {
   const dropoff = searchParams.get("dropoff") || vehicle.location;
   const date = searchParams.get("date") || todayFormatted();
 
-  const totalParam = searchParams.get("total");
-  const total = totalParam ? Number(totalParam) : computeFare(vehicle.pricePerDay).total;
+  const grandTotalParam = searchParams.get("grandTotal") || searchParams.get("total");
+  const grandTotal = grandTotalParam ? Number(grandTotalParam) : computeFare(vehicle.pricePerDay).total;
+  const amountDueParam = searchParams.get("amountDue");
+  const amountDue = amountDueParam ? Number(amountDueParam) : grandTotal;
+  const paymentOption = searchParams.get("paymentOption") || "full";
+  const method = searchParams.get("method") || "Credit Card";
 
   const [bookingId] = useState(generateBookingId);
 
   const followOnParams = new URLSearchParams({
     vehicleId: vehicle.id,
-    total: total.toFixed(2),
+    total: grandTotal.toFixed(2),
     pickup,
     dropoff,
     date,
@@ -48,18 +52,19 @@ export default function PaymentSuccess() {
   const receiptRows = [
     { label: "Transactions ID", value: `HBTTB${bookingId.slice(-7)}` },
     { label: "Date", value: todayFormatted() },
-    { label: "Mode of Payment", value: "Credit Card" },
+    { label: "Mode of Payment", value: method },
     { label: "Transaction Status", value: "Success", accent: true },
     { label: "Customer Name", value: currentUser.name },
     { label: "Mobile No", value: currentUser.phone },
     { label: "Email Address", value: currentUser.email },
-    { label: "Payment Amount", value: format(total) },
+    { label: "Payment Amount", value: format(amountDue) },
+    ...(paymentOption === "half" ? [{ label: "Balance due to driver", value: format(grandTotal - amountDue) }] : []),
   ];
 
   const emailHref = `mailto:${currentUser.email}?subject=${encodeURIComponent(
     `DrukDrive receipt — ${bookingId}`,
   )}&body=${encodeURIComponent(
-    `Booking ${bookingId}\nVehicle: ${vehicle.name}\nPickup: ${pickup}\nDrop-off: ${dropoff}\nDate: ${date}\nAmount paid: ${format(total)}`,
+    `Booking ${bookingId}\nVehicle: ${vehicle.name}\nPickup: ${pickup}\nDrop-off: ${dropoff}\nDate: ${date}\nAmount paid: ${format(amountDue)}`,
   )}`;
 
   const actions = [
