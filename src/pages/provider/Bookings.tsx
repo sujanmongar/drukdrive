@@ -5,6 +5,7 @@ import SecondaryTabs from "../../components/SecondaryTabs";
 import ProfileHero from "../../components/ProfileHero";
 import StatusBadge from "../../components/StatusBadge";
 import Icon from "../../components/Icon";
+import VehicleImage from "../../components/VehicleImage";
 import { driverBookings } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
@@ -72,7 +73,7 @@ export default function ProviderBookings() {
                 }`}
               >
                 <div className="flex items-center gap-3 sm:w-48 sm:shrink-0">
-                  <img src={b.image} alt={b.vehicle} className="size-12 rounded-lg object-cover" />
+                  <VehicleImage className="size-12 rounded-lg" />
                   <div>
                     <p className="text-xs text-[color:var(--color-muted)]">Booking ID</p>
                     <p className="text-sm font-bold text-[color:var(--color-success)]">#{b.id}</p>

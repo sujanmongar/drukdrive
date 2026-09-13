@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
+import VehicleImage from "../../components/VehicleImage";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { RENTAL_DAYS, computeFare } from "../../lib/pricing";
@@ -38,11 +39,7 @@ export default function VehicleDetails() {
           {/* Left: gallery + details */}
           <div className="min-w-0 flex-1">
             <div className="overflow-hidden rounded-xl">
-              <img
-                src={vehicle.image}
-                alt={vehicle.name}
-                className="h-[240px] w-full object-cover sm:h-[340px] md:h-[420px]"
-              />
+              <VehicleImage category={vehicle.category} className="h-[240px] w-full sm:h-[340px] md:h-[420px]" />
             </div>
 
             <div className="mt-5 flex flex-wrap items-start justify-between gap-3">

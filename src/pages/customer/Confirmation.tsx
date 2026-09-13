@@ -2,6 +2,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Button from "../../components/Button";
 import Icon from "../../components/Icon";
+import VehicleImage from "../../components/VehicleImage";
 import { routes } from "../../lib/routes";
 import { bookings, vehicles } from "../../data/mockData";
 import { computeFare } from "../../lib/pricing";
@@ -49,11 +50,7 @@ export default function Confirmation() {
         <div className="mt-8 rounded-xl border border-[#e5ebf0] p-6 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <img
-                src={booking.image}
-                alt={booking.vehicle}
-                className="size-16 rounded-lg object-cover"
-              />
+              <VehicleImage className="size-16 rounded-lg" />
               <div>
                 <p className="text-base font-bold text-[#222]">{booking.vehicle}</p>
                 <p className="text-xs text-[color:var(--color-muted)]">{booking.bookingType}</p>

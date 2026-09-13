@@ -41,3 +41,13 @@ body {
 * {
   box-sizing: border-box;
 }
+
+/* Horizontally-scrolling rows (recent searches, popular cars, ...) still
+   scroll with touch/trackpad — just without the visible scrollbar track. */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

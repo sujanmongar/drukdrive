@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
+import VehicleImage from "../../components/VehicleImage";
 import BookingStepper from "../../components/BookingStepper";
 import { routes } from "../../lib/routes";
 import { vehicles } from "../../data/mockData";
@@ -49,7 +50,7 @@ export default function Payment() {
         <BookingStepper current={3} />
 
         <div className="mt-8 flex items-center gap-4 rounded-xl bg-neutral-50 p-4">
-          <img src={vehicle.image} alt={vehicle.name} className="size-14 shrink-0 rounded-lg object-cover" />
+          <VehicleImage category={vehicle.category} className="size-14 shrink-0 rounded-lg" />
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-sm font-bold text-[#222]">{vehicle.name}</p>

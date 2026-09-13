@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
+import VehicleImage from "../../components/VehicleImage";
 import PriceSummarySheet from "../../components/PriceSummarySheet";
 import { vehicles, currentUser } from "../../data/mockData";
 import { routes } from "../../lib/routes";
@@ -65,7 +66,7 @@ export default function ReviewBooking() {
 
         <div className="mt-4 rounded-xl border border-[color:var(--color-border)] p-4">
           <div className="flex items-center gap-4">
-            <img src={vehicle.image} alt={vehicle.name} className="size-16 shrink-0 rounded-lg object-cover" />
+            <VehicleImage category={vehicle.category} className="size-16 shrink-0 rounded-lg" />
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <p className="text-base font-bold text-[#222]">{vehicle.name}</p>

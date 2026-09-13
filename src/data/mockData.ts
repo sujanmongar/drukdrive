@@ -94,24 +94,27 @@ export const vehicles: Vehicle[] = [
 export const recentSearches = [
   {
     id: "s1",
-    title: "Punakha, Khuruthang",
-    subtitle: "11 Dec, 12:00 - 12 Dec, 12:00",
-    image:
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=200&auto=format&fit=crop",
+    title: "Toyota Prado GX",
+    subtitle: "Thimphu → Punakha, 11 Dec",
+    vehicleId: "toyota-prado-gx",
+    pickup: "Thimphu, Druk School",
+    dropoff: "Punakha, Khuruthang Taxi Parking",
   },
   {
     id: "s2",
-    title: "Thimphu, Memorial Chorten",
-    subtitle: "27 Nov, 09:34 - 28 Nov, 13:00",
-    image:
-      "https://images.unsplash.com/photo-1602928321679-560bb453f190?q=80&w=200&auto=format&fit=crop",
+    title: "Hyundai Santa Fe",
+    subtitle: "Thimphu → Paro, 27 Nov",
+    vehicleId: "hyundai-santa-fe",
+    pickup: "Thimphu, Memorial Chorten",
+    dropoff: "Paro, International Airport",
   },
   {
     id: "s3",
-    title: "Phuentsholing, Terminal",
-    subtitle: "12 Oct, 10:00 - 13 Oct, 13:00",
-    image:
-      "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=200&auto=format&fit=crop",
+    title: "Toyota Hiace Bus",
+    subtitle: "Phuentsholing → Thimphu, 12 Oct",
+    vehicleId: "toyota-hiace-bus",
+    pickup: "Phuentsholing, Terminal",
+    dropoff: "Thimphu, Clock Tower Square",
   },
 ];
 

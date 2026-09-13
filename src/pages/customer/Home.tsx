@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import BookingTypeTabs from "../../components/BookingTypeTabs";
 import VehicleCard from "../../components/VehicleCard";
+import VehicleImage from "../../components/VehicleImage";
 import Icon from "../../components/Icon";
 import HeroBlobs from "../../components/HeroBlobs";
 import LocationPickerSheet from "../../components/LocationPickerSheet";
@@ -49,6 +50,12 @@ export default function Home() {
     navigate(`${routes.search}?type=${type}`);
   }
 
+  function handleRecentSearch(vehicleId: string, recentPickup: string, recentDropoff: string) {
+    // A recent search already implies pickup, drop-off and the vehicle —
+    // jump straight to that vehicle instead of re-running a fresh search.
+    navigate(`${routes.vehicle(vehicleId)}?pickup=${encodeURIComponent(recentPickup)}&dropoff=${encodeURIComponent(recentDropoff)}`);
+  }
+
   // While "driving", the rider homepage/search isn't relevant — send the
   // driver straight to their dashboard, even on a direct nav/refresh of "/".
   // (Placed after all hooks above so hook call order stays stable.)
@@ -68,96 +75,163 @@ export default function Home() {
           <HeroBlobs type={type} />
         </div>
 
-        <div className="relative mx-auto max-w-[1440px] px-4 pb-10 pt-6 md:px-[60px] md:pb-24 md:pt-16">
-          <h1 className="max-w-[300px] text-2xl font-bold leading-snug text-[rgba(0,0,0,0.87)] sm:max-w-md sm:text-3xl md:max-w-[46%] md:text-[40px] md:leading-[1.15]">
-            Your journey across Bhutan starts here.
-          </h1>
+        <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 gap-8 px-4 pb-10 pt-6 md:grid-cols-[1fr_auto] md:items-center md:px-[60px] md:pb-24 md:pt-16">
+          <div>
+            <h1 className="max-w-[280px] text-2xl font-bold leading-snug text-[rgba(0,0,0,0.87)] sm:max-w-md sm:text-3xl md:max-w-[420px] md:text-[40px] md:leading-[1.1]">
+              Go anywhere in Bhutan.
+            </h1>
 
-          <div className="mt-6 w-full max-w-[506px] rounded-2xl bg-white p-4 shadow-[0px_2px_14px_rgba(0,0,0,0.1)] md:mt-8 md:p-[26px]">
-            <BookingTypeTabs value={type} onChange={setType} />
+            <div className="relative mt-6 w-full max-w-[506px] rounded-2xl bg-white p-4 shadow-[0px_2px_14px_rgba(0,0,0,0.1)] md:mt-8 md:p-[26px]">
+              <BookingTypeTabs value={type} onChange={setType} />
 
-            {showTripModeTabs && (
-              <div className="mt-4 flex gap-4 border-b border-[#e5ebf0]">
-                {(["one-way", "return"] as TripMode[]).map((m) => {
-                  const active = tripMode === m;
-                  return (
-                    <button
-                      key={m}
-                      type="button"
-                      onClick={() => setTripMode(m)}
-                      className={`pb-2 text-sm transition-colors ${
-                        active ? "border-b-2 border-[#222] font-bold text-[#222]" : "text-[#747474]"
-                      }`}
-                    >
-                      {m === "one-way" ? "One Way" : "Return"}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+              {showTripModeTabs && (
+                <div className="mt-4 flex gap-4 border-b border-[#e5ebf0]">
+                  {(["one-way", "return"] as TripMode[]).map((m) => {
+                    const active = tripMode === m;
+                    return (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => setTripMode(m)}
+                        className={`pb-2 text-sm transition-colors ${
+                          active ? "border-b-2 border-[#222] font-bold text-[#222]" : "text-[#747474]"
+                        }`}
+                      >
+                        {m === "one-way" ? "One Way" : "Return"}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
 
-            <div className="mt-4 flex flex-col gap-3">
-              <button
-                type="button"
-                onClick={() => setActiveField("pickup")}
-                className="flex h-[58px] items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left transition-colors hover:border-[#222]"
-              >
-                <Icon name="location" size={20} className="shrink-0 text-[#222]" />
-                <span className="flex flex-col gap-1">
-                  <span className="text-[11px] text-[#333]">Pick up location</span>
-                  <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">{pickup}</span>
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveField("dropoff")}
-                className="flex h-[58px] items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left transition-colors hover:border-[#222]"
-              >
-                <Icon name="location" size={20} className="shrink-0 text-[#222]" />
-                <span className="flex flex-col gap-1">
-                  <span className="text-[11px] text-[#333]">Drop off location</span>
-                  <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">{dropoff}</span>
-                </span>
-              </button>
-
-              <div className="flex overflow-hidden rounded-xl border border-[#e5ebf0]">
-                <button
-                  type="button"
-                  onClick={() => setActiveField("date")}
-                  className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
-                >
-                  <Icon name="calendar" size={20} className="shrink-0 text-[#222]" />
-                  <span className="flex flex-col gap-1">
-                    <span className="text-[11px] text-[#333]">Pick up date</span>
-                    <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">
-                      {pickupDate.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })}
+              <div className="mt-4 flex flex-col gap-3">
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
+                    className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left transition-colors hover:border-[#222]"
+                  >
+                    <Icon name="location" size={20} className="shrink-0 text-[#222]" />
+                    <span className="flex flex-col gap-1">
+                      <span className="text-[11px] text-[#333]">Pick up location</span>
+                      <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">{pickup}</span>
                     </span>
-                  </span>
-                </button>
-                <div className="w-px bg-[#e5ebf0]" />
-                <button
-                  type="button"
-                  onClick={() => setActiveField("date")}
-                  className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
-                >
-                  <Icon name="clock" size={20} className="shrink-0 text-[#222]" />
-                  <span className="flex flex-col gap-1">
-                    <span className="text-[11px] text-[#333]">Pick up time</span>
-                    <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">{pickupTime}</span>
-                  </span>
-                </button>
+                  </button>
+                  {activeField === "pickup" && (
+                    <LocationPickerSheet
+                      label="Pick up location"
+                      onSelect={(v) => {
+                        setPickup(v);
+                        setActiveField(null);
+                      }}
+                      onClose={() => setActiveField(null)}
+                    />
+                  )}
+                </div>
+
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setActiveField(activeField === "dropoff" ? null : "dropoff")}
+                    className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left transition-colors hover:border-[#222]"
+                  >
+                    <Icon name="location" size={20} className="shrink-0 text-[#222]" />
+                    <span className="flex flex-col gap-1">
+                      <span className="text-[11px] text-[#333]">Drop off location</span>
+                      <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">{dropoff}</span>
+                    </span>
+                  </button>
+                  {activeField === "dropoff" && (
+                    <LocationPickerSheet
+                      label="Drop off location"
+                      onSelect={(v) => {
+                        setDropoff(v);
+                        setActiveField(null);
+                      }}
+                      onClose={() => setActiveField(null)}
+                    />
+                  )}
+                </div>
+
+                <div className="relative">
+                  <div className="flex overflow-hidden rounded-xl border border-[#e5ebf0]">
+                    <button
+                      type="button"
+                      onClick={() => setActiveField(activeField === "date" ? null : "date")}
+                      className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
+                    >
+                      <Icon name="calendar" size={20} className="shrink-0 text-[#222]" />
+                      <span className="flex flex-col gap-1">
+                        <span className="text-[11px] text-[#333]">Pick up date</span>
+                        <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">
+                          {pickupDate.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })}
+                        </span>
+                      </span>
+                    </button>
+                    <div className="w-px bg-[#e5ebf0]" />
+                    <button
+                      type="button"
+                      onClick={() => setActiveField(activeField === "date" ? null : "date")}
+                      className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
+                    >
+                      <Icon name="clock" size={20} className="shrink-0 text-[#222]" />
+                      <span className="flex flex-col gap-1">
+                        <span className="text-[11px] text-[#333]">Pick up time</span>
+                        <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">{pickupTime}</span>
+                      </span>
+                    </button>
+                  </div>
+                  {activeField === "date" && (
+                    <DatePickerSheet
+                      mode={dateMode}
+                      initialPickup={pickupDate}
+                      initialDropoff={dropoffDate ?? undefined}
+                      initialPickupTime={pickupTime}
+                      initialDropoffTime={dropoffTime}
+                      onConfirm={({ pickup: p, pickupTime: pt, dropoff: d, dropoffTime: dt }) => {
+                        setPickupDate(p);
+                        setPickupTime(pt);
+                        if (d) setDropoffDate(d);
+                        if (dt) setDropoffTime(dt);
+                        setActiveField(null);
+                      }}
+                      onClose={() => setActiveField(null)}
+                    />
+                  )}
+                </div>
+              </div>
+
+              <p className="mt-3 text-sm font-semibold text-[#00b53a]">Duration: 3 hrs</p>
+
+              <button
+                type="button"
+                onClick={handleSearch}
+                className="mt-4 w-full rounded-xl bg-[#222] py-4 text-base font-bold text-white transition-all hover:bg-black active:scale-[0.99]"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+
+          {/* Right side of hero — otherwise-empty space on wide screens gets
+              a quick trust signal instead of staying blank. */}
+          <div className="relative hidden md:block md:w-[380px] lg:w-[440px]">
+            <div className="relative overflow-hidden rounded-3xl">
+              <svg viewBox="0 0 440 420" className="block w-full" aria-hidden="true">
+                <path d="M0 300 L70 180 L130 260 L190 120 L260 280 L320 160 L390 260 L440 220 L440 420 L0 420 Z" fill="#f0deb0" />
+                <path d="M0 340 L90 240 L160 320 L230 200 L300 320 L370 240 L440 300 L440 420 L0 420 Z" fill="#e7cd93" />
+                <circle cx="360" cy="70" r="42" fill="#ffe9ad" />
+              </svg>
+            </div>
+            <div className="absolute -bottom-5 left-1/2 flex w-[86%] -translate-x-1/2 items-center gap-3 rounded-2xl bg-white px-4 py-3.5 shadow-[0px_8px_24px_rgba(0,0,0,0.12)]">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-info-bg)]">
+                <Icon name="star" size={18} className="fill-current text-amber-400" />
+              </span>
+              <div>
+                <p className="text-sm font-extrabold text-[#222]">4.8 / 5 average rating</p>
+                <p className="text-xs text-[color:var(--color-muted)]">From 600+ verified rides across Bhutan</p>
               </div>
             </div>
-
-            <p className="mt-3 text-sm font-semibold text-[#00b53a]">Duration: 3 hrs</p>
-
-            <button
-              type="button"
-              onClick={handleSearch}
-              className="mt-4 w-full rounded-xl bg-[#222] py-4 text-base font-bold text-white transition-all hover:bg-black active:scale-[0.99]"
-            >
-              Search
-            </button>
           </div>
         </div>
       </section>
@@ -166,31 +240,35 @@ export default function Home() {
         {/* Recent searches */}
         <section className="py-8 md:py-10">
           <h2 className="mb-4 text-lg font-bold text-[rgba(0,0,0,0.87)] md:text-2xl">Recent searches</h2>
-          <div className="flex gap-3 overflow-x-auto pb-1">
-            {recentSearches.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                className="flex h-[79px] shrink-0 items-center gap-3 rounded-xl bg-white px-3 py-2.5 text-left shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_14px_rgba(25,32,36,0.22)]"
-              >
-                <img src={s.image} alt="" className="size-[60px] shrink-0 rounded-lg object-cover" />
-                <span className="flex flex-col gap-1.5">
-                  <span className="whitespace-nowrap text-sm font-semibold text-[rgba(0,0,0,0.87)]">
-                    {s.title}
+          <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-1">
+            {recentSearches.map((s) => {
+              const vehicle = vehicles.find((v) => v.id === s.vehicleId);
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => handleRecentSearch(s.vehicleId, s.pickup, s.dropoff)}
+                  className="flex h-[79px] shrink-0 items-center gap-3 rounded-xl bg-white px-3 py-2.5 text-left shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_14px_rgba(25,32,36,0.22)]"
+                >
+                  <VehicleImage category={vehicle?.category} className="size-[60px] shrink-0 rounded-lg" />
+                  <span className="flex flex-col gap-1.5">
+                    <span className="whitespace-nowrap text-sm font-semibold text-[rgba(0,0,0,0.87)]">
+                      {s.title}
+                    </span>
+                    <span className="whitespace-nowrap text-xs text-[rgba(0,0,0,0.87)]">{s.subtitle}</span>
                   </span>
-                  <span className="whitespace-nowrap text-xs text-[rgba(0,0,0,0.87)]">{s.subtitle}</span>
-                </span>
-              </button>
-            ))}
+                </button>
+              );
+            })}
           </div>
         </section>
 
         {/* Popular cars */}
         <section className="py-8 md:py-10">
           <h2 className="mb-4 text-lg font-bold text-[rgba(0,0,0,0.87)] md:text-2xl">Popular cars</h2>
-          <div className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible lg:grid-cols-4">
+          <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
             {vehicles.map((v) => (
-              <VehicleCard key={v.id} vehicle={v} className="w-[240px] md:w-full" />
+              <VehicleCard key={v.id} vehicle={v} className="w-[240px] shrink-0 md:w-[270px]" />
             ))}
           </div>
         </section>
@@ -198,15 +276,17 @@ export default function Home() {
         {/* Popular car types */}
         <section className="py-8 md:py-10">
           <h2 className="mb-4 text-lg font-bold text-[rgba(0,0,0,0.87)] md:text-2xl">Popular car types</h2>
-          <div className="flex gap-3 overflow-x-auto pb-2">
+          <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-2">
             {popularCarTypes.map((t) => (
               <div
                 key={t.name}
-                className="relative size-[164px] shrink-0 overflow-hidden rounded-xl bg-cover bg-center transition-transform hover:scale-[1.02]"
-                style={{ backgroundImage: `url(${t.image})` }}
+                className="group relative size-[164px] shrink-0 cursor-pointer overflow-hidden rounded-xl bg-neutral-100 transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0px_10px_24px_rgba(0,0,0,0.15)]"
               >
-                <div className="absolute inset-0 bg-black/60" />
-                <span className="absolute bottom-4 left-4 text-base font-semibold text-white">{t.name}</span>
+                <VehicleImage category={t.name} className="size-full transition-transform duration-300 group-hover:scale-110" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/0 to-black/0" />
+                <span className="pointer-events-none absolute bottom-4 left-4 text-base font-semibold text-white">
+                  {t.name}
+                </span>
               </div>
             ))}
           </div>
@@ -259,44 +339,6 @@ export default function Home() {
           </p>
         </section>
       </div>
-
-      {activeField === "pickup" && (
-        <LocationPickerSheet
-          label="Pick up location"
-          onSelect={(v) => {
-            setPickup(v);
-            setActiveField(null);
-          }}
-          onClose={() => setActiveField(null)}
-        />
-      )}
-      {activeField === "dropoff" && (
-        <LocationPickerSheet
-          label="Drop off location"
-          onSelect={(v) => {
-            setDropoff(v);
-            setActiveField(null);
-          }}
-          onClose={() => setActiveField(null)}
-        />
-      )}
-      {activeField === "date" && (
-        <DatePickerSheet
-          mode={dateMode}
-          initialPickup={pickupDate}
-          initialDropoff={dropoffDate ?? undefined}
-          initialPickupTime={pickupTime}
-          initialDropoffTime={dropoffTime}
-          onConfirm={({ pickup: p, pickupTime: pt, dropoff: d, dropoffTime: dt }) => {
-            setPickupDate(p);
-            setPickupTime(pt);
-            if (d) setDropoffDate(d);
-            if (dt) setDropoffTime(dt);
-            setActiveField(null);
-          }}
-          onClose={() => setActiveField(null)}
-        />
-      )}
     </PageShell>
   );
 }

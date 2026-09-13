@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Icon from "./Icon";
+import VehicleImage from "./VehicleImage";
 import type { Vehicle } from "../data/mockData";
 import { routes } from "../lib/routes";
 import { useCurrency } from "../lib/currency";
@@ -14,7 +15,7 @@ export default function VehicleCard({ vehicle, className = "" }: { vehicle: Vehi
       className={`w-full shrink-0 overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] ${className}`}
     >
       <div className="relative h-[178px] w-full">
-        <img src={vehicle.image} alt={vehicle.name} className="size-full object-cover" />
+        <VehicleImage category={vehicle.category} className="size-full" />
         <button
           type="button"
           aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}

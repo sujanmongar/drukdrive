@@ -5,6 +5,7 @@ import SecondaryTabs from "../../components/SecondaryTabs";
 import ProfileHero from "../../components/ProfileHero";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
+import VehicleImage from "../../components/VehicleImage";
 import { vehicleTemplates } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
@@ -110,7 +111,7 @@ export default function ProviderVehicleAdd() {
                   }`}
                 >
                   <span className="text-sm font-semibold text-[#222]">{v.name}</span>
-                  <img src={v.image} alt={v.name} className="size-10 rounded-md object-cover" />
+                  <VehicleImage className="size-10 rounded-md" />
                 </button>
               ))}
             </div>

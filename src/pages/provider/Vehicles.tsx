@@ -4,6 +4,7 @@ import SecondaryTabs from "../../components/SecondaryTabs";
 import ProfileHero from "../../components/ProfileHero";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
+import VehicleImage from "../../components/VehicleImage";
 import { driverVehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
@@ -38,7 +39,7 @@ export default function ProviderVehicles() {
                 key={v.id}
                 className="relative flex w-full items-center gap-4 rounded-xl border border-[color:var(--color-border)] p-4 sm:w-[380px]"
               >
-                <img src={v.image} alt={v.name} className="size-14 shrink-0 rounded-lg object-cover" />
+                <VehicleImage category={v.category} className="size-14 shrink-0 rounded-lg" />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-bold text-[#222]">{v.name}</p>
                   <p className="mt-0.5 text-xs text-[color:var(--color-muted)]">Available from: Sat 12 Dec&rsquo; 22, 10:00</p>

@@ -144,23 +144,28 @@ export default function DatePickerSheet({
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-start justify-center bg-black/40 p-0 sm:items-center sm:p-4">
-      <div className="flex h-full w-full flex-col bg-white sm:h-auto sm:max-h-[85vh] sm:max-w-[480px] sm:rounded-2xl">
-        <div className="flex items-center justify-between border-b border-[color:var(--color-border)] p-4">
-          <button type="button" onClick={onClose} aria-label="Close">
+    <>
+      <button
+        aria-label="Close"
+        onClick={onClose}
+        className="fixed inset-0 z-[59] cursor-default bg-black/40 md:bg-transparent"
+      />
+      <div className="fixed inset-x-0 top-0 z-[60] flex h-full flex-col bg-white md:absolute md:inset-x-auto md:top-[calc(100%+8px)] md:left-0 md:h-auto md:max-h-[440px] md:w-[380px] md:rounded-xl md:border md:border-[color:var(--color-border)] md:shadow-[0px_8px_24px_rgba(0,0,0,0.14)]">
+        <div className="flex items-center justify-between border-b border-[color:var(--color-border)] p-4 md:p-3">
+          <button type="button" onClick={onClose} aria-label="Close" className="md:hidden">
             <Icon name="close" size={22} className="text-[#222]" />
           </button>
           <p className="text-sm font-semibold text-[#222]">Select {mode === "range" ? "dates" : "a date"}</p>
-          <span className="w-[22px]" />
+          <span className="w-[22px] md:hidden" />
         </div>
 
-        <div className="grid grid-cols-7 gap-y-2 border-b border-[color:var(--color-border)] px-4 py-3 text-center text-xs font-semibold text-[color:var(--color-muted)]">
+        <div className="grid grid-cols-7 gap-y-2 border-b border-[color:var(--color-border)] px-4 py-3 text-center text-xs font-semibold text-[color:var(--color-muted)] md:px-3 md:py-2">
           {WEEKDAYS.map((w) => (
             <span key={w}>{w}</span>
           ))}
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-4">
+        <div className="flex-1 overflow-y-auto px-4 py-4 md:px-3 md:py-3">
           <div className="flex flex-col gap-8">
             {months.map(({ year, month }) => (
               <MonthGrid
@@ -218,6 +223,6 @@ export default function DatePickerSheet({
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 }
