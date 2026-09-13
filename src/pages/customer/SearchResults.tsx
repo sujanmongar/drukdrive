@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import PageShell from "../../components/PageShell";
 import VehicleCard from "../../components/VehicleCard";
 import Icon from "../../components/Icon";
@@ -51,6 +51,10 @@ export default function SearchResults() {
   const [editOpen, setEditOpen] = useState(false); // mobile full-screen sheet
   const [desktopEditOpen, setDesktopEditOpen] = useState(false); // desktop inline row
   const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
+
+  const pickupAnchorRef = useRef<HTMLDivElement>(null);
+  const dropoffAnchorRef = useRef<HTMLDivElement>(null);
+  const dateAnchorRef = useRef<HTMLDivElement>(null);
 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -204,7 +208,7 @@ export default function SearchResults() {
           {/* Desktop inline edit row */}
           {desktopEditOpen && (
             <div className="hidden flex-wrap items-center gap-3 border-t border-[color:var(--color-border)] p-4 md:flex">
-              <div className="relative min-w-[220px] flex-1">
+              <div ref={pickupAnchorRef} className="relative min-w-[220px] flex-1">
                 <button
                   type="button"
                   onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
@@ -219,6 +223,7 @@ export default function SearchResults() {
                 {activeField === "pickup" && (
                   <LocationPickerSheet
                     label="Pick up location"
+                    anchorRef={pickupAnchorRef}
                     onSelect={(v) => {
                       setSearch((s) => ({ ...s, pickup: v }));
                       setActiveField(null);
@@ -228,7 +233,7 @@ export default function SearchResults() {
                 )}
               </div>
 
-              <div className="relative min-w-[220px] flex-1">
+              <div ref={dropoffAnchorRef} className="relative min-w-[220px] flex-1">
                 <button
                   type="button"
                   onClick={() => setActiveField(activeField === "dropoff" ? null : "dropoff")}
@@ -243,6 +248,7 @@ export default function SearchResults() {
                 {activeField === "dropoff" && (
                   <LocationPickerSheet
                     label="Drop off location"
+                    anchorRef={dropoffAnchorRef}
                     onSelect={(v) => {
                       setSearch((s) => ({ ...s, dropoff: v }));
                       setActiveField(null);
@@ -252,7 +258,7 @@ export default function SearchResults() {
                 )}
               </div>
 
-              <div className="relative min-w-[200px]">
+              <div ref={dateAnchorRef} className="relative min-w-[200px]">
                 <button
                   type="button"
                   onClick={() => setActiveField(activeField === "date" ? null : "date")}
@@ -269,6 +275,7 @@ export default function SearchResults() {
                 {activeField === "date" && (
                   <DatePickerSheet
                     mode={search.tripMode === "return" ? "range" : "single"}
+                    anchorRef={dateAnchorRef}
                     initialPickup={search.pickupDate}
                     initialDropoff={search.dropoffDate ?? undefined}
                     initialPickupTime={search.pickupTime}

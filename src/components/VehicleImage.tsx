@@ -6,8 +6,14 @@ const accentByCategory: Record<string, string> = {
   "Two Wheels": "#a8a29e",
 };
 
-// A clean, generic car illustration used everywhere a vehicle "photo" would
-// go — avoids depending on specific stock photography for a prototype.
+// Real, license-free product photography for the categories we found a
+// clean plain-background shot for; a generic flat illustration (below)
+// covers the rest so no card is left without a matching image.
+const photoByCategory: Record<string, string> = {
+  "Prime SUV": "/vehicles/prime-suv.jpg",
+  Bus: "/vehicles/bus.png",
+};
+
 export default function VehicleImage({
   category,
   className = "",
@@ -15,6 +21,20 @@ export default function VehicleImage({
   category?: string;
   className?: string;
 }) {
+  const photo = category && photoByCategory[category];
+  if (photo) {
+    return (
+      <div className={`flex items-center justify-center bg-neutral-100 ${className}`}>
+        <img
+          src={photo}
+          alt={category}
+          loading="lazy"
+          className="h-full w-full object-contain p-3"
+        />
+      </div>
+    );
+  }
+
   const accent = (category && accentByCategory[category]) || "#9ca3af";
   return (
     <div className={`flex items-center justify-center bg-neutral-100 ${className}`}>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import BookingTypeTabs from "../../components/BookingTypeTabs";
@@ -31,6 +31,10 @@ export default function Home() {
   const [pickupTime, setPickupTime] = useState("10:00");
   const [dropoffDate, setDropoffDate] = useState<Date | null>(null);
   const [dropoffTime, setDropoffTime] = useState("13:00");
+
+  const pickupAnchorRef = useRef<HTMLDivElement>(null);
+  const dropoffAnchorRef = useRef<HTMLDivElement>(null);
+  const dateAnchorRef = useRef<HTMLDivElement>(null);
 
   const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
 
@@ -105,7 +109,7 @@ export default function Home() {
               )}
 
               <div className="mt-4 flex flex-col gap-3">
-                <div className="relative">
+                <div ref={pickupAnchorRef} className="relative">
                   <button
                     type="button"
                     onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
@@ -120,6 +124,7 @@ export default function Home() {
                   {activeField === "pickup" && (
                     <LocationPickerSheet
                       label="Pick up location"
+                      anchorRef={pickupAnchorRef}
                       onSelect={(v) => {
                         setPickup(v);
                         setActiveField(null);
@@ -129,7 +134,7 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="relative">
+                <div ref={dropoffAnchorRef} className="relative">
                   <button
                     type="button"
                     onClick={() => setActiveField(activeField === "dropoff" ? null : "dropoff")}
@@ -144,6 +149,7 @@ export default function Home() {
                   {activeField === "dropoff" && (
                     <LocationPickerSheet
                       label="Drop off location"
+                      anchorRef={dropoffAnchorRef}
                       onSelect={(v) => {
                         setDropoff(v);
                         setActiveField(null);
@@ -153,7 +159,7 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="relative">
+                <div ref={dateAnchorRef} className="relative">
                   <div className="flex overflow-hidden rounded-xl border border-[#e5ebf0]">
                     <button
                       type="button"
@@ -184,6 +190,7 @@ export default function Home() {
                   {activeField === "date" && (
                     <DatePickerSheet
                       mode={dateMode}
+                      anchorRef={dateAnchorRef}
                       initialPickup={pickupDate}
                       initialDropoff={dropoffDate ?? undefined}
                       initialPickupTime={pickupTime}

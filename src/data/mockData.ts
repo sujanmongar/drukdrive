@@ -19,7 +19,7 @@ export type Vehicle = {
 export const vehicles: Vehicle[] = [
   {
     id: "toyota-prado-gx",
-    name: "Toyota Prado GX",
+    name: "Grand Terrain SUV",
     category: "Prime SUV",
     seats: 5,
     fuel: "Petrol",
@@ -34,7 +34,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "toyota-coaster-bus",
-    name: "Toyota Coaster Bus",
+    name: "Highland Coach Liner",
     category: "Bus",
     seats: 21,
     fuel: "Diesel",
@@ -77,7 +77,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "toyota-fortuner",
-    name: "Toyota Fortuner",
+    name: "Summit Peak SUV",
     category: "Prime SUV",
     seats: 7,
     fuel: "Diesel",
@@ -94,7 +94,7 @@ export const vehicles: Vehicle[] = [
 export const recentSearches = [
   {
     id: "s1",
-    title: "Toyota Prado GX",
+    title: "Grand Terrain SUV",
     subtitle: "Thimphu → Punakha, 11 Dec",
     vehicleId: "toyota-prado-gx",
     pickup: "Thimphu, Druk School",
@@ -130,7 +130,7 @@ export const popularCarTypes = [
       "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=400&auto=format&fit=crop",
   },
   {
-    name: "Coaster Bus",
+    name: "Highland Coach Liner",
     image:
       "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=400&auto=format&fit=crop",
   },
@@ -171,7 +171,7 @@ export type Booking = {
 export const bookings: Booking[] = [
   {
     id: "GI1671177263",
-    vehicle: "Toyota Prado GX",
+    vehicle: "Grand Terrain SUV",
     image:
       "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=400&auto=format&fit=crop",
     pickup: "Thimphu, Druk School",
@@ -216,7 +216,7 @@ export type Notification = {
 };
 
 export const notifications: Notification[] = [
-  { id: "n1", title: "Booking confirmed", body: "Your ride with Toyota Prado GX is confirmed for 24 Sep.", time: "2h ago", read: false },
+  { id: "n1", title: "Booking confirmed", body: "Your ride with Grand Terrain SUV is confirmed for 24 Sep.", time: "2h ago", read: false },
   { id: "n2", title: "Payment received", body: "We received your payment of $58.00 for booking GI1671177263.", time: "2h ago", read: false },
   { id: "n3", title: "Driver assigned", body: "Karma Dorji has been assigned as your driver.", time: "1d ago", read: true },
   { id: "n4", title: "Trip completed", body: "Hope you enjoyed your trip! Rate your experience.", time: "3d ago", read: true },
@@ -273,7 +273,7 @@ export const financeSummary = {
 export const driverVehicles = [
   {
     id: "v1",
-    name: "Toyota Prado GX",
+    name: "Grand Terrain SUV",
     plate: "BP-1-A2345",
     category: "Prime SUV",
     status: "Active",
@@ -322,7 +322,7 @@ export const driverBookings: DriverBooking[] = [
   {
     id: "HBTTB5984458",
     riderName: "Sonam Wangmo",
-    vehicle: "Prado V8",
+    vehicle: "Grand Terrain V8",
     image:
       "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=400&auto=format&fit=crop",
     pickup: "International Airport, Paro",
@@ -373,19 +373,19 @@ export const driverNotifications: DriverNotification[] = [
 export const vehicleTemplates = [
   {
     id: "prado-v8",
-    name: "Prado V8",
+    name: "Grand Terrain V8",
     image:
       "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=400&auto=format&fit=crop",
   },
   {
     id: "prado-gx",
-    name: "Prado GX",
+    name: "Grand Terrain GX",
     image:
       "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=400&auto=format&fit=crop",
   },
   {
     id: "fortuner",
-    name: "Fortuner",
+    name: "Summit Peak SUV",
     image:
       "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=400&auto=format&fit=crop",
   },

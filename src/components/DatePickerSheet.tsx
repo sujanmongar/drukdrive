@@ -1,5 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type RefObject } from "react";
 import Icon from "./Icon";
+import { useMediaQuery } from "../hooks/useMediaQuery";
+import AnchoredPopover from "./AnchoredPopover";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTH_NAMES = [
@@ -87,6 +89,7 @@ function MonthGrid({
 
 export default function DatePickerSheet({
   mode,
+  anchorRef,
   initialPickup,
   initialDropoff,
   initialPickupTime = "10:00",
@@ -95,6 +98,7 @@ export default function DatePickerSheet({
   onClose,
 }: {
   mode: "single" | "range";
+  anchorRef?: RefObject<HTMLElement | null>;
   initialPickup?: Date;
   initialDropoff?: Date;
   initialPickupTime?: string;
@@ -102,6 +106,7 @@ export default function DatePickerSheet({
   onConfirm: (result: { pickup: Date; pickupTime: string; dropoff?: Date; dropoffTime?: string }) => void;
   onClose: () => void;
 }) {
+  const isDesktop = useMediaQuery("(min-width: 768px)") && !!anchorRef;
   const [pickupDate, setPickupDate] = useState<Date | null>(initialPickup ?? null);
   const [dropoffDate, setDropoffDate] = useState<Date | null>(mode === "range" ? initialDropoff ?? null : null);
   const [pickupTime, setPickupTime] = useState(initialPickupTime);
@@ -143,51 +148,61 @@ export default function DatePickerSheet({
     });
   }
 
-  return (
+  const content = (
     <>
-      <button
-        aria-label="Close"
-        onClick={onClose}
-        className="fixed inset-0 z-[59] cursor-default bg-black/40 md:bg-transparent"
-      />
-      <div className="fixed inset-x-0 top-0 z-[60] flex h-full flex-col bg-white md:absolute md:inset-x-auto md:top-[calc(100%+8px)] md:left-0 md:h-auto md:max-h-[440px] md:w-[380px] md:rounded-xl md:border md:border-[color:var(--color-border)] md:shadow-[0px_8px_24px_rgba(0,0,0,0.14)]">
-        <div className="flex items-center justify-between border-b border-[color:var(--color-border)] p-4 md:p-3">
-          <button type="button" onClick={onClose} aria-label="Close" className="md:hidden">
-            <Icon name="close" size={22} className="text-[#222]" />
-          </button>
-          <p className="text-sm font-semibold text-[#222]">Select {mode === "range" ? "dates" : "a date"}</p>
-          <span className="w-[22px] md:hidden" />
-        </div>
+      <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] p-4 md:p-3">
+        <button type="button" onClick={onClose} aria-label="Close" className="md:hidden">
+          <Icon name="close" size={22} className="text-[#222]" />
+        </button>
+        <p className="text-sm font-semibold text-[#222]">Select {mode === "range" ? "dates" : "a date"}</p>
+        <span className="w-[22px] md:hidden" />
+      </div>
 
-        <div className="grid grid-cols-7 gap-y-2 border-b border-[color:var(--color-border)] px-4 py-3 text-center text-xs font-semibold text-[color:var(--color-muted)] md:px-3 md:py-2">
-          {WEEKDAYS.map((w) => (
-            <span key={w}>{w}</span>
+      <div className="grid shrink-0 grid-cols-7 gap-y-2 border-b border-[color:var(--color-border)] px-4 py-3 text-center text-xs font-semibold text-[color:var(--color-muted)] md:px-3 md:py-2">
+        {WEEKDAYS.map((w) => (
+          <span key={w}>{w}</span>
+        ))}
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-3 md:py-3">
+        <div className="flex flex-col gap-8">
+          {months.map(({ year, month }) => (
+            <MonthGrid
+              key={`${year}-${month}`}
+              year={year}
+              month={month}
+              pickupDate={pickupDate}
+              dropoffDate={dropoffDate}
+              onPick={handlePick}
+            />
           ))}
         </div>
+      </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-4 md:px-3 md:py-3">
-          <div className="flex flex-col gap-8">
-            {months.map(({ year, month }) => (
-              <MonthGrid
-                key={`${year}-${month}`}
-                year={year}
-                month={month}
-                pickupDate={pickupDate}
-                dropoffDate={dropoffDate}
-                onPick={handlePick}
-              />
-            ))}
+      <div className="shrink-0 border-t border-[color:var(--color-border)] p-4">
+        <div className={`mb-4 flex ${mode === "range" ? "divide-x divide-[color:var(--color-border)]" : ""}`}>
+          <div className="flex-1 pr-3">
+            <p className="text-xs text-[color:var(--color-muted)]">Pick up</p>
+            <p className="text-sm font-bold text-[#222]">{pickupDate ? formatShort(pickupDate) : "Select date"}</p>
+            <select
+              value={pickupTime}
+              onChange={(e) => setPickupTime(e.target.value)}
+              className="mt-0.5 rounded-md bg-transparent text-sm font-semibold text-[color:var(--color-success)] outline-none"
+            >
+              {TIME_OPTIONS.map((t) => (
+                <option key={t}>{t}</option>
+              ))}
+            </select>
           </div>
-        </div>
-
-        <div className="border-t border-[color:var(--color-border)] p-4">
-          <div className={`mb-4 flex ${mode === "range" ? "divide-x divide-[color:var(--color-border)]" : ""}`}>
-            <div className="flex-1 pr-3">
-              <p className="text-xs text-[color:var(--color-muted)]">Pick up</p>
-              <p className="text-sm font-bold text-[#222]">{pickupDate ? formatShort(pickupDate) : "Select date"}</p>
+          {mode === "range" && (
+            <div className="flex-1 pl-3">
+              <p className="text-xs text-[color:var(--color-muted)]">Drop off</p>
+              <p className="text-sm font-bold text-[#222]">
+                {dropoffDate ? formatShort(dropoffDate) : "Select date"}
+              </p>
               <select
-                value={pickupTime}
-                onChange={(e) => setPickupTime(e.target.value)}
+                value={dropoffTime}
+                onChange={(e) => setDropoffTime(e.target.value)}
                 className="mt-0.5 rounded-md bg-transparent text-sm font-semibold text-[color:var(--color-success)] outline-none"
               >
                 {TIME_OPTIONS.map((t) => (
@@ -195,34 +210,39 @@ export default function DatePickerSheet({
                 ))}
               </select>
             </div>
-            {mode === "range" && (
-              <div className="flex-1 pl-3">
-                <p className="text-xs text-[color:var(--color-muted)]">Drop off</p>
-                <p className="text-sm font-bold text-[#222]">
-                  {dropoffDate ? formatShort(dropoffDate) : "Select date"}
-                </p>
-                <select
-                  value={dropoffTime}
-                  onChange={(e) => setDropoffTime(e.target.value)}
-                  className="mt-0.5 rounded-md bg-transparent text-sm font-semibold text-[color:var(--color-success)] outline-none"
-                >
-                  {TIME_OPTIONS.map((t) => (
-                    <option key={t}>{t}</option>
-                  ))}
-                </select>
-              </div>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={handleConfirm}
-            disabled={!pickupDate || (mode === "range" && !dropoffDate)}
-            className="w-full rounded-xl bg-[#222] py-4 text-base font-bold text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Select
-          </button>
+          )}
         </div>
+        <button
+          type="button"
+          onClick={handleConfirm}
+          disabled={!pickupDate || (mode === "range" && !dropoffDate)}
+          className="w-full rounded-xl bg-[#222] py-4 text-base font-bold text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          Select
+        </button>
       </div>
+    </>
+  );
+
+  if (isDesktop && anchorRef) {
+    return (
+      <>
+        <button aria-label="Close" onClick={onClose} className="fixed inset-0 z-[59] cursor-default" />
+        <AnchoredPopover anchorRef={anchorRef} width={380} maxHeight={440}>
+          {content}
+        </AnchoredPopover>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <button
+        aria-label="Close"
+        onClick={onClose}
+        className="fixed inset-0 z-[59] cursor-default bg-black/40"
+      />
+      <div className="fixed inset-x-0 top-0 z-[60] flex h-full flex-col bg-white">{content}</div>
     </>
   );
 }
