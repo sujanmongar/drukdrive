@@ -1,26 +1,59 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import BookingTypeTabs from "../../components/BookingTypeTabs";
 import VehicleCard from "../../components/VehicleCard";
 import Icon from "../../components/Icon";
 import HeroBlobs from "../../components/HeroBlobs";
+import LocationPickerSheet from "../../components/LocationPickerSheet";
+import DatePickerSheet from "../../components/DatePickerSheet";
 import { routes } from "../../lib/routes";
 import type { BookingType } from "../../lib/routes";
 import { vehicles, recentSearches, popularCarTypes, faqs } from "../../data/mockData";
+import { useAuth } from "../../lib/auth";
 
 type TripMode = "one-way" | "return";
 
+const DEFAULT_PICKUP = "Thimphu, Druk School";
+const DEFAULT_DROPOFF = "Punakha, Taxi Parking";
+
 export default function Home() {
   const navigate = useNavigate();
+  const { role } = useAuth();
   const [type, setType] = useState<BookingType>("daily");
   const [tripMode, setTripMode] = useState<TripMode>("one-way");
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [openFaqs, setOpenFaqs] = useState<Set<number>>(new Set([0]));
+
+  const [pickup, setPickup] = useState(DEFAULT_PICKUP);
+  const [dropoff, setDropoff] = useState(DEFAULT_DROPOFF);
+  const [pickupDate, setPickupDate] = useState<Date>(new Date());
+  const [pickupTime, setPickupTime] = useState("10:00");
+  const [dropoffDate, setDropoffDate] = useState<Date | null>(null);
+  const [dropoffTime, setDropoffTime] = useState("13:00");
+
+  const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
 
   const showTripModeTabs = type === "outstation" || type === "rental";
+  const dateMode = showTripModeTabs && tripMode === "return" ? "range" : "single";
+
+  function toggleFaq(i: number) {
+    setOpenFaqs((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
+  }
 
   function handleSearch() {
     navigate(`${routes.search}?type=${type}`);
+  }
+
+  // While "driving", the rider homepage/search isn't relevant — send the
+  // driver straight to their dashboard, even on a direct nav/refresh of "/".
+  // (Placed after all hooks above so hook call order stays stable.)
+  if (role === "driver") {
+    return <Navigate to={routes.providerBookings} replace />;
   }
 
   return (
@@ -31,13 +64,13 @@ export default function Home() {
           same place it would otherwise be. */}
       <section className="relative -mt-16 overflow-hidden pt-16 md:-mt-[94px] md:pt-[94px]">
         {/* decorative blob background, hero area only */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[484px] overflow-hidden md:h-[745px]">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[484px] overflow-hidden transition-colors duration-500 md:h-[745px]">
           <HeroBlobs type={type} />
         </div>
 
         <div className="relative mx-auto max-w-[1440px] px-4 pb-10 pt-6 md:px-[60px] md:pb-24 md:pt-16">
-          <h1 className="max-w-[280px] text-xl font-bold leading-snug text-[rgba(0,0,0,0.87)] sm:max-w-md sm:text-2xl md:max-w-[46%] md:text-[32px] md:leading-[1.2]">
-            Where you want to go? - search now.
+          <h1 className="max-w-[300px] text-2xl font-bold leading-snug text-[rgba(0,0,0,0.87)] sm:max-w-md sm:text-3xl md:max-w-[46%] md:text-[40px] md:leading-[1.15]">
+            Your journey across Bhutan starts here.
           </h1>
 
           <div className="mt-6 w-full max-w-[506px] rounded-2xl bg-white p-4 shadow-[0px_2px_14px_rgba(0,0,0,0.1)] md:mt-8 md:p-[26px]">
@@ -66,39 +99,51 @@ export default function Home() {
             <div className="mt-4 flex flex-col gap-3">
               <button
                 type="button"
-                className="flex h-[58px] items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left"
+                onClick={() => setActiveField("pickup")}
+                className="flex h-[58px] items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left transition-colors hover:border-[#222]"
               >
                 <Icon name="location" size={20} className="shrink-0 text-[#222]" />
                 <span className="flex flex-col gap-1">
                   <span className="text-[11px] text-[#333]">Pick up location</span>
-                  <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">Thimphu, Druk School</span>
+                  <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">{pickup}</span>
                 </span>
               </button>
               <button
                 type="button"
-                className="flex h-[58px] items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left"
+                onClick={() => setActiveField("dropoff")}
+                className="flex h-[58px] items-center gap-2 rounded-xl border border-[#e5ebf0] px-3 text-left transition-colors hover:border-[#222]"
               >
                 <Icon name="location" size={20} className="shrink-0 text-[#222]" />
                 <span className="flex flex-col gap-1">
                   <span className="text-[11px] text-[#333]">Drop off location</span>
-                  <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">Punakha, Taxi Parking</span>
+                  <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">{dropoff}</span>
                 </span>
               </button>
 
               <div className="flex overflow-hidden rounded-xl border border-[#e5ebf0]">
-                <button type="button" className="flex h-14 flex-1 items-center gap-2 px-3 text-left">
+                <button
+                  type="button"
+                  onClick={() => setActiveField("date")}
+                  className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
+                >
                   <Icon name="calendar" size={20} className="shrink-0 text-[#222]" />
                   <span className="flex flex-col gap-1">
                     <span className="text-[11px] text-[#333]">Pick up date</span>
-                    <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">Thu 24 Sep</span>
+                    <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">
+                      {pickupDate.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })}
+                    </span>
                   </span>
                 </button>
                 <div className="w-px bg-[#e5ebf0]" />
-                <button type="button" className="flex h-14 flex-1 items-center gap-2 px-3 text-left">
+                <button
+                  type="button"
+                  onClick={() => setActiveField("date")}
+                  className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
+                >
                   <Icon name="clock" size={20} className="shrink-0 text-[#222]" />
                   <span className="flex flex-col gap-1">
                     <span className="text-[11px] text-[#333]">Pick up time</span>
-                    <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">10:00</span>
+                    <span className="text-sm font-bold text-[rgba(0,0,0,0.87)]">{pickupTime}</span>
                   </span>
                 </button>
               </div>
@@ -109,7 +154,7 @@ export default function Home() {
             <button
               type="button"
               onClick={handleSearch}
-              className="mt-4 w-full rounded-xl bg-[#222] py-4 text-base font-bold text-white transition-colors hover:bg-black"
+              className="mt-4 w-full rounded-xl bg-[#222] py-4 text-base font-bold text-white transition-all hover:bg-black active:scale-[0.99]"
             >
               Search
             </button>
@@ -126,7 +171,7 @@ export default function Home() {
               <button
                 key={s.id}
                 type="button"
-                className="flex h-[79px] shrink-0 items-center gap-3 rounded-xl bg-white px-3 py-2.5 text-left shadow-[0px_1px_3px_rgba(25,32,36,0.16)]"
+                className="flex h-[79px] shrink-0 items-center gap-3 rounded-xl bg-white px-3 py-2.5 text-left shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_14px_rgba(25,32,36,0.22)]"
               >
                 <img src={s.image} alt="" className="size-[60px] shrink-0 rounded-lg object-cover" />
                 <span className="flex flex-col gap-1.5">
@@ -157,7 +202,7 @@ export default function Home() {
             {popularCarTypes.map((t) => (
               <div
                 key={t.name}
-                className="relative size-[164px] shrink-0 overflow-hidden rounded-xl bg-cover bg-center"
+                className="relative size-[164px] shrink-0 overflow-hidden rounded-xl bg-cover bg-center transition-transform hover:scale-[1.02]"
                 style={{ backgroundImage: `url(${t.image})` }}
               >
                 <div className="absolute inset-0 bg-black/60" />
@@ -174,24 +219,30 @@ export default function Home() {
           </h2>
           <div className="grid grid-cols-1 gap-x-10 md:grid-cols-2">
             {faqs.map((f, i) => {
-              const open = openFaq === i;
+              const open = openFaqs.has(i);
               return (
                 <div key={f.q} className="border-b border-[#e5ebf0] py-4">
                   <button
                     type="button"
-                    onClick={() => setOpenFaq(open ? null : i)}
+                    onClick={() => toggleFaq(i)}
                     className="flex w-full items-center justify-between gap-4 text-left"
                   >
                     <span className="text-sm text-[rgba(0,0,0,0.87)]">{f.q}</span>
                     <Icon
                       name="chevron-down"
                       size={16}
-                      className={`shrink-0 text-[rgba(0,0,0,0.87)] transition-transform ${
+                      className={`shrink-0 text-[rgba(0,0,0,0.87)] transition-transform duration-200 ${
                         open ? "rotate-180" : ""
                       }`}
                     />
                   </button>
-                  {open && <p className="mt-2 text-sm leading-[1.2] text-[color:var(--color-muted)]">{f.a}</p>}
+                  <div
+                    className={`grid overflow-hidden transition-all duration-200 ${
+                      open ? "mt-2 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                    }`}
+                  >
+                    <p className="min-h-0 text-sm leading-[1.2] text-[color:var(--color-muted)]">{f.a}</p>
+                  </div>
                 </div>
               );
             })}
@@ -208,6 +259,44 @@ export default function Home() {
           </p>
         </section>
       </div>
+
+      {activeField === "pickup" && (
+        <LocationPickerSheet
+          label="Pick up location"
+          onSelect={(v) => {
+            setPickup(v);
+            setActiveField(null);
+          }}
+          onClose={() => setActiveField(null)}
+        />
+      )}
+      {activeField === "dropoff" && (
+        <LocationPickerSheet
+          label="Drop off location"
+          onSelect={(v) => {
+            setDropoff(v);
+            setActiveField(null);
+          }}
+          onClose={() => setActiveField(null)}
+        />
+      )}
+      {activeField === "date" && (
+        <DatePickerSheet
+          mode={dateMode}
+          initialPickup={pickupDate}
+          initialDropoff={dropoffDate ?? undefined}
+          initialPickupTime={pickupTime}
+          initialDropoffTime={dropoffTime}
+          onConfirm={({ pickup: p, pickupTime: pt, dropoff: d, dropoffTime: dt }) => {
+            setPickupDate(p);
+            setPickupTime(pt);
+            if (d) setDropoffDate(d);
+            if (dt) setDropoffTime(dt);
+            setActiveField(null);
+          }}
+          onClose={() => setActiveField(null)}
+        />
+      )}
     </PageShell>
   );
 }

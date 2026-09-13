@@ -387,3 +387,15 @@ export const vehicleTemplates = [
       "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=400&auto=format&fit=crop",
   },
 ];
+
+// Selectable locations for the pick-up/drop-off location picker.
+export const bhutanLocations = [
+  { name: "Near Druk School", city: "Thimphu" },
+  { name: "Clock Tower Square", city: "Thimphu" },
+  { name: "Memorial Chorten", city: "Thimphu" },
+  { name: "Khuruthang Taxi Parking", city: "Punakha" },
+  { name: "Drukgyel Town", city: "Paro" },
+  { name: "International Airport", city: "Paro" },
+  { name: "Terminal", city: "Phuentsholing" },
+  { name: "Bumthang Town Centre", city: "Bumthang" },
+];

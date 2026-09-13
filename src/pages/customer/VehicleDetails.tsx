@@ -19,7 +19,7 @@ export default function VehicleDetails() {
   const { baseFare: basePrice, taxes, total } = computeFare(vehicle.pricePerDay);
 
   function handleContinue() {
-    navigate(`${routes.payment}?vehicleId=${vehicle.id}`);
+    navigate(`${routes.reviewBooking}?vehicleId=${vehicle.id}`);
   }
 
   return (
@@ -125,7 +125,7 @@ export default function VehicleDetails() {
                 </div>
               </div>
               <Button variant="primary" size="lg" fullWidth className="mt-5" onClick={handleContinue}>
-                Continue to Payment
+                Continue to Booking
               </Button>
             </div>
           </div>
@@ -159,7 +159,7 @@ export default function VehicleDetails() {
             <span className="text-[11px] text-[color:var(--color-muted)]">incl. taxes & fees</span>
           </button>
           <Button variant="primary" size="lg" onClick={handleContinue}>
-            Continue to Payment
+            Continue to Booking
           </Button>
         </div>
       </div>

@@ -15,6 +15,7 @@ const STORAGE_KEY = "drukdrive:currency";
 
 type CurrencyContextValue = {
   currency: CurrencyCode;
+  symbol: string;
   setCurrency: (c: CurrencyCode) => void;
   format: (amountUsd: number) => string;
 };
@@ -43,6 +44,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     const meta = currencies.find((c) => c.code === currency)!;
     return {
       currency,
+      symbol: meta.symbol,
       setCurrency,
       format: (amountUsd: number) => {
         const converted = amountUsd * meta.rateFromUsd;

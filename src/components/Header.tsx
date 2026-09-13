@@ -7,6 +7,7 @@ import { currentUser } from "../data/mockData";
 import { useAuth } from "../lib/auth";
 import type { Role } from "../lib/auth";
 import CurrencySwitcher from "./CurrencySwitcher";
+import NotificationsDropdown from "./NotificationsDropdown";
 
 const customerLinks: { to: string; label: string; icon: IconName }[] = [
   { to: routes.accountBookings, label: "Bookings", icon: "car" },
@@ -32,8 +33,10 @@ const switchTarget: Record<Role, { role: Role; label: string; to: string; icon: 
 };
 
 function Logo() {
+  const { role } = useAuth();
+  const homeHref = role === "driver" ? routes.providerBookings : routes.home;
   return (
-    <Link to={routes.home} className="flex items-center gap-2 shrink-0">
+    <Link to={homeHref} className="flex items-center gap-2 shrink-0">
       <span className="flex size-8 items-center justify-center rounded-lg bg-[#222] text-white">
         <Icon name="car" size={18} />
       </span>
@@ -124,6 +127,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
   const { isLoggedIn, logout, role } = useAuth();
   const navigate = useNavigate();
   const links = role === "driver" ? driverLinks : customerLinks;
+  const homeHref = role === "driver" ? routes.providerBookings : routes.home;
 
   function handleSignOut() {
     logout();
@@ -139,16 +143,10 @@ export default function Header({ transparent = false }: { transparent?: boolean 
         <div className="flex items-center gap-2">
           {isLoggedIn ? (
             <>
-              <Link
-                to={role === "driver" ? routes.providerNotifications : routes.accountNotifications}
-                className="relative flex size-[42px] items-center justify-center rounded-xl hover:bg-neutral-100"
-                aria-label="Notifications"
-              >
-                <Icon name="bell" size={20} />
-                <span className="absolute right-[9px] top-[9px] flex size-[14px] items-center justify-center rounded-full bg-[color:var(--color-danger)] text-[9px] font-medium text-white">
-                  1
-                </span>
-              </Link>
+              <NotificationsDropdown
+                role={role}
+                viewAllHref={role === "driver" ? routes.providerNotifications : routes.accountNotifications}
+              />
               <AccountMenu onSignOut={handleSignOut} />
             </>
           ) : (
@@ -173,7 +171,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
         >
           <Icon name="menu" size={24} />
         </button>
-        <Link to={routes.home} className="text-xl font-extrabold tracking-tight text-[#222]">
+        <Link to={homeHref} className="text-xl font-extrabold tracking-tight text-[#222]">
           DrukDrive
         </Link>
         <div className="flex items-center gap-1">

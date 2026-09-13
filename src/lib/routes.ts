@@ -14,6 +14,7 @@ export const routes = {
   home: "/",
   search: "/search",
   vehicle: (id: string = ":id") => `/vehicle/${id}`,
+  reviewBooking: "/checkout/details",
   payment: "/checkout/payment",
   paymentVerify: "/checkout/verify",
   paymentSuccess: "/checkout/success",

@@ -3,20 +3,33 @@ import Icon from "./Icon";
 import type { Vehicle } from "../data/mockData";
 import { routes } from "../lib/routes";
 import { useCurrency } from "../lib/currency";
+import { useWishlist } from "../lib/wishlist";
 
 export default function VehicleCard({ vehicle, className = "" }: { vehicle: Vehicle; className?: string }) {
   const { format } = useCurrency();
+  const { isSaved, toggle } = useWishlist();
+  const saved = isSaved(vehicle.id);
   return (
     <div
-      className={`w-full shrink-0 overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] ${className}`}
+      className={`w-full shrink-0 overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] ${className}`}
     >
       <div className="relative h-[178px] w-full">
         <img src={vehicle.image} alt={vehicle.name} className="size-full object-cover" />
         <button
-          aria-label="Save"
-          className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-white/90"
+          type="button"
+          aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
+          aria-pressed={saved}
+          onClick={(e) => {
+            e.preventDefault();
+            toggle(vehicle.id);
+          }}
+          className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-white/90 transition-transform active:scale-90"
         >
-          <Icon name="heart" size={16} className="text-[#222]" />
+          <Icon
+            name="heart"
+            size={16}
+            className={`transition-colors ${saved ? "fill-current text-[color:var(--color-danger)]" : "text-[#222]"}`}
+          />
         </button>
       </div>
       <div className="p-4">

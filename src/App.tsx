@@ -11,6 +11,7 @@ import RoleSelect from "./pages/auth/RoleSelect";
 import Home from "./pages/customer/Home";
 import SearchResults from "./pages/customer/SearchResults";
 import VehicleDetails from "./pages/customer/VehicleDetails";
+import ReviewBooking from "./pages/customer/ReviewBooking";
 import Payment from "./pages/customer/Payment";
 import PaymentVerify from "./pages/customer/PaymentVerify";
 import PaymentSuccess from "./pages/customer/PaymentSuccess";
@@ -51,6 +52,7 @@ export default function App() {
       <Route path={routes.home} element={<Home />} />
       <Route path={routes.search} element={<SearchResults />} />
       <Route path={routes.vehicle()} element={<VehicleDetails />} />
+      <Route path={routes.reviewBooking} element={<ReviewBooking />} />
       <Route path={routes.payment} element={<Payment />} />
       <Route path={routes.paymentVerify} element={<PaymentVerify />} />
       <Route path={routes.paymentSuccess} element={<PaymentSuccess />} />

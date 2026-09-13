@@ -11,7 +11,7 @@ export default function BookingTypeTabs({
   onChange: (t: BookingType) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-2.5 md:gap-3.5">
+    <div className="flex flex-nowrap gap-2.5 overflow-x-auto pb-0.5 md:flex-wrap md:gap-3.5 md:overflow-visible">
       {order.map((t) => {
         const active = t === value;
         return (
@@ -19,7 +19,7 @@ export default function BookingTypeTabs({
             key={t}
             type="button"
             onClick={() => onChange(t)}
-            className={`rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
+            className={`shrink-0 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
               active
                 ? "bg-[#222] font-bold text-white"
                 : "border border-[#222] text-[#222] hover:bg-neutral-50"

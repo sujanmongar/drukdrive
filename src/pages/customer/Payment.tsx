@@ -1,22 +1,14 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
-import Button from "../../components/Button";
 import Icon from "../../components/Icon";
+import BookingStepper from "../../components/BookingStepper";
 import { routes } from "../../lib/routes";
 import { vehicles } from "../../data/mockData";
-import { RENTAL_DAYS, computeFare } from "../../lib/pricing";
+import { computeFare } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
 
-type PaymentMethod = "netbanking" | "card" | "wallet";
-
-const banks = ["Bank of Bhutan", "Bhutan National Bank", "Druk PNB Bank", "T Bank"];
-
-const methods: { id: PaymentMethod; label: string; icon: "bank" | "credit-card" | "wallet" }[] = [
-  { id: "netbanking", label: "Net Banking", icon: "bank" },
-  { id: "card", label: "Credit/Debit Card", icon: "credit-card" },
-  { id: "wallet", label: "PayPal / Wallet", icon: "wallet" },
-];
+type PaymentMethod = "card" | "paypal" | "netbanking";
 
 export default function Payment() {
   const navigate = useNavigate();
@@ -26,13 +18,12 @@ export default function Payment() {
   const vehicle = vehicles.find((v) => v.id === vehicleId) ?? vehicles[0];
 
   const [method, setMethod] = useState<PaymentMethod>("card");
-  const [bank, setBank] = useState(banks[0]);
   const [cardNumber, setCardNumber] = useState("");
   const [cardName, setCardName] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvv, setCardCvv] = useState("");
 
-  const { baseFare, taxes, total } = computeFare(vehicle.pricePerDay);
+  const { total } = computeFare(vehicle.pricePerDay);
 
   const inputClasses =
     "w-full rounded-lg border border-[#e5ebf0] px-3.5 py-2.5 text-sm text-[#222] placeholder:text-[#747474] focus:outline-none focus:border-[#222] focus:ring-2 focus:ring-[#222]/10";
@@ -45,7 +36,7 @@ export default function Payment() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[1200px] px-4 py-10 md:px-[60px]">
+      <div className="mx-auto max-w-[1000px] px-4 pb-32 pt-6 md:px-[60px] md:pt-10">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -55,174 +46,192 @@ export default function Payment() {
           Back
         </button>
 
-        <h1 className="text-2xl font-bold text-[#222] md:text-3xl">Payment</h1>
-        <p className="mt-1 text-sm text-[color:var(--color-muted)]">
-          Choose a payment method to complete your booking.
-        </p>
+        <BookingStepper current={3} />
 
-        <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
-          {/* Left: method selector + form */}
+        <div className="mt-8 flex items-center gap-4 rounded-xl bg-neutral-50 p-4">
+          <img src={vehicle.image} alt={vehicle.name} className="size-14 shrink-0 rounded-lg object-cover" />
           <div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              {methods.map((m) => (
-                <button
-                  key={m.id}
-                  type="button"
-                  onClick={() => setMethod(m.id)}
-                  className={`flex items-center gap-2.5 rounded-xl border px-4 py-3.5 text-left text-sm font-semibold transition-colors cursor-pointer ${
-                    method === m.id
-                      ? "border-[#222] bg-[#222] text-white"
-                      : "border-[#e5ebf0] text-[#222] hover:border-[#222]/40"
-                  }`}
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-sm font-bold text-[#222]">{vehicle.name}</p>
+              <span className="rounded-full bg-[color:var(--color-info-bg)] px-2 py-0.5 text-[9px] font-semibold uppercase text-[color:var(--color-info-text)]">
+                {vehicle.category}
+              </span>
+            </div>
+            <p className="mt-0.5 text-xs text-[color:var(--color-muted)]">{vehicle.type}</p>
+          </div>
+        </div>
+
+        <h2 className="mt-8 text-lg font-bold text-[#222]">Choose your payment method</h2>
+
+        <div className="mt-4 flex flex-col gap-3">
+          {/* Card */}
+          <div
+            className={`rounded-xl bg-neutral-50 p-4 transition-colors ${method === "card" ? "ring-2 ring-[#222]" : ""}`}
+          >
+            <button
+              type="button"
+              onClick={() => setMethod("card")}
+              className="flex w-full items-center justify-between gap-3"
+            >
+              <span className="flex items-center gap-3">
+                <span
+                  className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${method === "card" ? "border-[#222]" : "border-[color:var(--color-border)]"}`}
                 >
-                  <Icon name={m.icon} size={20} />
-                  {m.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-6 rounded-xl border border-[#e5ebf0] p-6 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
-              {method === "netbanking" && (
+                  {method === "card" && <span className="size-2.5 rounded-full bg-[#222]" />}
+                </span>
+                <span className="text-sm font-bold text-[#222]">Debit/Credit Card</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="rounded bg-white px-1.5 py-1 text-[10px] font-extrabold italic text-blue-700 shadow-sm">VISA</span>
+                <span className="flex size-6 items-center justify-center rounded-full bg-gradient-to-r from-red-500 to-amber-400" />
+              </span>
+            </button>
+            {method === "card" && (
+              <div className="mt-4 flex flex-col gap-3 border-t border-[color:var(--color-border)] pt-4">
                 <div>
-                  <h2 className="mb-4 text-base font-bold text-[#222]">Select your bank</h2>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    {banks.map((b) => (
-                      <button
-                        key={b}
-                        type="button"
-                        onClick={() => setBank(b)}
-                        className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left text-sm font-medium transition-colors cursor-pointer ${
-                          bank === b
-                            ? "border-[#222] ring-1 ring-[#222]"
-                            : "border-[#e5ebf0] hover:border-[#222]/40"
-                        }`}
-                      >
-                        <Icon name="bank" size={18} />
-                        {b}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="mt-4 flex items-start gap-2 rounded-lg bg-[color:var(--color-info-bg)] px-3.5 py-3 text-xs text-[color:var(--color-info-text)]">
-                    <Icon name="info" size={16} />
-                    <span>You&apos;ll be redirected to {bank} to securely complete this payment.</span>
-                  </div>
+                  <label className={labelClasses}>Card number</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="1234 5678 9012 3456"
+                    maxLength={19}
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(e.target.value)}
+                    className={inputClasses}
+                  />
                 </div>
-              )}
-
-              {method === "card" && (
                 <div>
-                  <h2 className="mb-4 text-base font-bold text-[#222]">Card details</h2>
-                  <div className="grid grid-cols-1 gap-4">
-                    <div>
-                      <label className={labelClasses}>Card number</label>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        placeholder="1234 5678 9012 3456"
-                        maxLength={19}
-                        value={cardNumber}
-                        onChange={(e) => setCardNumber(e.target.value)}
-                        className={inputClasses}
-                      />
-                    </div>
-                    <div>
-                      <label className={labelClasses}>Name on card</label>
-                      <input
-                        type="text"
-                        placeholder="Karma Dorji"
-                        value={cardName}
-                        onChange={(e) => setCardName(e.target.value)}
-                        className={inputClasses}
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className={labelClasses}>Expiry date</label>
-                        <input
-                          type="text"
-                          placeholder="MM/YY"
-                          maxLength={5}
-                          value={cardExpiry}
-                          onChange={(e) => setCardExpiry(e.target.value)}
-                          className={inputClasses}
-                        />
-                      </div>
-                      <div>
-                        <label className={labelClasses}>CVV</label>
-                        <input
-                          type="password"
-                          inputMode="numeric"
-                          placeholder="123"
-                          maxLength={4}
-                          value={cardCvv}
-                          onChange={(e) => setCardCvv(e.target.value)}
-                          className={inputClasses}
-                        />
-                      </div>
-                    </div>
+                  <label className={labelClasses}>Name on card</label>
+                  <input
+                    type="text"
+                    placeholder="Karma Dorji"
+                    value={cardName}
+                    onChange={(e) => setCardName(e.target.value)}
+                    className={inputClasses}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className={labelClasses}>Expiry date</label>
+                    <input
+                      type="text"
+                      placeholder="MM/YY"
+                      maxLength={5}
+                      value={cardExpiry}
+                      onChange={(e) => setCardExpiry(e.target.value)}
+                      className={inputClasses}
+                    />
                   </div>
-                  <div className="mt-4 flex items-center gap-2 text-xs text-[color:var(--color-muted)]">
-                    <Icon name="lock" size={14} />
-                    Your payment info is encrypted and secure.
+                  <div>
+                    <label className={labelClasses}>CVV</label>
+                    <input
+                      type="password"
+                      inputMode="numeric"
+                      placeholder="123"
+                      maxLength={4}
+                      value={cardCvv}
+                      onChange={(e) => setCardCvv(e.target.value)}
+                      className={inputClasses}
+                    />
                   </div>
                 </div>
-              )}
-
-              {method === "wallet" && (
-                <div className="flex flex-col items-center py-8 text-center">
-                  <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-[#f4f6f8]">
-                    <Icon name="wallet" size={26} />
-                  </div>
-                  <h2 className="text-base font-bold text-[#222]">Pay with PayPal / Wallet</h2>
-                  <p className="mt-1.5 max-w-xs text-sm text-[color:var(--color-muted)]">
-                    You&apos;ll be redirected to PayPal to log in and confirm this payment securely.
-                  </p>
+                <div className="flex items-center gap-2 text-xs text-[color:var(--color-muted)]">
+                  <Icon name="lock" size={14} />
+                  Your payment info is encrypted and secure.
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
-          {/* Right: fare summary */}
-          <aside className="h-fit rounded-xl border border-[#e5ebf0] p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)] lg:sticky lg:top-6">
-            <div className="flex gap-3">
-              <img
-                src={vehicle.image}
-                alt={vehicle.name}
-                className="size-16 rounded-lg object-cover"
-              />
-              <div>
-                <p className="text-sm font-bold text-[#222]">{vehicle.name}</p>
-                <p className="text-xs text-[color:var(--color-muted)]">{vehicle.type}</p>
-                <p className="mt-1 text-xs text-[color:var(--color-muted)]">
-                  24 Sep, 10:00 &ndash; 27 Sep, 10:00 &middot; {RENTAL_DAYS} days
-                </p>
+          {/* PayPal */}
+          <div
+            className={`rounded-xl bg-neutral-50 p-4 transition-colors ${method === "paypal" ? "ring-2 ring-[#222]" : ""}`}
+          >
+            <button
+              type="button"
+              onClick={() => setMethod("paypal")}
+              className="flex w-full items-center justify-between gap-3"
+            >
+              <span className="flex items-center gap-3">
+                <span
+                  className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${method === "paypal" ? "border-[#222]" : "border-[color:var(--color-border)]"}`}
+                >
+                  {method === "paypal" && <span className="size-2.5 rounded-full bg-[#222]" />}
+                </span>
+                <span className="text-sm font-bold text-[#222]">PayPal</span>
+              </span>
+              <span className="text-sm font-extrabold italic text-blue-800">
+                Pay<span className="text-sky-500">Pal</span>
+              </span>
+            </button>
+            {method === "paypal" && (
+              <div className="mt-4 border-t border-[color:var(--color-border)] pt-4">
+                <div className="flex items-start gap-2 rounded-lg bg-[color:var(--color-info-bg)] px-3.5 py-3 text-xs text-[color:var(--color-info-text)]">
+                  <Icon name="info" size={16} className="shrink-0" />
+                  You will be redirected to PayPal to complete your payment securely.
+                </div>
+                <button
+                  type="button"
+                  onClick={handlePay}
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 py-3.5 text-sm font-extrabold italic text-blue-900 transition-colors hover:bg-amber-300"
+                >
+                  Pay via PayPal
+                </button>
               </div>
-            </div>
+            )}
+          </div>
 
-            <div className="my-4 h-px bg-[#e5ebf0]" />
-
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-[#333]">
-                <span>Base fare &times; {RENTAL_DAYS} days</span>
-                <span>{format(baseFare)}</span>
+          {/* Net Banking */}
+          <div
+            className={`rounded-xl bg-neutral-50 p-4 transition-colors ${method === "netbanking" ? "ring-2 ring-[#222]" : ""}`}
+          >
+            <button
+              type="button"
+              onClick={() => setMethod("netbanking")}
+              className="flex w-full items-center justify-between gap-3"
+            >
+              <span className="flex items-center gap-3">
+                <span
+                  className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${method === "netbanking" ? "border-[#222]" : "border-[color:var(--color-border)]"}`}
+                >
+                  {method === "netbanking" && <span className="size-2.5 rounded-full bg-[#222]" />}
+                </span>
+                <span className="text-sm font-bold text-[#222]">Net Banking</span>
+              </span>
+              <Icon name="bank" size={20} className="text-[#222]" />
+            </button>
+            {method === "netbanking" && (
+              <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[color:var(--color-border)] pt-4 sm:grid-cols-4">
+                {["Bank of Bhutan", "Bhutan National Bank", "Druk PNB Bank", "T Bank"].map((b) => (
+                  <button
+                    key={b}
+                    type="button"
+                    className="rounded-lg border border-[color:var(--color-border)] px-3 py-2.5 text-center text-xs font-semibold text-[#222] hover:border-[#222]"
+                  >
+                    {b}
+                  </button>
+                ))}
               </div>
-              <div className="flex justify-between text-[#333]">
-                <span>Taxes &amp; fees (10%)</span>
-                <span>{format(taxes)}</span>
-              </div>
-            </div>
+            )}
+          </div>
+        </div>
+      </div>
 
-            <div className="my-4 h-px bg-[#e5ebf0]" />
-
-            <div className="flex justify-between text-base font-bold text-[#222]">
-              <span>Total</span>
-              <span>{format(total)}</span>
-            </div>
-
-            <Button variant="primary" size="lg" fullWidth className="mt-5" onClick={handlePay}>
-              Pay {format(total)}
-            </Button>
-          </aside>
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)]">
+        <div className="mx-auto flex max-w-[1000px] items-center justify-between gap-4">
+          <div>
+            <p className="text-xs text-[color:var(--color-muted)]">Net Payable</p>
+            <p className="text-lg font-extrabold text-[#222]">{format(total)}</p>
+          </div>
+          {method !== "paypal" && (
+            <button
+              type="button"
+              onClick={handlePay}
+              className="rounded-xl bg-[#222] px-8 py-3.5 text-sm font-bold text-white transition-colors hover:bg-black"
+            >
+              Proceed to Payment
+            </button>
+          )}
         </div>
       </div>
     </PageShell>

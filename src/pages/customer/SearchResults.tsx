@@ -1,11 +1,10 @@
-import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
 import PageShell from "../../components/PageShell";
-import BookingTypeTabs from "../../components/BookingTypeTabs";
 import VehicleCard from "../../components/VehicleCard";
 import Icon from "../../components/Icon";
+import EditSearchModal from "../../components/EditSearchModal";
+import type { EditSearchValue } from "../../components/EditSearchModal";
 import { vehicles as allVehicles, type Vehicle } from "../../data/mockData";
-import type { BookingType } from "../../lib/routes";
 
 type SortOption = "recommended" | "price-low" | "price-high" | "rating";
 
@@ -33,14 +32,27 @@ function sortVehicles(list: Vehicle[], sort: SortOption): Vehicle[] {
   }
 }
 
-export default function SearchResults() {
-  const [searchParams] = useSearchParams();
-  const bookingType = (searchParams.get("type") as BookingType) || "daily";
-  const [type, setType] = useState<BookingType>(bookingType);
+function formatDate(d: Date) {
+  return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+}
 
-  const pickup = searchParams.get("pickup") || "Thimphu, Clock Tower Square";
-  const dropoff = searchParams.get("dropoff") || "Paro, Airport";
-  const date = searchParams.get("date") || "Thu, 24 Sep · 10:00 AM";
+export default function SearchResults() {
+  const [search, setSearch] = useState<EditSearchValue>({
+    tripMode: "one-way",
+    pickup: "Thimphu, Clock Tower Square",
+    dropoff: "Paro, Airport",
+    pickupDate: new Date(),
+    pickupTime: "10:00",
+    dropoffDate: null,
+    dropoffTime: "13:00",
+  });
+  const [editOpen, setEditOpen] = useState(false);
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 700);
+    return () => clearTimeout(t);
+  }, []);
 
   const [sortOpen, setSortOpen] = useState(false);
   const [sort, setSort] = useState<SortOption>("recommended");
@@ -54,6 +66,13 @@ export default function SearchResults() {
 
   function toggle(list: string[], value: string, setList: (v: string[]) => void) {
     setList(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
+  }
+
+  function handleEditSearch(value: EditSearchValue) {
+    setSearch(value);
+    setEditOpen(false);
+    setLoading(true);
+    setTimeout(() => setLoading(false), 700);
   }
 
   const filterPanel = (
@@ -130,99 +149,114 @@ export default function SearchResults() {
   return (
     <PageShell>
       <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
-        <BookingTypeTabs value={type} onChange={setType} />
-
         {/* Edit search summary bar */}
-        <div className="mt-5 flex flex-col gap-3 rounded-xl border border-[color:var(--color-border)] bg-white p-4 shadow-[0px_1px_3px_rgba(25,32,36,0.16)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 rounded-xl border border-[color:var(--color-border)] bg-white p-4 shadow-[0px_1px_3px_rgba(25,32,36,0.16)] sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
-            <div className="flex items-center gap-2 text-sm text-[#222]">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-[#222]">
               <Icon name="location" size={16} className="shrink-0 text-[color:var(--color-muted)]" />
-              <span className="font-semibold">{pickup}</span>
+              <span className="font-semibold">{search.pickup}</span>
               <Icon name="chevron-right" size={14} className="text-[color:var(--color-muted)]" />
-              <span className="font-semibold">{dropoff}</span>
+              <span className="font-semibold">{search.dropoff}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-[color:var(--color-muted)]">
               <Icon name="calendar" size={16} />
-              {date}
+              {formatDate(search.pickupDate)}, {search.pickupTime}
             </div>
           </div>
           <button
             type="button"
-            className="self-start rounded-xl border border-[#222] px-4 py-2 text-xs font-bold text-[#222] hover:bg-neutral-50 sm:self-auto"
+            onClick={() => setEditOpen(true)}
+            className="flex shrink-0 items-center gap-1.5 self-start rounded-xl border border-[#222] px-4 py-2 text-xs font-bold text-[#222] hover:bg-neutral-50 sm:self-auto"
           >
+            <Icon name="edit" size={13} />
             Edit Search
           </button>
         </div>
 
-        <div className="mt-6 flex flex-col gap-6 lg:flex-row">
-          {/* Desktop filter sidebar */}
-          <aside className="hidden w-[280px] shrink-0 lg:block">
-            <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
-              <h2 className="mb-4 text-base font-bold text-[#222]">Filters</h2>
-              {filterPanel}
-            </div>
-          </aside>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-24">
+            <div
+              className="size-10 animate-spin rounded-full border-4 border-[#e5ebf0] border-t-[#222]"
+              role="status"
+              aria-label="Loading results"
+            />
+            <p className="text-sm text-[color:var(--color-muted)]">Finding the best rides for you&hellip;</p>
+          </div>
+        ) : (
+          <div className="mt-6 flex flex-col gap-6 lg:flex-row">
+            {/* Desktop filter sidebar */}
+            <aside className="hidden w-[280px] shrink-0 lg:block">
+              <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
+                <h2 className="mb-4 text-base font-bold text-[#222]">Filters</h2>
+                {filterPanel}
+              </div>
+            </aside>
 
-          <div className="min-w-0 flex-1">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <p className="text-sm font-semibold text-[#222]">{results.length} vehicles found</p>
+            <div className="min-w-0 flex-1">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-[#222]">{results.length} vehicles found</p>
 
-              <div className="flex items-center gap-2">
-                {/* Mobile / tablet filter trigger */}
-                <button
-                  type="button"
-                  onClick={() => setFilterOpen(true)}
-                  className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 py-2 text-xs font-semibold text-[#222] hover:border-[#222] lg:hidden"
-                >
-                  <Icon name="filter" size={15} />
-                  Filter
-                </button>
-
-                {/* Sort by */}
-                <div className="relative">
+                <div className="flex items-center gap-2">
+                  {/* Mobile / tablet filter trigger */}
                   <button
                     type="button"
-                    onClick={() => setSortOpen((v) => !v)}
-                    className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 py-2 text-xs font-semibold text-[#222] hover:border-[#222]"
+                    onClick={() => setFilterOpen(true)}
+                    className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 py-2 text-xs font-semibold text-[#222] hover:border-[#222] lg:hidden"
                   >
-                    <Icon name="sort" size={15} />
-                    Sort by
-                    <Icon name="chevron-down" size={13} />
+                    <Icon name="filter" size={15} />
+                    Filter
                   </button>
-                  {sortOpen && (
-                    <>
-                      <div className="fixed inset-0 z-10" onClick={() => setSortOpen(false)} />
-                      <div className="absolute right-0 z-20 mt-2 w-52 rounded-xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
-                        {sortOptions.map((opt) => (
-                          <button
-                            key={opt.value}
-                            type="button"
-                            onClick={() => {
-                              setSort(opt.value);
-                              setSortOpen(false);
-                            }}
-                            className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
-                              sort === opt.value ? "bg-[#f4f4f4] font-semibold text-[#222]" : "text-[#333] hover:bg-neutral-50"
-                            }`}
-                          >
-                            {opt.label}
-                            {sort === opt.value && <Icon name="check" size={14} />}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
+
+                  {/* Sort by */}
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setSortOpen((v) => !v)}
+                      className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 py-2 text-xs font-semibold text-[#222] hover:border-[#222]"
+                    >
+                      <Icon name="sort" size={15} />
+                      Sort by
+                      <Icon name="chevron-down" size={13} />
+                    </button>
+                    {sortOpen && (
+                      <>
+                        <button
+                          aria-label="Close"
+                          className="fixed inset-0 z-10 cursor-default"
+                          onClick={() => setSortOpen(false)}
+                        />
+                        <div className="absolute right-0 z-20 mt-2 w-52 rounded-xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
+                          {sortOptions.map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() => {
+                                setSort(opt.value);
+                                setSortOpen(false);
+                              }}
+                              className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
+                                sort === opt.value ? "bg-[#f4f4f4] font-semibold text-[#222]" : "text-[#333] hover:bg-neutral-50"
+                              }`}
+                            >
+                              {opt.label}
+                              {sort === opt.value && <Icon name="check" size={14} />}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {results.map((vehicle) => (
-                <VehicleCard key={vehicle.id} vehicle={vehicle} />
-              ))}
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {results.map((vehicle) => (
+                  <VehicleCard key={vehicle.id} vehicle={vehicle} />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Mobile / tablet filter sheet */}
@@ -245,6 +279,10 @@ export default function SearchResults() {
             </button>
           </div>
         </div>
+      )}
+
+      {editOpen && (
+        <EditSearchModal initial={search} onClose={() => setEditOpen(false)} onSearch={handleEditSearch} />
       )}
     </PageShell>
   );
