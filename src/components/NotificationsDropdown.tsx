@@ -17,7 +17,7 @@ export default function NotificationsDropdown({
       ? driverNotifications.slice(0, 3).map((n) => ({ id: n.id, title: n.title, body: n.body }))
       : customerNotifications.slice(0, 3).map((n) => ({ id: n.id, title: n.title, body: n.body }));
 
-  const unreadCount = role === "customer" ? customerNotifications.filter((n) => !n.read).length : driverNotifications.length;
+  const unreadCount = (role === "customer" ? customerNotifications : driverNotifications).filter((n) => !n.read).length;
 
   return (
     <div className="relative">

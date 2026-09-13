@@ -352,18 +352,36 @@ export const driverBookings: DriverBooking[] = [
   },
 ];
 
-export type DriverNotification = { id: string; title: string; body: string };
+export type DriverNotification = { id: string; title: string; body: string; time: string; read: boolean };
 
 export const driverNotifications: DriverNotification[] = [
   {
     id: "dn1",
-    title: "You have booking in hold",
-    body: "Trip from Paro to Thimphu Wed 24 Jan 2023 to Sun 28 Jan 2023",
+    title: "New booking request",
+    body: "Sonam Wangmo booked your Toyota Prado GX for Paro → Phuentsholing, Sat 12 Dec.",
+    time: "2h ago",
+    read: false,
   },
   {
     id: "dn2",
-    title: "You have booking in hold",
-    body: "Trip from Paro to Thimphu Wed 24 Jan 2023 to Sun 28 Jan 2023",
+    title: "Booking on hold",
+    body: "Trip from Paro to Thimphu, Wed 24 Jan to Sun 28 Jan, is awaiting rider confirmation.",
+    time: "1d ago",
+    read: false,
+  },
+  {
+    id: "dn3",
+    title: "Vehicle under review",
+    body: "Your Toyota Hiace Bus listing is being reviewed and will go live shortly.",
+    time: "2d ago",
+    read: true,
+  },
+  {
+    id: "dn4",
+    title: "Trip completed",
+    body: "Your trip with Tenzin Namgay is complete. Payment has been credited to your ledger.",
+    time: "4d ago",
+    read: true,
   },
 ];
 
