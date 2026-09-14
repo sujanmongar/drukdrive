@@ -52,7 +52,7 @@ export default function EditSearchModal({
           {/* Ride type stays fixed to whatever was searched — it is picked on
               Home. Only One Way / Return modifies the current search. */}
           {showTripModeTabs && (
-            <div className="flex gap-5 border-b border-[color:var(--color-border)]">
+            <div className="flex gap-5">
               {(["one-way", "return"] as const).map((m) => {
                 const active = value.tripMode === m;
                 return (

@@ -46,6 +46,7 @@ export default function Home() {
   const dateAnchorRef = useRef<HTMLDivElement>(null);
   const recentTrackRef = useRef<HTMLDivElement>(null);
   const carsTrackRef = useRef<HTMLDivElement>(null);
+  const typesTrackRef = useRef<HTMLDivElement>(null);
 
   const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
 
@@ -133,9 +134,6 @@ export default function Home() {
             <h1 className="t-h1 max-w-[280px] text-[color:var(--color-ink)] sm:max-w-md md:max-w-[520px]">
               Go anywhere in Bhutan.
             </h1>
-            <p className="t-body-lg mt-3 max-w-[520px] text-[color:var(--color-muted)]">
-              Compare verified local operators and book the right vehicle for your trip.
-            </p>
 
             {/* Mobile keeps the stacked card. From lg the widget goes
                 horizontal — one field row plus an icon-only search button —
@@ -144,7 +142,7 @@ export default function Home() {
               <BookingTypeTabs value={type} onChange={setType} />
 
               {showTripModeTabs && (
-                <div className="mt-5 flex w-fit gap-5 border-b border-[color:var(--color-border)]">
+                <div className="mt-5 flex w-fit gap-5">
                   {(["one-way", "return"] as TripMode[]).map((m) => {
                     const active = tripMode === m;
                     return (
@@ -163,7 +161,7 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="mt-5 flex flex-col gap-3 lg:flex-row lg:items-stretch lg:gap-3">
+              <div className="mt-5 flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-3">
                 {isSingleLocation ? (
                   <div ref={pickupAnchorRef} className="relative lg:min-w-0 lg:flex-1">
                     <button
@@ -244,11 +242,11 @@ export default function Home() {
                 )}
 
                 <div ref={dateAnchorRef} className="relative lg:min-w-0 lg:flex-1">
-                  <div className="flex h-full overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white">
+                  <div className="flex overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white lg:h-[56px]">
                     <button
                       type="button"
                       onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                      className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50 lg:h-[56px]"
+                      className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50 lg:h-full"
                     >
                       <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                       <span className="flex min-w-0 flex-col gap-1">
@@ -264,7 +262,7 @@ export default function Home() {
                         <button
                           type="button"
                           onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                          className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50 lg:h-[56px]"
+                          className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50 lg:h-full"
                         >
                           <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                           <span className="flex min-w-0 flex-col gap-1">
@@ -303,7 +301,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={handleSearch}
-                  className="hidden shrink-0 items-center justify-center rounded-xl bg-[color:var(--color-ink)] px-8 text-base font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.98] lg:flex"
+                  className="hidden h-[56px] shrink-0 items-center justify-center rounded-xl bg-[color:var(--color-ink)] px-8 text-base font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.98] lg:flex"
                 >
                   Search
                 </button>
@@ -395,7 +393,7 @@ export default function Home() {
 
         {/* Popular cars — four in view, the rest paged by the header arrows. */}
         <section className="py-12 md:py-20">
-          <SectionHeader title="Popular cars" subtitle="Most booked vehicles across Bhutan" trackRef={carsTrackRef} />
+          <SectionHeader title="Popular cars" trackRef={carsTrackRef} />
           <div ref={carsTrackRef} className="carousel-track flex gap-5 overflow-x-auto pb-2">
             {vehicles.map((v) => (
               <VehicleCard
@@ -408,47 +406,36 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Popular car types */}
+        {/* Popular car types — photo tiles, paged by the header arrows. */}
         <section className="py-12 md:py-20">
-          <SectionHeader title="Browse by car type" subtitle="Pick the shape of vehicle that fits your trip" />
-          <div className="grid grid-cols-2 gap-4 md:gap-5 lg:grid-cols-4">
-            {popularCarTypes.map((t) => {
-              const count = vehicles.filter((v) => v.category === t.category).length;
-              return (
-                <button
-                  key={t.category}
-                  type="button"
-                  onClick={() => navigate(`${routes.search}?category=${encodeURIComponent(t.category)}`)}
-                  className="group relative overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white text-left transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-[0px_16px_36px_rgba(25,32,36,0.16)]"
-                >
-                  <div className="aspect-[4/3] w-full overflow-hidden bg-neutral-100">
-                    <VehicleImage
-                      vehicleId={t.vehicleId}
-                      category={t.category}
-                      className="size-full p-3 transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between gap-2 p-4">
-                    <div className="min-w-0">
-                      <p className="t-h4 truncate text-[color:var(--color-ink)]">{t.label}</p>
-                      <p className="t-caption text-[color:var(--color-muted)]">
-                        {count} {count === 1 ? "vehicle" : "vehicles"}
-                      </p>
-                    </div>
-                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-[color:var(--color-ink)] transition-all duration-300 group-hover:bg-[color:var(--color-ink)] group-hover:text-white">
-                      <Icon name="chevron-right" size={16} strokeWidth={2.2} />
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
+          <SectionHeader title="Popular car types" trackRef={typesTrackRef} />
+          <div ref={typesTrackRef} className="carousel-track flex gap-4 overflow-x-auto pb-2 md:gap-5">
+            {popularCarTypes.map((t) => (
+              <button
+                key={t.category}
+                type="button"
+                onClick={() => navigate(`${routes.search}?category=${encodeURIComponent(t.category)}`)}
+                className="group relative aspect-square w-[260px] shrink-0 cursor-pointer overflow-hidden rounded-2xl bg-neutral-100 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_14px_32px_rgba(25,32,36,0.18)] sm:w-[240px] lg:w-[calc((100%-3.75rem)/4)]"
+              >
+                <VehicleImage
+                  vehicleId={t.vehicleId}
+                  category={t.category}
+                  fit="cover"
+                  className="size-full transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0" />
+                <span className="pointer-events-none absolute bottom-5 left-5 text-lg font-semibold text-white">
+                  {t.label}
+                </span>
+              </button>
+            ))}
           </div>
         </section>
 
-        {/* FAQ — one column of full-width accordion cards. */}
+        {/* FAQ — one centred column of full-width accordion cards. */}
         <section className="py-12 md:py-20">
-          <SectionHeader title="Frequently asked questions" subtitle="Everything worth knowing before you book" />
-          <div className="flex max-w-[860px] flex-col gap-3">
+          <h2 className="t-h2 mb-6 text-center text-[color:var(--color-ink)] md:mb-8">Frequently asked questions</h2>
+          <div className="mx-auto flex max-w-[860px] flex-col gap-3">
             {faqs.map((f, i) => {
               const open = openFaqs.has(i);
               return (

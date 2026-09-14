@@ -35,25 +35,42 @@ const switchTarget: Record<Role, { role: Role; label: string; to: string; icon: 
   driver: { role: "customer", label: "Switch to Riding", to: routes.home, icon: "user" },
 };
 
+// Shared shell for the header's icon controls, so wishlist / notifications /
+// account all read as the same class of button.
+export const headerControl =
+  "flex items-center justify-center rounded-full border border-[color:var(--color-border)] bg-neutral-50 text-[color:var(--color-ink)] transition-colors hover:border-[color:var(--color-ink)] hover:bg-neutral-100";
+
 function WishlistButton({ compact = false }: { compact?: boolean }) {
   const { ids } = useWishlist();
   return (
     <Link
       to={routes.accountWishlist}
       aria-label="Wishlist"
-      className={`relative flex items-center justify-center rounded-xl hover:bg-neutral-100 ${compact ? "size-9" : "size-[42px]"}`}
+      className={`relative ${headerControl} ${compact ? "size-9" : "size-[42px]"}`}
     >
       <Icon name="heart" size={compact ? 18 : 20} />
       {ids.length > 0 && (
         <span
           className={`absolute flex items-center justify-center rounded-full bg-[color:var(--color-danger)] text-[9px] font-medium text-white ${
-            compact ? "right-0.5 top-0.5 size-[13px]" : "right-[9px] top-[9px] size-[14px]"
+            compact ? "-right-0.5 -top-0.5 size-[15px]" : "-right-0.5 -top-0.5 size-[16px]"
           }`}
         >
           {ids.length}
         </span>
       )}
     </Link>
+  );
+}
+
+// Neutral stand-in avatar for signed-out visitors — the account control keeps
+// its shape whether or not someone is signed in.
+function PlaceholderAvatar({ size = 32 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 40 40" width={size} height={size} className="rounded-full" aria-hidden="true">
+      <circle cx="20" cy="20" r="20" fill="#e3e8ed" />
+      <circle cx="20" cy="15.5" r="6.2" fill="#a8b4c0" />
+      <path d="M6.5 35.5a13.8 13.8 0 0 1 27 0Z" fill="#a8b4c0" />
+    </svg>
   );
 }
 
@@ -87,9 +104,9 @@ function AccountMenu({ onSignOut }: { onSignOut: () => void }) {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Account menu"
-        className="flex size-[42px] items-center justify-center rounded-full hover:bg-neutral-100"
+        className={`${headerControl} size-[42px] overflow-hidden`}
       >
-        <img src={currentUser.avatar} alt="" className="size-8 rounded-full object-cover" />
+        <img src={currentUser.avatar} alt="" className="size-full rounded-full object-cover" />
       </button>
 
       {open && (
@@ -174,12 +191,8 @@ export default function Header({ transparent = false }: { transparent?: boolean 
               <AccountMenu onSignOut={handleSignOut} />
             </>
           ) : (
-            <Link
-              to={routes.signIn}
-              className="flex h-[44px] items-center gap-2 rounded-full border border-[color:var(--color-border)] bg-white px-4 text-sm font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
-            >
-              <Icon name="user" size={16} />
-              Login / Signup
+            <Link to={routes.signIn} aria-label="Login / Signup" className={`${headerControl} size-[42px] overflow-hidden`}>
+              <PlaceholderAvatar size={40} />
             </Link>
           )}
           <CurrencySwitcher />
@@ -205,13 +218,13 @@ export default function Header({ transparent = false }: { transparent?: boolean 
             <Link
               to={role === "driver" ? routes.providerAccount : routes.accountProfile}
               aria-label="Account"
-              className="flex size-[28px] items-center justify-center rounded-full border-2 border-[color:var(--color-ink)] bg-white"
+              className={`${headerControl} size-9 overflow-hidden`}
             >
-              <Icon name="user" size={14} />
+              <img src={currentUser.avatar} alt="" className="size-full rounded-full object-cover" />
             </Link>
           ) : (
-            <Link to={routes.signIn} aria-label="Login / Signup" className="flex size-9 items-center justify-center">
-              <Icon name="user" size={20} />
+            <Link to={routes.signIn} aria-label="Login / Signup" className={`${headerControl} size-9 overflow-hidden`}>
+              <PlaceholderAvatar size={34} />
             </Link>
           )}
         </div>

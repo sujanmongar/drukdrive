@@ -20,7 +20,7 @@ export default function BookingTypeTabs({
   onChange: (t: BookingType) => void;
 }) {
   return (
-    <div className="inline-flex flex-wrap items-center gap-1 rounded-full border border-[color:var(--color-border)] bg-white p-1">
+    <div className="grid grid-cols-2 gap-1 rounded-2xl border border-[color:var(--color-border)] bg-white p-1 sm:inline-flex sm:rounded-full">
       {order.map(({ type, icon }) => {
         const active = type === value;
         return (
@@ -29,9 +29,9 @@ export default function BookingTypeTabs({
             type="button"
             onClick={() => onChange(type)}
             aria-pressed={active}
-            className={`flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm transition-all duration-200 ${
+            className={`flex items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 sm:justify-start sm:rounded-full sm:px-3.5 sm:py-2 ${
               active
-                ? "bg-[color:var(--color-ink)] font-semibold text-white shadow-sm"
+                ? "bg-[color:var(--color-ink)] font-semibold text-white"
                 : "text-[color:var(--color-ink-soft)] hover:bg-neutral-100"
             }`}
           >

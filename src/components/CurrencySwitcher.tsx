@@ -18,7 +18,7 @@ export default function CurrencySwitcher({ className = "" }: { className?: strin
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Currency and language"
-        className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-medium hover:bg-neutral-100"
+        className="flex h-9 items-center gap-1.5 rounded-full border border-[color:var(--color-border)] bg-neutral-50 px-3 text-sm font-medium text-[color:var(--color-ink)] transition-colors hover:border-[color:var(--color-ink)] hover:bg-neutral-100 md:h-[42px] md:px-3.5"
       >
         <span className="text-base leading-none">{activeCurrency.flag}</span>
         {activeCurrency.code}
