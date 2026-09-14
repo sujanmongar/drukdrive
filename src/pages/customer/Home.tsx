@@ -52,9 +52,9 @@ export default function Home() {
   // toggle; Rental and Self Drive always show both ends of the date range
   // (no toggle needed); Outstation and Self Drive only ask for a single
   // "Location" (no separate pickup/drop-off pair).
-  const showTripModeTabs = type === "daily";
+  const showTripModeTabs = type === "daily" || type === "outstation";
   const isSingleLocation = type === "outstation" || type === "self-drive";
-  const showSecondDateBox = type === "rental" || type === "self-drive" || (type === "daily" && tripMode === "return");
+  const showSecondDateBox = type === "rental" || type === "self-drive" || (showTripModeTabs && tripMode === "return");
   const dateMode = showSecondDateBox ? "range" : "single";
 
   const durationHours = estimateDurationHours(pickup, dropoff);
@@ -130,17 +130,20 @@ export default function Home() {
           <HeroBlobs type={type} />
         </div>
 
-        <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 gap-8 px-4 pb-10 pt-6 md:grid-cols-[1fr_auto] md:items-center md:px-[60px] md:pb-24 md:pt-16">
+        <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 gap-8 px-4 pb-10 pt-6 md:grid-cols-[1fr_auto] md:items-center md:px-[60px] md:pb-24 md:pt-16 lg:grid-cols-1 lg:pb-16">
           <div>
             <h1 className="max-w-[280px] text-2xl font-bold leading-snug text-[color:var(--color-ink-87)] sm:max-w-md sm:text-3xl md:max-w-[420px] md:text-[40px] md:leading-[1.1]">
               Go anywhere in Bhutan.
             </h1>
 
-            <div className="relative mt-6 w-full max-w-[506px] rounded-2xl bg-white p-4 shadow-[0px_2px_14px_rgba(0,0,0,0.1)] md:mt-8 md:p-[26px]">
+            {/* Mobile keeps the stacked card. From lg the widget goes
+                horizontal — one field row plus an icon-only search button —
+                so the hero costs far less vertical space. */}
+            <div className="relative mt-6 w-full max-w-[506px] rounded-2xl bg-white p-4 shadow-[0px_2px_14px_rgba(0,0,0,0.1)] md:mt-8 md:p-[26px] lg:max-w-none lg:bg-transparent lg:p-0 lg:shadow-none">
               <BookingTypeTabs value={type} onChange={setType} />
 
               {showTripModeTabs && (
-                <div className="mt-4 flex gap-4 border-b border-[color:var(--color-border)]">
+                <div className="mt-4 flex w-fit gap-4 border-b border-[color:var(--color-border)]">
                   {(["one-way", "return"] as TripMode[]).map((m) => {
                     const active = tripMode === m;
                     return (
@@ -159,13 +162,13 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="mt-4 flex flex-col gap-3">
+              <div className="mt-4 flex flex-col gap-3 lg:flex-row lg:items-stretch lg:gap-2.5">
                 {isSingleLocation ? (
-                  <div ref={pickupAnchorRef} className="relative">
+                  <div ref={pickupAnchorRef} className="relative lg:min-w-0 lg:flex-1">
                     <button
                       type="button"
                       onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
-                      className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left transition-colors hover:border-[color:var(--color-ink)]"
+                      className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 text-left transition-colors hover:border-[color:var(--color-ink)] lg:h-[56px]"
                     >
                       <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                       <span className="flex flex-col gap-1">
@@ -187,11 +190,11 @@ export default function Home() {
                   </div>
                 ) : (
                   <>
-                    <div ref={pickupAnchorRef} className="relative">
+                    <div ref={pickupAnchorRef} className="relative lg:min-w-0 lg:flex-1">
                       <button
                         type="button"
                         onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
-                        className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left transition-colors hover:border-[color:var(--color-ink)]"
+                        className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 text-left transition-colors hover:border-[color:var(--color-ink)] lg:h-[56px]"
                       >
                         <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                         <span className="flex flex-col gap-1">
@@ -212,11 +215,11 @@ export default function Home() {
                       )}
                     </div>
 
-                    <div ref={dropoffAnchorRef} className="relative">
+                    <div ref={dropoffAnchorRef} className="relative lg:min-w-0 lg:flex-1">
                       <button
                         type="button"
                         onClick={() => setActiveField(activeField === "dropoff" ? null : "dropoff")}
-                        className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left transition-colors hover:border-[color:var(--color-ink)]"
+                        className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 text-left transition-colors hover:border-[color:var(--color-ink)] lg:h-[56px]"
                       >
                         <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                         <span className="flex flex-col gap-1">
@@ -239,12 +242,12 @@ export default function Home() {
                   </>
                 )}
 
-                <div ref={dateAnchorRef} className="relative">
-                  <div className="flex overflow-hidden rounded-xl border border-[color:var(--color-border)]">
+                <div ref={dateAnchorRef} className="relative lg:min-w-0 lg:flex-1">
+                  <div className="flex h-full overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white">
                     <button
                       type="button"
                       onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                      className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
+                      className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50 lg:h-[56px]"
                     >
                       <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                       <span className="flex min-w-0 flex-col gap-1">
@@ -260,7 +263,7 @@ export default function Home() {
                         <button
                           type="button"
                           onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                          className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
+                          className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50 lg:h-[56px]"
                         >
                           <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                           <span className="flex min-w-0 flex-col gap-1">
@@ -294,6 +297,16 @@ export default function Home() {
                     />
                   )}
                 </div>
+
+                {/* Desktop: the search action collapses into the field row. */}
+                <button
+                  type="button"
+                  onClick={handleSearch}
+                  aria-label="Search"
+                  className="hidden shrink-0 items-center justify-center rounded-xl bg-[color:var(--color-ink)] px-5 text-white transition-all hover:bg-black active:scale-[0.98] lg:flex"
+                >
+                  <Icon name="search" size={20} strokeWidth={2.3} />
+                </button>
               </div>
 
               {type === "daily" && tripMode === "return" && dayHourDuration !== null && (
@@ -316,16 +329,25 @@ export default function Home() {
               <button
                 type="button"
                 onClick={handleSearch}
-                className="mt-4 w-full rounded-xl bg-[color:var(--color-ink)] py-4 text-base font-bold text-white transition-all hover:bg-black active:scale-[0.99]"
+                className="mt-4 w-full rounded-xl bg-[color:var(--color-ink)] py-4 text-base font-bold text-white transition-all hover:bg-black active:scale-[0.99] lg:hidden"
               >
                 Search
               </button>
             </div>
+
+            <div className="mt-5 hidden items-center gap-2 lg:flex">
+              <Icon name="star" size={16} className="fill-current text-amber-400" />
+              <p className="t-body text-[color:var(--color-ink-soft)]">
+                <span className="font-bold text-[color:var(--color-ink)]">4.8 / 5</span> average rating from 600+
+                verified rides across Bhutan
+              </p>
+            </div>
           </div>
 
-          {/* Right side of hero — otherwise-empty space on wide screens gets
-              a quick trust signal instead of staying blank. */}
-          <div className="relative hidden md:block md:w-[380px] lg:w-[440px]">
+          {/* Right side of hero — fills the empty space beside the stacked
+              widget at md. From lg the widget goes full-width horizontal, so
+              this steps aside and the trust signal moves beneath it. */}
+          <div className="relative hidden md:block md:w-[380px] lg:hidden">
             <div className="relative overflow-hidden rounded-3xl">
               <svg viewBox="0 0 440 420" className="block w-full" aria-hidden="true">
                 <path d="M0 300 L70 180 L130 260 L190 120 L260 280 L320 160 L390 260 L440 220 L440 420 L0 420 Z" fill="#f0deb0" />

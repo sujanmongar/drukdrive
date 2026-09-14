@@ -3,12 +3,24 @@
 
 export type VehicleCategory = "Prime SUV" | "Sedan SUV" | "Mini Bus" | "Bus" | "Two Wheels";
 
+// Rental-industry style class shown under a car's name ("or similar Compact"),
+// so the listing reads as a class of vehicle rather than that exact car.
+export const vehicleClassOf: Record<VehicleCategory, string> = {
+  "Prime SUV": "Luxury SUV",
+  "Sedan SUV": "Compact",
+  "Mini Bus": "People Carrier",
+  Bus: "Coach",
+  "Two Wheels": "Motorbike",
+};
+
 export type Vehicle = {
   id: string;
   name: string;
   brand: string;
   category: VehicleCategory;
   seats: number;
+  doors: number;
+  luggage: number;
   fuel: "Petrol" | "Diesel" | "Electric";
   transmission: "Automatic" | "Manual";
   ac: boolean;
@@ -27,6 +39,8 @@ export const vehicles: Vehicle[] = [
     brand: "Toyota",
     category: "Prime SUV",
     seats: 5,
+    doors: 4,
+    luggage: 2,
     fuel: "Petrol",
     transmission: "Automatic",
     ac: true,
@@ -43,6 +57,8 @@ export const vehicles: Vehicle[] = [
     brand: "Toyota",
     category: "Bus",
     seats: 21,
+    doors: 2,
+    luggage: 6,
     fuel: "Diesel",
     transmission: "Manual",
     ac: true,
@@ -58,6 +74,8 @@ export const vehicles: Vehicle[] = [
     brand: "Toyota",
     category: "Mini Bus",
     seats: 9,
+    doors: 2,
+    luggage: 6,
     fuel: "Diesel",
     transmission: "Manual",
     ac: true,
@@ -73,6 +91,8 @@ export const vehicles: Vehicle[] = [
     brand: "Hyundai",
     category: "Sedan SUV",
     seats: 5,
+    doors: 4,
+    luggage: 2,
     fuel: "Petrol",
     transmission: "Automatic",
     ac: true,
@@ -89,6 +109,8 @@ export const vehicles: Vehicle[] = [
     brand: "Toyota",
     category: "Prime SUV",
     seats: 7,
+    doors: 5,
+    luggage: 3,
     fuel: "Diesel",
     transmission: "Automatic",
     ac: true,
@@ -104,6 +126,8 @@ export const vehicles: Vehicle[] = [
     brand: "Hyundai",
     category: "Sedan SUV",
     seats: 5,
+    doors: 4,
+    luggage: 2,
     fuel: "Petrol",
     transmission: "Automatic",
     ac: true,
@@ -119,6 +143,8 @@ export const vehicles: Vehicle[] = [
     brand: "Royal Enfield",
     category: "Two Wheels",
     seats: 2,
+    doors: 2,
+    luggage: 1,
     fuel: "Petrol",
     transmission: "Manual",
     ac: false,
@@ -134,6 +160,8 @@ export const vehicles: Vehicle[] = [
     brand: "Maruti",
     category: "Sedan SUV",
     seats: 7,
+    doors: 5,
+    luggage: 3,
     fuel: "Petrol",
     transmission: "Manual",
     ac: true,
@@ -149,6 +177,8 @@ export const vehicles: Vehicle[] = [
     brand: "Mahindra",
     category: "Prime SUV",
     seats: 7,
+    doors: 5,
+    luggage: 3,
     fuel: "Diesel",
     transmission: "Manual",
     ac: true,
@@ -165,6 +195,8 @@ export const vehicles: Vehicle[] = [
     brand: "Honda",
     category: "Sedan SUV",
     seats: 5,
+    doors: 4,
+    luggage: 2,
     fuel: "Petrol",
     transmission: "Automatic",
     ac: true,
@@ -180,6 +212,8 @@ export const vehicles: Vehicle[] = [
     brand: "Tata",
     category: "Sedan SUV",
     seats: 5,
+    doors: 4,
+    luggage: 2,
     fuel: "Diesel",
     transmission: "Manual",
     ac: true,

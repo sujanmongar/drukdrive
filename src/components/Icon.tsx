@@ -46,7 +46,9 @@ export type IconName =
   | "grid"
   | "list"
   | "gearbox"
-  | "snowflake";
+  | "snowflake"
+  | "luggage"
+  | "door";
 
 const paths: Record<IconName, ReactElement> = {
   location: (
@@ -215,16 +217,32 @@ const paths: Record<IconName, ReactElement> = {
     </>
   ),
   list: <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />,
+  // H-pattern shift gate — reads as "transmission" at small sizes, where a
+  // cog would just look like the snowflake sitting next to it.
   gearbox: (
     <>
-      <circle cx="12" cy="12" r="3" />
-      <path d="M12 3v3M12 18v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M3 12h3M18 12h3M4.9 19.1l2.1-2.1M17 7l2.1-2.1" />
+      <path d="M6 5v14M12 5v14M18 5v14M6 11h12" />
+      <circle cx="6" cy="5" r="1.2" />
+      <circle cx="18" cy="5" r="1.2" />
     </>
   ),
   snowflake: (
     <>
       <path d="M12 2v20M4.2 7l15.6 10M4.2 17l15.6-10" />
       <path d="M8 4.5 12 7l4-2.5M8 19.5 12 17l4 2.5M2.5 9.5 6 12l-3.5 2.5M21.5 9.5 18 12l3.5 2.5" />
+    </>
+  ),
+  luggage: (
+    <>
+      <rect x="4" y="7" width="16" height="13" rx="2" />
+      <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M9 11v5M15 11v5" />
+    </>
+  ),
+  door: (
+    <>
+      <path d="M5 20V5a1 1 0 0 1 .8-1l10-2A1 1 0 0 1 17 3v17" />
+      <path d="M3 20h18" />
+      <circle cx="13.5" cy="12" r="1" />
     </>
   ),
 };

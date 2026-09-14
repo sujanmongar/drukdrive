@@ -356,7 +356,7 @@ export default function SearchResults() {
     <PageShell
       header={
         <div ref={headerWrapRef} className="sticky top-0 z-30 bg-white">
-          <SearchSummaryHeader search={search} onSearch={handleEditSearch} onEditMobile={() => setEditOpen(true)} />
+          <SearchSummaryHeader search={search} onSearch={handleEditSearch} onEditMobile={() => setEditOpen(true)} tripQuery={tripQuery} />
         </div>
       }
     >
@@ -396,7 +396,7 @@ export default function SearchResults() {
                 {/* Mobile: title on its own row, then the sticky Sort + Filter
                     row. Both sit directly in the (tall) results column — a
                     short wrapper would cap how far the sticky row can travel. */}
-                <h1 className="t-h2 mb-4 text-[color:var(--color-ink)] lg:hidden">
+                <h1 className="t-h3 mb-3 text-[color:var(--color-ink)] lg:hidden">
                   Found {results.length} cars
                 </h1>
                 <div
@@ -434,7 +434,7 @@ export default function SearchResults() {
                   className="sticky z-20 mb-4 hidden items-center justify-between gap-3 border-b border-[color:var(--color-border)] bg-white py-3 lg:flex"
                   style={{ top: headerHeight }}
                 >
-                  <h1 className="t-h2 text-[color:var(--color-ink)]">
+                  <h1 className="t-h3 text-[color:var(--color-ink)]">
                     Found {results.length} cabs from {cityOf(search.pickup)} to {cityOf(search.dropoff)}
                   </h1>
                   <div className="flex items-center gap-4">

@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import Icon from "./Icon";
 import VehicleImage from "./VehicleImage";
-import type { Vehicle } from "../data/mockData";
+import VehicleSpecs from "./VehicleSpecs";
+import { vehicleClassOf, type Vehicle } from "../data/mockData";
 import { routes } from "../lib/routes";
 import { useCurrency } from "../lib/currency";
 import { useWishlist } from "../lib/wishlist";
@@ -57,32 +58,21 @@ export default function VehicleCard({
         </button>
       </div>
       <div className="p-4">
-        <div className="mb-1.5 flex flex-wrap items-center gap-2">
-          <p className="t-h4 text-[color:var(--color-ink)]">{vehicle.name}</p>
-          <span className="rounded-full bg-[color:var(--color-info-bg)] px-2 py-0.5 text-[9px] font-semibold uppercase text-[color:var(--color-info-text)]">
-            {vehicle.category}
+        <p className="t-h4 truncate text-[color:var(--color-ink)]">{vehicle.name}</p>
+        <p className="t-caption mb-2 text-[color:var(--color-muted)]">or similar {vehicleClassOf[vehicle.category]}</p>
+        <div className="t-caption mb-2 flex items-center gap-x-2 gap-y-1 text-[color:var(--color-ink)]">
+          <span className="flex items-center gap-1.5">
+            <Icon name="location" size={14} strokeWidth={2.3} />
+            {vehicle.location}
           </span>
-        </div>
-        <div className="t-caption mb-2 flex items-center gap-1.5 text-[color:var(--color-ink)]">
-          <Icon name="location" size={14} />
-          {vehicle.location}
           <span className="text-[color:var(--color-muted)]">•</span>
-          {vehicle.type}
-        </div>
-        <div className="t-caption mb-3 flex items-center gap-3 text-[color:var(--color-ink)]">
           <span className="flex items-center gap-1">
-            <Icon name="seat" size={15} />
-            {vehicle.seats} Seats
-          </span>
-          <span className="flex items-center gap-1">
-            <Icon name="fuel" size={15} />
-            {vehicle.fuel}
-          </span>
-          <span className="flex items-center gap-1">
-            <Icon name="star" size={13} className="fill-current text-amber-400" />
-            {vehicle.rating} ({vehicle.reviewCount})
+            <Icon name="star" size={13} className="fill-current text-amber-400" strokeWidth={2.3} />
+            <span className="font-semibold">{vehicle.rating}</span>
+            <span className="text-[color:var(--color-muted)]">({vehicle.reviewCount})</span>
           </span>
         </div>
+        <VehicleSpecs vehicle={vehicle} className="mb-3" />
         <div className="flex items-end justify-between gap-x-2 gap-y-2">
           <div className="min-w-0 flex-1">
             {vehicle.strikePrice && (
@@ -100,7 +90,7 @@ export default function VehicleCard({
           <Link
             to={detailsHref}
             onClick={(e) => e.stopPropagation()}
-            className="shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-2.5 text-xs font-bold text-white hover:bg-black"
+            className="hidden shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-2.5 text-xs font-bold text-white hover:bg-black lg:inline-flex"
           >
             Book Now
           </Link>

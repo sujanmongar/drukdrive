@@ -86,11 +86,10 @@ function AccountMenu({ onSignOut }: { onSignOut: () => void }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-[48px] items-center gap-2 rounded-xl px-3 hover:bg-neutral-100"
+        aria-label="Account menu"
+        className="flex size-[42px] items-center justify-center rounded-full hover:bg-neutral-100"
       >
-        <img src={currentUser.avatar} alt="" className="size-7 rounded-full object-cover" />
-        <span className="text-sm font-semibold">{currentUser.name.split(" ")[0]}</span>
-        <Icon name="chevron-down" size={14} />
+        <img src={currentUser.avatar} alt="" className="size-8 rounded-full object-cover" />
       </button>
 
       {open && (

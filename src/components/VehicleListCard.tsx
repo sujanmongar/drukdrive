@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import Icon from "./Icon";
 import VehicleImage from "./VehicleImage";
-import type { Vehicle } from "../data/mockData";
+import VehicleSpecs from "./VehicleSpecs";
+import { vehicleClassOf, type Vehicle } from "../data/mockData";
 import { routes } from "../lib/routes";
 import { useCurrency } from "../lib/currency";
 import { useWishlist } from "../lib/wishlist";
@@ -60,36 +61,23 @@ export default function VehicleListCard({
 
       <div className="flex min-w-0 flex-1 flex-col gap-3 p-3 sm:gap-4 sm:p-5 lg:flex-row lg:items-center lg:gap-6">
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <p className="t-h4 text-[color:var(--color-ink)]">{vehicle.name}</p>
-            <span className="rounded-full bg-[color:var(--color-info-bg)] px-2 py-0.5 text-[9px] font-semibold uppercase text-[color:var(--color-info-text)]">
-              {vehicle.category}
+          <p className="t-h4 truncate text-[color:var(--color-ink)]">{vehicle.name}</p>
+          <p className="t-caption text-[color:var(--color-muted)]">or similar {vehicleClassOf[vehicle.category]}</p>
+
+          <div className="t-caption mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[color:var(--color-ink)]">
+            <span className="flex min-w-0 items-center gap-1.5">
+              <Icon name="location" size={14} strokeWidth={2.3} className="shrink-0" />
+              <span className="truncate">{vehicle.location}</span>
+            </span>
+            <span className="text-[color:var(--color-muted)]">•</span>
+            <span className="flex items-center gap-1">
+              <Icon name="star" size={13} className="fill-current text-amber-400" strokeWidth={2.3} />
+              <span className="font-semibold">{vehicle.rating}</span>
+              <span className="text-[color:var(--color-muted)]">({vehicle.reviewCount})</span>
             </span>
           </div>
 
-          <div className="t-caption mt-2 flex min-w-0 items-center gap-1.5 text-[color:var(--color-ink)]">
-            <Icon name="location" size={14} className="shrink-0" />
-            <span className="truncate">
-              {vehicle.location}
-              <span className="mx-1.5 text-[color:var(--color-muted)]">•</span>
-              {vehicle.type}
-            </span>
-          </div>
-
-          <div className="t-caption mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[color:var(--color-ink)]">
-            <span className="flex items-center gap-1">
-              <Icon name="seat" size={15} />
-              {vehicle.seats} Seats
-            </span>
-            <span className="flex items-center gap-1">
-              <Icon name="fuel" size={15} />
-              {vehicle.fuel}
-            </span>
-            <span className="flex items-center gap-1">
-              <Icon name="star" size={13} className="fill-current text-amber-400" />
-              {vehicle.rating} ({vehicle.reviewCount})
-            </span>
-          </div>
+          <VehicleSpecs vehicle={vehicle} className="mt-2.5" />
         </div>
 
         <div className="flex items-end justify-between gap-3 border-t border-[color:var(--color-border)] pt-3 sm:pt-4 lg:w-[200px] lg:shrink-0 lg:flex-col lg:items-stretch lg:justify-center lg:gap-3 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
@@ -111,7 +99,7 @@ export default function VehicleListCard({
           <Link
             to={detailsHref}
             onClick={(e) => e.stopPropagation()}
-            className="shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-4 py-2.5 text-center text-xs font-bold text-white hover:bg-black sm:px-5 sm:py-3 lg:text-sm"
+            className="hidden shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-3 text-center text-sm font-bold text-white hover:bg-black lg:block"
           >
             Book Now
           </Link>

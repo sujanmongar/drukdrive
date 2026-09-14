@@ -2,7 +2,6 @@ import { useState } from "react";
 import Icon from "./Icon";
 import LocationPickerSheet from "./LocationPickerSheet";
 import DatePickerSheet from "./DatePickerSheet";
-import BookingTypeTabs from "./BookingTypeTabs";
 import type { BookingType } from "../lib/routes";
 
 export type EditSearchValue = {
@@ -29,10 +28,10 @@ export default function EditSearchModal({
   const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
 
   // Field set follows the booking type, the same way it does on Home.
-  const showTripModeTabs = value.type === "daily";
+  const showTripModeTabs = value.type === "daily" || value.type === "outstation";
   const isSingleLocation = value.type === "outstation" || value.type === "self-drive";
   const showSecondDate =
-    value.type === "rental" || value.type === "self-drive" || (value.type === "daily" && value.tripMode === "return");
+    value.type === "rental" || value.type === "self-drive" || (showTripModeTabs && value.tripMode === "return");
   const dateMode = showSecondDate ? "range" : "single";
 
   function formatDate(d: Date) {
@@ -50,10 +49,10 @@ export default function EditSearchModal({
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
-          <BookingTypeTabs value={value.type} onChange={(t) => setValue((v) => ({ ...v, type: t }))} />
-
+          {/* Ride type stays fixed to whatever was searched — it is picked on
+              Home. Only One Way / Return modifies the current search. */}
           {showTripModeTabs && (
-            <div className="mt-5 flex gap-5 border-b border-[color:var(--color-border)]">
+            <div className="flex gap-5 border-b border-[color:var(--color-border)]">
               {(["one-way", "return"] as const).map((m) => {
                 const active = value.tripMode === m;
                 return (
