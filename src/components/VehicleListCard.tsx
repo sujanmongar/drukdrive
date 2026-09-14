@@ -36,7 +36,7 @@ export default function VehicleListCard({
       onKeyDown={(e) => {
         if (e.key === "Enter") navigate(detailsHref);
       }}
-      className="flex w-full cursor-pointer items-stretch overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] lg:items-center"
+      className="flex w-full cursor-pointer items-stretch overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-[0px_14px_32px_rgba(25,32,36,0.14)] lg:items-center"
     >
       <div className="relative w-[118px] shrink-0 self-stretch overflow-hidden sm:w-[180px] lg:w-[250px]">
         <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full p-2 lg:p-3" />
@@ -99,7 +99,7 @@ export default function VehicleListCard({
           <Link
             to={detailsHref}
             onClick={(e) => e.stopPropagation()}
-            className="hidden shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-3 text-center text-sm font-bold text-white hover:bg-black lg:block"
+            className="hidden shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-3 text-center text-sm font-bold text-white transition-all duration-200 hover:bg-black lg:block"
           >
             Book Now
           </Link>

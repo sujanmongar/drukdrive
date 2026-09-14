@@ -42,7 +42,7 @@ export default function Confirmation() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[720px] px-4 py-12 md:px-[60px]">
+      <div className="mx-auto max-w-[720px] px-4 py-12 md:px-10">
         <div className="flex flex-col items-center text-center">
           <Icon name="check-circle" size={56} className="text-[color:var(--color-success)]" />
           <h1 className="mt-4 text-2xl font-bold text-[color:var(--color-ink)] md:text-3xl">Booking confirmed</h1>

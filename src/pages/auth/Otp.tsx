@@ -111,7 +111,7 @@ export default function Otp() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto flex min-h-[75vh] w-full max-w-[1440px] items-center justify-center bg-neutral-50 px-4 py-12 md:px-[60px]">
+      <div className="mx-auto flex min-h-[75vh] w-full max-w-[1280px] items-center justify-center bg-neutral-50 px-4 py-12 md:px-10">
         {/* Desktop */}
         <div className="relative hidden w-full max-w-[440px] flex-col rounded-xl border border-[color:var(--color-border)] bg-white p-8 shadow-[0px_2px_14px_rgba(0,0,0,0.1)] md:flex">
           <button
@@ -122,7 +122,7 @@ export default function Otp() {
           >
             <Icon name="chevron-left" size={22} />
           </button>
-          <h1 className="mb-1 mt-8 text-2xl font-bold text-[color:var(--color-ink-87)]">Verify your mobile number</h1>
+          <h1 className="t-h2 mb-1 mt-8 text-[color:var(--color-ink)]">Verify your mobile number</h1>
           <p className="mb-6 text-sm text-[color:var(--color-ink-87)]">
             OTP has been sent to <span className="text-lg font-bold">{currentUser.phone}</span>
           </p>

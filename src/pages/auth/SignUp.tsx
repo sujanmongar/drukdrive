@@ -149,7 +149,7 @@ export default function SignUp() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto flex min-h-[75vh] w-full max-w-[1440px] items-center justify-center bg-neutral-50 px-4 py-12 md:px-[60px]">
+      <div className="mx-auto flex min-h-[75vh] w-full max-w-[1280px] items-center justify-center bg-neutral-50 px-4 py-12 md:px-10">
         {/* Desktop */}
         <div className="relative hidden w-full max-w-[440px] flex-col rounded-xl border border-[color:var(--color-border)] bg-white p-8 shadow-[0px_2px_14px_rgba(0,0,0,0.1)] md:flex">
           <button
@@ -160,7 +160,7 @@ export default function SignUp() {
           >
             <Icon name="close" size={20} />
           </button>
-          <h1 className="mb-6 mt-8 text-2xl font-bold text-[color:var(--color-ink-87)]">Create an account</h1>
+          <h1 className="t-h2 mb-6 mt-8 text-[color:var(--color-ink)]">Create an account</h1>
           {form}
           {footerLinks}
         </div>

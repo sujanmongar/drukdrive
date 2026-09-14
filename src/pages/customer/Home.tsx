@@ -5,7 +5,7 @@ import BookingTypeTabs from "../../components/BookingTypeTabs";
 import VehicleCard from "../../components/VehicleCard";
 import VehicleImage from "../../components/VehicleImage";
 import Icon from "../../components/Icon";
-import HeroBlobs from "../../components/HeroBlobs";
+import SectionHeader from "../../components/SectionHeader";
 import LocationPickerSheet from "../../components/LocationPickerSheet";
 import DatePickerSheet from "../../components/DatePickerSheet";
 import { routes } from "../../lib/routes";
@@ -44,6 +44,8 @@ export default function Home() {
   const pickupAnchorRef = useRef<HTMLDivElement>(null);
   const dropoffAnchorRef = useRef<HTMLDivElement>(null);
   const dateAnchorRef = useRef<HTMLDivElement>(null);
+  const recentTrackRef = useRef<HTMLDivElement>(null);
+  const carsTrackRef = useRef<HTMLDivElement>(null);
 
   const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
 
@@ -124,26 +126,25 @@ export default function Home() {
           so the hero background paints all the way to the top of the
           viewport; the matching padding keeps the visible content in the
           same place it would otherwise be. */}
-      <section className="relative -mt-16 overflow-hidden pt-16 md:-mt-[94px] md:pt-[94px]">
-        {/* decorative blob background, hero area only */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[484px] overflow-hidden transition-colors duration-500 md:h-[745px]">
-          <HeroBlobs type={type} />
-        </div>
+      <section className="relative -mt-16 overflow-hidden bg-[#f6f7f8] pt-16 md:-mt-[94px] md:pt-[94px]">
 
-        <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 gap-8 px-4 pb-10 pt-6 md:grid-cols-[1fr_auto] md:items-center md:px-[60px] md:pb-24 md:pt-16 lg:grid-cols-1 lg:pb-16">
+        <div className="animate-fade-up relative mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-4 pb-14 pt-10 md:grid-cols-[1fr_auto] md:items-center md:px-10 md:pb-24 md:pt-16 lg:grid-cols-1 lg:pb-20">
           <div>
-            <h1 className="max-w-[280px] text-2xl font-bold leading-snug text-[color:var(--color-ink-87)] sm:max-w-md sm:text-3xl md:max-w-[420px] md:text-[40px] md:leading-[1.1]">
+            <h1 className="t-h1 max-w-[280px] text-[color:var(--color-ink)] sm:max-w-md md:max-w-[520px]">
               Go anywhere in Bhutan.
             </h1>
+            <p className="t-body-lg mt-3 max-w-[520px] text-[color:var(--color-muted)]">
+              Compare verified local operators and book the right vehicle for your trip.
+            </p>
 
             {/* Mobile keeps the stacked card. From lg the widget goes
                 horizontal — one field row plus an icon-only search button —
                 so the hero costs far less vertical space. */}
-            <div className="relative mt-6 w-full max-w-[506px] rounded-2xl bg-white p-4 shadow-[0px_2px_14px_rgba(0,0,0,0.1)] md:mt-8 md:p-[26px] lg:max-w-none lg:bg-transparent lg:p-0 lg:shadow-none">
+            <div className="relative mt-8 w-full max-w-[506px] rounded-2xl bg-white p-5 shadow-[0px_2px_14px_rgba(0,0,0,0.08)] md:mt-10 md:p-6 lg:max-w-none lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
               <BookingTypeTabs value={type} onChange={setType} />
 
               {showTripModeTabs && (
-                <div className="mt-4 flex w-fit gap-4 border-b border-[color:var(--color-border)]">
+                <div className="mt-5 flex w-fit gap-5 border-b border-[color:var(--color-border)]">
                   {(["one-way", "return"] as TripMode[]).map((m) => {
                     const active = tripMode === m;
                     return (
@@ -162,7 +163,7 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="mt-4 flex flex-col gap-3 lg:flex-row lg:items-stretch lg:gap-2.5">
+              <div className="mt-5 flex flex-col gap-3 lg:flex-row lg:items-stretch lg:gap-3">
                 {isSingleLocation ? (
                   <div ref={pickupAnchorRef} className="relative lg:min-w-0 lg:flex-1">
                     <button
@@ -302,34 +303,33 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={handleSearch}
-                  aria-label="Search"
-                  className="hidden shrink-0 items-center justify-center rounded-xl bg-[color:var(--color-ink)] px-5 text-white transition-all hover:bg-black active:scale-[0.98] lg:flex"
+                  className="hidden shrink-0 items-center justify-center rounded-xl bg-[color:var(--color-ink)] px-8 text-base font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.98] lg:flex"
                 >
-                  <Icon name="search" size={20} strokeWidth={2.3} />
+                  Search
                 </button>
               </div>
 
               {type === "daily" && tripMode === "return" && dayHourDuration !== null && (
-                <p className="mt-3 text-sm font-semibold text-[#00b53a]">Duration: {formatDayHour(dayHourDuration)}</p>
+                <p className="t-body mt-4 font-semibold text-[color:var(--color-success)]">Duration: {formatDayHour(dayHourDuration)}</p>
               )}
               {type === "daily" && tripMode === "one-way" && (
-                <p className="mt-3 text-sm font-semibold text-[#00b53a]">
+                <p className="t-body mt-4 font-semibold text-[color:var(--color-success)]">
                   Duration: {formatDurationHours(durationHours)}
                 </p>
               )}
               {type === "rental" && dayCount !== null && (
-                <p className="mt-3 text-sm font-semibold text-[#00b53a]">
+                <p className="t-body mt-4 font-semibold text-[color:var(--color-success)]">
                   Duration: {dayCount} day{dayCount === 1 ? "" : "s"}
                 </p>
               )}
               {type === "self-drive" && dayHourDuration !== null && (
-                <p className="mt-3 text-sm font-semibold text-[#00b53a]">Duration: {formatDayHour(dayHourDuration)}</p>
+                <p className="t-body mt-4 font-semibold text-[color:var(--color-success)]">Duration: {formatDayHour(dayHourDuration)}</p>
               )}
 
               <button
                 type="button"
                 onClick={handleSearch}
-                className="mt-4 w-full rounded-xl bg-[color:var(--color-ink)] py-4 text-base font-bold text-white transition-all hover:bg-black active:scale-[0.99] lg:hidden"
+                className="mt-5 w-full rounded-xl bg-[color:var(--color-ink)] py-4 text-base font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.99] lg:hidden"
               >
                 Search
               </button>
@@ -368,11 +368,11 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="mx-auto max-w-[1440px] px-4 md:px-[60px]">
+      <div className="mx-auto max-w-[1280px] px-4 md:px-10">
         {/* Recent searches */}
-        <section className="py-8 md:py-10">
-          <h2 className="mb-4 text-lg font-bold text-[color:var(--color-ink-87)] md:text-2xl">Recent searches</h2>
-          <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-1">
+        <section className="py-12 md:py-20">
+          <SectionHeader title="Recent searches" trackRef={recentTrackRef} />
+          <div ref={recentTrackRef} className="carousel-track flex gap-4 overflow-x-auto pb-1">
             {recentSearches.map((s) => {
               const vehicle = vehicles.find((v) => v.id === s.vehicleId);
               return (
@@ -380,14 +380,12 @@ export default function Home() {
                   key={s.id}
                   type="button"
                   onClick={() => handleRecentSearch(s.vehicleId, s.pickup, s.dropoff)}
-                  className="flex h-[79px] shrink-0 items-center gap-3 rounded-xl bg-white px-3 py-2.5 text-left shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_14px_rgba(25,32,36,0.22)]"
+                  className="flex shrink-0 items-center gap-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-transparent hover:shadow-[0px_10px_28px_rgba(25,32,36,0.14)]"
                 >
-                  <VehicleImage vehicleId={vehicle?.id} category={vehicle?.category} className="size-[60px] shrink-0 rounded-lg" />
-                  <span className="flex flex-col gap-1.5">
-                    <span className="whitespace-nowrap text-sm font-semibold text-[color:var(--color-ink-87)]">
-                      {s.title}
-                    </span>
-                    <span className="whitespace-nowrap text-xs text-[color:var(--color-ink-87)]">{s.subtitle}</span>
+                  <VehicleImage vehicleId={vehicle?.id} category={vehicle?.category} className="size-16 shrink-0 rounded-xl" />
+                  <span className="flex flex-col gap-1">
+                    <span className="t-body whitespace-nowrap font-bold text-[color:var(--color-ink)]">{s.title}</span>
+                    <span className="t-caption whitespace-nowrap text-[color:var(--color-muted)]">{s.subtitle}</span>
                   </span>
                 </button>
               );
@@ -395,72 +393,96 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Popular cars */}
-        <section className="py-8 md:py-10">
-          <h2 className="mb-4 text-lg font-bold text-[color:var(--color-ink-87)] md:text-2xl">Popular cars</h2>
-          <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
+        {/* Popular cars — four in view, the rest paged by the header arrows. */}
+        <section className="py-12 md:py-20">
+          <SectionHeader title="Popular cars" subtitle="Most booked vehicles across Bhutan" trackRef={carsTrackRef} />
+          <div ref={carsTrackRef} className="carousel-track flex gap-5 overflow-x-auto pb-2">
             {vehicles.map((v) => (
-              <VehicleCard key={v.id} vehicle={v} tripQuery={tripQuery} className="w-[240px] shrink-0 md:w-[270px]" />
+              <VehicleCard
+                key={v.id}
+                vehicle={v}
+                tripQuery={tripQuery}
+                className="w-[260px] shrink-0 sm:w-[280px] lg:w-[calc((100%-3.75rem)/4)]"
+              />
             ))}
           </div>
         </section>
 
         {/* Popular car types */}
-        <section className="py-8 md:py-10">
-          <h2 className="mb-4 text-lg font-bold text-[color:var(--color-ink-87)] md:text-2xl">Popular car types</h2>
-          <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-2">
-            {popularCarTypes.map((t) => (
-              <button
-                key={t.category}
-                type="button"
-                onClick={() => navigate(`${routes.search}?category=${encodeURIComponent(t.category)}`)}
-                className="group relative size-[164px] shrink-0 cursor-pointer overflow-hidden rounded-xl bg-neutral-100 text-left transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0px_10px_24px_rgba(0,0,0,0.15)]"
-              >
-                <VehicleImage
-                  vehicleId={t.vehicleId}
-                  category={t.category}
-                  fit="cover"
-                  className="size-full transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/0 to-black/0" />
-                <span className="pointer-events-none absolute bottom-4 left-4 text-base font-semibold text-white">
-                  {t.label}
-                </span>
-              </button>
-            ))}
+        <section className="py-12 md:py-20">
+          <SectionHeader title="Browse by car type" subtitle="Pick the shape of vehicle that fits your trip" />
+          <div className="grid grid-cols-2 gap-4 md:gap-5 lg:grid-cols-4">
+            {popularCarTypes.map((t) => {
+              const count = vehicles.filter((v) => v.category === t.category).length;
+              return (
+                <button
+                  key={t.category}
+                  type="button"
+                  onClick={() => navigate(`${routes.search}?category=${encodeURIComponent(t.category)}`)}
+                  className="group relative overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white text-left transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-[0px_16px_36px_rgba(25,32,36,0.16)]"
+                >
+                  <div className="aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+                    <VehicleImage
+                      vehicleId={t.vehicleId}
+                      category={t.category}
+                      className="size-full p-3 transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between gap-2 p-4">
+                    <div className="min-w-0">
+                      <p className="t-h4 truncate text-[color:var(--color-ink)]">{t.label}</p>
+                      <p className="t-caption text-[color:var(--color-muted)]">
+                        {count} {count === 1 ? "vehicle" : "vehicles"}
+                      </p>
+                    </div>
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-[color:var(--color-ink)] transition-all duration-300 group-hover:bg-[color:var(--color-ink)] group-hover:text-white">
+                      <Icon name="chevron-right" size={16} strokeWidth={2.2} />
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </section>
 
-        {/* FAQ */}
-        <section className="py-8 md:py-10">
-          <h2 className="mb-4 text-lg font-bold text-[color:var(--color-ink-87)] md:text-2xl">
-            Frequently asked questions
-          </h2>
-          <div className="grid grid-cols-1 gap-x-10 md:grid-cols-2">
+        {/* FAQ — one column of full-width accordion cards. */}
+        <section className="py-12 md:py-20">
+          <SectionHeader title="Frequently asked questions" subtitle="Everything worth knowing before you book" />
+          <div className="flex max-w-[860px] flex-col gap-3">
             {faqs.map((f, i) => {
               const open = openFaqs.has(i);
               return (
-                <div key={f.q} className="border-b border-[color:var(--color-border)] py-4">
+                <div
+                  key={f.q}
+                  className={`overflow-hidden rounded-2xl border transition-all duration-300 ${
+                    open
+                      ? "border-[color:var(--color-ink)] bg-white shadow-[0px_8px_24px_rgba(25,32,36,0.10)]"
+                      : "border-[color:var(--color-border)] bg-white hover:border-[color:var(--color-ink)]"
+                  }`}
+                >
                   <button
                     type="button"
                     onClick={() => toggleFaq(i)}
-                    className="flex w-full items-center justify-between gap-4 text-left"
+                    aria-expanded={open}
+                    className="flex w-full items-center justify-between gap-5 p-5 text-left md:p-6"
                   >
-                    <span className="text-sm text-[color:var(--color-ink-87)]">{f.q}</span>
-                    <Icon
-                      name="chevron-down"
-                      size={16}
-                      className={`shrink-0 text-[color:var(--color-ink-87)] transition-transform duration-200 ${
-                        open ? "rotate-180" : ""
+                    <span className="t-h4 text-[color:var(--color-ink)]">{f.q}</span>
+                    <span
+                      className={`flex size-9 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
+                        open ? "rotate-180 bg-[color:var(--color-ink)] text-white" : "bg-neutral-100 text-[color:var(--color-ink)]"
                       }`}
-                    />
+                    >
+                      <Icon name="chevron-down" size={17} strokeWidth={2.2} />
+                    </span>
                   </button>
                   <div
-                    className={`grid overflow-hidden transition-all duration-200 ${
-                      open ? "mt-2 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                    className={`grid transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                     }`}
                   >
-                    <p className="min-h-0 text-sm leading-[1.2] text-[color:var(--color-muted)]">{f.a}</p>
+                    <div className="min-h-0 overflow-hidden">
+                      <p className="t-body-lg px-5 pb-6 text-[color:var(--color-muted)] md:px-6">{f.a}</p>
+                    </div>
                   </div>
                 </div>
               );
@@ -469,9 +491,9 @@ export default function Home() {
         </section>
 
         {/* Company blurb */}
-        <section className="py-8 md:py-10">
-          <h2 className="mb-3 text-lg font-bold text-[color:var(--color-ink-87)] md:text-2xl">DrukDrive</h2>
-          <p className="max-w-[1044px] text-sm leading-[1.2] text-[color:var(--color-muted)]">
+        <section className="py-12 md:py-20">
+          <h2 className="t-h2 mb-4 text-[color:var(--color-ink)]">DrukDrive</h2>
+          <p className="t-body-lg max-w-[860px] text-[color:var(--color-muted)]">
             DrukDrive partners with trusted local operators across Bhutan to make it easy to find, compare and
             book the right vehicle for your trip — from daily rides around Thimphu to outstation transfers and
             self-drive rentals for exploring the valleys and dzongkhags beyond.

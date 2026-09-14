@@ -88,7 +88,7 @@ export default function SearchSummaryHeader({
     <>
       {/* Mobile */}
       <header className="relative z-20 border-b border-[color:var(--color-border)] bg-white lg:hidden">
-        <div className="mx-auto flex max-w-[1440px] items-center gap-3 px-4 py-3">
+        <div className="mx-auto flex max-w-[1280px] items-center gap-3 px-4 py-3">
           <button
             type="button"
             onClick={() => navigate(-1)}
@@ -142,7 +142,7 @@ export default function SearchSummaryHeader({
               whole product mid-results. One Way / Return only modifies the
               current search, so that stays editable. */}
           {showTripModeTabs && (
-            <div className="mx-auto mb-3 flex max-w-[1440px] gap-5 px-[60px]">
+            <div className="mx-auto mb-3 flex max-w-[1280px] gap-5 px-10">
               {(["one-way", "return"] as const).map((m) => {
                 const active = draft.tripMode === m;
                 return (
@@ -162,7 +162,7 @@ export default function SearchSummaryHeader({
               })}
             </div>
           )}
-          <div className="mx-auto flex max-w-[1440px] items-center justify-center gap-3 px-[60px]">
+          <div className="mx-auto flex max-w-[1280px] items-center justify-center gap-3 px-10">
             {fieldBox(pickupRef, "location", isSingleLocation ? "Location" : "Pick up location", draft.pickup, () =>
               setActiveField(activeField === "pickup" ? null : "pickup"),
             )}
@@ -176,7 +176,7 @@ export default function SearchSummaryHeader({
             <button
               type="button"
               onClick={handleUpdate}
-              className="flex h-[52px] shrink-0 items-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-6 text-sm font-bold text-white hover:bg-black"
+              className="flex h-[52px] shrink-0 items-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-6 text-sm font-bold text-white transition-all duration-200 hover:bg-black"
             >
               <Icon name="search" size={16} />
               Update

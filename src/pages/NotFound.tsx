@@ -13,7 +13,7 @@ export default function NotFound() {
           <Icon name="car" size={28} className="text-[color:var(--color-muted)]" />
         </div>
         <p className="mt-6 text-sm font-bold uppercase tracking-wide text-[color:var(--color-muted)]">404</p>
-        <h1 className="mt-2 text-2xl font-bold text-[color:var(--color-ink)] md:text-3xl">Page not found</h1>
+        <h1 className="t-h2 mt-2 text-[color:var(--color-ink)]">Page not found</h1>
         <p className="mt-2 max-w-sm text-sm text-[color:var(--color-muted)]">
           The page you're looking for doesn't exist or may have moved.
         </p>

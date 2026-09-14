@@ -360,14 +360,14 @@ export default function SearchResults() {
         </div>
       }
     >
-      <div className="mx-auto max-w-[1440px] px-4 py-6 md:px-[60px] md:py-8">
-        <div className="flex flex-col gap-6 lg:flex-row">
+      <div className="mx-auto max-w-[1280px] px-4 py-6 md:px-10 md:py-10">
+        <div className="flex flex-col gap-8 lg:flex-row">
           {/* Desktop filter sidebar — pinned below the header, scrolls on its own */}
           <aside
-            className="hidden w-[280px] shrink-0 self-start overflow-y-auto lg:sticky lg:block"
+            className="hidden w-[292px] shrink-0 self-start overflow-y-auto lg:sticky lg:block"
             style={{ top: headerHeight + 16, maxHeight: `calc(100svh - ${headerHeight + 32}px)` }}
           >
-            <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
+            <div className="rounded-2xl border border-[color:var(--color-border)] bg-white p-6 shadow-[0px_1px_3px_rgba(25,32,36,0.10)]">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="t-h3 text-[color:var(--color-ink)]">Filters</h2>
                 {activeFilterCount > 0 && (
@@ -485,7 +485,7 @@ export default function SearchResults() {
                     </button>
                   </div>
                 ) : view === "grid" ? (
-                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 xl:grid-cols-3">
                     {visibleResults.map((vehicle) => (
                       <VehicleCard key={vehicle.id} vehicle={vehicle} tripQuery={tripQuery} />
                     ))}
@@ -542,7 +542,7 @@ export default function SearchResults() {
               <button
                 type="button"
                 onClick={() => setFilterOpen(false)}
-                className="w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-sm font-bold text-white hover:bg-black"
+                className="w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-sm font-bold text-white transition-all duration-200 hover:bg-black"
               >
                 See {results.length} cars
               </button>

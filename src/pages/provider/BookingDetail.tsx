@@ -18,7 +18,7 @@ export default function ProviderBookingDetail() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[720px] px-4 py-8 md:px-[60px] md:py-10">
+      <div className="mx-auto max-w-[720px] px-4 py-8 md:px-10 md:py-10">
         <Button variant="ghost" size="sm" to={routes.providerBookings} className="mb-4">
           <Icon name="arrow-left" size={16} />
           Back to bookings

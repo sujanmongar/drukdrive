@@ -20,8 +20,8 @@ export default function AccountWishlist() {
         <SecondaryTabs tabs={accountTabs} />
       </div>
 
-      <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
-        <h2 className="text-2xl font-bold text-[color:var(--color-ink)]">Wishlist</h2>
+      <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-10 md:py-10">
+        <h2 className="t-h2 text-[color:var(--color-ink)]">Wishlist</h2>
         <p className="mt-1 text-sm text-[color:var(--color-muted)]">Vehicles you've saved for later.</p>
 
         {saved.length === 0 ? (

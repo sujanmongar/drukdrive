@@ -40,10 +40,10 @@ export default function ProviderReviews() {
         <SecondaryTabs tabs={providerTabs} />
       </div>
 
-      <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
+      <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-10 md:py-10">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="text-2xl font-bold text-[color:var(--color-ink)]">Reviews</h2>
+            <h2 className="t-h2 text-[color:var(--color-ink)]">Reviews</h2>
             {reviews.length > 0 && (
               <p className="mt-1 flex items-center gap-1.5 text-sm text-[color:var(--color-muted)]">
                 <Icon name="star" size={14} className="fill-current text-amber-400" />

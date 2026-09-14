@@ -86,7 +86,7 @@ export default function PaymentSuccess() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[560px] px-4 py-8 md:px-[60px] md:py-10">
+      <div className="mx-auto max-w-[560px] px-4 py-8 md:px-10 md:py-10">
         <BookingStepper current={3} allDone />
 
         <div className="mt-8 flex flex-col items-center text-center">

@@ -152,6 +152,42 @@ body {
   display: none;
 }
 
+/* Content settling in as it first paints — a short rise + fade, used on
+   hero and section blocks so the page assembles rather than snapping in. */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-up {
+  animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Horizontal carousels driven by prev/next buttons rather than a visible
+   scrollbar. */
+.carousel-track {
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up {
+    animation: none;
+  }
+  .carousel-track {
+    scroll-behavior: auto;
+  }
+}
+
 /* Bottom sheets (filters, sort) slide up from the bottom edge; the scrim
    behind them fades in over the same beat. */
 @keyframes sheet-up {

@@ -35,7 +35,7 @@ export default function VehicleCard({
       onKeyDown={(e) => {
         if (e.key === "Enter") navigate(detailsHref);
       }}
-      className={`w-full shrink-0 cursor-pointer overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] ${className}`}
+      className={`w-full shrink-0 cursor-pointer overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-[0px_14px_32px_rgba(25,32,36,0.14)] ${className}`}
     >
       <div className="relative h-[178px] w-full">
         <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full p-3" />
@@ -90,7 +90,7 @@ export default function VehicleCard({
           <Link
             to={detailsHref}
             onClick={(e) => e.stopPropagation()}
-            className="hidden shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-2.5 text-xs font-bold text-white hover:bg-black lg:inline-flex"
+            className="hidden shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-2.5 text-xs font-bold text-white transition-all duration-200 hover:bg-black lg:inline-flex"
           >
             Book Now
           </Link>

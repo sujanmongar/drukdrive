@@ -12,7 +12,7 @@ export default function ProfileHero({
 }) {
   const { user: currentUser } = useCurrentUser();
   return (
-    <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-4 pt-8 sm:flex-row sm:items-start sm:justify-between md:px-[60px] md:pt-10">
+    <div className="mx-auto flex max-w-[1280px] flex-col gap-6 px-4 pt-8 sm:flex-row sm:items-start sm:justify-between md:px-10 md:pt-10">
       <div className="flex items-start gap-5">
         <img
           src={currentUser.avatar}

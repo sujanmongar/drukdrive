@@ -31,9 +31,9 @@ export default function ProviderVehicles() {
         <SecondaryTabs tabs={providerTabs} />
       </div>
 
-      <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
+      <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-10 md:py-10">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-[color:var(--color-ink)]">My Vehicle</h2>
+          <h2 className="t-h2 text-[color:var(--color-ink)]">My Vehicle</h2>
           <Button to={routes.providerVehicleAdd} variant="primary" size="sm">
             Add new
           </Button>

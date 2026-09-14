@@ -36,9 +36,9 @@ export default function ProviderBookings() {
         <SecondaryTabs tabs={providerTabs} />
       </div>
 
-      <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
+      <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-10 md:py-10">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-[color:var(--color-ink)]">Bookings</h2>
+          <h2 className="t-h2 text-[color:var(--color-ink)]">Bookings</h2>
           <span className="text-sm font-semibold text-[color:var(--color-ink)] underline">
             See all booking ({driverBookings.length})
           </span>

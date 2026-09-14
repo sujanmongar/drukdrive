@@ -13,7 +13,7 @@ export default function VehicleSpecs({ vehicle, className = "" }: { vehicle: Veh
       value: vehicle.transmission === "Automatic" ? "A" : "M",
       title: vehicle.transmission,
     },
-    { name: "fuel", value: vehicle.fuel, title: vehicle.fuel },
+    { name: "fuel", value: vehicle.fuel.charAt(0), title: vehicle.fuel },
   ];
   if (vehicle.ac) items.push({ name: "snowflake", value: "A/C", title: "Air conditioning" });
 

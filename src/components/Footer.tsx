@@ -47,7 +47,7 @@ export default function Footer() {
 
   return (
     <footer className="mt-auto bg-[#161616] text-white">
-      <div className="mx-auto grid max-w-[1440px] grid-cols-2 gap-x-6 gap-y-10 px-6 py-10 md:grid-cols-5 md:px-[60px] md:py-12">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-2 gap-x-6 gap-y-10 px-6 py-10 md:grid-cols-5 md:px-10 md:py-12">
         {columns.map((col) => (
           <div key={col.title}>
             <p className="mb-3 text-sm font-semibold">{col.title}</p>
@@ -102,7 +102,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-[1440px] flex-col gap-3 border-t border-white/10 px-6 py-5 text-[11px] text-white/60 md:flex-row md:items-center md:justify-between md:px-[60px]">
+      <div className="mx-auto flex max-w-[1280px] flex-col gap-3 border-t border-white/10 px-6 py-5 text-[11px] text-white/60 md:flex-row md:items-center md:justify-between md:px-10">
         <div className="flex flex-wrap gap-x-3 gap-y-1">
           {bottomLinks.map((l) => (
             <Link key={l.label} to={l.to} className="hover:text-white hover:underline">

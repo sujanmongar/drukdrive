@@ -52,7 +52,7 @@ export default function Payment() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-6 md:px-[60px] md:pt-10">
+      <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-6 md:px-10 md:pt-10">
         <button
           type="button"
           onClick={() => navigate(-1)}

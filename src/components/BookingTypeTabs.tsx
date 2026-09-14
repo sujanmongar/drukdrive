@@ -1,8 +1,17 @@
+import Icon from "./Icon";
+import type { IconName } from "./Icon";
 import type { BookingType } from "../lib/routes";
 import { bookingTypeLabels } from "../lib/routes";
 
-const order: BookingType[] = ["daily", "outstation", "rental", "self-drive"];
+const order: { type: BookingType; icon: IconName }[] = [
+  { type: "daily", icon: "car" },
+  { type: "outstation", icon: "location" },
+  { type: "rental", icon: "calendar" },
+  { type: "self-drive", icon: "gearbox" },
+];
 
+// Segmented control rather than four standalone buttons: one rounded track
+// with the active pill inside it, so the group reads as a single switch.
 export default function BookingTypeTabs({
   value,
   onChange,
@@ -11,21 +20,23 @@ export default function BookingTypeTabs({
   onChange: (t: BookingType) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-2 md:gap-3">
-      {order.map((t) => {
-        const active = t === value;
+    <div className="inline-flex flex-wrap items-center gap-1 rounded-full border border-[color:var(--color-border)] bg-white p-1">
+      {order.map(({ type, icon }) => {
+        const active = type === value;
         return (
           <button
-            key={t}
+            key={type}
             type="button"
-            onClick={() => onChange(t)}
-            className={`shrink-0 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors md:px-4 md:py-3 ${
+            onClick={() => onChange(type)}
+            aria-pressed={active}
+            className={`flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm transition-all duration-200 ${
               active
-                ? "bg-[color:var(--color-ink)] font-bold text-white"
-                : "border border-[color:var(--color-ink)] text-[color:var(--color-ink)] hover:bg-neutral-50"
+                ? "bg-[color:var(--color-ink)] font-semibold text-white shadow-sm"
+                : "text-[color:var(--color-ink-soft)] hover:bg-neutral-100"
             }`}
           >
-            {bookingTypeLabels[t]}
+            <Icon name={icon} size={15} strokeWidth={2.1} className="shrink-0" />
+            {bookingTypeLabels[type]}
           </button>
         );
       })}

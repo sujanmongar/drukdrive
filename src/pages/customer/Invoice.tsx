@@ -47,7 +47,7 @@ export default function Invoice() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[820px] px-4 py-12 md:px-[60px] print:py-0">
+      <div className="mx-auto max-w-[820px] px-4 py-12 md:px-10 print:py-0">
         <div className="mb-6 flex items-center justify-between print:hidden">
           <button
             type="button"

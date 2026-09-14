@@ -31,8 +31,8 @@ export default function StaticPage() {
   if (!content) {
     return (
       <PageShell>
-        <div className="mx-auto max-w-[720px] px-4 py-16 text-center md:px-[60px]">
-          <h1 className="text-2xl font-bold text-[color:var(--color-ink)]">Page not found</h1>
+        <div className="mx-auto max-w-[720px] px-4 py-16 text-center md:px-10">
+          <h1 className="t-h2 text-[color:var(--color-ink)]">Page not found</h1>
           <Button variant="primary" size="lg" to={routes.home} className="mt-6">
             Back to home
           </Button>
@@ -45,7 +45,7 @@ export default function StaticPage() {
 
   return (
     <PageShell>
-      <div className="mx-auto max-w-[820px] px-4 py-10 md:px-[60px] md:py-14">
+      <div className="mx-auto max-w-[820px] px-4 py-10 md:px-10 md:py-14">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -60,7 +60,7 @@ export default function StaticPage() {
             <Icon name={icon} size={22} className="text-[color:var(--color-info-text)]" />
           </span>
           <div>
-            <h1 className="text-2xl font-bold text-[color:var(--color-ink)] md:text-3xl">{content.title}</h1>
+            <h1 className="t-h2 text-[color:var(--color-ink)]">{content.title}</h1>
             <p className="mt-2 text-sm leading-relaxed text-[color:var(--color-ink-soft)]">{content.intro}</p>
           </div>
         </div>

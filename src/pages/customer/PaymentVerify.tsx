@@ -71,11 +71,11 @@ export default function PaymentVerify() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-6 md:px-[60px] md:pt-10">
+      <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-6 md:px-10 md:pt-10">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
           {/* Left: OTP form */}
           <div className="flex min-w-0 flex-col items-center pt-6 text-center lg:items-start lg:pt-10 lg:text-left">
-            <h1 className="text-2xl font-bold text-[color:var(--color-ink)] md:text-3xl">OTP Verification</h1>
+            <h1 className="t-h2 text-[color:var(--color-ink)]">OTP Verification</h1>
             <p className="mt-3 max-w-sm text-sm text-[color:var(--color-muted)]">
               An OTP has been sent to your mobile number and email associated with your account. OTP is valid for
               the next {Math.ceil(COUNTDOWN_SECONDS / 60)} minutes only.

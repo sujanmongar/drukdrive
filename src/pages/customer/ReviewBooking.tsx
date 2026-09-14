@@ -107,7 +107,7 @@ export default function ReviewBooking() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[1100px] px-4 py-6 pb-28 md:px-[60px] md:py-10 md:pb-10">
+      <div className="mx-auto max-w-[1100px] px-4 py-6 pb-28 md:px-10 md:py-10 md:pb-10">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -325,7 +325,7 @@ export default function ReviewBooking() {
                   <button
                     type="button"
                     onClick={applyPromo}
-                    className="shrink-0 rounded-lg bg-[color:var(--color-ink)] px-4 py-2 text-sm font-bold text-white hover:bg-black"
+                    className="shrink-0 rounded-lg bg-[color:var(--color-ink)] px-4 py-2 text-sm font-bold text-white transition-all duration-200 hover:bg-black"
                   >
                     Apply
                   </button>
