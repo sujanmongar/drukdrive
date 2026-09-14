@@ -180,6 +180,26 @@ body {
   animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Interaction feel, in the spirit of the reference sites: quick, eased
+   responses rather than long linear ones. Pressable surfaces settle back
+   fast so the UI feels responsive under the finger. */
+button,
+[role="link"],
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+button:not(:disabled):active,
+[role="link"]:active {
+  transition-duration: 60ms;
+}
+
+/* Keyboard focus stays visible without showing a ring on mouse clicks. */
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* Horizontal carousels driven by prev/next buttons rather than a visible
    scrollbar. */
 .carousel-track {

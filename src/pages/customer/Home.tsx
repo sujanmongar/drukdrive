@@ -332,14 +332,6 @@ export default function Home() {
                 Search
               </button>
             </div>
-
-            <div className="mt-5 hidden items-center gap-2 lg:flex">
-              <Icon name="star" size={16} className="fill-current text-amber-400" />
-              <p className="t-body text-[color:var(--color-ink-soft)]">
-                <span className="font-bold text-[color:var(--color-ink)]">4.8 / 5</span> average rating from 600+
-                verified rides across Bhutan
-              </p>
-            </div>
           </div>
 
           {/* Right side of hero — fills the empty space beside the stacked
@@ -370,7 +362,7 @@ export default function Home() {
         {/* Recent searches */}
         <section className="py-12 md:py-20">
           <SectionHeader title="Recent searches" trackRef={recentTrackRef} />
-          <div ref={recentTrackRef} className="carousel-track flex gap-4 overflow-x-auto pb-1">
+          <div ref={recentTrackRef} className="carousel-track -mx-1 flex gap-4 overflow-x-auto px-1 py-3">
             {recentSearches.map((s) => {
               const vehicle = vehicles.find((v) => v.id === s.vehicleId);
               return (
@@ -394,7 +386,7 @@ export default function Home() {
         {/* Popular cars — four in view, the rest paged by the header arrows. */}
         <section className="py-12 md:py-20">
           <SectionHeader title="Popular cars" trackRef={carsTrackRef} />
-          <div ref={carsTrackRef} className="carousel-track flex gap-5 overflow-x-auto pb-2">
+          <div ref={carsTrackRef} className="carousel-track -mx-2 flex gap-5 overflow-x-auto px-2 py-3">
             {vehicles.map((v) => (
               <VehicleCard
                 key={v.id}
@@ -409,24 +401,26 @@ export default function Home() {
         {/* Popular car types — photo tiles, paged by the header arrows. */}
         <section className="py-12 md:py-20">
           <SectionHeader title="Popular car types" trackRef={typesTrackRef} />
-          <div ref={typesTrackRef} className="carousel-track flex gap-4 overflow-x-auto pb-2 md:gap-5">
+          <div ref={typesTrackRef} className="carousel-track -mx-2 flex gap-4 overflow-x-auto px-2 py-3 md:gap-5">
             {popularCarTypes.map((t) => (
               <button
                 key={t.category}
                 type="button"
                 onClick={() => navigate(`${routes.search}?category=${encodeURIComponent(t.category)}`)}
-                className="group relative aspect-square w-[260px] shrink-0 cursor-pointer overflow-hidden rounded-2xl bg-neutral-100 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_14px_32px_rgba(25,32,36,0.18)] sm:w-[240px] lg:w-[calc((100%-3.75rem)/4)]"
+                className="group w-[210px] shrink-0 cursor-pointer text-left sm:w-[220px] lg:w-[calc((100%-3.75rem)/4)]"
               >
-                <VehicleImage
-                  vehicleId={t.vehicleId}
-                  category={t.category}
-                  fit="cover"
-                  className="size-full transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0" />
-                <span className="pointer-events-none absolute bottom-5 left-5 text-lg font-semibold text-white">
-                  {t.label}
-                </span>
+                <div className="flex aspect-[5/4] items-center justify-center overflow-hidden rounded-2xl bg-[#f2f4f6] transition-colors duration-300 group-hover:bg-[#e9edf1]">
+                  <VehicleImage
+                    vehicleId={t.vehicleId}
+                    category={t.category}
+                    transparent
+                    className="size-full p-5 transition-transform duration-500 group-hover:scale-[1.06]"
+                  />
+                </div>
+                <p className="t-h4 mt-3 text-[color:var(--color-ink)]">{t.label}</p>
+                <p className="t-caption text-[color:var(--color-muted)]">
+                  {vehicles.filter((v) => v.category === t.category).length} available
+                </p>
               </button>
             ))}
           </div>

@@ -7,7 +7,7 @@ import { routes } from "../lib/routes";
 import { useCurrentUser } from "../lib/currentUser";
 import { useAuth } from "../lib/auth";
 import type { Role } from "../lib/auth";
-import CurrencySwitcher from "./CurrencySwitcher";
+import PreferenceLists from "./PreferenceLists";
 import NotificationsDropdown from "./NotificationsDropdown";
 import { useWishlist } from "../lib/wishlist";
 
@@ -72,10 +72,10 @@ function Logo() {
   );
 }
 
-function AccountMenu({ onSignOut }: { onSignOut: () => void }) {
+function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; compact?: boolean }) {
   const [open, setOpen] = useState(false);
   const { user: currentUser } = useCurrentUser();
-  const { role, switchRole } = useAuth();
+  const { isLoggedIn, role, switchRole } = useAuth();
   const navigate = useNavigate();
   const links = role === "driver" ? driverLinks : customerLinks;
   const target = switchTarget[role];
@@ -92,56 +92,82 @@ function AccountMenu({ onSignOut }: { onSignOut: () => void }) {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Account menu"
-        className={`${headerControl} size-[42px] overflow-hidden`}
+        className={`${headerControl} overflow-hidden ${compact ? "size-9" : "size-[42px]"}`}
       >
-        <img src={currentUser.avatar} alt="" className="size-full rounded-full object-cover" />
+        {isLoggedIn ? (
+          <img src={currentUser.avatar} alt="" className="size-full rounded-full object-cover" />
+        ) : (
+          <Icon name="user" size={compact ? 18 : 20} />
+        )}
       </button>
 
       {open && (
         <>
           <button aria-label="Close" className="fixed inset-0 z-40 cursor-default" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full z-50 mt-2 w-60 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white py-1.5 shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
-            <div className="flex items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3">
-              <img src={currentUser.avatar} alt="" className="size-9 rounded-full object-cover" />
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-[color:var(--color-ink)]">{currentUser.name}</p>
-                <p className="truncate text-xs text-[color:var(--color-muted)]">{currentUser.email}</p>
-              </div>
-            </div>
+          <div className="animate-fade-up absolute right-0 top-full z-50 mt-2 max-h-[80svh] w-64 overflow-y-auto rounded-2xl border border-[color:var(--color-border)] bg-white py-1.5 shadow-[0px_10px_30px_rgba(0,0,0,0.14)]">
+            {isLoggedIn ? (
+              <>
+                <div className="flex items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3">
+                  <img src={currentUser.avatar} alt="" className="size-9 rounded-full object-cover" />
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-[color:var(--color-ink)]">{currentUser.name}</p>
+                    <p className="truncate text-xs text-[color:var(--color-muted)]">{currentUser.email}</p>
+                  </div>
+                </div>
 
-            <button
-              type="button"
-              onClick={handleSwitch}
-              className="flex w-full items-center gap-2.5 border-b border-[color:var(--color-border)] px-4 py-3 text-left text-sm font-semibold text-[color:var(--color-ink)] hover:bg-neutral-50"
-            >
-              <Icon name={target.icon} size={17} />
-              {target.label}
-            </button>
-
-            <div className="py-1">
-              {links.map((l) => (
-                <Link
-                  key={l.to}
-                  to={l.to}
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[color:var(--color-ink-soft)] hover:bg-neutral-50"
+                <button
+                  type="button"
+                  onClick={handleSwitch}
+                  className="flex w-full items-center gap-2.5 border-b border-[color:var(--color-border)] px-4 py-3 text-left text-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-neutral-50"
                 >
-                  <Icon name={l.icon} size={17} />
-                  {l.label}
+                  <Icon name={target.icon} size={17} />
+                  {target.label}
+                </button>
+
+                <div className="py-1">
+                  {links.map((l) => (
+                    <Link
+                      key={l.to}
+                      to={l.to}
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[color:var(--color-ink-soft)] transition-colors hover:bg-neutral-50"
+                    >
+                      <Icon name={l.icon} size={17} />
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="border-b border-[color:var(--color-border)] p-3">
+                <Link
+                  to={routes.signIn}
+                  onClick={() => setOpen(false)}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-black"
+                >
+                  <Icon name="user" size={16} />
+                  Login / Signup
                 </Link>
-              ))}
+              </div>
+            )}
+
+            <div className="border-t border-[color:var(--color-border)] pb-1">
+              <PreferenceLists />
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                setOpen(false);
-                onSignOut();
-              }}
-              className="flex w-full items-center gap-2.5 border-t border-[color:var(--color-border)] px-4 py-2.5 text-left text-sm font-semibold text-[color:var(--color-danger)] hover:bg-neutral-50"
-            >
-              <Icon name="logout" size={17} />
-              Sign out
-            </button>
+
+            {isLoggedIn && (
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  onSignOut();
+                }}
+                className="flex w-full items-center gap-2.5 border-t border-[color:var(--color-border)] px-4 py-2.5 text-left text-sm font-semibold text-[color:var(--color-danger)] transition-colors hover:bg-neutral-50"
+              >
+                <Icon name="logout" size={17} />
+                Sign out
+              </button>
+            )}
           </div>
         </>
       )}
@@ -150,7 +176,6 @@ function AccountMenu({ onSignOut }: { onSignOut: () => void }) {
 }
 
 export default function Header({ transparent = false }: { transparent?: boolean }) {
-  const { user: currentUser } = useCurrentUser();
   const { isLoggedIn, logout, role } = useAuth();
   const navigate = useNavigate();
   const homeHref = role === "driver" ? routes.providerBookings : routes.home;
@@ -167,20 +192,13 @@ export default function Header({ transparent = false }: { transparent?: boolean 
         <Logo />
         <div className="flex items-center gap-2">
           {role === "customer" && <WishlistButton />}
-          {isLoggedIn ? (
-            <>
-              <NotificationsDropdown
-                role={role}
-                viewAllHref={role === "driver" ? routes.providerNotifications : routes.accountNotifications}
-              />
-              <AccountMenu onSignOut={handleSignOut} />
-            </>
-          ) : (
-            <Link to={routes.signIn} aria-label="Login / Signup" className={`${headerControl} size-[42px]`}>
-              <Icon name="user" size={20} />
-            </Link>
+          {isLoggedIn && (
+            <NotificationsDropdown
+              role={role}
+              viewAllHref={role === "driver" ? routes.providerNotifications : routes.accountNotifications}
+            />
           )}
-          <CurrencySwitcher />
+          <AccountMenu onSignOut={handleSignOut} />
         </div>
       </div>
 
@@ -191,20 +209,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
         </Link>
         <div className="flex items-center gap-1">
           {role === "customer" && <WishlistButton compact />}
-          <CurrencySwitcher />
-          {isLoggedIn ? (
-            <Link
-              to={role === "driver" ? routes.providerAccount : routes.accountProfile}
-              aria-label="Account"
-              className={`${headerControl} size-9 overflow-hidden`}
-            >
-              <img src={currentUser.avatar} alt="" className="size-full rounded-full object-cover" />
-            </Link>
-          ) : (
-            <Link to={routes.signIn} aria-label="Login / Signup" className={`${headerControl} size-9`}>
-              <Icon name="user" size={18} />
-            </Link>
-          )}
+          <AccountMenu onSignOut={handleSignOut} compact />
         </div>
       </div>
 
