@@ -6,16 +6,20 @@ export default function PageShell({
   children,
   noFooter = false,
   transparentHeader = false,
+  header,
 }: {
   children: ReactNode;
   noFooter?: boolean;
   /** Header renders with no background — for a page whose hero already
    * paints its own background right up to the top of the viewport. */
   transparentHeader?: boolean;
+  /** Replaces the default logo/nav Header entirely — for a page with its own
+   * contextual top bar (e.g. search results' trip-summary bar). */
+  header?: ReactNode;
 }) {
   return (
     <div className="flex min-h-svh flex-col bg-white">
-      <Header transparent={transparentHeader} />
+      {header ?? <Header transparent={transparentHeader} />}
       <main className="flex-1">{children}</main>
       {!noFooter && <Footer />}
     </div>

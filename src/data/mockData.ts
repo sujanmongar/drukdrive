@@ -6,9 +6,12 @@ export type VehicleCategory = "Prime SUV" | "Sedan SUV" | "Mini Bus" | "Bus" | "
 export type Vehicle = {
   id: string;
   name: string;
+  brand: string;
   category: VehicleCategory;
   seats: number;
   fuel: "Petrol" | "Diesel" | "Electric";
+  transmission: "Automatic" | "Manual";
+  ac: boolean;
   location: string;
   type: string;
   pricePerDay: number;
@@ -21,9 +24,12 @@ export const vehicles: Vehicle[] = [
   {
     id: "toyota-prado-gx",
     name: "Toyota Prado GX",
+    brand: "Toyota",
     category: "Prime SUV",
     seats: 5,
     fuel: "Petrol",
+    transmission: "Automatic",
+    ac: true,
     location: "Thimphu",
     type: "Tourist Standard Vehicle",
     pricePerDay: 58,
@@ -34,9 +40,12 @@ export const vehicles: Vehicle[] = [
   {
     id: "toyota-coaster-bus",
     name: "Toyota Coaster Bus",
+    brand: "Toyota",
     category: "Bus",
     seats: 21,
     fuel: "Diesel",
+    transmission: "Manual",
+    ac: true,
     location: "Thimphu",
     type: "Tourist Standard Vehicle",
     pricePerDay: 56,
@@ -46,9 +55,12 @@ export const vehicles: Vehicle[] = [
   {
     id: "toyota-hiace-bus",
     name: "Toyota Hiace Bus",
+    brand: "Toyota",
     category: "Mini Bus",
     seats: 9,
     fuel: "Diesel",
+    transmission: "Manual",
+    ac: true,
     location: "Paro",
     type: "Tourist Standard Vehicle",
     pricePerDay: 53,
@@ -58,9 +70,12 @@ export const vehicles: Vehicle[] = [
   {
     id: "hyundai-santa-fe",
     name: "Hyundai Santa Fe",
+    brand: "Hyundai",
     category: "Sedan SUV",
     seats: 5,
     fuel: "Petrol",
+    transmission: "Automatic",
+    ac: true,
     location: "Punakha",
     type: "Tourist Standard Vehicle",
     pricePerDay: 54,
@@ -71,9 +86,12 @@ export const vehicles: Vehicle[] = [
   {
     id: "toyota-innova",
     name: "Toyota Innova Crysta",
+    brand: "Toyota",
     category: "Prime SUV",
     seats: 7,
     fuel: "Diesel",
+    transmission: "Automatic",
+    ac: true,
     location: "Thimphu",
     type: "Tourist Standard Vehicle",
     pricePerDay: 62,
@@ -83,9 +101,12 @@ export const vehicles: Vehicle[] = [
   {
     id: "hyundai-creta",
     name: "Hyundai Creta",
+    brand: "Hyundai",
     category: "Sedan SUV",
     seats: 5,
     fuel: "Petrol",
+    transmission: "Automatic",
+    ac: true,
     location: "Paro",
     type: "Tourist Standard Vehicle",
     pricePerDay: 50,
@@ -95,9 +116,12 @@ export const vehicles: Vehicle[] = [
   {
     id: "royal-enfield-meteor",
     name: "Royal Enfield Meteor 350",
+    brand: "Royal Enfield",
     category: "Two Wheels",
     seats: 2,
     fuel: "Petrol",
+    transmission: "Manual",
+    ac: false,
     location: "Thimphu",
     type: "Self Drive Vehicle",
     pricePerDay: 22,

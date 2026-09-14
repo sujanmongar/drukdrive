@@ -42,7 +42,11 @@ export type IconName =
   | "logout"
   | "download"
   | "info"
-  | "more";
+  | "more"
+  | "grid"
+  | "list"
+  | "gearbox"
+  | "snowflake";
 
 const paths: Record<IconName, ReactElement> = {
   location: (
@@ -200,6 +204,27 @@ const paths: Record<IconName, ReactElement> = {
       <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none" />
       <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
       <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none" />
+    </>
+  ),
+  grid: (
+    <>
+      <rect x="3" y="3" width="8" height="8" rx="1.5" />
+      <rect x="13" y="3" width="8" height="8" rx="1.5" />
+      <rect x="3" y="13" width="8" height="8" rx="1.5" />
+      <rect x="13" y="13" width="8" height="8" rx="1.5" />
+    </>
+  ),
+  list: <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />,
+  gearbox: (
+    <>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 3v3M12 18v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M3 12h3M18 12h3M4.9 19.1l2.1-2.1M17 7l2.1-2.1" />
+    </>
+  ),
+  snowflake: (
+    <>
+      <path d="M12 2v20M4.2 7l15.6 10M4.2 17l15.6-10" />
+      <path d="M8 4.5 12 7l4-2.5M8 19.5 12 17l4 2.5M2.5 9.5 6 12l-3.5 2.5M21.5 9.5 18 12l3.5 2.5" />
     </>
   ),
 };

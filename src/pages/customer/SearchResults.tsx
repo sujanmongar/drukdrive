@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
-import VehicleCard from "../../components/VehicleCard";
+import VehicleListCard from "../../components/VehicleListCard";
 import Icon from "../../components/Icon";
 import EditSearchModal from "../../components/EditSearchModal";
 import type { EditSearchValue } from "../../components/EditSearchModal";
-import LocationPickerSheet from "../../components/LocationPickerSheet";
-import DatePickerSheet from "../../components/DatePickerSheet";
+import SearchSummaryHeader from "../../components/SearchSummaryHeader";
 import { vehicles as allVehicles, type Vehicle } from "../../data/mockData";
 import { formatTripDate } from "../../lib/formatTripDate";
 import { usePageTitle } from "../../hooks/usePageTitle";
@@ -23,8 +22,17 @@ const sortOptions: { value: SortOption; label: string }[] = [
   { value: "rating", label: "Rating" },
 ];
 
+type CapacityRange = { label: string; min: number; max: number };
+const capacityRanges: CapacityRange[] = [
+  { label: "1 to 5", min: 1, max: 5 },
+  { label: "5 to 10", min: 5, max: 10 },
+  { label: "10 to 20", min: 10, max: 20 },
+];
+
 const vehicleTypeOptions = Array.from(new Set(allVehicles.map((v) => v.category)));
+const brandOptions = Array.from(new Set(allVehicles.map((v) => v.brand)));
 const fuelOptions = Array.from(new Set(allVehicles.map((v) => v.fuel)));
+const ratingOptions = [3, 4, 4.5];
 
 function sortVehicles(list: Vehicle[], sort: SortOption): Vehicle[] {
   const copy = [...list];
@@ -44,6 +52,10 @@ function formatDate(d: Date) {
   return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
 }
 
+function cityOf(address: string) {
+  return address.split(",")[0]?.trim() || address;
+}
+
 export default function SearchResults() {
   usePageTitle("Search results");
   const [initialParams] = useSearchParams();
@@ -61,13 +73,7 @@ export default function SearchResults() {
       dropoffTime: initialParams.get("dropoffTime") || "13:00",
     };
   });
-  const [editOpen, setEditOpen] = useState(false); // mobile full-screen sheet
-  const [desktopEditOpen, setDesktopEditOpen] = useState(false); // desktop inline row
-  const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
-
-  const pickupAnchorRef = useRef<HTMLDivElement>(null);
-  const dropoffAnchorRef = useRef<HTMLDivElement>(null);
-  const dateAnchorRef = useRef<HTMLDivElement>(null);
+  const [editOpen, setEditOpen] = useState(false);
 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -83,18 +89,27 @@ export default function SearchResults() {
     const category = initialParams.get("category");
     return category ? [category] : [];
   });
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedFuels, setSelectedFuels] = useState<string[]>([]);
+  const [capacity, setCapacity] = useState<string | null>(null);
+  const [minRating, setMinRating] = useState<number | null>(null);
   const [maxPrice, setMaxPrice] = useState(80);
 
   const results = useMemo(() => {
     const filtered = allVehicles.filter((v) => {
       if (selectedTypes.length > 0 && !selectedTypes.includes(v.category)) return false;
+      if (selectedBrands.length > 0 && !selectedBrands.includes(v.brand)) return false;
       if (selectedFuels.length > 0 && !selectedFuels.includes(v.fuel)) return false;
       if (v.pricePerDay > maxPrice) return false;
+      if (minRating !== null && v.rating < minRating) return false;
+      if (capacity) {
+        const range = capacityRanges.find((r) => r.label === capacity);
+        if (range && (v.seats < range.min || v.seats > range.max)) return false;
+      }
       return true;
     });
     return sortVehicles(filtered, sort);
-  }, [sort, selectedTypes, selectedFuels, maxPrice]);
+  }, [sort, selectedTypes, selectedBrands, selectedFuels, capacity, minRating, maxPrice]);
 
   const tripQuery = new URLSearchParams({
     pickup: search.pickup,
@@ -117,15 +132,26 @@ export default function SearchResults() {
     reload();
   }
 
-  function handleDesktopUpdate() {
-    setDesktopEditOpen(false);
-    reload();
+  function clearAllFilters() {
+    setSelectedTypes([]);
+    setSelectedBrands([]);
+    setSelectedFuels([]);
+    setCapacity(null);
+    setMinRating(null);
+    setMaxPrice(80);
   }
 
   const filterPanel = (
     <div className="flex flex-col gap-6">
       <div>
-        <h3 className="mb-3 text-sm font-bold text-[color:var(--color-ink)]">Vehicle Type</h3>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Vehicle Type</h3>
+          {selectedTypes.length > 0 && (
+            <button type="button" onClick={() => setSelectedTypes([])} className="text-xs font-semibold text-[color:var(--color-link)]">
+              Clear
+            </button>
+          )}
+        </div>
         <div className="flex flex-col gap-2.5">
           {vehicleTypeOptions.map((option) => (
             <label key={option} className="flex cursor-pointer items-center gap-2.5 text-sm text-[color:var(--color-ink)]">
@@ -142,7 +168,65 @@ export default function SearchResults() {
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-bold text-[color:var(--color-ink)]">Fuel Type</h3>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Brand</h3>
+          {selectedBrands.length > 0 && (
+            <button type="button" onClick={() => setSelectedBrands([])} className="text-xs font-semibold text-[color:var(--color-link)]">
+              Clear
+            </button>
+          )}
+        </div>
+        <div className="flex flex-col gap-2.5">
+          {brandOptions.map((option) => (
+            <label key={option} className="flex cursor-pointer items-center gap-2.5 text-sm text-[color:var(--color-ink)]">
+              <input
+                type="checkbox"
+                checked={selectedBrands.includes(option)}
+                onChange={() => toggle(selectedBrands, option, setSelectedBrands)}
+                className="size-4 rounded border-[color:var(--color-border)] accent-[color:var(--color-ink)]"
+              />
+              {option}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Capacity</h3>
+          {capacity && (
+            <button type="button" onClick={() => setCapacity(null)} className="text-xs font-semibold text-[color:var(--color-link)]">
+              Clear
+            </button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {capacityRanges.map((range) => (
+            <button
+              key={range.label}
+              type="button"
+              onClick={() => setCapacity(capacity === range.label ? null : range.label)}
+              className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                capacity === range.label
+                  ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
+                  : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
+              }`}
+            >
+              {range.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Fuel Type</h3>
+          {selectedFuels.length > 0 && (
+            <button type="button" onClick={() => setSelectedFuels([])} className="text-xs font-semibold text-[color:var(--color-link)]">
+              Clear
+            </button>
+          )}
+        </div>
         <div className="flex flex-col gap-2.5">
           {fuelOptions.map((option) => (
             <label key={option} className="flex cursor-pointer items-center gap-2.5 text-sm text-[color:var(--color-ink)]">
@@ -159,7 +243,14 @@ export default function SearchResults() {
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-bold text-[color:var(--color-ink)]">Max Price / day</h3>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Max Price / day</h3>
+          {maxPrice !== 80 && (
+            <button type="button" onClick={() => setMaxPrice(80)} className="text-xs font-semibold text-[color:var(--color-link)]">
+              Clear
+            </button>
+          )}
+        </div>
         <input
           type="range"
           min={40}
@@ -176,172 +267,78 @@ export default function SearchResults() {
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-bold text-[color:var(--color-ink)]">Minimum Rating</h3>
-        <div className="flex gap-2">
-          {[3, 4, 4.5].map((r) => (
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Ratings</h3>
+          {minRating !== null && (
+            <button type="button" onClick={() => setMinRating(null)} className="text-xs font-semibold text-[color:var(--color-link)]">
+              Clear
+            </button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {ratingOptions.map((r) => (
             <button
               key={r}
               type="button"
-              className="flex items-center gap-1 rounded-lg border border-[color:var(--color-border)] px-2.5 py-1.5 text-xs font-medium text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
+              onClick={() => setMinRating(minRating === r ? null : r)}
+              className={`flex items-center gap-1 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                minRating === r
+                  ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
+                  : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
+              }`}
             >
-              <Icon name="star" size={12} className="fill-current text-amber-400" />
               {r}+
             </button>
           ))}
+          <button
+            type="button"
+            onClick={() => setMinRating(null)}
+            className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+              minRating === null
+                ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
+                : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
+            }`}
+          >
+            All
+          </button>
         </div>
       </div>
     </div>
   );
 
+  const activeFilterCount =
+    selectedTypes.length +
+    selectedBrands.length +
+    selectedFuels.length +
+    (capacity ? 1 : 0) +
+    (minRating !== null ? 1 : 0) +
+    (maxPrice !== 80 ? 1 : 0);
+
   return (
-    <PageShell>
-      <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-[60px] md:py-10">
-        {/* Edit search summary bar */}
-        <div className="rounded-xl border border-[color:var(--color-border)] bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
-          <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
-              <div className="flex flex-wrap items-center gap-2 text-sm text-[color:var(--color-ink)]">
-                <Icon name="location" size={16} className="shrink-0 text-[color:var(--color-muted)]" />
-                <span className="font-semibold">{search.pickup}</span>
-                <Icon name="chevron-right" size={14} className="text-[color:var(--color-muted)]" />
-                <span className="font-semibold">{search.dropoff}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-[color:var(--color-muted)]">
-                <Icon name="calendar" size={16} />
-                {formatDate(search.pickupDate)}, {search.pickupTime}
-              </div>
-            </div>
-
-            {/* Mobile: opens the full-screen edit sheet */}
-            <button
-              type="button"
-              onClick={() => setEditOpen(true)}
-              className="flex shrink-0 items-center gap-1.5 self-start rounded-xl border border-[color:var(--color-ink)] px-4 py-2 text-xs font-bold text-[color:var(--color-ink)] hover:bg-neutral-50 sm:self-auto md:hidden"
-            >
-              <Icon name="edit" size={13} />
-              Edit Search
-            </button>
-
-            {/* Desktop: toggles the inline row below */}
-            <button
-              type="button"
-              onClick={() => setDesktopEditOpen((v) => !v)}
-              aria-label="Edit search"
-              className={`hidden shrink-0 items-center justify-center rounded-xl p-3 transition-colors md:flex ${
-                desktopEditOpen ? "bg-[color:var(--color-ink)] text-white" : "bg-neutral-100 text-[color:var(--color-ink)] hover:bg-neutral-200"
-              }`}
-            >
-              <Icon name="edit" size={16} />
-            </button>
-          </div>
-
-          {/* Desktop inline edit row */}
-          {desktopEditOpen && (
-            <div className="hidden flex-wrap items-center gap-3 border-t border-[color:var(--color-border)] p-4 md:flex">
-              <div ref={pickupAnchorRef} className="relative min-w-[220px] flex-1">
-                <button
-                  type="button"
-                  onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
-                  className="flex h-[52px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left hover:border-[color:var(--color-ink)]"
-                >
-                  <Icon name="location" size={18} className="shrink-0 text-[color:var(--color-ink)]" />
-                  <span className="flex flex-col gap-0.5">
-                    <span className="text-[10px] text-[color:var(--color-ink-soft)]">Pick up location</span>
-                    <span className="text-sm font-bold text-[color:var(--color-ink)]">{search.pickup}</span>
-                  </span>
-                </button>
-                {activeField === "pickup" && (
-                  <LocationPickerSheet
-                    label="Pick up location"
-                    anchorRef={pickupAnchorRef}
-                    onSelect={(v) => {
-                      setSearch((s) => ({ ...s, pickup: v }));
-                      setActiveField(null);
-                    }}
-                    onClose={() => setActiveField(null)}
-                  />
-                )}
-              </div>
-
-              <div ref={dropoffAnchorRef} className="relative min-w-[220px] flex-1">
-                <button
-                  type="button"
-                  onClick={() => setActiveField(activeField === "dropoff" ? null : "dropoff")}
-                  className="flex h-[52px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left hover:border-[color:var(--color-ink)]"
-                >
-                  <Icon name="location" size={18} className="shrink-0 text-[color:var(--color-ink)]" />
-                  <span className="flex flex-col gap-0.5">
-                    <span className="text-[10px] text-[color:var(--color-ink-soft)]">Drop off location</span>
-                    <span className="text-sm font-bold text-[color:var(--color-ink)]">{search.dropoff}</span>
-                  </span>
-                </button>
-                {activeField === "dropoff" && (
-                  <LocationPickerSheet
-                    label="Drop off location"
-                    anchorRef={dropoffAnchorRef}
-                    onSelect={(v) => {
-                      setSearch((s) => ({ ...s, dropoff: v }));
-                      setActiveField(null);
-                    }}
-                    onClose={() => setActiveField(null)}
-                  />
-                )}
-              </div>
-
-              <div ref={dateAnchorRef} className="relative min-w-[200px]">
-                <button
-                  type="button"
-                  onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                  className="flex h-[52px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left hover:border-[color:var(--color-ink)]"
-                >
-                  <Icon name="calendar" size={18} className="shrink-0 text-[color:var(--color-ink)]" />
-                  <span className="flex flex-col gap-0.5">
-                    <span className="text-[10px] text-[color:var(--color-ink-soft)]">Pick up date</span>
-                    <span className="text-sm font-bold text-[color:var(--color-ink)]">
-                      {formatDate(search.pickupDate)}, {search.pickupTime}
-                    </span>
-                  </span>
-                </button>
-                {activeField === "date" && (
-                  <DatePickerSheet
-                    mode={search.tripMode === "return" ? "range" : "single"}
-                    anchorRef={dateAnchorRef}
-                    initialPickup={search.pickupDate}
-                    initialDropoff={search.dropoffDate ?? undefined}
-                    initialPickupTime={search.pickupTime}
-                    initialDropoffTime={search.dropoffTime}
-                    onConfirm={({ pickup: p, pickupTime: pt, dropoff: d, dropoffTime: dt }) => {
-                      setSearch((s) => ({
-                        ...s,
-                        pickupDate: p,
-                        pickupTime: pt,
-                        dropoffDate: d ?? s.dropoffDate,
-                        dropoffTime: dt ?? s.dropoffTime,
-                      }));
-                      setActiveField(null);
-                    }}
-                    onClose={() => setActiveField(null)}
-                  />
-                )}
-              </div>
-
-              <button
-                type="button"
-                onClick={handleDesktopUpdate}
-                className="flex items-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-6 py-3.5 text-sm font-bold text-white hover:bg-black"
-              >
-                <Icon name="search" size={16} />
-                Update
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div className="mt-6 flex flex-col gap-6 lg:flex-row">
+    <PageShell
+      header={
+        <SearchSummaryHeader
+          pickup={search.pickup}
+          dropoff={search.dropoff}
+          dateLabel={formatDate(search.pickupDate)}
+          timeLabel={search.pickupTime}
+          onEdit={() => setEditOpen(true)}
+        />
+      }
+    >
+      <div className="mx-auto max-w-[1440px] px-4 py-6 md:px-[60px] md:py-8">
+        <div className="flex flex-col gap-6 lg:flex-row">
           {/* Desktop filter sidebar */}
           <aside className="hidden w-[280px] shrink-0 lg:block">
             <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
-              <h2 className="mb-4 text-base font-bold text-[color:var(--color-ink)]">Filters</h2>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-base font-bold text-[color:var(--color-ink)]">Filters</h2>
+                {activeFilterCount > 0 && (
+                  <button type="button" onClick={clearAllFilters} className="text-xs font-semibold text-[color:var(--color-link)]">
+                    Clear all
+                  </button>
+                )}
+              </div>
               {filterPanel}
             </div>
           </aside>
@@ -358,59 +355,76 @@ export default function SearchResults() {
               </div>
             ) : (
               <>
-                <div className="mb-4 flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold text-[color:var(--color-ink)]">{results.length} vehicles found</p>
+                {/* Mobile: title on its own row, then Sort + Filter row */}
+                <div className="lg:hidden">
+                  <h1 className="mb-4 text-lg font-bold text-[color:var(--color-ink)]">Found {results.length} cars</h1>
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setSortOpen(true)}
+                      className="flex flex-col items-start rounded-xl border border-[color:var(--color-border)] px-3.5 py-2 text-left hover:border-[color:var(--color-ink)]"
+                    >
+                      <span className="text-[11px] text-[color:var(--color-muted)]">Sorted by</span>
+                      <span className="flex items-center gap-1 text-xs font-bold text-[color:var(--color-ink)]">
+                        {sortOptions.find((o) => o.value === sort)?.label}
+                        <Icon name="chevron-down" size={13} />
+                      </span>
+                    </button>
 
-                  <div className="flex items-center gap-2">
-                    {/* Mobile / tablet filter trigger */}
                     <button
                       type="button"
                       onClick={() => setFilterOpen(true)}
-                      className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 py-2 text-xs font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)] lg:hidden"
+                      className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-xs font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
                     >
                       <Icon name="filter" size={15} />
                       Filter
-                    </button>
-
-                    {/* Sort by */}
-                    <div className="relative">
-                      <button
-                        type="button"
-                        onClick={() => setSortOpen((v) => !v)}
-                        className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 py-2 text-xs font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
-                      >
-                        <Icon name="sort" size={15} />
-                        Sort by
-                        <Icon name="chevron-down" size={13} />
-                      </button>
-                      {sortOpen && (
-                        <>
-                          <button
-                            aria-label="Close"
-                            className="fixed inset-0 z-10 cursor-default"
-                            onClick={() => setSortOpen(false)}
-                          />
-                          <div className="absolute right-0 z-20 mt-2 w-52 rounded-xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
-                            {sortOptions.map((opt) => (
-                              <button
-                                key={opt.value}
-                                type="button"
-                                onClick={() => {
-                                  setSort(opt.value);
-                                  setSortOpen(false);
-                                }}
-                                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
-                                  sort === opt.value ? "bg-[#f4f4f4] font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-neutral-50"
-                                }`}
-                              >
-                                {opt.label}
-                                {sort === opt.value && <Icon name="check" size={14} />}
-                              </button>
-                            ))}
-                          </div>
-                        </>
+                      {activeFilterCount > 0 && (
+                        <span className="flex size-4 items-center justify-center rounded-full bg-[color:var(--color-ink)] text-[9px] font-bold text-white">
+                          {activeFilterCount}
+                        </span>
                       )}
-                    </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Desktop: title left, sort inline right, on one row */}
+                <div className="mb-4 hidden items-center justify-between gap-3 lg:flex">
+                  <h1 className="text-lg font-bold text-[color:var(--color-ink)]">
+                    Found {results.length} cabs from {cityOf(search.pickup)} to {cityOf(search.dropoff)}
+                  </h1>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setSortOpen((v) => !v)}
+                      className="flex items-center gap-1.5 text-sm text-[color:var(--color-ink-soft)]"
+                    >
+                      Sorted by
+                      <span className="font-bold text-[color:var(--color-ink)]">{sortOptions.find((o) => o.value === sort)?.label}</span>
+                      <Icon name="chevron-down" size={14} />
+                    </button>
+                    {sortOpen && (
+                      <>
+                        <button aria-label="Close" className="fixed inset-0 z-10 cursor-default" onClick={() => setSortOpen(false)} />
+                        <div className="absolute right-0 z-20 mt-2 w-52 rounded-xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
+                          {sortOptions.map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() => {
+                                setSort(opt.value);
+                                setSortOpen(false);
+                              }}
+                              className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
+                                sort === opt.value ? "bg-[#f4f4f4] font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-neutral-50"
+                              }`}
+                            >
+                              {opt.label}
+                              {sort === opt.value && <Icon name="check" size={14} />}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -418,22 +432,14 @@ export default function SearchResults() {
                   <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-[color:var(--color-border)] py-16 text-center">
                     <Icon name="car" size={32} className="text-[color:var(--color-muted)]" />
                     <p className="text-sm font-semibold text-[color:var(--color-ink)]">No vehicles match these filters</p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedTypes([]);
-                        setSelectedFuels([]);
-                        setMaxPrice(80);
-                      }}
-                      className="text-sm font-semibold text-[color:var(--color-ink)] underline"
-                    >
+                    <button type="button" onClick={clearAllFilters} className="text-sm font-semibold text-[color:var(--color-ink)] underline">
                       Clear filters
                     </button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="flex flex-col gap-4">
                     {results.map((vehicle) => (
-                      <VehicleCard key={vehicle.id} vehicle={vehicle} tripQuery={tripQuery} />
+                      <VehicleListCard key={vehicle.id} vehicle={vehicle} tripQuery={tripQuery} />
                     ))}
                   </div>
                 )}
@@ -447,10 +453,17 @@ export default function SearchResults() {
       {filterOpen && (
         <div className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden">
           <div className="flex items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
-            <h2 className="text-base font-bold text-[color:var(--color-ink)]">Filters</h2>
             <button type="button" onClick={() => setFilterOpen(false)} aria-label="Close filters">
               <Icon name="close" size={20} className="text-[color:var(--color-ink)]" />
             </button>
+            <h2 className="text-base font-bold text-[color:var(--color-ink)]">Filters</h2>
+            {activeFilterCount > 0 ? (
+              <button type="button" onClick={clearAllFilters} className="text-xs font-semibold text-[color:var(--color-link)]">
+                Clear all
+              </button>
+            ) : (
+              <span className="w-[52px]" />
+            )}
           </div>
           <div className="flex-1 overflow-y-auto px-4 py-5">{filterPanel}</div>
           <div className="border-t border-[color:var(--color-border)] p-4">
@@ -459,8 +472,47 @@ export default function SearchResults() {
               onClick={() => setFilterOpen(false)}
               className="w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-sm font-bold text-white hover:bg-black"
             >
-              Show {results.length} vehicles
+              See {results.length} cars
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile sort bottom sheet */}
+      {sortOpen && (
+        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/40 lg:hidden">
+          <button aria-label="Close" className="absolute inset-0 cursor-default" onClick={() => setSortOpen(false)} />
+          <div className="relative w-full rounded-t-2xl bg-white pb-[env(safe-area-inset-bottom)]">
+            <div className="flex items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
+              <h2 className="text-base font-bold text-[color:var(--color-ink)]">Sort by</h2>
+              <button type="button" onClick={() => setSortOpen(false)} aria-label="Close sort options">
+                <Icon name="close" size={20} className="text-[color:var(--color-ink)]" />
+              </button>
+            </div>
+            <div className="flex flex-col p-2">
+              {sortOptions.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => {
+                    setSort(opt.value);
+                    setSortOpen(false);
+                  }}
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left hover:bg-neutral-50"
+                >
+                  <span
+                    className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                      sort === opt.value ? "border-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"
+                    }`}
+                  >
+                    {sort === opt.value && <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />}
+                  </span>
+                  <span className={`text-sm ${sort === opt.value ? "font-bold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)]"}`}>
+                    {opt.label}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}

@@ -13,14 +13,16 @@ export default function VehicleCard({
 }: {
   vehicle: Vehicle;
   className?: string;
-  /** Query string (e.g. "pickup=...&dropoff=...&date=...") carried into VehicleDetails so the trip context picked on Home/SearchResults survives the click-through. */
+  /** Query string (e.g. "pickup=...&dropoff=...&date=...") carried into Review Booking so the trip context picked on Home/SearchResults survives the click-through. */
   tripQuery?: string;
 }) {
   const { format } = useCurrency();
   const { isSaved, toggle } = useWishlist();
   const navigate = useNavigate();
   const saved = isSaved(vehicle.id);
-  const detailsHref = tripQuery ? `${routes.vehicle(vehicle.id)}?${tripQuery}` : routes.vehicle(vehicle.id);
+  const bookingParams = new URLSearchParams(tripQuery);
+  bookingParams.set("vehicleId", vehicle.id);
+  const detailsHref = `${routes.reviewBooking}?${bookingParams.toString()}`;
   return (
     <div
       role="link"

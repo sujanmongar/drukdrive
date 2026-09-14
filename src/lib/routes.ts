@@ -13,7 +13,6 @@ export const routes = {
   // customer booking flow
   home: "/",
   search: "/search",
-  vehicle: (id: string = ":id") => `/vehicle/${id}`,
   reviewBooking: "/checkout/details",
   payment: "/checkout/payment",
   paymentVerify: "/checkout/verify",

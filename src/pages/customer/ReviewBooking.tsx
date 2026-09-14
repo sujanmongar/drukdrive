@@ -5,6 +5,7 @@ import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import BookingStepper from "../../components/BookingStepper";
 import BookingRouteCard from "../../components/BookingRouteCard";
+import PriceSummaryModal from "../../components/PriceSummaryModal";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { computeFare, RENTAL_DAYS } from "../../lib/pricing";
@@ -27,7 +28,8 @@ export default function ReviewBooking() {
   usePageTitle("Review your booking");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { format } = useCurrency();
+  const { format, symbol } = useCurrency();
+  const [priceSummaryOpen, setPriceSummaryOpen] = useState(false);
   const { isLoggedIn } = useAuth();
   const { user } = useCurrentUser();
 
@@ -105,7 +107,7 @@ export default function ReviewBooking() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[1100px] px-4 py-6 pb-10 md:px-[60px] md:py-10">
+      <div className="mx-auto max-w-[1100px] px-4 py-6 pb-28 md:px-[60px] md:py-10 md:pb-10">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -206,6 +208,11 @@ export default function ReviewBooking() {
               </label>
             </div>
 
+            <p className="mt-3 text-xs text-[color:var(--color-muted)]">
+              <span className="font-semibold text-[color:var(--color-ink-soft)]">Note:</span> Your information is
+              required for driver verification, trip updates, and issuing your booking confirmation.
+            </p>
+
             <p className="mt-4 text-xs text-[color:var(--color-muted)]">
               By proceeding to book, I Agree to DrukDrive&rsquo;s{" "}
               <Link to={routes.privacyPolicy} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
@@ -248,37 +255,13 @@ export default function ReviewBooking() {
                   <p className="text-xl font-extrabold text-[color:var(--color-ink)]">{format(netPayable)}</p>
                   <p className="text-xs text-[color:var(--color-muted)]">Inclusive of taxes and fees</p>
                 </div>
-                <div className="group relative">
-                  <button
-                    type="button"
-                    className="cursor-help text-xs font-semibold text-[color:var(--color-link)] underline decoration-dotted underline-offset-2"
-                  >
-                    Fare summary
-                  </button>
-                  <div className="invisible absolute right-0 top-full z-30 mt-2 w-60 rounded-xl border border-[color:var(--color-border)] bg-white p-4 opacity-0 shadow-[var(--shadow-popup)] transition-opacity duration-150 group-hover:visible group-hover:opacity-100">
-                    <p className="text-xs font-bold text-[color:var(--color-ink)]">Fare breakdown</p>
-                    <div className="mt-2.5 flex flex-col gap-2 text-xs">
-                      <div className="flex justify-between text-[color:var(--color-ink-soft)]">
-                        <span>Base fare × {RENTAL_DAYS} days</span>
-                        <span className="font-medium text-[color:var(--color-ink)]">{format(baseFare)}</span>
-                      </div>
-                      <div className="flex justify-between text-[color:var(--color-ink-soft)]">
-                        <span>Taxes &amp; fees</span>
-                        <span className="font-medium text-[color:var(--color-ink)]">{format(taxes)}</span>
-                      </div>
-                      {discount > 0 && (
-                        <div className="flex justify-between font-medium text-[color:var(--color-success)]">
-                          <span>Discount</span>
-                          <span>-{format(discount)}</span>
-                        </div>
-                      )}
-                      <div className="flex justify-between border-t border-[color:var(--color-border)] pt-2 text-sm font-bold text-[color:var(--color-ink)]">
-                        <span>Total</span>
-                        <span>{format(netPayable)}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setPriceSummaryOpen(true)}
+                  className="text-xs font-semibold text-[color:var(--color-link)] underline decoration-dotted underline-offset-2"
+                >
+                  Fare summary
+                </button>
               </div>
 
               <div className="mt-4 flex flex-col gap-2.5">
@@ -319,9 +302,11 @@ export default function ReviewBooking() {
                 ))}
               </div>
 
-              <Button variant="primary" size="lg" fullWidth className="mt-4" onClick={handleProceed}>
-                {payButtonLabel}
-              </Button>
+              <div className="hidden lg:block">
+                <Button variant="primary" size="lg" fullWidth className="mt-4" onClick={handleProceed}>
+                  {payButtonLabel}
+                </Button>
+              </div>
 
               <h3 className="mt-6 text-sm font-bold text-[color:var(--color-ink)]">Offer (Optional)</h3>
               <div className="mt-2 rounded-xl border border-[color:var(--color-border)] p-3">
@@ -356,6 +341,34 @@ export default function ReviewBooking() {
           </div>
         </div>
       </div>
+
+      {/* Mobile sticky bottom bar */}
+      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
+        <button type="button" onClick={() => setPriceSummaryOpen(true)} className="flex flex-col items-start">
+          <span className="flex items-center gap-1.5 text-lg font-extrabold text-[color:var(--color-ink)]">
+            {format(netPayable)}
+            <Icon name="info" size={15} className="text-[color:var(--color-muted)]" />
+          </span>
+          <span className="text-[11px] text-[color:var(--color-muted)]">incl. taxes &amp; fees</span>
+        </button>
+        <Button variant="primary" size="lg" onClick={handleProceed}>
+          Proceed To Payment
+        </Button>
+      </div>
+
+      {priceSummaryOpen && (
+        <PriceSummaryModal
+          baseFare={baseFare}
+          taxes={taxes}
+          total={total}
+          discount={discount}
+          netPayable={netPayable}
+          days={RENTAL_DAYS}
+          format={format}
+          symbol={symbol}
+          onClose={() => setPriceSummaryOpen(false)}
+        />
+      )}
     </PageShell>
   );
 }

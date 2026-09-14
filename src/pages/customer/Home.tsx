@@ -67,13 +67,14 @@ export default function Home() {
 
   function handleRecentSearch(vehicleId: string, recentPickup: string, recentDropoff: string) {
     // A recent search already implies pickup, drop-off and the vehicle —
-    // jump straight to that vehicle instead of re-running a fresh search.
+    // jump straight to booking instead of re-running a fresh search.
     const params = new URLSearchParams({
+      vehicleId,
       pickup: recentPickup,
       dropoff: recentDropoff,
       date: formatTripDate(pickupDate, pickupTime),
     });
-    navigate(`${routes.vehicle(vehicleId)}?${params.toString()}`);
+    navigate(`${routes.reviewBooking}?${params.toString()}`);
   }
 
   const tripQuery = new URLSearchParams({
