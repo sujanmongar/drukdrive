@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
+import VehicleCard from "../../components/VehicleCard";
 import VehicleListCard from "../../components/VehicleListCard";
 import Icon from "../../components/Icon";
 import EditSearchModal from "../../components/EditSearchModal";
@@ -14,6 +15,7 @@ const DEFAULT_PICKUP = "Thimphu, Clock Tower Square";
 const DEFAULT_DROPOFF = "Paro, Airport";
 
 type SortOption = "recommended" | "price-low" | "price-high" | "rating";
+type ViewMode = "grid" | "list";
 
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: "recommended", label: "Recommended" },
@@ -81,6 +83,7 @@ export default function SearchResults() {
     return () => clearTimeout(t);
   }, []);
 
+  const [view, setView] = useState<ViewMode>("grid");
   const [sortOpen, setSortOpen] = useState(false);
   const [sort, setSort] = useState<SortOption>("recommended");
 
@@ -306,6 +309,33 @@ export default function SearchResults() {
     </div>
   );
 
+  const viewToggle = (
+    <div className="flex items-center rounded-xl border border-[color:var(--color-border)] p-0.5">
+      <button
+        type="button"
+        aria-label="Grid view"
+        aria-pressed={view === "grid"}
+        onClick={() => setView("grid")}
+        className={`flex size-8 items-center justify-center rounded-lg transition-colors ${
+          view === "grid" ? "bg-[color:var(--color-ink)] text-white" : "text-[color:var(--color-ink-soft)] hover:bg-neutral-100"
+        }`}
+      >
+        <Icon name="grid" size={15} />
+      </button>
+      <button
+        type="button"
+        aria-label="List view"
+        aria-pressed={view === "list"}
+        onClick={() => setView("list")}
+        className={`flex size-8 items-center justify-center rounded-lg transition-colors ${
+          view === "list" ? "bg-[color:var(--color-ink)] text-white" : "text-[color:var(--color-ink-soft)] hover:bg-neutral-100"
+        }`}
+      >
+        <Icon name="list" size={15} />
+      </button>
+    </div>
+  );
+
   const activeFilterCount =
     selectedTypes.length +
     selectedBrands.length +
@@ -367,19 +397,22 @@ export default function SearchResults() {
                       </span>
                     </button>
 
-                    <button
-                      type="button"
-                      onClick={() => setFilterOpen(true)}
-                      className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-4 py-2.5 text-sm font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
-                    >
-                      <Icon name="filter" size={16} />
-                      Filter
-                      {activeFilterCount > 0 && (
-                        <span className="flex size-4 items-center justify-center rounded-full bg-[color:var(--color-ink)] text-[9px] font-bold text-white">
-                          {activeFilterCount}
-                        </span>
-                      )}
-                    </button>
+                    <div className="flex items-center gap-2">
+                      {viewToggle}
+                      <button
+                        type="button"
+                        onClick={() => setFilterOpen(true)}
+                        className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-4 py-2.5 text-sm font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
+                      >
+                        <Icon name="filter" size={16} />
+                        Filter
+                        {activeFilterCount > 0 && (
+                          <span className="flex size-4 items-center justify-center rounded-full bg-[color:var(--color-ink)] text-[9px] font-bold text-white">
+                            {activeFilterCount}
+                          </span>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -388,39 +421,42 @@ export default function SearchResults() {
                   <h1 className="text-lg font-bold text-[color:var(--color-ink)]">
                     Found {results.length} cabs from {cityOf(search.pickup)} to {cityOf(search.dropoff)}
                   </h1>
-                  <div className="relative">
-                    <button
-                      type="button"
-                      onClick={() => setSortOpen((v) => !v)}
-                      className="flex items-center gap-1.5 text-sm text-[color:var(--color-ink-soft)]"
-                    >
-                      Sorted by
-                      <span className="font-bold text-[color:var(--color-ink)]">{sortOptions.find((o) => o.value === sort)?.label}</span>
-                      <Icon name="chevron-down" size={14} />
-                    </button>
-                    {sortOpen && (
-                      <>
-                        <button aria-label="Close" className="fixed inset-0 z-10 cursor-default" onClick={() => setSortOpen(false)} />
-                        <div className="absolute right-0 z-20 mt-2 w-52 rounded-xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
-                          {sortOptions.map((opt) => (
-                            <button
-                              key={opt.value}
-                              type="button"
-                              onClick={() => {
-                                setSort(opt.value);
-                                setSortOpen(false);
-                              }}
-                              className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
-                                sort === opt.value ? "bg-[#f4f4f4] font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-neutral-50"
-                              }`}
-                            >
-                              {opt.label}
-                              {sort === opt.value && <Icon name="check" size={14} />}
-                            </button>
-                          ))}
-                        </div>
-                      </>
-                    )}
+                  <div className="flex items-center gap-4">
+                    {viewToggle}
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setSortOpen((v) => !v)}
+                        className="flex items-center gap-1.5 text-sm text-[color:var(--color-ink-soft)]"
+                      >
+                        Sorted by
+                        <span className="font-bold text-[color:var(--color-ink)]">{sortOptions.find((o) => o.value === sort)?.label}</span>
+                        <Icon name="chevron-down" size={14} />
+                      </button>
+                      {sortOpen && (
+                        <>
+                          <button aria-label="Close" className="fixed inset-0 z-10 cursor-default" onClick={() => setSortOpen(false)} />
+                          <div className="absolute right-0 z-20 mt-2 w-52 rounded-xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
+                            {sortOptions.map((opt) => (
+                              <button
+                                key={opt.value}
+                                type="button"
+                                onClick={() => {
+                                  setSort(opt.value);
+                                  setSortOpen(false);
+                                }}
+                                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
+                                  sort === opt.value ? "bg-[#f4f4f4] font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-neutral-50"
+                                }`}
+                              >
+                                {opt.label}
+                                {sort === opt.value && <Icon name="check" size={14} />}
+                              </button>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -431,6 +467,12 @@ export default function SearchResults() {
                     <button type="button" onClick={clearAllFilters} className="text-sm font-semibold text-[color:var(--color-ink)] underline">
                       Clear filters
                     </button>
+                  </div>
+                ) : view === "grid" ? (
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    {results.map((vehicle) => (
+                      <VehicleCard key={vehicle.id} vehicle={vehicle} tripQuery={tripQuery} />
+                    ))}
                   </div>
                 ) : (
                   <div className="flex flex-col gap-4">
