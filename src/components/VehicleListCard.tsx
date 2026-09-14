@@ -38,7 +38,7 @@ export default function VehicleListCard({
       }}
       className="flex w-full cursor-pointer items-stretch overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] lg:items-center"
     >
-      <div className="relative w-[110px] shrink-0 self-stretch overflow-hidden sm:w-[140px] lg:h-[110px] lg:w-[170px] lg:self-auto">
+      <div className="relative w-[110px] shrink-0 self-stretch overflow-hidden sm:w-[140px] lg:h-[140px] lg:w-[200px] lg:self-auto">
         <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full" transparent />
         <button
           type="button"
@@ -59,7 +59,7 @@ export default function VehicleListCard({
         </button>
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col p-3 sm:p-4 lg:flex-row lg:items-center lg:gap-4">
+      <div className="flex min-w-0 flex-1 flex-col p-3 sm:p-4 lg:flex-row lg:items-center lg:gap-6 lg:p-5">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <button
@@ -75,12 +75,12 @@ export default function VehicleListCard({
             >
               <Icon
                 name="heart"
-                size={16}
+                size={20}
                 className={`transition-colors ${saved ? "fill-current text-[color:var(--color-danger)]" : "text-[color:var(--color-ink-soft)]"}`}
               />
             </button>
-            <p className="text-sm font-bold text-[color:var(--color-ink)] sm:text-base">{vehicle.name}</p>
-            <span className="rounded-full bg-[color:var(--color-info-bg)] px-2 py-0.5 text-[9px] font-semibold uppercase text-[color:var(--color-info-text)]">
+            <p className="text-sm font-bold text-[color:var(--color-ink)] sm:text-base lg:text-2xl lg:font-extrabold">{vehicle.name}</p>
+            <span className="rounded-full bg-[color:var(--color-info-bg)] px-2 py-0.5 text-[9px] font-semibold uppercase text-[color:var(--color-info-text)] lg:px-3 lg:py-1 lg:text-xs">
               {vehicle.category}
             </span>
           </div>
@@ -101,35 +101,36 @@ export default function VehicleListCard({
             {vehicle.location}
           </div>
           {/* Desktop: spec chips + rating badge */}
-          <div className="mt-1.5 hidden flex-wrap items-center gap-3 text-xs text-[color:var(--color-ink-soft)] lg:flex">
-            <span className="flex items-center gap-1">
-              <Icon name="gearbox" size={13} />
+          <div className="mt-2 hidden flex-wrap items-center gap-4 text-sm font-medium text-[color:var(--color-ink-soft)] lg:flex">
+            <span className="flex items-center gap-1.5">
+              <Icon name="gearbox" size={16} />
               {vehicle.transmission[0]}
             </span>
-            <span className="flex items-center gap-1">
-              <Icon name="seat" size={13} />
+            <span className="flex items-center gap-1.5">
+              <Icon name="seat" size={16} />
               {vehicle.seats}
             </span>
-            <span className="flex items-center gap-1">
-              <Icon name="fuel" size={13} />
+            <span className="flex items-center gap-1.5">
+              <Icon name="fuel" size={16} />
               {vehicle.fuel[0]}
             </span>
             {vehicle.ac && (
-              <span className="flex items-center gap-1">
-                <Icon name="snowflake" size={13} />
+              <span className="flex items-center gap-1.5">
+                <Icon name="snowflake" size={16} />
                 AC
               </span>
             )}
           </div>
-          <div className="mt-2 hidden items-center gap-2 lg:flex">
-            <span className="rounded-md bg-[color:var(--color-success-bg)] px-1.5 py-0.5 text-xs font-bold text-[color:var(--color-success)]">
+          <div className="mt-2.5 hidden items-center gap-2.5 lg:flex">
+            <span className="rounded-md bg-[color:var(--color-success-bg)] px-2 py-0.5 text-sm font-bold text-[color:var(--color-success)]">
               {vehicle.rating}/5
             </span>
-            <span className="text-xs text-[color:var(--color-muted)]">{vehicle.reviewCount} ratings</span>
+            <span className="h-3.5 w-px bg-[color:var(--color-border)]" />
+            <span className="text-sm text-[color:var(--color-muted)]">{vehicle.reviewCount} ratings</span>
           </div>
         </div>
 
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-3 gap-y-2 pt-2 lg:mt-0 lg:shrink-0 lg:flex-col lg:items-end lg:pt-0">
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-3 gap-y-2 pt-2 lg:mt-0 lg:shrink-0 lg:items-center lg:gap-6 lg:pt-0">
           <div className="min-w-0 lg:text-right">
             <div className="flex flex-wrap items-baseline gap-x-1.5 lg:justify-end">
               {vehicle.strikePrice && (
@@ -138,17 +139,20 @@ export default function VehicleListCard({
                   <span className="text-xs text-red-500 line-through">{format(vehicle.strikePrice)}</span>
                 </>
               )}
-              <span className="text-lg font-extrabold text-[color:var(--color-ink)] sm:text-xl">
+              <span className="text-lg font-extrabold text-[color:var(--color-ink)] sm:text-xl lg:text-2xl">
                 {format(vehicle.pricePerDay)}
               </span>
-              <span className="text-xs text-[color:var(--color-ink)]">/day</span>
+              <span className="text-xs text-[color:var(--color-ink)] lg:hidden">/day</span>
             </div>
-            <p className="text-[10px] text-[color:var(--color-muted)]">incl. taxes &amp; fees</p>
+            <p className="text-[10px] text-[color:var(--color-muted)] lg:text-xs">
+              <span className="lg:hidden">incl. taxes &amp; fees</span>
+              <span className="hidden lg:inline">inclusion of taxes &amp; fees</span>
+            </p>
           </div>
           <Link
             to={detailsHref}
             onClick={(e) => e.stopPropagation()}
-            className="hidden shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-2.5 text-xs font-bold text-white hover:bg-black lg:inline-flex lg:items-center lg:justify-center"
+            className="hidden shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-2.5 text-xs font-bold text-white hover:bg-black lg:inline-flex lg:items-center lg:justify-center lg:rounded-full lg:px-7 lg:py-3.5 lg:text-sm"
           >
             Book Now
           </Link>
