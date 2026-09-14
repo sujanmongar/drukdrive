@@ -69,7 +69,7 @@ function Logo() {
   const { role } = useAuth();
   const homeHref = role === "driver" ? routes.providerBookings : routes.home;
   return (
-    <Link to={homeHref} className="flex shrink-0 items-center">
+    <Link to={homeHref} aria-label="DrukDrive home" className="flex shrink-0 items-center">
       <DrukDriveLogo className="h-7 w-auto text-[color:var(--color-ink)]" />
     </Link>
   );
@@ -207,7 +207,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
 
       {/* Mobile */}
       <div className="flex h-[64px] items-center justify-between px-4 md:hidden">
-        <Link to={homeHref} className="flex items-center">
+        <Link to={homeHref} aria-label="DrukDrive home" className="flex items-center">
           <DrukDriveLogo className="h-5 w-auto text-[color:var(--color-ink)]" />
         </Link>
         <div className="flex items-center gap-2">

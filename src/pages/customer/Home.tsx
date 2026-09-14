@@ -127,7 +127,7 @@ export default function Home() {
           so the hero background paints all the way to the top of the
           viewport; the matching padding keeps the visible content in the
           same place it would otherwise be. */}
-      <section className="relative -mt-16 overflow-hidden bg-[#f6f7f8] pt-16 md:-mt-[94px] md:pt-[94px]">
+      <section className="relative -mt-16 overflow-hidden bg-[color:var(--color-surface-muted)] pt-16 md:-mt-[94px] md:pt-[94px]">
 
         <div className="animate-fade-up relative mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-4 pb-14 pt-10 md:grid-cols-[1fr_auto] md:items-center md:px-10 md:pb-24 md:pt-16 lg:grid-cols-1 lg:pb-20">
           <div>
@@ -387,7 +387,7 @@ export default function Home() {
 
       {/* Popular cars — a full-bleed tinted band so the white cards and their
           hover shadow read against a ground. Content stays on the grid. */}
-      <section className="bg-[#fafbfc] py-12 md:py-20">
+      <section className="bg-[color:var(--color-surface-subtle)] py-12 md:py-20">
         <div className="mx-auto max-w-[1280px] px-4 md:px-10">
           <SectionHeader title="Popular cars" trackRef={carsTrackRef} />
           <div ref={carsTrackRef} className="carousel-track -mx-4 -mb-8 flex gap-5 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:px-6">
@@ -415,7 +415,7 @@ export default function Home() {
                 onClick={() => navigate(`${routes.search}?category=${encodeURIComponent(t.category)}`)}
                 className="group w-[210px] shrink-0 cursor-pointer text-left sm:w-[220px] lg:w-[calc((100%-3.75rem)/4)]"
               >
-                <div className="flex aspect-[5/4] items-center justify-center overflow-hidden rounded-2xl bg-[#f2f4f6] transition-colors duration-300 group-hover:bg-[#e9edf1]">
+                <div className="flex aspect-[5/4] items-center justify-center overflow-hidden rounded-2xl bg-[color:var(--color-surface-sunken)] transition-colors duration-300 group-hover:bg-[color:var(--color-surface-soft)]">
                   <VehicleImage
                     vehicleId={t.vehicleId}
                     category={t.category}

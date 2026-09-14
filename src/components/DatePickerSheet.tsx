@@ -121,15 +121,15 @@ export default function DatePickerSheet({
   const [pickupTime, setPickupTime] = useState(initialPickupTime);
   const [dropoffTime, setDropoffTime] = useState(initialDropoffTime);
 
-  const base = new Date();
-  const months = useMemo(
-    () =>
-      Array.from({ length: 3 }, (_, i) => {
-        const d = new Date(base.getFullYear(), base.getMonth() + i, 1);
-        return { year: d.getFullYear(), month: d.getMonth() };
-      }),
-    [],
-  );
+  // Three months from today, fixed at mount so the grid doesn't shift under
+  // the user mid-selection.
+  const months = useMemo(() => {
+    const base = new Date();
+    return Array.from({ length: 3 }, (_, i) => {
+      const d = new Date(base.getFullYear(), base.getMonth() + i, 1);
+      return { year: d.getFullYear(), month: d.getMonth() };
+    });
+  }, []);
 
   function handlePick(date: Date) {
     if (mode === "single") {

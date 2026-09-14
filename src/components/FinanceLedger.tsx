@@ -15,15 +15,19 @@ export default function FinanceLedger() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [filterOpen, setFilterOpen] = useState(false);
 
-  const allRows = useMemo(() => {
-    let balance = 0;
-    return financeSummary.transactions.map((t) => {
-      const debit = t.amount < 0 ? Math.abs(t.amount) : 0;
-      const credit = t.amount > 0 ? t.amount : 0;
-      balance += credit - debit;
-      return { ...t, debit, credit, balance };
-    });
-  }, []);
+  const allRows = useMemo(
+    () =>
+      financeSummary.transactions.reduce<
+        ((typeof financeSummary.transactions)[number] & { debit: number; credit: number; balance: number })[]
+      >((acc, t) => {
+        const debit = t.amount < 0 ? Math.abs(t.amount) : 0;
+        const credit = t.amount > 0 ? t.amount : 0;
+        const balance = (acc.at(-1)?.balance ?? 0) + credit - debit;
+        acc.push({ ...t, debit, credit, balance });
+        return acc;
+      }, []),
+    [],
+  );
 
   const rows = useMemo(
     () => (statusFilter === "All" ? allRows : allRows.filter((r) => r.status === statusFilter)),
