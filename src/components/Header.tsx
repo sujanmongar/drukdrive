@@ -37,8 +37,7 @@ const switchTarget: Record<Role, { role: Role; label: string; to: string; icon: 
 
 // Shared shell for the header's icon controls, so wishlist / notifications /
 // account all read as the same class of button.
-export const headerControl =
-  "flex items-center justify-center rounded-full text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)]";
+export const headerControl = "icon-btn";
 
 function WishlistButton({ compact = false }: { compact?: boolean }) {
   const { ids } = useWishlist();
@@ -96,7 +95,7 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Account menu"
-        className={`${headerControl} overflow-hidden ${compact ? "size-9" : "size-[42px]"}`}
+        className={`icon-btn icon-btn-filled overflow-hidden ${compact ? "size-9" : "size-[42px]"}`}
       >
         {isLoggedIn ? (
           <img src={currentUser.avatar} alt="" className="size-full rounded-full object-cover" />
@@ -108,7 +107,7 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
       {open && (
         <>
           <button aria-label="Close" className="fixed inset-0 z-40 cursor-default" onClick={() => setOpen(false)} />
-          <div className="animate-fade-up absolute right-0 top-full z-50 mt-2 max-h-[80svh] w-64 overflow-y-auto rounded-2xl border border-[color:var(--color-border)] bg-white py-1.5 shadow-[0px_10px_30px_rgba(0,0,0,0.14)]">
+          <div className="animate-popover absolute right-0 top-full z-50 mt-2 max-h-[80svh] w-64 overflow-y-auto rounded-2xl border border-[color:var(--color-border)] bg-white py-1.5 shadow-[0px_10px_30px_rgba(0,0,0,0.14)]">
             {isLoggedIn ? (
               <>
                 <div className="flex items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3">

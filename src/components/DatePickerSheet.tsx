@@ -69,7 +69,7 @@ function MonthGrid({
               type="button"
               disabled={past}
               onClick={() => onPick(date)}
-              className={`mx-auto flex size-9 items-center justify-center rounded-full text-sm transition-colors ${
+              className={`mx-auto flex size-9 items-center justify-center rounded-full text-sm transition-all duration-150 active:scale-90 ${
                 past
                   ? "text-neutral-300"
                   : isPickup || isDropoff
@@ -245,9 +245,9 @@ export default function DatePickerSheet({
       <button
         aria-label="Close"
         onClick={onClose}
-        className="fixed inset-0 z-[59] cursor-default bg-black/40"
+        className="animate-scrim-in fixed inset-0 z-[59] cursor-default bg-black/40"
       />
-      <div className="fixed inset-0 z-[60] flex flex-col bg-white">
+      <div className="animate-sheet-up fixed inset-0 z-[60] flex flex-col bg-white">
         <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] p-4">
           <button type="button" onClick={onClose} aria-label="Close">
             <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />

@@ -189,6 +189,62 @@ body {
   animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* One treatment for every icon-only button in the app — header controls,
+   carousel arrows, card hearts, sheet close buttons. Size is set per use;
+   everything else lives here so they stay in step. */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: var(--color-ink);
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.icon-btn:hover {
+  background-color: var(--color-surface-soft);
+}
+.icon-btn:active {
+  transform: scale(0.92);
+}
+/* Variant that keeps a resting fill — the avatar slot, and controls sitting
+   on busy bars where a bare glyph reads as decoration. */
+.icon-btn-filled {
+  background-color: #e4e8ec;
+}
+.icon-btn-filled:hover {
+  background-color: #d7dde3;
+}
+
+/* Popovers and dropdowns settle in rather than appearing. */
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-popover {
+  /* No fill mode: the end state is the element's natural state, and a
+     lingering transform would become a containing block for any fixed
+     descendant. */
+  animation: popover-in 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: top;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-popover {
+    animation: none;
+  }
+  .icon-btn:active {
+    transform: none;
+  }
+}
+
 /* Interaction feel, in the spirit of the reference sites: quick, eased
    responses rather than long linear ones. Pressable surfaces settle back
    fast so the UI feels responsive under the finger. */

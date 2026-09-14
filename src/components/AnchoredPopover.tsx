@@ -54,7 +54,7 @@ export default function AnchoredPopover({
   return createPortal(
     <div
       style={style}
-      className="z-[60] flex flex-col overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white shadow-[0px_8px_24px_rgba(0,0,0,0.14)]"
+      className="animate-popover z-[60] flex flex-col overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white shadow-[0px_12px_32px_rgba(0,0,0,0.16)]"
     >
       {children}
     </div>,

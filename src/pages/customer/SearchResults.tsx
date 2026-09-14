@@ -451,7 +451,7 @@ export default function SearchResults() {
                       {sortOpen && (
                         <>
                           <button aria-label="Close" className="fixed inset-0 z-10 cursor-default" onClick={() => setSortOpen(false)} />
-                          <div className="absolute right-0 z-20 mt-2 w-52 rounded-xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
+                          <div className="animate-popover absolute right-0 z-20 mt-2 w-52 rounded-2xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-[0px_12px_32px_rgba(0,0,0,0.14)]">
                             {sortOptions.map((opt) => (
                               <button
                                 key={opt.value}

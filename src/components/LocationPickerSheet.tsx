@@ -33,7 +33,7 @@ export default function LocationPickerSheet({
 
   const content = (
     <>
-      <div className="flex items-center gap-4 border-b border-[color:var(--color-border)] p-4 md:p-3">
+      <div className="flex items-center gap-3 border-b border-[color:var(--color-border)] p-4 md:p-3">
         <button type="button" onClick={onClose} aria-label="Close" className="md:hidden">
           <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />
         </button>
@@ -43,7 +43,7 @@ export default function LocationPickerSheet({
           placeholder={label}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full bg-transparent text-base text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] md:text-sm"
+          className="peer w-full bg-transparent text-base text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] md:text-sm"
         />
       </div>
       <div className="flex-1 overflow-y-auto">
@@ -55,7 +55,7 @@ export default function LocationPickerSheet({
               key={`${loc.name}-${loc.city}`}
               type="button"
               onClick={() => onSelect(`${loc.city}, ${loc.name}`)}
-              className="flex w-full items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3.5 text-left hover:bg-neutral-50 md:px-3 md:py-2.5"
+              className="flex w-full items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3.5 text-left transition-colors duration-150 hover:bg-[color:var(--color-surface-soft)] md:px-3 md:py-2.5"
             >
               <Icon name="location" size={18} className="shrink-0 -rotate-45 text-[color:var(--color-ink)]" />
               <span>
@@ -82,8 +82,8 @@ export default function LocationPickerSheet({
 
   return createPortal(
     <>
-      <button aria-label="Close" onClick={onClose} className="fixed inset-0 z-[59] cursor-default bg-black/40" />
-      <div className="fixed inset-0 z-[60] flex flex-col bg-white">{content}</div>
+      <button aria-label="Close" onClick={onClose} className="animate-scrim-in fixed inset-0 z-[59] cursor-default bg-black/40" />
+      <div className="animate-sheet-up fixed inset-0 z-[60] flex flex-col bg-white">{content}</div>
     </>,
     document.body,
   );

@@ -25,7 +25,7 @@ export default function NotificationsDropdown({
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Notifications"
-        className="relative flex size-[42px] items-center justify-center rounded-full text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
+        className="icon-btn relative size-[42px]"
       >
         <Icon name="bell" size={20} />
         {unreadCount > 0 && (
@@ -38,7 +38,7 @@ export default function NotificationsDropdown({
       {open && (
         <>
           <button aria-label="Close" className="fixed inset-0 z-40 cursor-default" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
+          <div className="animate-popover absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
             <div className="border-b border-[color:var(--color-border)] px-4 py-3">
               <p className="text-sm font-bold text-[color:var(--color-ink)]">Notifications</p>
             </div>

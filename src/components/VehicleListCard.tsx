@@ -49,7 +49,7 @@ export default function VehicleListCard({
             e.stopPropagation();
             toggle(vehicle.id);
           }}
-          className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-white/90 transition-transform active:scale-90"
+          className="icon-btn absolute right-2 top-2 size-9 bg-white/90 backdrop-blur-sm hover:!bg-white"
         >
           <Icon
             name="heart"
