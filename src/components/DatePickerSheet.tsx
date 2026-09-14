@@ -2,13 +2,13 @@ import { useMemo, useState, type RefObject } from "react";
 import Icon from "./Icon";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import AnchoredPopover from "./AnchoredPopover";
+import { TIME_OPTIONS } from "../lib/timeOptions";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
 ];
-const TIME_OPTIONS = ["06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
 
 function daysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate();

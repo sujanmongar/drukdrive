@@ -5,6 +5,7 @@ import Header from "./Header";
 import CurrencySwitcher from "./CurrencySwitcher";
 import LocationPickerSheet from "./LocationPickerSheet";
 import DatePickerSheet from "./DatePickerSheet";
+import TimePickerSheet from "./TimePickerSheet";
 import type { EditSearchValue } from "./EditSearchModal";
 
 function formatDate(d: Date) {
@@ -28,11 +29,12 @@ export default function SearchSummaryHeader({
 }) {
   const navigate = useNavigate();
   const [draft, setDraft] = useState<EditSearchValue>(search);
-  const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
+  const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | "pickupTime" | null>(null);
 
   const pickupRef = useRef<HTMLDivElement>(null);
   const dropoffRef = useRef<HTMLDivElement>(null);
   const pickupDateRef = useRef<HTMLDivElement>(null);
+  const pickupTimeRef = useRef<HTMLDivElement>(null);
 
   const isReturn = draft.tripMode === "return";
   const dateLabel = formatDate(search.pickupDate);
@@ -116,8 +118,8 @@ export default function SearchSummaryHeader({
             {fieldBox(pickupDateRef, "calendar", "Pick up date", formatDate(draft.pickupDate), () =>
               setActiveField(activeField === "date" ? null : "date"),
             )}
-            {fieldBox(pickupDateRef, "clock", "Pick up time", draft.pickupTime, () =>
-              setActiveField(activeField === "date" ? null : "date"),
+            {fieldBox(pickupTimeRef, "clock", "Pick up time", draft.pickupTime, () =>
+              setActiveField(activeField === "pickupTime" ? null : "pickupTime"),
             )}
             <button
               type="button"
@@ -167,6 +169,18 @@ export default function SearchSummaryHeader({
                   dropoffDate: dropoff ?? s.dropoffDate,
                   dropoffTime: dropoffTime ?? s.dropoffTime,
                 }));
+                setActiveField(null);
+              }}
+              onClose={() => setActiveField(null)}
+            />
+          )}
+          {activeField === "pickupTime" && (
+            <TimePickerSheet
+              label="Pick up time"
+              value={draft.pickupTime}
+              anchorRef={pickupTimeRef}
+              onSelect={(t) => {
+                setDraft((s) => ({ ...s, pickupTime: t }));
                 setActiveField(null);
               }}
               onClose={() => setActiveField(null)}

@@ -8,6 +8,7 @@ import Icon from "../../components/Icon";
 import HeroBlobs from "../../components/HeroBlobs";
 import LocationPickerSheet from "../../components/LocationPickerSheet";
 import DatePickerSheet from "../../components/DatePickerSheet";
+import TimePickerSheet from "../../components/TimePickerSheet";
 import { routes } from "../../lib/routes";
 import type { BookingType } from "../../lib/routes";
 import { vehicles, recentSearches, popularCarTypes, faqs } from "../../data/mockData";
@@ -44,8 +45,12 @@ export default function Home() {
   const pickupAnchorRef = useRef<HTMLDivElement>(null);
   const dropoffAnchorRef = useRef<HTMLDivElement>(null);
   const dateAnchorRef = useRef<HTMLDivElement>(null);
+  const pickupTimeAnchorRef = useRef<HTMLButtonElement>(null);
+  const dropoffTimeAnchorRef = useRef<HTMLButtonElement>(null);
 
-  const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
+  const [activeField, setActiveField] = useState<
+    "pickup" | "dropoff" | "date" | "pickupTime" | "dropoffTime" | null
+  >(null);
 
   // Each booking type has a genuinely different field set, matching the
   // provided design: Daily Rides is the only tab with a One Way/Return
@@ -254,8 +259,9 @@ export default function Home() {
                     </button>
                     <div className="w-px bg-[color:var(--color-border)]" />
                     <button
+                      ref={pickupTimeAnchorRef}
                       type="button"
-                      onClick={() => setActiveField(activeField === "date" ? null : "date")}
+                      onClick={() => setActiveField(activeField === "pickupTime" ? null : "pickupTime")}
                       className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
                     >
                       <Icon name="clock" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
@@ -283,15 +289,27 @@ export default function Home() {
                       onClose={() => setActiveField(null)}
                     />
                   )}
+                  {activeField === "pickupTime" && (
+                    <TimePickerSheet
+                      label={firstTimeLabel}
+                      value={pickupTime}
+                      anchorRef={pickupTimeAnchorRef}
+                      onSelect={(t) => {
+                        setPickupTime(t);
+                        setActiveField(null);
+                      }}
+                      onClose={() => setActiveField(null)}
+                    />
+                  )}
                 </div>
 
                 {showSecondDateBox && (
-                  <button
-                    type="button"
-                    onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                    className="flex overflow-hidden rounded-xl border border-[color:var(--color-border)] text-left"
-                  >
-                    <span className="flex h-14 flex-1 items-center gap-2 px-3 transition-colors hover:bg-neutral-50">
+                  <div className="flex overflow-hidden rounded-xl border border-[color:var(--color-border)]">
+                    <button
+                      type="button"
+                      onClick={() => setActiveField(activeField === "date" ? null : "date")}
+                      className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
+                    >
                       <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                       <span className="flex flex-col gap-1">
                         <span className="text-[11px] text-[color:var(--color-ink-soft)]">{secondDateLabel}</span>
@@ -301,16 +319,33 @@ export default function Home() {
                             : "Select date"}
                         </span>
                       </span>
-                    </span>
-                    <span className="w-px bg-[color:var(--color-border)]" />
-                    <span className="flex h-14 flex-1 items-center gap-2 px-3 transition-colors hover:bg-neutral-50">
+                    </button>
+                    <div className="w-px bg-[color:var(--color-border)]" />
+                    <button
+                      ref={dropoffTimeAnchorRef}
+                      type="button"
+                      onClick={() => setActiveField(activeField === "dropoffTime" ? null : "dropoffTime")}
+                      className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
+                    >
                       <Icon name="clock" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                       <span className="flex flex-col gap-1">
                         <span className="text-[11px] text-[color:var(--color-ink-soft)]">{secondTimeLabel}</span>
                         <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{dropoffTime}</span>
                       </span>
-                    </span>
-                  </button>
+                    </button>
+                    {activeField === "dropoffTime" && (
+                      <TimePickerSheet
+                        label={secondTimeLabel}
+                        value={dropoffTime}
+                        anchorRef={dropoffTimeAnchorRef}
+                        onSelect={(t) => {
+                          setDropoffTime(t);
+                          setActiveField(null);
+                        }}
+                        onClose={() => setActiveField(null)}
+                      />
+                    )}
+                  </div>
                 )}
               </div>
 
