@@ -5,7 +5,9 @@ import Header from "./Header";
 import CurrencySwitcher from "./CurrencySwitcher";
 import LocationPickerSheet from "./LocationPickerSheet";
 import DatePickerSheet from "./DatePickerSheet";
+import BookingTypeTabs from "./BookingTypeTabs";
 import type { EditSearchValue } from "./EditSearchModal";
+import { bookingTypeLabels } from "../lib/routes";
 
 function formatDate(d: Date) {
   return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
@@ -34,11 +36,22 @@ export default function SearchSummaryHeader({
   const dropoffRef = useRef<HTMLDivElement>(null);
   const pickupDateRef = useRef<HTMLDivElement>(null);
 
-  const isReturn = draft.tripMode === "return";
+  const isSingleLocation = draft.type === "outstation" || draft.type === "self-drive";
+  const showSecondDate =
+    draft.type === "rental" || draft.type === "self-drive" || (draft.type === "daily" && draft.tripMode === "return");
   const dateLabel = formatDate(search.pickupDate);
 
   function handleUpdate() {
     onSearch(draft);
+    setActiveField(null);
+  }
+
+  // Changing the booking type re-runs the search straight away — the field
+  // set changes with it, so there is nothing else to confirm first.
+  function handleTypeChange(type: EditSearchValue["type"]) {
+    const next = { ...draft, type };
+    setDraft(next);
+    onSearch(next);
     setActiveField(null);
   }
 
@@ -85,7 +98,7 @@ export default function SearchSummaryHeader({
               {search.pickup} <span className="text-[color:var(--color-muted)]">&ndash;</span> {search.dropoff}
             </p>
             <p className="truncate text-xs text-[color:var(--color-muted)]">
-              {dateLabel}, {search.pickupTime}
+              {bookingTypeLabels[search.type]} &middot; {dateLabel}, {search.pickupTime}
             </p>
           </div>
 
@@ -106,13 +119,17 @@ export default function SearchSummaryHeader({
       <div className="hidden lg:block">
         <Header />
         <div className="border-b border-[color:var(--color-border)] bg-white py-4">
+          <div className="mx-auto mb-3 max-w-[1440px] px-[60px]">
+            <BookingTypeTabs value={draft.type} onChange={handleTypeChange} />
+          </div>
           <div className="mx-auto flex max-w-[1440px] items-center justify-center gap-3 px-[60px]">
-            {fieldBox(pickupRef, "location", "Pick up location", draft.pickup, () =>
+            {fieldBox(pickupRef, "location", isSingleLocation ? "Location" : "Pick up location", draft.pickup, () =>
               setActiveField(activeField === "pickup" ? null : "pickup"),
             )}
-            {fieldBox(dropoffRef, "location", "Drop off location", draft.dropoff, () =>
-              setActiveField(activeField === "dropoff" ? null : "dropoff"),
-            )}
+            {!isSingleLocation &&
+              fieldBox(dropoffRef, "location", "Drop off location", draft.dropoff, () =>
+                setActiveField(activeField === "dropoff" ? null : "dropoff"),
+              )}
             {fieldBox(pickupDateRef, "calendar", "Pickup date", `${formatDate(draft.pickupDate)} ${draft.pickupTime}`, () =>
               setActiveField(activeField === "date" ? null : "date"),
             )}
@@ -150,7 +167,7 @@ export default function SearchSummaryHeader({
           )}
           {activeField === "date" && (
             <DatePickerSheet
-              mode={isReturn ? "range" : "single"}
+              mode={showSecondDate ? "range" : "single"}
               anchorRef={pickupDateRef}
               initialPickup={draft.pickupDate}
               initialDropoff={draft.dropoffDate ?? undefined}

@@ -244,12 +244,12 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                      className="flex min-h-14 flex-1 items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-neutral-50"
+                      className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
                     >
                       <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                       <span className="flex min-w-0 flex-col gap-1">
                         <span className="text-[11px] text-[color:var(--color-ink-soft)]">{firstPointLabel}</span>
-                        <span className="text-sm font-bold leading-snug text-[color:var(--color-ink-87)]">
+                        <span className="truncate text-sm font-bold text-[color:var(--color-ink-87)]">
                           {formatDateLabel(pickupDate)}, {pickupTime}
                         </span>
                       </span>
@@ -260,12 +260,12 @@ export default function Home() {
                         <button
                           type="button"
                           onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                          className="flex min-h-14 flex-1 items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-neutral-50"
+                          className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
                         >
                           <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                           <span className="flex min-w-0 flex-col gap-1">
                             <span className="text-[11px] text-[color:var(--color-ink-soft)]">{secondPointLabel}</span>
-                            <span className="text-sm font-bold leading-snug text-[color:var(--color-ink-87)]">
+                            <span className="truncate text-sm font-bold text-[color:var(--color-ink-87)]">
                               {dropoffDate ? `${formatDateLabel(dropoffDate)}, ${dropoffTime}` : "Select date"}
                             </span>
                           </span>

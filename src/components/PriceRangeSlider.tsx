@@ -1,5 +1,5 @@
-// Kayak-style dual-handle range slider: a ticked track with two draggable
-// circular handles for picking a [min, max] window.
+// Dual-handle range slider for picking a [min, max] window — the selected
+// span is highlighted between the two draggable handles.
 export default function PriceRangeSlider({
   min,
   max,
@@ -14,16 +14,17 @@ export default function PriceRangeSlider({
   formatLabel: (n: number) => string;
 }) {
   const [lo, hi] = value;
+  const span = max - min || 1;
+  const loPct = ((lo - min) / span) * 100;
+  const hiPct = ((hi - min) / span) * 100;
 
   return (
     <div className="w-full">
       <div className="relative flex h-6 items-center">
+        <div className="pointer-events-none absolute inset-x-0 h-1.5 rounded-full bg-[color:var(--color-border)]" />
         <div
-          className="pointer-events-none absolute inset-x-0 h-2.5 rounded-full"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(90deg, var(--color-ink) 0px, var(--color-ink) 2px, transparent 2px, transparent 6px)",
-          }}
+          className="pointer-events-none absolute h-1.5 rounded-full bg-[color:var(--color-ink)]"
+          style={{ left: `${loPct}%`, right: `${100 - hiPct}%` }}
         />
         <input
           type="range"

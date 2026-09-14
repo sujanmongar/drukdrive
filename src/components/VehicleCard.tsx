@@ -58,18 +58,18 @@ export default function VehicleCard({
       </div>
       <div className="p-4">
         <div className="mb-1.5 flex flex-wrap items-center gap-2">
-          <p className="text-base font-bold text-[color:var(--color-ink)]">{vehicle.name}</p>
+          <p className="t-h4 text-[color:var(--color-ink)]">{vehicle.name}</p>
           <span className="rounded-full bg-[color:var(--color-info-bg)] px-2 py-0.5 text-[9px] font-semibold uppercase text-[color:var(--color-info-text)]">
             {vehicle.category}
           </span>
         </div>
-        <div className="mb-2 flex items-center gap-1.5 text-xs text-[color:var(--color-ink)]">
+        <div className="t-caption mb-2 flex items-center gap-1.5 text-[color:var(--color-ink)]">
           <Icon name="location" size={14} />
           {vehicle.location}
           <span className="text-[color:var(--color-muted)]">•</span>
           {vehicle.type}
         </div>
-        <div className="mb-3 flex items-center gap-3 text-xs text-[color:var(--color-ink)]">
+        <div className="t-caption mb-3 flex items-center gap-3 text-[color:var(--color-ink)]">
           <span className="flex items-center gap-1">
             <Icon name="seat" size={15} />
             {vehicle.seats} Seats
@@ -87,15 +87,15 @@ export default function VehicleCard({
           <div className="min-w-0 flex-1">
             {vehicle.strikePrice && (
               <div className="flex items-baseline gap-1.5">
-                <span className="text-xs font-semibold text-red-500">{discountPct}% off</span>
-                <span className="text-xs text-[color:var(--color-muted)] line-through">{format(vehicle.strikePrice)}</span>
+                <span className="t-caption font-semibold text-red-500">{discountPct}% off</span>
+                <span className="t-caption text-[color:var(--color-muted)] line-through">{format(vehicle.strikePrice)}</span>
               </div>
             )}
             <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
               <span className="text-xl font-extrabold text-[color:var(--color-ink)]">{format(vehicle.pricePerDay)}</span>
-              <span className="text-xs text-[color:var(--color-ink)]">/day</span>
+              <span className="t-caption text-[color:var(--color-ink)]">/day</span>
             </div>
-            <p className="text-[10px] text-[color:var(--color-muted)]">incl. taxes & fees</p>
+            <p className="t-label text-[color:var(--color-muted)]">incl. taxes & fees</p>
           </div>
           <Link
             to={detailsHref}

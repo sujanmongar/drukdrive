@@ -15,6 +15,9 @@ import { formatTripDate } from "../../lib/formatTripDate";
 import { useCurrency } from "../../lib/currency";
 import { cityOf } from "../../lib/tripDuration";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import type { BookingType } from "../../lib/routes";
+
+const bookingTypes: BookingType[] = ["daily", "outstation", "rental", "self-drive"];
 
 const DEFAULT_PICKUP = "Thimphu, Clock Tower Square";
 const DEFAULT_DROPOFF = "Paro, Airport";
@@ -104,7 +107,9 @@ export default function SearchResults() {
   const [search, setSearch] = useState<EditSearchValue>(() => {
     const pickupDateParam = initialParams.get("pickupDate");
     const dropoffDateParam = initialParams.get("dropoffDate");
+    const typeParam = initialParams.get("type");
     return {
+      type: bookingTypes.includes(typeParam as BookingType) ? (typeParam as BookingType) : "daily",
       tripMode: initialParams.get("tripMode") === "return" ? "return" : "one-way",
       pickup: initialParams.get("pickup") || DEFAULT_PICKUP,
       dropoff: initialParams.get("dropoff") || DEFAULT_DROPOFF,
@@ -364,7 +369,7 @@ export default function SearchResults() {
           >
             <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-base font-bold text-[color:var(--color-ink)]">Filters</h2>
+                <h2 className="t-h3 text-[color:var(--color-ink)]">Filters</h2>
                 {activeFilterCount > 0 && (
                   <button type="button" onClick={clearAllFilters} className="text-xs font-semibold text-[color:var(--color-link)]">
                     Clear all
@@ -391,7 +396,7 @@ export default function SearchResults() {
                 {/* Mobile: title on its own row, then the sticky Sort + Filter
                     row. Both sit directly in the (tall) results column — a
                     short wrapper would cap how far the sticky row can travel. */}
-                <h1 className="mb-4 text-lg font-bold text-[color:var(--color-ink)] lg:hidden">
+                <h1 className="t-h2 mb-4 text-[color:var(--color-ink)] lg:hidden">
                   Found {results.length} cars
                 </h1>
                 <div
@@ -429,7 +434,7 @@ export default function SearchResults() {
                   className="sticky z-20 mb-4 hidden items-center justify-between gap-3 border-b border-[color:var(--color-border)] bg-white py-3 lg:flex"
                   style={{ top: headerHeight }}
                 >
-                  <h1 className="text-lg font-bold text-[color:var(--color-ink)]">
+                  <h1 className="t-h2 text-[color:var(--color-ink)]">
                     Found {results.length} cabs from {cityOf(search.pickup)} to {cityOf(search.dropoff)}
                   </h1>
                   <div className="flex items-center gap-4">
@@ -512,40 +517,51 @@ export default function SearchResults() {
 
       {/* Mobile / tablet filter sheet */}
       {filterOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden">
-          <div className="flex items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
-            <button type="button" onClick={() => setFilterOpen(false)} aria-label="Close filters">
-              <Icon name="close" size={20} className="text-[color:var(--color-ink)]" />
-            </button>
-            <h2 className="text-base font-bold text-[color:var(--color-ink)]">Filters</h2>
-            {activeFilterCount > 0 ? (
-              <button type="button" onClick={clearAllFilters} className="text-xs font-semibold text-[color:var(--color-link)]">
-                Clear all
+        <div className="fixed inset-0 z-50 flex items-end justify-center lg:hidden">
+          <button
+            aria-label="Close filters"
+            className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
+            onClick={() => setFilterOpen(false)}
+          />
+          <div className="animate-sheet-up relative flex h-[88svh] w-full flex-col overflow-hidden rounded-t-2xl bg-white">
+            <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
+              <button type="button" onClick={() => setFilterOpen(false)} aria-label="Close filters">
+                <Icon name="close" size={20} className="text-[color:var(--color-ink)]" />
               </button>
-            ) : (
-              <span className="w-[52px]" />
-            )}
-          </div>
-          <div className="flex-1 overflow-y-auto px-5 py-5">{filterPanel}</div>
-          <div className="border-t border-[color:var(--color-border)] p-4">
-            <button
-              type="button"
-              onClick={() => setFilterOpen(false)}
-              className="w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-sm font-bold text-white hover:bg-black"
-            >
-              See {results.length} cars
-            </button>
+              <h2 className="t-h3 text-[color:var(--color-ink)]">Filters</h2>
+              {activeFilterCount > 0 ? (
+                <button type="button" onClick={clearAllFilters} className="text-xs font-semibold text-[color:var(--color-link)]">
+                  Clear all
+                </button>
+              ) : (
+                <span className="w-[52px]" />
+              )}
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">{filterPanel}</div>
+            <div className="shrink-0 border-t border-[color:var(--color-border)] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+              <button
+                type="button"
+                onClick={() => setFilterOpen(false)}
+                className="w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-sm font-bold text-white hover:bg-black"
+              >
+                See {results.length} cars
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Mobile sort bottom sheet */}
       {sortOpen && (
-        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/40 lg:hidden">
-          <button aria-label="Close" className="absolute inset-0 cursor-default" onClick={() => setSortOpen(false)} />
-          <div className="relative w-full rounded-t-2xl bg-white pb-[env(safe-area-inset-bottom)]">
+        <div className="fixed inset-0 z-[60] flex items-end justify-center lg:hidden">
+          <button
+            aria-label="Close"
+            className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
+            onClick={() => setSortOpen(false)}
+          />
+          <div className="animate-sheet-up relative w-full rounded-t-2xl bg-white pb-[env(safe-area-inset-bottom)]">
             <div className="flex items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
-              <h2 className="text-base font-bold text-[color:var(--color-ink)]">Sort by</h2>
+              <h2 className="t-h3 text-[color:var(--color-ink)]">Sort by</h2>
               <button type="button" onClick={() => setSortOpen(false)} aria-label="Close sort options">
                 <Icon name="close" size={20} className="text-[color:var(--color-ink)]" />
               </button>

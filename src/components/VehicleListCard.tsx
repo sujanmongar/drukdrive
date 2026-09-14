@@ -61,13 +61,13 @@ export default function VehicleListCard({
       <div className="flex min-w-0 flex-1 flex-col gap-3 p-3 sm:gap-4 sm:p-5 lg:flex-row lg:items-center lg:gap-6">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <p className="text-sm font-bold text-[color:var(--color-ink)] sm:text-base lg:text-lg">{vehicle.name}</p>
+            <p className="t-h4 text-[color:var(--color-ink)]">{vehicle.name}</p>
             <span className="rounded-full bg-[color:var(--color-info-bg)] px-2 py-0.5 text-[9px] font-semibold uppercase text-[color:var(--color-info-text)]">
               {vehicle.category}
             </span>
           </div>
 
-          <div className="mt-2 flex min-w-0 items-center gap-1.5 text-xs text-[color:var(--color-ink)]">
+          <div className="t-caption mt-2 flex min-w-0 items-center gap-1.5 text-[color:var(--color-ink)]">
             <Icon name="location" size={14} className="shrink-0" />
             <span className="truncate">
               {vehicle.location}
@@ -76,16 +76,16 @@ export default function VehicleListCard({
             </span>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center gap-1.5 text-[11px] text-[color:var(--color-ink)] sm:gap-2 sm:text-xs">
-            <span className="flex items-center gap-1 rounded-lg bg-neutral-50 px-2 py-1 sm:gap-1.5 sm:px-2.5 sm:py-1.5">
-              <Icon name="seat" size={14} />
+          <div className="t-caption mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[color:var(--color-ink)]">
+            <span className="flex items-center gap-1">
+              <Icon name="seat" size={15} />
               {vehicle.seats} Seats
             </span>
-            <span className="flex items-center gap-1 rounded-lg bg-neutral-50 px-2 py-1 sm:gap-1.5 sm:px-2.5 sm:py-1.5">
-              <Icon name="fuel" size={14} />
+            <span className="flex items-center gap-1">
+              <Icon name="fuel" size={15} />
               {vehicle.fuel}
             </span>
-            <span className="flex items-center gap-1 rounded-lg bg-neutral-50 px-2 py-1 sm:gap-1.5 sm:px-2.5 sm:py-1.5">
+            <span className="flex items-center gap-1">
               <Icon name="star" size={13} className="fill-current text-amber-400" />
               {vehicle.rating} ({vehicle.reviewCount})
             </span>
@@ -96,17 +96,17 @@ export default function VehicleListCard({
           <div className="min-w-0 lg:text-right">
             {vehicle.strikePrice && (
               <div className="flex items-baseline gap-1.5 whitespace-nowrap lg:justify-end">
-                <span className="text-xs font-semibold text-red-500">{discountPct}% off</span>
-                <span className="text-xs text-[color:var(--color-muted)] line-through">{format(vehicle.strikePrice)}</span>
+                <span className="t-caption font-semibold text-red-500">{discountPct}% off</span>
+                <span className="t-caption text-[color:var(--color-muted)] line-through">{format(vehicle.strikePrice)}</span>
               </div>
             )}
             <div className="flex items-baseline gap-x-1.5 whitespace-nowrap lg:justify-end">
-              <span className="text-lg font-extrabold text-[color:var(--color-ink)] sm:text-xl lg:text-2xl">
+              <span className="text-xl font-extrabold text-[color:var(--color-ink)] lg:text-2xl">
                 {format(vehicle.pricePerDay)}
               </span>
-              <span className="text-xs text-[color:var(--color-ink)]">/day</span>
+              <span className="t-caption text-[color:var(--color-ink)]">/day</span>
             </div>
-            <p className="mt-0.5 whitespace-nowrap text-[10px] text-[color:var(--color-muted)]">incl. taxes &amp; fees</p>
+            <p className="t-label mt-0.5 whitespace-nowrap text-[color:var(--color-muted)]">incl. taxes &amp; fees</p>
           </div>
           <Link
             to={detailsHref}

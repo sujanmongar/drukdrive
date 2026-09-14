@@ -32,6 +32,100 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ---------------------------------------------------------------------------
+   Type scale.
+
+   One semantic class per role, each stepping up at the md breakpoint so
+   desktop reads at a comfortable size without inflating mobile. Use these
+   instead of raw text-* utilities for anything that carries meaning:
+
+     t-h1 … t-h4   headings, largest to smallest
+     t-body-lg     lead paragraphs / prominent body copy
+     t-body        default body copy
+     t-body-sm     dense body copy (card meta, table cells)
+     t-caption     secondary/muted asides, fine print
+     t-label       form field labels and overlines
+--------------------------------------------------------------------------- */
+.t-h1 {
+  font-size: 1.75rem; /* 28px */
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.t-h2 {
+  font-size: 1.375rem; /* 22px */
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.t-h3 {
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.t-h4 {
+  font-size: 1rem; /* 16px */
+  line-height: 1.35;
+  font-weight: 700;
+}
+.t-body-lg {
+  font-size: 0.9375rem; /* 15px */
+  line-height: 1.55;
+}
+.t-body {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.55;
+}
+.t-body-sm {
+  font-size: 0.8125rem; /* 13px */
+  line-height: 1.5;
+}
+.t-caption {
+  font-size: 0.75rem; /* 12px */
+  line-height: 1.45;
+}
+.t-label {
+  font-size: 0.6875rem; /* 11px */
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .t-h1 {
+    font-size: 2.5rem; /* 40px */
+    line-height: 1.15;
+  }
+  .t-h2 {
+    font-size: 1.875rem; /* 30px */
+    line-height: 1.2;
+  }
+  .t-h3 {
+    font-size: 1.375rem; /* 22px */
+  }
+  .t-h4 {
+    font-size: 1.125rem; /* 18px */
+  }
+  .t-body-lg {
+    font-size: 1.0625rem; /* 17px */
+    line-height: 1.6;
+  }
+  .t-body {
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.6;
+  }
+  .t-body-sm {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.55;
+  }
+  .t-caption {
+    font-size: 0.8125rem; /* 13px */
+  }
+  .t-label {
+    font-size: 0.75rem; /* 12px */
+  }
+}
+
 body {
   margin: 0;
   background: #fff;
@@ -56,6 +150,37 @@ body {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Bottom sheets (filters, sort) slide up from the bottom edge; the scrim
+   behind them fades in over the same beat. */
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-sheet-up {
+  animation: sheet-up 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.animate-scrim-in {
+  animation: scrim-in 0.28s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-sheet-up,
+  .animate-scrim-in {
+    animation: none;
+  }
 }
 
 /* Dual-handle range slider: two overlapping native <input type="range">

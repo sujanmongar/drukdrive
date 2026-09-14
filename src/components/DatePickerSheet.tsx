@@ -156,96 +156,84 @@ export default function DatePickerSheet({
     });
   }
 
-  const content = (
-    <>
-      <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] p-4 md:p-3">
-        <button type="button" onClick={onClose} aria-label="Close" className="md:hidden">
-          <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />
-        </button>
-        <p className="text-sm font-semibold text-[color:var(--color-ink)]">Select {mode === "range" ? "dates" : "a date"}</p>
-        <span className="w-[22px] md:hidden" />
-      </div>
+  const title = <p className="text-sm font-semibold text-[color:var(--color-ink)]">Select {mode === "range" ? "dates" : "a date"}</p>;
 
-      <div className="grid shrink-0 grid-cols-7 gap-y-2 border-b border-[color:var(--color-border)] px-4 py-3 text-center text-xs font-semibold text-[color:var(--color-muted)] md:px-3 md:py-2">
-        {WEEKDAYS.map((w) => (
-          <span key={w}>{w}</span>
-        ))}
-      </div>
-
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-3 md:py-3">
-        <div className="flex flex-col gap-8">
-          {months.map(({ year, month }) => (
-            <MonthGrid
-              key={`${year}-${month}`}
-              year={year}
-              month={month}
-              pickupDate={pickupDate}
-              dropoffDate={dropoffDate}
-              onPick={handlePick}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="shrink-0 border-t border-[color:var(--color-border)] p-4">
-        <div className={`mb-4 flex ${mode === "range" ? "divide-x divide-[color:var(--color-border)]" : ""}`}>
-          <div className="flex-1 pr-3">
-            <p className="text-xs text-[color:var(--color-muted)]">{pickupLabel}</p>
-            <p className="text-sm font-bold text-[color:var(--color-ink)]">{pickupDate ? formatShort(pickupDate) : "Select date"}</p>
-            <label className="mt-1.5 inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-[color:var(--color-success-bg)] px-2 py-1">
-              <Icon name="clock" size={12} className="shrink-0 text-[color:var(--color-success)]" />
-              <select
-                value={pickupTime}
-                onChange={(e) => setPickupTime(e.target.value)}
-                className="appearance-none bg-transparent text-sm font-semibold text-[color:var(--color-success)] outline-none"
-              >
-                {TIME_OPTIONS.map((t) => (
-                  <option key={t}>{t}</option>
-                ))}
-              </select>
-              <Icon name="chevron-down" size={11} className="shrink-0 text-[color:var(--color-success)]" />
-            </label>
-          </div>
-          {mode === "range" && (
-            <div className="flex-1 pl-3">
-              <p className="text-xs text-[color:var(--color-muted)]">{dropoffLabel}</p>
-              <p className="text-sm font-bold text-[color:var(--color-ink)]">
-                {dropoffDate ? formatShort(dropoffDate) : "Select date"}
-              </p>
-              <label className="mt-1.5 inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-[color:var(--color-success-bg)] px-2 py-1">
-                <Icon name="clock" size={12} className="shrink-0 text-[color:var(--color-success)]" />
-                <select
-                  value={dropoffTime}
-                  onChange={(e) => setDropoffTime(e.target.value)}
-                  className="appearance-none bg-transparent text-sm font-semibold text-[color:var(--color-success)] outline-none"
-                >
-                  {TIME_OPTIONS.map((t) => (
-                    <option key={t}>{t}</option>
-                  ))}
-                </select>
-                <Icon name="chevron-down" size={11} className="shrink-0 text-[color:var(--color-success)]" />
-              </label>
-            </div>
-          )}
-        </div>
-        <button
-          type="button"
-          onClick={handleConfirm}
-          disabled={!pickupDate || (mode === "range" && !dropoffDate)}
-          className="w-full rounded-xl bg-[color:var(--color-ink)] py-4 text-base font-bold text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          Select
-        </button>
-      </div>
-    </>
+  const weekdayRow = (
+    <div className="grid shrink-0 grid-cols-7 gap-y-2 border-b border-[color:var(--color-border)] px-4 py-3 text-center text-xs font-semibold text-[color:var(--color-muted)]">
+      {WEEKDAYS.map((w) => (
+        <span key={w}>{w}</span>
+      ))}
+    </div>
   );
 
+  const monthList = (
+    <div className="flex flex-col gap-8">
+      {months.map(({ year, month }) => (
+        <MonthGrid
+          key={`${year}-${month}`}
+          year={year}
+          month={month}
+          pickupDate={pickupDate}
+          dropoffDate={dropoffDate}
+          onPick={handlePick}
+        />
+      ))}
+    </div>
+  );
+
+  function summaryBlock(label: string, date: Date | null, time: string, setTime: (v: string) => void) {
+    return (
+      <div>
+        <p className="text-xs text-[color:var(--color-muted)]">{label}</p>
+        <p className="text-sm font-bold text-[color:var(--color-ink)]">{date ? formatShort(date) : "Select date"}</p>
+        <label className="mt-1.5 inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-[color:var(--color-success-bg)] px-2 py-1">
+          <Icon name="clock" size={12} className="shrink-0 text-[color:var(--color-success)]" />
+          <select
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            className="appearance-none bg-transparent text-sm font-semibold text-[color:var(--color-success)] outline-none"
+          >
+            {TIME_OPTIONS.map((t) => (
+              <option key={t}>{t}</option>
+            ))}
+          </select>
+          <Icon name="chevron-down" size={11} className="shrink-0 text-[color:var(--color-success)]" />
+        </label>
+      </div>
+    );
+  }
+
+  const confirmButton = (
+    <button
+      type="button"
+      onClick={handleConfirm}
+      disabled={!pickupDate || (mode === "range" && !dropoffDate)}
+      className="w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-base font-bold text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      Select
+    </button>
+  );
+
+  // Desktop: calendar gets the full left column, with the pickup/drop-off
+  // time panel stacked down the right-hand side.
   if (isDesktop && anchorRef) {
     return (
       <>
         <button aria-label="Close" onClick={onClose} className="fixed inset-0 z-[59] cursor-default" />
-        <AnchoredPopover anchorRef={anchorRef} width={380} maxHeight={440}>
-          {content}
+        <AnchoredPopover anchorRef={anchorRef} width={mode === "range" ? 640 : 560} maxHeight={470}>
+          <div className="flex min-h-0 flex-1">
+            <div className="flex min-h-0 flex-1 flex-col">
+              <div className="shrink-0 border-b border-[color:var(--color-border)] px-4 py-3">{title}</div>
+              {weekdayRow}
+              <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">{monthList}</div>
+            </div>
+
+            <div className="flex w-[220px] shrink-0 flex-col gap-5 border-l border-[color:var(--color-border)] p-4">
+              {summaryBlock(pickupLabel, pickupDate, pickupTime, setPickupTime)}
+              {mode === "range" && summaryBlock(dropoffLabel, dropoffDate, dropoffTime, setDropoffTime)}
+              <div className="mt-auto">{confirmButton}</div>
+            </div>
+          </div>
         </AnchoredPopover>
       </>
     );
@@ -258,7 +246,26 @@ export default function DatePickerSheet({
         onClick={onClose}
         className="fixed inset-0 z-[59] cursor-default bg-black/40"
       />
-      <div className="fixed inset-x-0 top-0 z-[60] flex h-full flex-col bg-white">{content}</div>
+      <div className="fixed inset-x-0 top-0 z-[60] flex h-full flex-col bg-white">
+        <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] p-4">
+          <button type="button" onClick={onClose} aria-label="Close">
+            <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />
+          </button>
+          {title}
+          <span className="w-[22px]" />
+        </div>
+        {weekdayRow}
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">{monthList}</div>
+        <div className="shrink-0 border-t border-[color:var(--color-border)] p-4">
+          <div className={`mb-4 flex gap-6 ${mode === "range" ? "divide-x divide-[color:var(--color-border)]" : ""}`}>
+            <div className="flex-1">{summaryBlock(pickupLabel, pickupDate, pickupTime, setPickupTime)}</div>
+            {mode === "range" && (
+              <div className="flex-1 pl-6">{summaryBlock(dropoffLabel, dropoffDate, dropoffTime, setDropoffTime)}</div>
+            )}
+          </div>
+          {confirmButton}
+        </div>
+      </div>
     </>
   );
 }
