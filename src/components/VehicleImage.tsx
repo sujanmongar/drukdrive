@@ -26,17 +26,21 @@ export default function VehicleImage({
   className = "",
   fit = "contain",
   transparent = false,
+  padded = true,
 }: {
   vehicleId?: string;
   category?: string;
   className?: string;
-  /** "contain" (default) keeps the whole car visible with padding — right
-   * for cards/thumbnails. "cover" fills the frame edge-to-edge — right for
-   * fixed-aspect hero tiles like the "Popular car types" grid. */
+  /** "contain" (default) keeps the whole car visible — right for
+   * cards/thumbnails. "cover" fills the frame edge-to-edge, cropping —
+   * right for fixed-aspect hero tiles like the "Popular car types" grid. */
   fit?: "contain" | "cover";
   /** Drop the neutral backdrop — for cards whose own container already
    * supplies a background (or wants the card's own bg to show through). */
   transparent?: boolean;
+  /** Inset the (contain-fit) photo slightly so it doesn't touch the frame.
+   * Set false for edge-to-edge cards that want the photo flush to the box. */
+  padded?: boolean;
 }) {
   const photo = vehicleId && photoByVehicleId[vehicleId];
   if (photo) {
@@ -46,7 +50,11 @@ export default function VehicleImage({
           src={photo}
           alt={category ?? ""}
           loading="lazy"
-          className={fit === "cover" ? "h-full w-full object-cover" : "h-full w-full object-contain p-2"}
+          className={
+            fit === "cover"
+              ? "h-full w-full object-cover"
+              : `h-full w-full object-contain ${padded ? "p-2" : ""}`
+          }
         />
       </div>
     );
