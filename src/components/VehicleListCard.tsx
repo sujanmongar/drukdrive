@@ -6,8 +6,6 @@ import { routes } from "../lib/routes";
 import { useCurrency } from "../lib/currency";
 import { useWishlist } from "../lib/wishlist";
 
-const checklist = ["Tourist Standard Vehicle", "Pick up & drop", "Up to 4 person, 2 luggage bags"];
-
 // Horizontal row layout for the search results "List view" — image left,
 // details right. Content differs by breakpoint per design: mobile shows a
 // trust checklist, desktop shows spec chips + a rating badge and an explicit
@@ -38,9 +36,9 @@ export default function VehicleListCard({
       onKeyDown={(e) => {
         if (e.key === "Enter") navigate(detailsHref);
       }}
-      className="flex w-full cursor-pointer gap-4 rounded-xl bg-white p-3 shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] sm:p-4 lg:items-center"
+      className="flex w-full cursor-pointer items-stretch gap-3 overflow-hidden rounded-xl bg-white p-3 shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] sm:gap-4 sm:p-4 lg:items-center"
     >
-      <div className="relative size-[104px] shrink-0 overflow-hidden rounded-lg sm:size-[128px] lg:h-[86px] lg:w-[150px]">
+      <div className="relative w-[110px] shrink-0 self-stretch overflow-hidden rounded-lg sm:w-[140px] lg:h-[86px] lg:w-[150px] lg:self-auto">
         <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full" />
         <button
           type="button"
@@ -102,15 +100,6 @@ export default function VehicleListCard({
             <Icon name="location" size={13} />
             {vehicle.location}
           </div>
-          <ul className="mt-2 flex flex-col gap-1 lg:hidden">
-            {checklist.map((item) => (
-              <li key={item} className="flex items-center gap-1.5 text-xs text-[color:var(--color-ink-soft)]">
-                <Icon name="check" size={12} className="shrink-0 text-[color:var(--color-success)]" />
-                {item}
-              </li>
-            ))}
-          </ul>
-
           {/* Desktop: spec chips + rating badge */}
           <div className="mt-1.5 hidden flex-wrap items-center gap-3 text-xs text-[color:var(--color-ink-soft)] lg:flex">
             <span className="flex items-center gap-1">

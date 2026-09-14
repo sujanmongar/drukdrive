@@ -359,24 +359,20 @@ export default function SearchResults() {
                 <div className="lg:hidden">
                   <h1 className="mb-4 text-lg font-bold text-[color:var(--color-ink)]">Found {results.length} cars</h1>
                   <div className="mb-4 flex items-center justify-between gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setSortOpen(true)}
-                      className="flex flex-col items-start rounded-xl border border-[color:var(--color-border)] px-3.5 py-2 text-left hover:border-[color:var(--color-ink)]"
-                    >
-                      <span className="text-[11px] text-[color:var(--color-muted)]">Sorted by</span>
-                      <span className="flex items-center gap-1 text-xs font-bold text-[color:var(--color-ink)]">
+                    <button type="button" onClick={() => setSortOpen(true)} className="flex flex-col items-start text-left">
+                      <span className="text-xs text-[color:var(--color-muted)]">Sorted by</span>
+                      <span className="flex items-center gap-1 text-sm font-bold text-[color:var(--color-ink)]">
                         {sortOptions.find((o) => o.value === sort)?.label}
-                        <Icon name="chevron-down" size={13} />
+                        <Icon name="chevron-down" size={14} />
                       </span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setFilterOpen(true)}
-                      className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-xs font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
+                      className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-4 py-2.5 text-sm font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
                     >
-                      <Icon name="filter" size={15} />
+                      <Icon name="filter" size={16} />
                       Filter
                       {activeFilterCount > 0 && (
                         <span className="flex size-4 items-center justify-center rounded-full bg-[color:var(--color-ink)] text-[9px] font-bold text-white">
