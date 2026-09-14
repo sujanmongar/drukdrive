@@ -95,7 +95,7 @@ export default function EditSearchModal({
                   <span className="flex flex-col gap-1">
                     <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up</span>
                     <span className="text-sm font-bold text-[color:var(--color-ink)]">
-                      {formatDate(value.pickupDate)}, {value.pickupTime}
+                      {formatDate(value.pickupDate)} {value.pickupTime}
                     </span>
                   </span>
                 </button>
@@ -109,7 +109,7 @@ export default function EditSearchModal({
                   <span className="flex flex-col gap-1">
                     <span className="text-[11px] text-[color:var(--color-ink-soft)]">Drop off</span>
                     <span className="text-sm font-bold text-[color:var(--color-ink)]">
-                      {value.dropoffDate ? `${formatDate(value.dropoffDate)}, ${value.dropoffTime}` : "Select"}
+                      {value.dropoffDate ? `${formatDate(value.dropoffDate)} ${value.dropoffTime}` : "Select"}
                     </span>
                   </span>
                 </button>
@@ -124,7 +124,7 @@ export default function EditSearchModal({
                 <span className="flex flex-col gap-1">
                   <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up</span>
                   <span className="text-sm font-bold text-[color:var(--color-ink)]">
-                    {formatDate(value.pickupDate)}, {value.pickupTime}
+                    {formatDate(value.pickupDate)} {value.pickupTime}
                   </span>
                 </span>
               </button>

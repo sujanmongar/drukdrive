@@ -63,10 +63,12 @@ export default function Home() {
     ? daysHoursBetween(combineDateTime(pickupDate, pickupTime), combineDateTime(dropoffDate, dropoffTime))
     : null;
 
-  const firstDateLabel = type === "outstation" ? "Date" : type === "self-drive" ? "Start date" : "Pick up date";
-  const firstTimeLabel = type === "outstation" ? "Time" : type === "self-drive" ? "Start time" : "Pick up time";
-  const secondDateLabel = type === "self-drive" ? "End date" : type === "rental" ? "Dropoff date" : "Drop off date";
-  const secondTimeLabel = type === "self-drive" ? "End time" : type === "rental" ? "Dropoff time" : "Drop off time";
+  const firstPointLabel = type === "outstation" ? "Date" : type === "self-drive" ? "Start" : "Pickup";
+  const secondPointLabel = type === "self-drive" ? "End" : type === "rental" ? "Dropoff" : "Drop off";
+
+  function formatDateLabel(d: Date) {
+    return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+  }
 
   function toggleFaq(i: number) {
     setOpenFaqs((prev) => {
@@ -246,24 +248,30 @@ export default function Home() {
                     >
                       <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                       <span className="flex flex-col gap-1">
-                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">{firstDateLabel}</span>
+                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">{firstPointLabel}</span>
                         <span className="text-sm font-bold text-[color:var(--color-ink-87)]">
-                          {pickupDate.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })}
+                          {formatDateLabel(pickupDate)} {pickupTime}
                         </span>
                       </span>
                     </button>
-                    <div className="w-px bg-[color:var(--color-border)]" />
-                    <button
-                      type="button"
-                      onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                      className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
-                    >
-                      <Icon name="clock" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
-                      <span className="flex flex-col gap-1">
-                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">{firstTimeLabel}</span>
-                        <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{pickupTime}</span>
-                      </span>
-                    </button>
+                    {showSecondDateBox && (
+                      <>
+                        <div className="w-px bg-[color:var(--color-border)]" />
+                        <button
+                          type="button"
+                          onClick={() => setActiveField(activeField === "date" ? null : "date")}
+                          className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
+                        >
+                          <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
+                          <span className="flex flex-col gap-1">
+                            <span className="text-[11px] text-[color:var(--color-ink-soft)]">{secondPointLabel}</span>
+                            <span className="text-sm font-bold text-[color:var(--color-ink-87)]">
+                              {dropoffDate ? `${formatDateLabel(dropoffDate)} ${dropoffTime}` : "Select date"}
+                            </span>
+                          </span>
+                        </button>
+                      </>
+                    )}
                   </div>
                   {activeField === "date" && (
                     <DatePickerSheet
@@ -284,38 +292,6 @@ export default function Home() {
                     />
                   )}
                 </div>
-
-                {showSecondDateBox && (
-                  <div className="flex overflow-hidden rounded-xl border border-[color:var(--color-border)]">
-                    <button
-                      type="button"
-                      onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                      className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
-                    >
-                      <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
-                      <span className="flex flex-col gap-1">
-                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">{secondDateLabel}</span>
-                        <span className="text-sm font-bold text-[color:var(--color-ink-87)]">
-                          {dropoffDate
-                            ? dropoffDate.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })
-                            : "Select date"}
-                        </span>
-                      </span>
-                    </button>
-                    <div className="w-px bg-[color:var(--color-border)]" />
-                    <button
-                      type="button"
-                      onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                      className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
-                    >
-                      <Icon name="clock" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
-                      <span className="flex flex-col gap-1">
-                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">{secondTimeLabel}</span>
-                        <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{dropoffTime}</span>
-                      </span>
-                    </button>
-                  </div>
-                )}
               </div>
 
               {type === "daily" && (
