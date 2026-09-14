@@ -129,7 +129,7 @@ export default function Home() {
           same place it would otherwise be. */}
       <section className="relative -mt-16 overflow-hidden bg-[color:var(--color-surface-muted)] pt-16 md:-mt-[94px] md:pt-[94px]">
 
-        <div className="animate-fade-up relative mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-4 pb-14 pt-10 md:grid-cols-[1fr_auto] md:items-center md:px-10 md:pb-24 md:pt-16 lg:grid-cols-1 lg:pb-20">
+        <div className="animate-fade-up relative mx-auto max-w-[1280px] px-4 pb-14 pt-10 md:px-10 md:pb-20 md:pt-16">
           <div>
             <h1 className="t-h1 max-w-[280px] text-[color:var(--color-ink)] sm:max-w-md md:max-w-[520px]">
               Go anywhere in Bhutan.
@@ -331,28 +331,6 @@ export default function Home() {
               >
                 Search
               </button>
-            </div>
-          </div>
-
-          {/* Right side of hero — fills the empty space beside the stacked
-              widget at md. From lg the widget goes full-width horizontal, so
-              this steps aside and the trust signal moves beneath it. */}
-          <div className="relative hidden md:block md:w-[380px] lg:hidden">
-            <div className="relative overflow-hidden rounded-3xl">
-              <svg viewBox="0 0 440 420" className="block w-full" aria-hidden="true">
-                <path d="M0 300 L70 180 L130 260 L190 120 L260 280 L320 160 L390 260 L440 220 L440 420 L0 420 Z" fill="#f0deb0" />
-                <path d="M0 340 L90 240 L160 320 L230 200 L300 320 L370 240 L440 300 L440 420 L0 420 Z" fill="#e7cd93" />
-                <circle cx="360" cy="70" r="42" fill="#ffe9ad" />
-              </svg>
-            </div>
-            <div className="absolute -bottom-5 left-1/2 flex w-[86%] -translate-x-1/2 items-center gap-3 rounded-2xl bg-white px-4 py-3.5 shadow-pop">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-info-bg)]">
-                <Icon name="star" size={18} className="fill-current text-amber-400" />
-              </span>
-              <div>
-                <p className="text-sm font-extrabold text-[color:var(--color-ink)]">4.8 / 5 average rating</p>
-                <p className="text-xs text-[color:var(--color-muted)]">From 600+ verified rides across Bhutan</p>
-              </div>
             </div>
           </div>
         </div>
