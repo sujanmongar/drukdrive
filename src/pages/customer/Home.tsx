@@ -362,7 +362,7 @@ export default function Home() {
         {/* Recent searches */}
         <section className="py-12 md:py-20">
           <SectionHeader title="Recent searches" trackRef={recentTrackRef} />
-          <div ref={recentTrackRef} className="carousel-track -mx-1 flex gap-4 overflow-x-auto px-1 py-3">
+          <div ref={recentTrackRef} className="carousel-track -mx-2 -mb-8 flex gap-4 overflow-x-auto px-2 pb-12 pt-3">
             {recentSearches.map((s) => {
               const vehicle = vehicles.find((v) => v.id === s.vehicleId);
               return (
@@ -383,10 +383,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Popular cars — four in view, the rest paged by the header arrows. */}
-        <section className="py-12 md:py-20">
+      </div>
+
+      {/* Popular cars — a full-bleed tinted band so the white cards and their
+          hover shadow read against a ground. Content stays on the grid. */}
+      <section className="bg-[#f6f7f8] py-12 md:py-20">
+        <div className="mx-auto max-w-[1280px] px-4 md:px-10">
           <SectionHeader title="Popular cars" trackRef={carsTrackRef} />
-          <div ref={carsTrackRef} className="carousel-track -mx-2 flex gap-5 overflow-x-auto px-2 py-3">
+          <div ref={carsTrackRef} className="carousel-track -mx-2 -mb-8 flex gap-5 overflow-x-auto px-2 pb-12 pt-3">
             {vehicles.map((v) => (
               <VehicleCard
                 key={v.id}
@@ -396,12 +400,14 @@ export default function Home() {
               />
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
+      <div className="mx-auto max-w-[1280px] px-4 md:px-10">
         {/* Popular car types — photo tiles, paged by the header arrows. */}
         <section className="py-12 md:py-20">
           <SectionHeader title="Popular car types" trackRef={typesTrackRef} />
-          <div ref={typesTrackRef} className="carousel-track -mx-2 flex gap-4 overflow-x-auto px-2 py-3 md:gap-5">
+          <div ref={typesTrackRef} className="carousel-track -mx-2 -mb-8 flex gap-4 overflow-x-auto px-2 pb-12 pt-3 md:gap-5">
             {popularCarTypes.map((t) => (
               <button
                 key={t.category}

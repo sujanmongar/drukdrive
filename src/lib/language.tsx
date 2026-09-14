@@ -6,11 +6,11 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from "re
 
 export type LanguageCode = "en" | "dz" | "hi" | "ne";
 
-export const languages: { code: LanguageCode; label: string; native: string }[] = [
-  { code: "en", label: "English", native: "English" },
-  { code: "dz", label: "Dzongkha", native: "རྫོང་ཁ" },
-  { code: "hi", label: "Hindi", native: "हिन्दी" },
-  { code: "ne", label: "Nepali", native: "नेपाली" },
+export const languages: { code: LanguageCode; label: string; native: string; flag: string }[] = [
+  { code: "en", label: "English", native: "English", flag: "🇬🇧" },
+  { code: "dz", label: "Dzongkha", native: "རྫོང་ཁ", flag: "🇧🇹" },
+  { code: "hi", label: "Hindi", native: "हिन्दी", flag: "🇮🇳" },
+  { code: "ne", label: "Nepali", native: "नेपाली", flag: "🇳🇵" },
 ];
 
 const STORAGE_KEY = "drukdrive:language";

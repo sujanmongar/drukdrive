@@ -188,7 +188,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
   return (
     <header className={`relative z-20 ${transparent ? "bg-transparent" : "bg-white"}`}>
       {/* Desktop */}
-      <div className="mx-auto hidden max-w-[1280px] items-center justify-between px-10 py-[23px] md:flex">
+      <div className="hidden items-center justify-between px-6 py-[23px] md:flex lg:px-10">
         <Logo />
         <div className="flex items-center gap-2">
           {role === "customer" && <WishlistButton />}

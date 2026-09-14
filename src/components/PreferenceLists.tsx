@@ -1,36 +1,75 @@
+import { useState } from "react";
 import Icon from "./Icon";
 import { currencies, useCurrency } from "../lib/currency";
 import { languages, useLanguage } from "../lib/language";
 
-// Currency and language pickers, rendered inside the account menu so all
-// account-level settings live behind one control in the header.
+type View = "root" | "language" | "currency";
+
+// Two rows showing the current language and currency; picking either swaps
+// the panel for that option list, so the account menu stays short.
 export default function PreferenceLists() {
   const { currency, setCurrency } = useCurrency();
   const { language, setLanguage } = useLanguage();
+  const [view, setView] = useState<View>("root");
 
-  const row = (selected: boolean) =>
-    `flex w-full items-center gap-2.5 px-4 py-2 text-left text-sm transition-colors hover:bg-neutral-50 ${
-      selected ? "font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)]"
-    }`;
+  const activeCurrency = currencies.find((c) => c.code === currency)!;
+  const activeLanguage = languages.find((l) => l.code === language)!;
+
+  const rowClass =
+    "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-[color:var(--color-ink-soft)] transition-colors hover:bg-neutral-50";
+
+  if (view !== "root") {
+    const isLanguage = view === "language";
+    const options = isLanguage
+      ? languages.map((l) => ({ key: l.code, lead: l.flag, label: l.native, selected: l.code === language }))
+      : currencies.map((c) => ({ key: c.code, lead: c.flag, label: c.label, selected: c.code === currency }));
+
+    return (
+      <>
+        <button
+          type="button"
+          onClick={() => setView("root")}
+          className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-neutral-50"
+        >
+          <Icon name="chevron-left" size={16} />
+          {isLanguage ? "Language" : "Currency"}
+        </button>
+        <div className="border-t border-[color:var(--color-border)] pt-1">
+          {options.map((o) => (
+            <button
+              key={o.key}
+              type="button"
+              onClick={() => {
+                if (isLanguage) setLanguage(o.key as never);
+                else setCurrency(o.key as never);
+                setView("root");
+              }}
+              className={`${rowClass} ${o.selected ? "font-semibold text-[color:var(--color-ink)]" : ""}`}
+            >
+              <span className="text-base leading-none">{o.lead}</span>
+              {o.label}
+              {o.selected && <Icon name="check" size={15} className="ml-auto text-[color:var(--color-ink)]" />}
+            </button>
+          ))}
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
-      <p className="t-label px-4 pb-1 pt-2.5 uppercase tracking-wide text-[color:var(--color-muted)]">Currency</p>
-      {currencies.map((c) => (
-        <button key={c.code} type="button" onClick={() => setCurrency(c.code)} className={row(c.code === currency)}>
-          <span className="text-base leading-none">{c.flag}</span>
-          {c.code}
-          {c.code === currency && <Icon name="check" size={15} className="ml-auto text-[color:var(--color-ink)]" />}
-        </button>
-      ))}
-
-      <p className="t-label px-4 pb-1 pt-3 uppercase tracking-wide text-[color:var(--color-muted)]">Language</p>
-      {languages.map((l) => (
-        <button key={l.code} type="button" onClick={() => setLanguage(l.code)} className={row(l.code === language)}>
-          {l.native}
-          {l.code === language && <Icon name="check" size={15} className="ml-auto text-[color:var(--color-ink)]" />}
-        </button>
-      ))}
+      <button type="button" onClick={() => setView("language")} className={rowClass}>
+        <span className="text-base leading-none">{activeLanguage.flag}</span>
+        {activeLanguage.native}
+        <Icon name="chevron-right" size={15} className="ml-auto text-[color:var(--color-muted)]" />
+      </button>
+      <button type="button" onClick={() => setView("currency")} className={rowClass}>
+        <span className="w-[1.05rem] text-center text-sm font-semibold text-[color:var(--color-muted)]">
+          {activeCurrency.symbol.replace(".", "")}
+        </span>
+        {activeCurrency.label}
+        <Icon name="chevron-right" size={15} className="ml-auto text-[color:var(--color-muted)]" />
+      </button>
     </>
   );
 }
