@@ -80,7 +80,8 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
   const { user: currentUser } = useCurrentUser();
   const { isLoggedIn, role, switchRole } = useAuth();
   const navigate = useNavigate();
-  const links = role === "driver" ? driverLinks : customerLinks;
+  // The menu is a shortcut, not the full tab bar: bookings and account only.
+  const links = (role === "driver" ? driverLinks : customerLinks).filter((l) => /Bookings|Account/.test(l.label));
   const target = switchTarget[role];
 
   function handleSwitch() {

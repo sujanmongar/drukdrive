@@ -1,7 +1,9 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
+
+let lastSection = "";
 
 export default function PageShell({
   children,
@@ -18,13 +20,24 @@ export default function PageShell({
    * contextual top bar (e.g. search results' trip-summary bar). */
   header?: ReactNode;
 }) {
-  // Keyed on the path so each navigation replays the entrance.
+  // Every page renders its own PageShell, so <main> is remounted on each
+  // navigation and a key alone cannot suppress the entrance. Remember the
+  // last section at module level (it survives remounts) and only play the
+  // entrance when the section changes — switching tabs inside /account,
+  // /provider or /checkout must not read as a page reload.
   const { pathname } = useLocation();
+  const section = pathname.split("/")[1] || "home";
+  // Read during render, write after commit: a render-time write would be
+  // seen by React's second dev render pass and flip the result to false.
+  const enteringNewSection = lastSection !== section;
+  useEffect(() => {
+    lastSection = section;
+  }, [section]);
 
   return (
     <div className="flex min-h-svh flex-col bg-white">
       {header ?? <Header transparent={transparentHeader} />}
-      <main key={pathname} className="animate-page-in flex-1">
+      <main className={`flex-1 ${enteringNewSection ? "animate-page-in" : ""}`}>
         {children}
       </main>
       {!noFooter && <Footer />}

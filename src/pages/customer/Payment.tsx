@@ -40,8 +40,8 @@ export default function Payment() {
   const [cardCvv, setCardCvv] = useState("");
 
   const inputClasses =
-    "w-full rounded-lg border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm text-[color:var(--color-ink)] placeholder:text-[color:var(--color-muted)] outline-none focus:border-[color:var(--color-ink)] focus:ring-2 focus:ring-[color:var(--color-ink)]/10";
-  const labelClasses = "mb-1.5 block text-xs font-semibold text-[color:var(--color-ink-soft)]";
+    "w-full rounded-lg border border-[color:var(--color-border)] px-3.5 py-2.5 t-body-sm text-[color:var(--color-ink)] placeholder:text-[color:var(--color-muted)] outline-none focus:border-[color:var(--color-ink)] focus:ring-2 focus:ring-[color:var(--color-ink)]/10";
+  const labelClasses = "mb-1.5 block t-caption font-semibold text-[color:var(--color-ink-soft)]";
 
   function handlePay() {
     const params = new URLSearchParams(searchParams);
@@ -56,7 +56,7 @@ export default function Payment() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="mb-6 inline-flex cursor-pointer items-center gap-2 text-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
+          className="mb-6 inline-flex cursor-pointer items-center gap-2 t-body-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
         >
           <Icon name="arrow-left" size={18} />
           Back
@@ -88,8 +88,8 @@ export default function Payment() {
                       {method === "netbanking" && <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />}
                     </span>
                     <span className="text-left">
-                      <span className="block text-sm font-bold text-[color:var(--color-ink)]">Net Banking</span>
-                      <span className="block text-xs text-[color:var(--color-muted)]">All the major banks available</span>
+                      <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">Net Banking</span>
+                      <span className="block t-caption text-[color:var(--color-muted)]">All the major banks available</span>
                     </span>
                   </span>
                   <Icon name="bank" size={22} className="shrink-0 text-[color:var(--color-ink)]" />
@@ -121,7 +121,7 @@ export default function Payment() {
                     <button
                       type="button"
                       onClick={handlePay}
-                      className="mt-1 w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-sm font-bold text-white transition-colors hover:bg-black"
+                      className="mt-1 w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 t-body-sm font-bold text-white transition-colors hover:bg-black"
                     >
                       Pay {format(amountDue)}
                     </button>
@@ -145,12 +145,12 @@ export default function Payment() {
                       {method === "card" && <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />}
                     </span>
                     <span className="text-left">
-                      <span className="block text-sm font-bold text-[color:var(--color-ink)]">Debit/Credit/ATM Card</span>
-                      <span className="block text-xs text-[color:var(--color-muted)]">Visa, Mastercard, Rupay and more</span>
+                      <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">Debit/Credit/ATM Card</span>
+                      <span className="block t-caption text-[color:var(--color-muted)]">Visa, Mastercard, Rupay and more</span>
                     </span>
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="rounded bg-white px-1.5 py-1 text-[10px] font-extrabold italic text-blue-700 shadow-sm">VISA</span>
+                    <span className="rounded bg-white px-1.5 py-1 t-label font-extrabold italic text-blue-700 shadow-sm">VISA</span>
                     <span className="flex size-6 items-center justify-center rounded-full bg-gradient-to-r from-red-500 to-amber-400" />
                   </span>
                 </button>
@@ -218,14 +218,14 @@ export default function Payment() {
                         />
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-[color:var(--color-muted)]">
+                    <div className="flex items-center gap-2 t-caption text-[color:var(--color-muted)]">
                       <Icon name="lock" size={14} />
                       Your payment info is encrypted and secure.
                     </div>
                     <button
                       type="button"
                       onClick={handlePay}
-                      className="mt-1 w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-sm font-bold text-white transition-colors hover:bg-black"
+                      className="mt-1 w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 t-body-sm font-bold text-white transition-colors hover:bg-black"
                     >
                       Pay {format(amountDue)}
                     </button>
@@ -243,12 +243,12 @@ export default function Payment() {
 
               {travelerName && (
                 <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-4">
-                  <p className="flex items-center gap-1.5 text-sm font-bold text-[color:var(--color-ink)]">
+                  <p className="flex items-center gap-1.5 t-body-sm font-bold text-[color:var(--color-ink)]">
                     <Icon name="user" size={15} />
                     Travelers
                   </p>
-                  <p className="mt-2 text-sm font-semibold uppercase text-[color:var(--color-ink)]">{travelerName}</p>
-                  <p className="text-xs text-[color:var(--color-muted)]">
+                  <p className="mt-2 t-body-sm font-semibold uppercase text-[color:var(--color-ink)]">{travelerName}</p>
+                  <p className="t-caption text-[color:var(--color-muted)]">
                     {travelerEmail}
                     {travelerPhone && ` | ${travelerPhone}`}
                   </p>

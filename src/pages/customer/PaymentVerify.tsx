@@ -76,7 +76,7 @@ export default function PaymentVerify() {
           {/* Left: OTP form */}
           <div className="flex min-w-0 flex-col items-center pt-6 text-center lg:items-start lg:pt-10 lg:text-left">
             <h1 className="t-h2 text-[color:var(--color-ink)]">OTP Verification</h1>
-            <p className="mt-3 max-w-sm text-sm text-[color:var(--color-muted)]">
+            <p className="mt-3 max-w-sm t-body-sm text-[color:var(--color-muted)]">
               An OTP has been sent to your mobile number and email associated with your account. OTP is valid for
               the next {Math.ceil(COUNTDOWN_SECONDS / 60)} minutes only.
             </p>
@@ -93,17 +93,17 @@ export default function PaymentVerify() {
                   onKeyDown={(e) => handleKeyDown(i, e)}
                   inputMode="numeric"
                   maxLength={1}
-                  className={`size-[48px] rounded-2xl border text-center text-xl font-bold text-[color:var(--color-ink)] outline-none transition-colors sm:size-[56px] ${
+                  className={`size-[48px] rounded-xl border text-center text-xl font-bold text-[color:var(--color-ink)] outline-none transition-colors sm:size-[56px] ${
                     digit ? "border-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"
                   } ${touched && !isComplete ? "border-[color:var(--color-danger)]" : ""} focus:border-[color:var(--color-ink)]`}
                 />
               ))}
             </div>
             {touched && !isComplete && (
-              <p className="mt-2 text-xs text-[color:var(--color-danger)]">Enter the full 6-digit code.</p>
+              <p className="mt-2 t-caption text-[color:var(--color-danger)]">Enter the full 6-digit code.</p>
             )}
 
-            <p className="mt-4 flex items-center gap-1.5 text-sm font-semibold text-[color:var(--color-danger)]">
+            <p className="mt-4 flex items-center gap-1.5 t-body-sm font-semibold text-[color:var(--color-danger)]">
               <Icon name="clock" size={15} />
               Time left: {formatCountdown(secondsLeft)}
             </p>
@@ -116,7 +116,7 @@ export default function PaymentVerify() {
               Pay {format(amountDue)} Now
             </button>
 
-            <p className="mt-4 max-w-md text-xs text-[color:var(--color-muted)]">
+            <p className="mt-4 max-w-md t-caption text-[color:var(--color-muted)]">
               By continuing to pay, I understand and agree with the{" "}
               <Link to={routes.privacyPolicy} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
                 privacy policy

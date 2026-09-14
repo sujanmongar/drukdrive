@@ -82,7 +82,7 @@ export default function Otp() {
           onKeyDown={(e) => handleKeyDown(i, e)}
           inputMode="numeric"
           maxLength={1}
-          className={`size-[48px] rounded-2xl border text-center text-xl font-bold text-[color:var(--color-ink-87)] outline-none transition-colors sm:size-[56px] ${
+          className={`size-[48px] rounded-xl border text-center text-xl font-bold text-[color:var(--color-ink-87)] outline-none transition-colors sm:size-[56px] ${
             digit ? "border-[color:var(--color-ink-87)]" : "border-[color:var(--color-border)]"
           } focus:border-[color:var(--color-ink-87)]`}
         />

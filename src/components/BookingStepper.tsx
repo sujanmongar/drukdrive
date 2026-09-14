@@ -13,7 +13,7 @@ export default function BookingStepper({ current, allDone = false }: { current: 
           <div key={label} className="flex flex-1 items-center last:flex-none">
             <div className="flex flex-col items-center gap-1.5">
               <div
-                className={`flex size-7 items-center justify-center rounded-full border-2 text-xs font-bold transition-colors ${
+                className={`t-caption flex size-8 items-center justify-center rounded-full border-2 font-bold transition-colors ${
                   done
                     ? "border-[color:var(--color-success)] bg-[color:var(--color-success)] text-white"
                     : active
@@ -24,7 +24,7 @@ export default function BookingStepper({ current, allDone = false }: { current: 
                 {done ? <Icon name="check" size={14} /> : stepNum}
               </div>
               <span
-                className={`whitespace-nowrap text-[11px] font-medium ${
+                className={`t-caption whitespace-nowrap font-medium ${
                   done || active ? "text-[color:var(--color-ink)]" : "text-[color:var(--color-muted)]"
                 }`}
               >

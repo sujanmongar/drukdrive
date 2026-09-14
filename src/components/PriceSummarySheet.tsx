@@ -30,7 +30,7 @@ export default function PriceSummarySheet({
           <h2 className="t-h3 text-[color:var(--color-ink)]">Price Summary</h2>
         </div>
 
-        <div className="flex flex-col gap-3 p-5 text-sm">
+        <div className="flex flex-col gap-3 p-5 t-body-sm">
           <div className="flex items-center justify-between text-[color:var(--color-ink-soft)]">
             <span>
               Base fare &times; {RENTAL_DAYS} Day{RENTAL_DAYS > 1 ? "s" : ""} &times; {format(pricePerDay)}

@@ -98,8 +98,8 @@ export default function ReviewBooking() {
   }
 
   const inputClass =
-    "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-ink)]";
-  const labelClass = "mb-1.5 block text-xs font-medium text-[color:var(--color-ink-soft)]";
+    "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 t-body-sm text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-ink)]";
+  const labelClass = "mb-1.5 block t-caption font-medium text-[color:var(--color-ink-soft)]";
   const errorClass = "border-[color:var(--color-danger)]";
 
   const payButtonLabel =
@@ -131,7 +131,7 @@ export default function ReviewBooking() {
               {!isLoggedIn && (
                 <Link
                   to={routes.signIn}
-                  className="rounded-lg bg-[color:var(--color-info-bg)] px-3 py-1.5 text-xs font-semibold text-[color:var(--color-info-text)] hover:opacity-90"
+                  className="rounded-lg bg-[color:var(--color-info-bg)] px-3 py-1.5 t-caption font-semibold text-[color:var(--color-info-text)] hover:opacity-90"
                 >
                   Sign in/signup to speed up your booking process ↗
                 </Link>
@@ -156,7 +156,7 @@ export default function ReviewBooking() {
                   onChange={(e) => setFullName(e.target.value)}
                   className={`${inputClass} ${touched && !fullName.trim() ? errorClass : ""}`}
                 />
-                {touched && !fullName.trim() && <p className="mt-1 text-xs text-[color:var(--color-danger)]">Full name is required.</p>}
+                {touched && !fullName.trim() && <p className="mt-1 t-caption text-[color:var(--color-danger)]">Full name is required.</p>}
               </label>
             </div>
 
@@ -170,7 +170,7 @@ export default function ReviewBooking() {
                   onChange={(e) => setPhone(e.target.value)}
                   className={`${inputClass} ${touched && !phone.trim() ? errorClass : ""}`}
                 />
-                {touched && !phone.trim() && <p className="mt-1 text-xs text-[color:var(--color-danger)]">Phone number is required.</p>}
+                {touched && !phone.trim() && <p className="mt-1 t-caption text-[color:var(--color-danger)]">Phone number is required.</p>}
               </label>
               <label>
                 <span className={labelClass}>Email * (Your E-ticket and updates will be sent here)</span>
@@ -181,7 +181,7 @@ export default function ReviewBooking() {
                   onChange={(e) => setEmail(e.target.value)}
                   className={`${inputClass} ${touched && !email.trim() ? errorClass : ""}`}
                 />
-                {touched && !email.trim() && <p className="mt-1 text-xs text-[color:var(--color-danger)]">Email is required.</p>}
+                {touched && !email.trim() && <p className="mt-1 t-caption text-[color:var(--color-danger)]">Email is required.</p>}
               </label>
             </div>
 
@@ -208,12 +208,12 @@ export default function ReviewBooking() {
               </label>
             </div>
 
-            <p className="mt-3 text-xs text-[color:var(--color-muted)]">
+            <p className="mt-3 t-caption text-[color:var(--color-muted)]">
               <span className="font-semibold text-[color:var(--color-ink-soft)]">Note:</span> Your information is
               required for driver verification, trip updates, and issuing your booking confirmation.
             </p>
 
-            <p className="mt-4 text-xs text-[color:var(--color-muted)]">
+            <p className="mt-4 t-caption text-[color:var(--color-muted)]">
               By proceeding to book, I Agree to DrukDrive&rsquo;s{" "}
               <Link to={routes.privacyPolicy} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
                 Privacy Policy
@@ -230,14 +230,14 @@ export default function ReviewBooking() {
 
             <h2 className="t-h3 mt-10 text-[color:var(--color-ink)]">Read before you book!</h2>
             <div className="mt-4 rounded-xl border border-[color:var(--color-border)] p-5">
-              <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Safety precautions</h3>
-              <ul className="mt-2 list-disc space-y-1.5 pl-4 text-sm text-[color:var(--color-ink-soft)]">
+              <h3 className="t-body-sm font-bold text-[color:var(--color-ink)]">Safety precautions</h3>
+              <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body-sm text-[color:var(--color-ink-soft)]">
                 <li>Our cabs are sanitised before pickup, however you may request the driver to sanitise before you board.</li>
                 <li>Maintain social distancing and avoid touching your mouth, eyes or nose without sanitising your hands.</li>
                 <li>Avoid travel in case you&rsquo;re experiencing any symptoms of illness.</li>
               </ul>
-              <h3 className="mt-4 text-sm font-bold text-[color:var(--color-ink)]">Other information</h3>
-              <ul className="mt-2 list-disc space-y-1.5 pl-4 text-sm text-[color:var(--color-ink-soft)]">
+              <h3 className="mt-4 t-body-sm font-bold text-[color:var(--color-ink)]">Other information</h3>
+              <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body-sm text-[color:var(--color-ink-soft)]">
                 <li>AC will be switched off in hilly areas.</li>
                 <li>If you opt for partial payment, please pay the balance to the driver within 45 min from pickup time.</li>
                 <li>Only one pick-up, one drop and one pit stop for a meal is included.</li>
@@ -253,12 +253,12 @@ export default function ReviewBooking() {
               <div className="mt-3 flex items-baseline justify-between">
                 <div>
                   <p className="text-xl font-extrabold text-[color:var(--color-ink)]">{format(netPayable)}</p>
-                  <p className="text-xs text-[color:var(--color-muted)]">Inclusive of taxes and fees</p>
+                  <p className="t-caption text-[color:var(--color-muted)]">Inclusive of taxes and fees</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setPriceSummaryOpen(true)}
-                  className="text-xs font-semibold text-[color:var(--color-link)] underline decoration-dotted underline-offset-2"
+                  className="t-caption font-semibold text-[color:var(--color-link)] underline decoration-dotted underline-offset-2"
                 >
                   Fare summary
                 </button>
@@ -289,12 +289,12 @@ export default function ReviewBooking() {
                         {paymentOption === opt.value && <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />}
                       </span>
                       <span>
-                        <span className="block text-sm font-bold text-[color:var(--color-ink)]">{opt.label}</span>
-                        {opt.hint && <span className="block text-xs text-[color:var(--color-muted)]">{opt.hint}</span>}
+                        <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">{opt.label}</span>
+                        {opt.hint && <span className="block t-caption text-[color:var(--color-muted)]">{opt.hint}</span>}
                       </span>
                     </span>
                     {opt.amount !== null ? (
-                      <span className="shrink-0 text-sm font-bold text-[color:var(--color-ink)]">{format(opt.amount)}</span>
+                      <span className="shrink-0 t-body-sm font-bold text-[color:var(--color-ink)]">{format(opt.amount)}</span>
                     ) : (
                       <Icon name="info" size={16} className="shrink-0 text-[color:var(--color-muted)]" />
                     )}
@@ -308,9 +308,9 @@ export default function ReviewBooking() {
                 </Button>
               </div>
 
-              <h3 className="mt-6 text-sm font-bold text-[color:var(--color-ink)]">Offer (Optional)</h3>
+              <h3 className="mt-6 t-body-sm font-bold text-[color:var(--color-ink)]">Offer (Optional)</h3>
               <div className="mt-2 rounded-xl border border-[color:var(--color-border)] p-3">
-                <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase text-[color:var(--color-muted)]">
+                <p className="flex items-center gap-1.5 t-label font-semibold uppercase text-[color:var(--color-muted)]">
                   <Icon name="info" size={13} />
                   Enter promo code
                 </p>
@@ -320,22 +320,22 @@ export default function ReviewBooking() {
                     placeholder="Got a promo code? enter here"
                     value={promoInput}
                     onChange={(e) => setPromoInput(e.target.value)}
-                    className="min-w-0 flex-1 rounded-lg border border-[color:var(--color-border)] px-3 py-2 text-sm text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-ink)]"
+                    className="min-w-0 flex-1 rounded-lg border border-[color:var(--color-border)] px-3 py-2 t-body-sm text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-ink)]"
                   />
                   <button
                     type="button"
                     onClick={applyPromo}
-                    className="shrink-0 rounded-lg bg-[color:var(--color-ink)] px-4 py-2 text-sm font-bold text-white transition-all duration-200 hover:bg-black"
+                    className="shrink-0 rounded-lg bg-[color:var(--color-ink)] px-4 py-2 t-body-sm font-bold text-white transition-all duration-200 hover:bg-black"
                   >
                     Apply
                   </button>
                 </div>
                 {promoApplied && (
-                  <p className="mt-2 text-xs font-semibold text-[color:var(--color-success)]">
+                  <p className="mt-2 t-caption font-semibold text-[color:var(--color-success)]">
                     {promoApplied.code} applied — {format(discount)} off
                   </p>
                 )}
-                {promoError && <p className="mt-2 text-xs text-[color:var(--color-danger)]">{promoError}</p>}
+                {promoError && <p className="mt-2 t-caption text-[color:var(--color-danger)]">{promoError}</p>}
               </div>
             </div>
           </div>
@@ -349,7 +349,7 @@ export default function ReviewBooking() {
             {format(netPayable)}
             <Icon name="info" size={15} className="text-[color:var(--color-muted)]" />
           </span>
-          <span className="text-[11px] text-[color:var(--color-muted)]">incl. taxes &amp; fees</span>
+          <span className="t-label text-[color:var(--color-muted)]">incl. taxes &amp; fees</span>
         </button>
         <Button variant="primary" size="lg" onClick={handleProceed}>
           Proceed To Payment
