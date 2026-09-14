@@ -80,8 +80,8 @@ export default function VehicleCard({
             {vehicle.rating} ({vehicle.reviewCount})
           </span>
         </div>
-        <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-2">
-          <div className="min-w-0">
+        <div className="flex items-end justify-between gap-x-2 gap-y-2">
+          <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
               <span className="text-xl font-extrabold text-[color:var(--color-ink)]">{format(vehicle.pricePerDay)}</span>
               <span className="text-xs text-[color:var(--color-ink)]">/day</span>

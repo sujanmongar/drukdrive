@@ -398,7 +398,6 @@ export default function SearchResults() {
                     </button>
 
                     <div className="flex items-center gap-2">
-                      {viewToggle}
                       <button
                         type="button"
                         onClick={() => setFilterOpen(true)}
@@ -412,6 +411,7 @@ export default function SearchResults() {
                           </span>
                         )}
                       </button>
+                      {viewToggle}
                     </div>
                   </div>
                 </div>

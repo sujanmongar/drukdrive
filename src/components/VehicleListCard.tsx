@@ -7,9 +7,9 @@ import { useCurrency } from "../lib/currency";
 import { useWishlist } from "../lib/wishlist";
 
 // Horizontal row layout for the search results "List view" — image left,
-// details right. Content differs by breakpoint per design: mobile shows a
-// trust checklist, desktop shows spec chips + a rating badge and an explicit
-// Book Now button (mobile relies on the whole row being clickable instead).
+// details right. Shows the same fields as the grid VehicleCard (just laid
+// out horizontally); only the desktop breakpoint adds an explicit Book Now
+// button — mobile relies on the whole row being clickable instead.
 export default function VehicleListCard({
   vehicle,
   tripQuery = "",
@@ -24,9 +24,6 @@ export default function VehicleListCard({
   const bookingParams = new URLSearchParams(tripQuery);
   bookingParams.set("vehicleId", vehicle.id);
   const detailsHref = `${routes.reviewBooking}?${bookingParams.toString()}`;
-  const discountPct = vehicle.strikePrice
-    ? Math.round((1 - vehicle.pricePerDay / vehicle.strikePrice) * 100)
-    : null;
 
   return (
     <div
@@ -68,63 +65,39 @@ export default function VehicleListCard({
             </span>
           </div>
 
-          {/* Mobile: seats/fuel + location */}
-          <div className="mt-1 flex items-center gap-3 text-xs text-[color:var(--color-ink)] lg:hidden">
+          <div className="mt-1.5 flex items-center gap-1.5 text-xs text-[color:var(--color-ink)]">
+            <Icon name="location" size={14} />
+            {vehicle.location}
+            <span className="text-[color:var(--color-muted)]">•</span>
+            {vehicle.type}
+          </div>
+
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-[color:var(--color-ink)]">
             <span className="flex items-center gap-1">
-              <Icon name="seat" size={13} />
+              <Icon name="seat" size={15} />
               {vehicle.seats} Seats
             </span>
             <span className="flex items-center gap-1">
-              <Icon name="fuel" size={13} />
+              <Icon name="fuel" size={15} />
               {vehicle.fuel}
             </span>
-          </div>
-          <div className="mt-1 flex items-center gap-1 text-xs text-[color:var(--color-muted)] lg:hidden">
-            <Icon name="location" size={13} />
-            {vehicle.location}
-          </div>
-          {/* Desktop: spec chips + rating badge */}
-          <div className="mt-1.5 hidden flex-wrap items-center gap-3 text-xs text-[color:var(--color-ink-soft)] lg:flex">
             <span className="flex items-center gap-1">
-              <Icon name="gearbox" size={13} />
-              {vehicle.transmission[0]}
+              <Icon name="star" size={13} className="fill-current text-amber-400" />
+              {vehicle.rating} ({vehicle.reviewCount})
             </span>
-            <span className="flex items-center gap-1">
-              <Icon name="seat" size={13} />
-              {vehicle.seats}
-            </span>
-            <span className="flex items-center gap-1">
-              <Icon name="fuel" size={13} />
-              {vehicle.fuel[0]}
-            </span>
-            {vehicle.ac && (
-              <span className="flex items-center gap-1">
-                <Icon name="snowflake" size={13} />
-                AC
-              </span>
-            )}
-          </div>
-          <div className="mt-2 hidden items-center gap-2 lg:flex">
-            <span className="rounded-md bg-[color:var(--color-success-bg)] px-1.5 py-0.5 text-xs font-bold text-[color:var(--color-success)]">
-              {vehicle.rating}/5
-            </span>
-            <span className="text-xs text-[color:var(--color-muted)]">{vehicle.reviewCount} ratings</span>
           </div>
         </div>
 
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-3 gap-y-2 pt-2 lg:mt-0 lg:shrink-0 lg:items-center lg:gap-6 lg:pt-0">
-          <div className="min-w-0 lg:text-right">
+        <div className="mt-3 flex items-end justify-between gap-x-2 gap-y-2 lg:mt-0 lg:shrink-0">
+          <div className="min-w-0 flex-1 lg:flex-none lg:text-right">
             <div className="flex flex-wrap items-baseline gap-x-1.5 lg:justify-end">
-              {vehicle.strikePrice && (
-                <>
-                  <span className="hidden text-xs font-semibold text-red-500 lg:inline">{discountPct}% off</span>
-                  <span className="text-xs text-red-500 line-through">{format(vehicle.strikePrice)}</span>
-                </>
-              )}
               <span className="text-lg font-extrabold text-[color:var(--color-ink)] sm:text-xl">
                 {format(vehicle.pricePerDay)}
               </span>
               <span className="text-xs text-[color:var(--color-ink)]">/day</span>
+              {vehicle.strikePrice && (
+                <span className="text-xs text-red-500 line-through">{format(vehicle.strikePrice)}</span>
+              )}
             </div>
             <p className="text-[10px] text-[color:var(--color-muted)]">incl. taxes &amp; fees</p>
           </div>
