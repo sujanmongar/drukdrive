@@ -387,7 +387,7 @@ export default function Home() {
 
       {/* Popular cars — a full-bleed tinted band so the white cards and their
           hover shadow read against a ground. Content stays on the grid. */}
-      <section className="bg-[#f6f7f8] py-12 md:py-20">
+      <section className="bg-[#fafbfc] py-12 md:py-20">
         <div className="mx-auto max-w-[1280px] px-4 md:px-10">
           <SectionHeader title="Popular cars" trackRef={carsTrackRef} />
           <div ref={carsTrackRef} className="carousel-track -mx-4 -mb-8 flex gap-5 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:px-6">

@@ -36,7 +36,7 @@ export default function SectionHeader({
               type="button"
               onClick={() => page(direction)}
               aria-label={direction === -1 ? "Previous" : "Next"}
-              className="icon-btn icon-btn-filled size-10 hover:!bg-[color:var(--color-ink)] hover:text-white"
+              className="icon-btn icon-btn-arrow size-10"
             >
               <Icon name={direction === -1 ? "chevron-left" : "chevron-right"} size={18} strokeWidth={2.2} />
             </button>

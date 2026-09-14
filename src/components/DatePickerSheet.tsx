@@ -185,20 +185,20 @@ export default function DatePickerSheet({
   function summaryBlock(label: string, date: Date | null, time: string, setTime: (v: string) => void) {
     return (
       <div>
-        <p className="text-xs text-[color:var(--color-muted)]">{label}</p>
-        <p className="text-sm font-bold text-[color:var(--color-ink)]">{date ? formatShort(date) : "Select date"}</p>
-        <label className="mt-1.5 inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-[color:var(--color-success-bg)] px-2 py-1">
-          <Icon name="clock" size={12} className="shrink-0 text-[color:var(--color-success)]" />
+        <p className="t-caption text-[color:var(--color-muted)]">{label}</p>
+        <p className="mt-0.5 text-base font-bold text-[color:var(--color-ink)]">{date ? formatShort(date) : "Select date"}</p>
+        <label className="mt-2 inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-[color:var(--color-success-bg)] px-2.5 py-1.5">
+          <Icon name="clock" size={14} className="shrink-0 text-[color:var(--color-success)]" />
           <select
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            className="appearance-none bg-transparent text-sm font-semibold text-[color:var(--color-success)] outline-none"
+            className="appearance-none bg-transparent text-base font-bold text-[color:var(--color-success)] outline-none"
           >
             {TIME_OPTIONS.map((t) => (
               <option key={t}>{t}</option>
             ))}
           </select>
-          <Icon name="chevron-down" size={11} className="shrink-0 text-[color:var(--color-success)]" />
+          <Icon name="chevron-down" size={13} className="shrink-0 text-[color:var(--color-success)]" />
         </label>
       </div>
     );

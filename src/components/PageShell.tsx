@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 
@@ -17,10 +18,15 @@ export default function PageShell({
    * contextual top bar (e.g. search results' trip-summary bar). */
   header?: ReactNode;
 }) {
+  // Keyed on the path so each navigation replays the entrance.
+  const { pathname } = useLocation();
+
   return (
     <div className="flex min-h-svh flex-col bg-white">
       {header ?? <Header transparent={transparentHeader} />}
-      <main className="flex-1">{children}</main>
+      <main key={pathname} className="animate-page-in flex-1">
+        {children}
+      </main>
       {!noFooter && <Footer />}
     </div>
   );

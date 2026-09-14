@@ -44,6 +44,16 @@ html {
   text-rendering: optimizeLegibility;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+}
+
 /* Prices, dates and counts line up column-to-column. */
 .tabular {
   font-variant-numeric: tabular-nums;
@@ -189,6 +199,22 @@ body {
   animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Route content eases in on navigation. No fill mode — a lingering transform
+   would trap any fixed-position child inside it. */
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-page-in {
+  animation: page-in 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* One treatment for every icon-only button in the app — header controls,
    carousel arrows, card hearts, sheet close buttons. Size is set per use;
    everything else lives here so they stay in step. */
@@ -217,12 +243,20 @@ body {
 .icon-btn-filled:hover {
   background-color: #d7dde3;
 }
+/* Carousel arrows: quiet at rest, solid ink on hover. */
+.icon-btn-arrow {
+  background-color: #eef1f4;
+}
+.icon-btn-arrow:hover {
+  background-color: var(--color-ink);
+  color: #fff;
+}
 
 /* Popovers and dropdowns settle in rather than appearing. */
 @keyframes popover-in {
   from {
     opacity: 0;
-    transform: translateY(-6px) scale(0.98);
+    transform: translateY(-10px) scale(0.96);
   }
   to {
     opacity: 1;
@@ -233,7 +267,7 @@ body {
   /* No fill mode: the end state is the element's natural state, and a
      lingering transform would become a containing block for any fixed
      descendant. */
-  animation: popover-in 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: popover-in 0.24s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: top;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -277,7 +311,8 @@ button:not(:disabled):active,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-up {
+  .animate-fade-up,
+  .animate-page-in {
     animation: none;
   }
   .carousel-track {
