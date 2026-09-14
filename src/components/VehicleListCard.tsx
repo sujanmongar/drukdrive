@@ -49,7 +49,7 @@ export default function VehicleListCard({
             e.stopPropagation();
             toggle(vehicle.id);
           }}
-          className="absolute right-1.5 top-1.5 flex size-7 items-center justify-center rounded-full bg-white/90 transition-transform active:scale-90 lg:hidden"
+          className="absolute right-1.5 top-1.5 flex size-7 items-center justify-center rounded-full bg-white/90 transition-transform active:scale-90"
         >
           <Icon
             name="heart"
@@ -62,23 +62,6 @@ export default function VehicleListCard({
       <div className="flex min-w-0 flex-1 flex-col p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
-              aria-pressed={saved}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                toggle(vehicle.id);
-              }}
-              className="hidden items-center justify-center lg:flex"
-            >
-              <Icon
-                name="heart"
-                size={16}
-                className={`transition-colors ${saved ? "fill-current text-[color:var(--color-danger)]" : "text-[color:var(--color-ink-soft)]"}`}
-              />
-            </button>
             <p className="text-sm font-bold text-[color:var(--color-ink)] sm:text-base">{vehicle.name}</p>
             <span className="rounded-full bg-[color:var(--color-info-bg)] px-2 py-0.5 text-[9px] font-semibold uppercase text-[color:var(--color-info-text)]">
               {vehicle.category}
