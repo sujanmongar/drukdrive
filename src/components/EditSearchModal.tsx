@@ -93,7 +93,7 @@ export default function EditSearchModal({
                 >
                   <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                   <span className="flex flex-col gap-1">
-                    <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up</span>
+                    <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up date</span>
                     <span className="text-sm font-bold text-[color:var(--color-ink)]">
                       {formatDate(value.pickupDate)} {value.pickupTime}
                     </span>
@@ -107,7 +107,7 @@ export default function EditSearchModal({
                 >
                   <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                   <span className="flex flex-col gap-1">
-                    <span className="text-[11px] text-[color:var(--color-ink-soft)]">Drop off</span>
+                    <span className="text-[11px] text-[color:var(--color-ink-soft)]">Drop off date</span>
                     <span className="text-sm font-bold text-[color:var(--color-ink)]">
                       {value.dropoffDate ? `${formatDate(value.dropoffDate)} ${value.dropoffTime}` : "Select"}
                     </span>
@@ -122,7 +122,7 @@ export default function EditSearchModal({
               >
                 <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                 <span className="flex flex-col gap-1">
-                  <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up</span>
+                  <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up date</span>
                   <span className="text-sm font-bold text-[color:var(--color-ink)]">
                     {formatDate(value.pickupDate)} {value.pickupTime}
                   </span>

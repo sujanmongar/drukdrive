@@ -57,3 +57,43 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Dual-handle range slider: two overlapping native <input type="range">
+   elements share this class. The track is transparent (a custom tick track
+   is drawn behind them) and only the thumb intercepts pointer events, so
+   both handles stay independently draggable. */
+.dual-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+}
+.dual-range::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  background: transparent;
+}
+.dual-range::-moz-range-track {
+  background: transparent;
+}
+.dual-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid var(--color-ink);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+}
+.dual-range::-moz-range-thumb {
+  pointer-events: auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid var(--color-ink);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+}

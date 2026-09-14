@@ -9,6 +9,7 @@ import type { EditSearchValue } from "../../components/EditSearchModal";
 import SearchSummaryHeader from "../../components/SearchSummaryHeader";
 import FilterSection from "../../components/FilterSection";
 import CheckboxRow from "../../components/CheckboxRow";
+import PriceRangeSlider from "../../components/PriceRangeSlider";
 import { vehicles as allVehicles, type Vehicle } from "../../data/mockData";
 import { formatTripDate } from "../../lib/formatTripDate";
 import { useCurrency } from "../../lib/currency";
@@ -39,6 +40,10 @@ const vehicleTypeOptions = Array.from(new Set(allVehicles.map((v) => v.category)
 const brandOptions = Array.from(new Set(allVehicles.map((v) => v.brand)));
 const fuelOptions = Array.from(new Set(allVehicles.map((v) => v.fuel)));
 const ratingOptions = [3, 4, 4.5];
+const priceBounds = {
+  min: Math.min(...allVehicles.map((v) => v.pricePerDay)),
+  max: Math.max(...allVehicles.map((v) => v.pricePerDay)),
+};
 
 function sortVehicles(list: Vehicle[], sort: SortOption): Vehicle[] {
   const copy = [...list];
@@ -127,14 +132,14 @@ export default function SearchResults() {
   const [selectedFuels, setSelectedFuels] = useState<string[]>([]);
   const [capacity, setCapacity] = useState<string | null>(null);
   const [minRating, setMinRating] = useState<number | null>(null);
-  const [maxPrice, setMaxPrice] = useState(80);
+  const [priceRange, setPriceRange] = useState<[number, number]>([priceBounds.min, priceBounds.max]);
 
   const results = useMemo(() => {
     const filtered = allVehicles.filter((v) => {
       if (selectedTypes.length > 0 && !selectedTypes.includes(v.category)) return false;
       if (selectedBrands.length > 0 && !selectedBrands.includes(v.brand)) return false;
       if (selectedFuels.length > 0 && !selectedFuels.includes(v.fuel)) return false;
-      if (v.pricePerDay > maxPrice) return false;
+      if (v.pricePerDay < priceRange[0] || v.pricePerDay > priceRange[1]) return false;
       if (minRating !== null && v.rating < minRating) return false;
       if (capacity) {
         const range = capacityRanges.find((r) => r.label === capacity);
@@ -143,7 +148,7 @@ export default function SearchResults() {
       return true;
     });
     return sortVehicles(filtered, sort);
-  }, [sort, selectedTypes, selectedBrands, selectedFuels, capacity, minRating, maxPrice]);
+  }, [sort, selectedTypes, selectedBrands, selectedFuels, capacity, minRating, priceRange]);
 
   const tripQuery = new URLSearchParams({
     pickup: search.pickup,
@@ -172,7 +177,7 @@ export default function SearchResults() {
     setSelectedFuels([]);
     setCapacity(null);
     setMinRating(null);
-    setMaxPrice(80);
+    setPriceRange([priceBounds.min, priceBounds.max]);
   }
 
   const filterPanel = (
@@ -220,20 +225,12 @@ export default function SearchResults() {
         />
       </FilterSection>
 
-      <FilterSection title="Max Price / day" hasSelection={maxPrice !== 80} onClear={() => setMaxPrice(80)}>
-        <input
-          type="range"
-          min={40}
-          max={80}
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(Number(e.target.value))}
-          className="w-full accent-[color:var(--color-ink)]"
-        />
-        <div className="mt-1 flex justify-between text-xs text-[color:var(--color-muted)]">
-          <span>{format(40)}</span>
-          <span className="font-semibold text-[color:var(--color-ink)]">{format(maxPrice)}</span>
-          <span>{format(80)}</span>
-        </div>
+      <FilterSection
+        title="Price / day"
+        hasSelection={priceRange[0] !== priceBounds.min || priceRange[1] !== priceBounds.max}
+        onClear={() => setPriceRange([priceBounds.min, priceBounds.max])}
+      >
+        <PriceRangeSlider min={priceBounds.min} max={priceBounds.max} value={priceRange} onChange={setPriceRange} formatLabel={format} />
       </FilterSection>
 
       <FilterSection title="Ratings" hasSelection={minRating !== null} onClear={() => setMinRating(null)} divider={false}>
@@ -301,7 +298,7 @@ export default function SearchResults() {
     selectedFuels.length +
     (capacity ? 1 : 0) +
     (minRating !== null ? 1 : 0) +
-    (maxPrice !== 80 ? 1 : 0);
+    (priceRange[0] !== priceBounds.min || priceRange[1] !== priceBounds.max ? 1 : 0);
 
   return (
     <PageShell

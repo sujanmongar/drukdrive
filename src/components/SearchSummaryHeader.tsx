@@ -113,7 +113,7 @@ export default function SearchSummaryHeader({
             {fieldBox(dropoffRef, "location", "Drop off location", draft.dropoff, () =>
               setActiveField(activeField === "dropoff" ? null : "dropoff"),
             )}
-            {fieldBox(pickupDateRef, "calendar", "Pickup", `${formatDate(draft.pickupDate)} ${draft.pickupTime}`, () =>
+            {fieldBox(pickupDateRef, "calendar", "Pickup date", `${formatDate(draft.pickupDate)} ${draft.pickupTime}`, () =>
               setActiveField(activeField === "date" ? null : "date"),
             )}
             <button

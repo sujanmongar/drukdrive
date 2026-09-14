@@ -63,8 +63,8 @@ export default function Home() {
     ? daysHoursBetween(combineDateTime(pickupDate, pickupTime), combineDateTime(dropoffDate, dropoffTime))
     : null;
 
-  const firstPointLabel = type === "outstation" ? "Date" : type === "self-drive" ? "Start" : "Pickup";
-  const secondPointLabel = type === "self-drive" ? "End" : type === "rental" ? "Dropoff" : "Drop off";
+  const firstPointLabel = type === "outstation" ? "Date" : type === "self-drive" ? "Start" : "Pick up date";
+  const secondPointLabel = type === "self-drive" ? "End" : "Drop off date";
 
   function formatDateLabel(d: Date) {
     return d.toLocaleDateString(undefined, { day: "numeric", month: "short" });
