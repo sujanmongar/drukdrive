@@ -18,7 +18,7 @@ export default function WishlistSheet({ onClose, tripQuery = "" }: { onClose: ()
       <button aria-label="Close" className="animate-scrim-in absolute inset-0 cursor-default bg-black/40" onClick={onClose} />
       <div className="animate-sheet-up relative flex max-h-[80svh] w-full flex-col overflow-hidden rounded-t-2xl bg-white">
         <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
-          <button type="button" onClick={onClose} aria-label="Close wishlist">
+          <button type="button" onClick={onClose} aria-label="Close wishlist" className="icon-btn size-10 -ml-2">
             <Icon name="close" size={20} className="text-[color:var(--color-ink)]" />
           </button>
           <h2 className="t-h3 text-[color:var(--color-ink)]">
@@ -64,7 +64,7 @@ export default function WishlistSheet({ onClose, tripQuery = "" }: { onClose: ()
                       type="button"
                       onClick={() => toggle(vehicle.id)}
                       aria-label={`Remove ${vehicle.name} from wishlist`}
-                      className="flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-[color:var(--color-surface-soft)]"
+                      className="icon-btn size-10 shrink-0"
                     >
                       <Icon name="heart" size={18} className="fill-current text-[color:var(--color-danger)]" />
                     </button>

@@ -22,7 +22,7 @@ export default function BookingTypeTabs({
   return (
     // Pills hug their own content and the row scrolls sideways rather than
     // squeezing four equal columns into the width.
-    <div className="carousel-track -mx-2 -my-3 flex items-stretch gap-2 overflow-x-auto px-2 py-3 sm:gap-3">
+    <div className="carousel-track -mx-2 -my-3 flex items-stretch gap-2.5 overflow-x-auto px-2 py-3 sm:gap-3">
       {order.map(({ type, icon }) => {
         const active = type === value;
         return (
@@ -31,14 +31,14 @@ export default function BookingTypeTabs({
             type="button"
             onClick={() => onChange(type)}
             aria-pressed={active}
-            className={`flex shrink-0 items-center gap-2 rounded-xl border px-3.5 py-2.5 transition-all duration-200 sm:px-4 sm:py-3 ${
+            className={`flex shrink-0 items-center gap-2 min-h-11 rounded-xl border px-4 py-2.5 transition-all duration-200 sm:px-4 sm:py-3 ${
               active
                 ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white shadow-card"
                 : "border-[color:var(--color-border)] bg-white text-[color:var(--color-ink)] hover:-translate-y-0.5 hover:border-[color:var(--color-ink)]"
             }`}
           >
             <Icon name={icon} size={17} strokeWidth={active ? 2.2 : 1.9} className="shrink-0" />
-            <span className={`whitespace-nowrap text-[13px] leading-none sm:text-sm ${active ? "font-bold" : "font-medium"}`}>
+            <span className={`whitespace-nowrap text-sm leading-none ${active ? "font-bold" : "font-medium"}`}>
               {bookingTypeLabels[type]}
             </span>
           </button>

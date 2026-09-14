@@ -142,7 +142,7 @@ export default function Home() {
               <BookingTypeTabs value={type} onChange={setType} />
 
               {showTripModeTabs && (
-                <div className="mt-5 flex w-fit gap-5">
+                <div className="mt-5 flex w-fit gap-6">
                   {(["one-way", "return"] as TripMode[]).map((m) => {
                     const active = tripMode === m;
                     return (
@@ -150,7 +150,7 @@ export default function Home() {
                         key={m}
                         type="button"
                         onClick={() => setTripMode(m)}
-                        className={`pb-2 text-sm transition-colors ${
+                        className={`flex min-h-11 items-end pb-2 text-base transition-colors ${
                           active ? "border-b-2 border-[color:var(--color-ink)] font-bold text-[color:var(--color-ink)]" : "text-[color:var(--color-muted)]"
                         }`}
                       >

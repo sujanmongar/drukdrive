@@ -150,7 +150,7 @@ export default function SearchSummaryHeader({
                     key={m}
                     type="button"
                     onClick={() => handleTripModeChange(m)}
-                    className={`pb-1.5 text-sm transition-colors ${
+                    className={`flex min-h-10 items-end pb-1.5 text-sm transition-colors ${
                       active
                         ? "border-b-2 border-[color:var(--color-ink)] font-bold text-[color:var(--color-ink)]"
                         : "text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"

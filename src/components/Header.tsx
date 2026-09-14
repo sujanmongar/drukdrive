@@ -45,11 +45,11 @@ function WishlistButton({ compact = false }: { compact?: boolean }) {
     <Link
       to={routes.accountWishlist}
       aria-label="Wishlist"
-      className={`relative ${headerControl} ${compact ? "size-9" : "size-[42px]"}`}
+      className={`relative ${headerControl} ${compact ? "size-10" : "size-[42px]"}`}
     >
       <Icon
         name="heart"
-        size={compact ? 18 : 20}
+        size={20}
         className={ids.length > 0 ? "fill-current text-[color:var(--color-danger)]" : ""}
       />
       {ids.length > 0 && (
@@ -95,12 +95,12 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Account menu"
-        className={`icon-btn icon-btn-filled overflow-hidden ${compact ? "size-9" : "size-[42px]"}`}
+        className={`icon-btn icon-btn-filled overflow-hidden ${compact ? "size-10" : "size-[42px]"}`}
       >
         {isLoggedIn ? (
           <img src={currentUser.avatar} alt="" className="size-full rounded-full object-cover" />
         ) : (
-          <Icon name="user" size={compact ? 18 : 20} className="fill-current" strokeWidth={1.4} />
+          <Icon name="user" size={20} className="fill-current" strokeWidth={1.4} />
         )}
       </button>
 
@@ -207,10 +207,10 @@ export default function Header({ transparent = false }: { transparent?: boolean 
 
       {/* Mobile */}
       <div className="flex h-[64px] items-center justify-between px-4 md:hidden">
-        <Link to={homeHref} aria-label="DrukDrive home" className="flex items-center">
+        <Link to={homeHref} aria-label="DrukDrive home" className="-ml-2 flex min-h-11 items-center px-2">
           <DrukDriveLogo className="h-5 w-auto text-[color:var(--color-ink)]" />
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {role === "customer" && <WishlistButton compact />}
           <AccountMenu onSignOut={handleSignOut} compact />
         </div>

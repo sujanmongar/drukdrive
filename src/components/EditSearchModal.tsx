@@ -52,7 +52,7 @@ export default function EditSearchModal({
           {/* Ride type stays fixed to whatever was searched — it is picked on
               Home. Only One Way / Return modifies the current search. */}
           {showTripModeTabs && (
-            <div className="flex gap-5">
+            <div className="flex gap-6">
               {(["one-way", "return"] as const).map((m) => {
                 const active = value.tripMode === m;
                 return (
@@ -60,7 +60,7 @@ export default function EditSearchModal({
                     key={m}
                     type="button"
                     onClick={() => setValue((v) => ({ ...v, tripMode: m }))}
-                    className={`pb-2.5 text-sm transition-colors ${
+                    className={`flex min-h-11 items-end pb-2.5 text-base transition-colors ${
                       active ? "border-b-2 border-[color:var(--color-ink)] font-bold text-[color:var(--color-ink)]" : "text-[color:var(--color-muted)]"
                     }`}
                   >
