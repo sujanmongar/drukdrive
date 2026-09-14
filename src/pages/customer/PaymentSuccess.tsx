@@ -40,6 +40,9 @@ export default function PaymentSuccess() {
   const amountDue = amountDueParam ? Number(amountDueParam) : grandTotal;
   const paymentOption = searchParams.get("paymentOption") || "full";
   const method = searchParams.get("method") || "Credit Card";
+  const travelerName = searchParams.get("travelerName") || currentUser.name;
+  const travelerEmail = searchParams.get("travelerEmail") || currentUser.email;
+  const travelerPhone = searchParams.get("travelerPhone") || currentUser.phone;
 
   const [bookingId] = useState(generateBookingId);
 
@@ -49,6 +52,10 @@ export default function PaymentSuccess() {
     pickup,
     dropoff,
     date,
+    travelerName,
+    travelerEmail,
+    travelerPhone,
+    method,
   });
   const invoiceUrl = `${routes.invoice(bookingId)}?${followOnParams.toString()}`;
   const confirmationUrl = `${routes.confirmation(bookingId)}?${followOnParams.toString()}`;
@@ -58,14 +65,14 @@ export default function PaymentSuccess() {
     { label: "Date", value: todayFormatted() },
     { label: "Mode of Payment", value: method },
     { label: "Transaction Status", value: "Success", accent: true },
-    { label: "Customer Name", value: currentUser.name },
-    { label: "Mobile No", value: currentUser.phone },
-    { label: "Email Address", value: currentUser.email },
+    { label: "Customer Name", value: travelerName },
+    { label: "Mobile No", value: travelerPhone },
+    { label: "Email Address", value: travelerEmail },
     { label: "Payment Amount", value: format(amountDue) },
     ...(paymentOption === "half" ? [{ label: "Balance due to driver", value: format(grandTotal - amountDue) }] : []),
   ];
 
-  const emailHref = `mailto:${currentUser.email}?subject=${encodeURIComponent(
+  const emailHref = `mailto:${travelerEmail}?subject=${encodeURIComponent(
     `DrukDrive receipt — ${bookingId}`,
   )}&body=${encodeURIComponent(
     `Booking ${bookingId}\nVehicle: ${vehicle.name}\nPickup: ${pickup}\nDrop-off: ${dropoff}\nDate: ${date}\nAmount paid: ${format(amountDue)}`,

@@ -26,6 +26,10 @@ export default function Invoice() {
   const vehicleId = searchParams.get("vehicleId");
   const liveVehicle = vehicleId ? vehicles.find((v) => v.id === vehicleId) : undefined;
   const historicalBooking = bookings.find((b) => b.id === id) ?? bookings[0];
+  const travelerName = searchParams.get("travelerName") || currentUser.name;
+  const travelerEmail = searchParams.get("travelerEmail") || currentUser.email;
+  const travelerPhone = searchParams.get("travelerPhone") || currentUser.phone;
+  const method = searchParams.get("method") || "Credit Card";
 
   const vehicleName = liveVehicle ? liveVehicle.name : (vehicles.find((v) => v.id === historicalBooking.vehicleId) ?? vehicles[0]).name;
   const bookingId = liveVehicle ? id ?? historicalBooking.id : historicalBooking.id;
@@ -82,10 +86,10 @@ export default function Invoice() {
           <div className="grid grid-cols-1 gap-4 border-b border-[color:var(--color-border)] py-6 sm:grid-cols-2">
             <div>
               <p className="text-xs font-semibold text-[color:var(--color-muted)]">Invoiced To</p>
-              <p className="mt-1 text-sm font-semibold text-[color:var(--color-ink)]">{currentUser.name}</p>
+              <p className="mt-1 text-sm font-semibold text-[color:var(--color-ink)]">{travelerName}</p>
               <p className="text-sm text-[color:var(--color-muted)]">{currentUser.address}</p>
-              <p className="text-sm text-[color:var(--color-muted)]">{currentUser.phone}</p>
-              <p className="text-sm text-[color:var(--color-muted)]">{currentUser.email}</p>
+              <p className="text-sm text-[color:var(--color-muted)]">{travelerPhone}</p>
+              <p className="text-sm text-[color:var(--color-muted)]">{travelerEmail}</p>
             </div>
             <div className="sm:text-right">
               <p className="text-xs font-semibold text-[color:var(--color-muted)]">Pay To</p>
@@ -98,7 +102,7 @@ export default function Invoice() {
 
           <div className="border-b border-[color:var(--color-border)] py-6">
             <p className="mb-1 text-xs font-semibold text-[color:var(--color-muted)]">Payment Method</p>
-            <p className="text-sm font-semibold text-[color:var(--color-ink)]">Credit Card</p>
+            <p className="text-sm font-semibold text-[color:var(--color-ink)]">{method}</p>
           </div>
 
           <div className="py-6">
@@ -158,7 +162,7 @@ export default function Invoice() {
             </div>
             <div className="flex justify-between sm:block">
               <span className="text-[color:var(--color-muted)]">Method</span>
-              <span className="ml-2 font-semibold text-[color:var(--color-ink)] sm:ml-0 sm:block">Credit Card</span>
+              <span className="ml-2 font-semibold text-[color:var(--color-ink)] sm:ml-0 sm:block">{method}</span>
             </div>
             <div className="flex justify-between sm:block">
               <span className="text-[color:var(--color-muted)]">Transaction ID</span>
