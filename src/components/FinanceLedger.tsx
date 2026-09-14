@@ -68,7 +68,7 @@ export default function FinanceLedger() {
           {filterOpen && (
             <>
               <button aria-label="Close" className="fixed inset-0 z-10 cursor-default" onClick={() => setFilterOpen(false)} />
-              <div className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
+              <div className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-pop">
                 {statusFilters.map((s) => (
                   <button
                     key={s}
@@ -78,7 +78,7 @@ export default function FinanceLedger() {
                       setFilterOpen(false);
                     }}
                     className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
-                      statusFilter === s ? "bg-neutral-100 font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-neutral-50"
+                      statusFilter === s ? "bg-neutral-100 font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
                     }`}
                   >
                     {s}

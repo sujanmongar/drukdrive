@@ -138,7 +138,7 @@ export default function Home() {
             {/* Mobile keeps the stacked card. From lg the widget goes
                 horizontal — one field row plus an icon-only search button —
                 so the hero costs far less vertical space. */}
-            <div className="relative mt-8 w-full max-w-[506px] rounded-2xl bg-white p-5 shadow-[0px_2px_14px_rgba(0,0,0,0.08)] md:mt-10 md:p-6 lg:max-w-none lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
+            <div className="relative mt-8 w-full max-w-[506px] rounded-2xl bg-white p-5 shadow-card md:mt-10 md:p-6 lg:max-w-none lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
               <BookingTypeTabs value={type} onChange={setType} />
 
               {showTripModeTabs && (
@@ -246,7 +246,7 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                      className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50 lg:h-full"
+                      className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-[color:var(--color-surface-soft)] lg:h-full"
                     >
                       <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                       <span className="flex min-w-0 flex-col gap-1">
@@ -262,7 +262,7 @@ export default function Home() {
                         <button
                           type="button"
                           onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                          className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50 lg:h-full"
+                          className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-[color:var(--color-surface-soft)] lg:h-full"
                         >
                           <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                           <span className="flex min-w-0 flex-col gap-1">
@@ -345,7 +345,7 @@ export default function Home() {
                 <circle cx="360" cy="70" r="42" fill="#ffe9ad" />
               </svg>
             </div>
-            <div className="absolute -bottom-5 left-1/2 flex w-[86%] -translate-x-1/2 items-center gap-3 rounded-2xl bg-white px-4 py-3.5 shadow-[0px_8px_24px_rgba(0,0,0,0.12)]">
+            <div className="absolute -bottom-5 left-1/2 flex w-[86%] -translate-x-1/2 items-center gap-3 rounded-2xl bg-white px-4 py-3.5 shadow-pop">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-info-bg)]">
                 <Icon name="star" size={18} className="fill-current text-amber-400" />
               </span>
@@ -370,7 +370,7 @@ export default function Home() {
                   key={s.id}
                   type="button"
                   onClick={() => handleRecentSearch(s.vehicleId, s.pickup, s.dropoff)}
-                  className="flex shrink-0 items-center gap-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-transparent hover:shadow-[0px_10px_28px_rgba(25,32,36,0.14)]"
+                  className="flex shrink-0 items-center gap-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-transparent hover:shadow-lift"
                 >
                   <VehicleImage vehicleId={vehicle?.id} category={vehicle?.category} className="size-16 shrink-0 rounded-xl" />
                   <span className="flex flex-col gap-1">
@@ -443,7 +443,7 @@ export default function Home() {
                   key={f.q}
                   className={`overflow-hidden rounded-2xl border transition-all duration-300 ${
                     open
-                      ? "border-[color:var(--color-ink)] bg-white shadow-[0px_8px_24px_rgba(25,32,36,0.10)]"
+                      ? "border-[color:var(--color-ink)] bg-white shadow-pop"
                       : "border-[color:var(--color-border)] bg-white hover:border-[color:var(--color-ink)]"
                   }`}
                 >

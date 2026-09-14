@@ -16,7 +16,7 @@ export default function PreferenceLists() {
   const activeLanguage = languages.find((l) => l.code === language)!;
 
   const rowClass =
-    "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-[color:var(--color-ink-soft)] transition-colors hover:bg-neutral-50";
+    "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-[color:var(--color-ink-soft)] transition-colors hover:bg-[color:var(--color-surface-soft)]";
 
   if (view !== "root") {
     const isLanguage = view === "language";
@@ -29,7 +29,7 @@ export default function PreferenceLists() {
         <button
           type="button"
           onClick={() => setView("root")}
-          className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-neutral-50"
+          className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
         >
           <Icon name="chevron-left" size={16} />
           {isLanguage ? "Language" : "Currency"}

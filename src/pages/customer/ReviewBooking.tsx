@@ -111,7 +111,7 @@ export default function ReviewBooking() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="mb-4 flex items-center gap-2 text-lg font-bold text-[color:var(--color-ink)]"
+          className="t-h3 mb-4 flex items-center gap-2 text-[color:var(--color-ink)]"
         >
           <Icon name="chevron-left" size={22} />
           Review Your Booking
@@ -127,7 +127,7 @@ export default function ReviewBooking() {
             <BookingRouteCard vehicle={vehicle} pickup={pickup} dropoff={dropoff} date={date} />
 
             <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Personal Information</h2>
+              <h2 className="t-h3 text-[color:var(--color-ink)]">Personal Information</h2>
               {!isLoggedIn && (
                 <Link
                   to={routes.signIn}
@@ -228,7 +228,7 @@ export default function ReviewBooking() {
               </Link>
             </p>
 
-            <h2 className="mt-10 text-lg font-bold text-[color:var(--color-ink)]">Read before you book!</h2>
+            <h2 className="t-h3 mt-10 text-[color:var(--color-ink)]">Read before you book!</h2>
             <div className="mt-4 rounded-xl border border-[color:var(--color-border)] p-5">
               <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Safety precautions</h3>
               <ul className="mt-2 list-disc space-y-1.5 pl-4 text-sm text-[color:var(--color-ink-soft)]">
@@ -247,8 +247,8 @@ export default function ReviewBooking() {
 
           {/* Right: price summary sidebar */}
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
-              <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Price Summary</h2>
+            <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+              <h2 className="t-h3 text-[color:var(--color-ink)]">Price Summary</h2>
 
               <div className="mt-3 flex items-baseline justify-between">
                 <div>
@@ -277,7 +277,7 @@ export default function ReviewBooking() {
                     type="button"
                     onClick={() => setPaymentOption(opt.value)}
                     className={`flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-left transition-colors ${
-                      paymentOption === opt.value ? "bg-[color:var(--color-info-bg)]" : "hover:bg-neutral-50"
+                      paymentOption === opt.value ? "bg-[color:var(--color-info-bg)]" : "hover:bg-[color:var(--color-surface-soft)]"
                     }`}
                   >
                     <span className="flex items-start gap-3">

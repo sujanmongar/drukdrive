@@ -64,7 +64,7 @@ export default function WishlistSheet({ onClose, tripQuery = "" }: { onClose: ()
                       type="button"
                       onClick={() => toggle(vehicle.id)}
                       aria-label={`Remove ${vehicle.name} from wishlist`}
-                      className="flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-neutral-100"
+                      className="flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-[color:var(--color-surface-soft)]"
                     >
                       <Icon name="heart" size={18} className="fill-current text-[color:var(--color-danger)]" />
                     </button>
@@ -79,7 +79,7 @@ export default function WishlistSheet({ onClose, tripQuery = "" }: { onClose: ()
           <Link
             to={routes.accountWishlist}
             onClick={onClose}
-            className="block w-full rounded-xl border border-[color:var(--color-ink)] py-3 text-center text-sm font-bold text-[color:var(--color-ink)] hover:bg-neutral-50"
+            className="block w-full rounded-xl border border-[color:var(--color-ink)] py-3 text-center text-sm font-bold text-[color:var(--color-ink)] hover:bg-[color:var(--color-surface-soft)]"
           >
             View all
           </Link>

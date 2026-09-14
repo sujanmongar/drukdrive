@@ -71,7 +71,7 @@ export default function AccountBookings() {
               <Link
                 key={b.id}
                 to={routes.confirmation(b.id)}
-                className={`flex flex-col gap-3 p-4 hover:bg-neutral-50 sm:flex-row sm:items-center sm:gap-6 sm:p-5 ${
+                className={`flex flex-col gap-3 p-4 hover:bg-[color:var(--color-surface-soft)] sm:flex-row sm:items-center sm:gap-6 sm:p-5 ${
                   i !== 0 ? "border-t border-[color:var(--color-border)]" : ""
                 }`}
               >

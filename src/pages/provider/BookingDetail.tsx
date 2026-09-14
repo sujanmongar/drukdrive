@@ -24,7 +24,7 @@ export default function ProviderBookingDetail() {
           Back to bookings
         </Button>
 
-        <div className="rounded-xl border border-[color:var(--color-border)] p-6 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
+        <div className="rounded-xl border border-[color:var(--color-border)] p-6 shadow-card">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-16 rounded-lg" />

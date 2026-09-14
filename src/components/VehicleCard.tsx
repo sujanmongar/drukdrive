@@ -35,7 +35,7 @@ export default function VehicleCard({
       onKeyDown={(e) => {
         if (e.key === "Enter") navigate(detailsHref);
       }}
-      className={`w-full shrink-0 cursor-pointer overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-[0px_14px_32px_rgba(25,32,36,0.14)] ${className}`}
+      className={`w-full shrink-0 cursor-pointer overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-lift ${className}`}
     >
       <div className="relative h-[178px] w-full">
         <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full p-3" />

@@ -91,7 +91,7 @@ export default function PaymentSuccess() {
 
         <div className="mt-8 flex flex-col items-center text-center">
           <Icon name="check-circle" size={64} className="text-[color:var(--color-success)]" />
-          <h1 className="mt-4 text-2xl font-bold text-[color:var(--color-success)] md:text-3xl">Booking Successful</h1>
+          <h1 className="t-h1 mt-4 text-[color:var(--color-success)]">Booking Successful</h1>
           <p className="mt-2 max-w-sm text-sm text-[color:var(--color-ink-soft)]">
             We are processing the same and you will be notified via email.
           </p>

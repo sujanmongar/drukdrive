@@ -20,7 +20,7 @@ export default function ProfileHero({
           className="size-20 shrink-0 rounded-full bg-neutral-100 object-cover md:size-24"
         />
         <div>
-          <h1 className="text-2xl font-bold text-[color:var(--color-ink)] md:text-[32px]">Welcome, {currentUser.name.split(" ")[0]}</h1>
+          <h1 className="t-h1 text-[color:var(--color-ink)]">Welcome, {currentUser.name.split(" ")[0]}</h1>
           <p className="mt-1 text-sm text-[color:var(--color-muted)]">Joined in {currentUser.joinedYear}</p>
           <Link to={editHref} className="mt-2 inline-block text-sm font-semibold text-[color:var(--color-ink)] underline">
             Edit profile

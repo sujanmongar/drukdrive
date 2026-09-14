@@ -27,7 +27,7 @@ export default function PriceSummarySheet({
           <button type="button" onClick={onClose} aria-label="Close">
             <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />
           </button>
-          <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Price Summary</h2>
+          <h2 className="t-h3 text-[color:var(--color-ink)]">Price Summary</h2>
         </div>
 
         <div className="flex flex-col gap-3 p-5 text-sm">

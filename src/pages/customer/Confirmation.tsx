@@ -45,13 +45,13 @@ export default function Confirmation() {
       <div className="mx-auto max-w-[720px] px-4 py-12 md:px-10">
         <div className="flex flex-col items-center text-center">
           <Icon name="check-circle" size={56} className="text-[color:var(--color-success)]" />
-          <h1 className="mt-4 text-2xl font-bold text-[color:var(--color-ink)] md:text-3xl">Booking confirmed</h1>
+          <h1 className="t-h1 mt-4 text-[color:var(--color-ink)]">Booking confirmed</h1>
           <p className="mt-1.5 text-sm text-[color:var(--color-muted)]">
             Your ride is booked. Details have been sent to your email.
           </p>
         </div>
 
-        <div className="mt-8 rounded-xl border border-[color:var(--color-border)] p-6 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
+        <div className="mt-8 rounded-xl border border-[color:var(--color-border)] p-6 shadow-card">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-16 rounded-lg" />

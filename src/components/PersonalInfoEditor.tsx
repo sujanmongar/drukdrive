@@ -16,7 +16,7 @@ type FieldKey = "gender" | "email" | "phone" | "address" | "bio";
 type FieldType = "text" | "email" | "tel" | "select" | "textarea";
 
 const editButtonClass =
-  "shrink-0 rounded-lg px-2.5 py-1 text-sm font-medium text-[color:var(--color-ink)] underline hover:bg-neutral-50";
+  "shrink-0 rounded-lg px-2.5 py-1 text-sm font-medium text-[color:var(--color-ink)] underline hover:bg-[color:var(--color-surface-soft)]";
 const inputClass =
   "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm font-semibold text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)]";
 

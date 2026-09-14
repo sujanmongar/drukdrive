@@ -136,7 +136,7 @@ export default function PaymentVerify() {
           {/* Right: booking summary sidebar */}
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="flex flex-col gap-4">
-              <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Your Booking</h2>
+              <h2 className="t-h3 text-[color:var(--color-ink)]">Your Booking</h2>
               <BookingRouteCard vehicle={vehicle} pickup={pickup} dropoff={dropoff} date={date} />
               <div className="flex items-center justify-between rounded-xl border border-[color:var(--color-border)] bg-white p-4">
                 <p className="text-base font-bold text-[color:var(--color-ink)]">Grand Total</p>

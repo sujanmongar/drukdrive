@@ -33,7 +33,7 @@ export default function BookingTypeTabs({
             aria-pressed={active}
             className={`flex shrink-0 items-center gap-2 rounded-xl border px-3.5 py-2.5 transition-all duration-200 sm:px-4 sm:py-3 ${
               active
-                ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white shadow-[0px_4px_12px_rgba(25,32,36,0.22)]"
+                ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white shadow-card"
                 : "border-[color:var(--color-border)] bg-white text-[color:var(--color-ink)] hover:-translate-y-0.5 hover:border-[color:var(--color-ink)]"
             }`}
           >

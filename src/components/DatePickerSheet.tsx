@@ -76,7 +76,7 @@ function MonthGrid({
                     ? "bg-[color:var(--color-ink)] font-bold text-white"
                     : inRange
                       ? "bg-neutral-100 text-[color:var(--color-ink)]"
-                      : "text-[color:var(--color-ink)] hover:bg-neutral-100"
+                      : "text-[color:var(--color-ink)] hover:bg-[color:var(--color-surface-soft)]"
               }`}
             >
               {d}

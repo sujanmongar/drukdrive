@@ -38,7 +38,7 @@ export default function NotificationsDropdown({
       {open && (
         <>
           <button aria-label="Close" className="fixed inset-0 z-40 cursor-default" onClick={() => setOpen(false)} />
-          <div className="animate-popover absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
+          <div className="animate-popover absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white shadow-pop">
             <div className="border-b border-[color:var(--color-border)] px-4 py-3">
               <p className="text-sm font-bold text-[color:var(--color-ink)]">Notifications</p>
             </div>
@@ -57,7 +57,7 @@ export default function NotificationsDropdown({
             <Link
               to={viewAllHref}
               onClick={() => setOpen(false)}
-              className="block px-4 py-3 text-center text-sm font-semibold text-[color:var(--color-ink)] hover:bg-neutral-50"
+              className="block px-4 py-3 text-center text-sm font-semibold text-[color:var(--color-ink)] hover:bg-[color:var(--color-surface-soft)]"
             >
               View all
             </Link>

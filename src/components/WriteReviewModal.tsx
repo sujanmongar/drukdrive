@@ -27,7 +27,7 @@ export default function WriteReviewModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 z-[70] flex items-end justify-center bg-black/40 sm:items-center sm:p-4">
       <div className="flex w-full max-w-[440px] flex-col rounded-t-2xl bg-white p-5 sm:rounded-2xl">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Write a review</h2>
+          <h2 className="t-h3 text-[color:var(--color-ink)]">Write a review</h2>
           <button type="button" onClick={onClose} aria-label="Close">
             <Icon name="close" size={20} className="text-[color:var(--color-ink)]" />
           </button>

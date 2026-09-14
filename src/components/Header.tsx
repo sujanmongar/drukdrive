@@ -107,7 +107,7 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
       {open && (
         <>
           <button aria-label="Close" className="fixed inset-0 z-40 cursor-default" onClick={() => setOpen(false)} />
-          <div className="animate-popover absolute right-0 top-full z-50 mt-2 max-h-[80svh] w-64 overflow-y-auto rounded-2xl border border-[color:var(--color-border)] bg-white py-1.5 shadow-[0px_10px_30px_rgba(0,0,0,0.14)]">
+          <div className="animate-popover absolute right-0 top-full z-50 mt-2 max-h-[80svh] w-64 overflow-y-auto rounded-2xl border border-[color:var(--color-border)] bg-white py-1.5 shadow-pop">
             {isLoggedIn ? (
               <>
                 <div className="flex items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3">
@@ -121,7 +121,7 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
                 <button
                   type="button"
                   onClick={handleSwitch}
-                  className="flex w-full items-center gap-2.5 border-b border-[color:var(--color-border)] px-4 py-3 text-left text-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-neutral-50"
+                  className="flex w-full items-center gap-2.5 border-b border-[color:var(--color-border)] px-4 py-3 text-left text-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
                 >
                   <Icon name={target.icon} size={17} />
                   {target.label}
@@ -133,7 +133,7 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
                       key={l.to}
                       to={l.to}
                       onClick={() => setOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[color:var(--color-ink-soft)] transition-colors hover:bg-neutral-50"
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[color:var(--color-ink-soft)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
                     >
                       <Icon name={l.icon} size={17} />
                       {l.label}
@@ -165,7 +165,7 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
                   setOpen(false);
                   onSignOut();
                 }}
-                className="flex w-full items-center gap-2.5 border-t border-[color:var(--color-border)] px-4 py-2.5 text-left text-sm font-semibold text-[color:var(--color-danger)] transition-colors hover:bg-neutral-50"
+                className="flex w-full items-center gap-2.5 border-t border-[color:var(--color-border)] px-4 py-2.5 text-left text-sm font-semibold text-[color:var(--color-danger)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
               >
                 <Icon name="logout" size={17} />
                 Sign out

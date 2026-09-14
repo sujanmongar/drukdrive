@@ -325,7 +325,7 @@ export default function SearchResults() {
         aria-pressed={view === "grid"}
         onClick={() => setView("grid")}
         className={`flex size-8 items-center justify-center rounded-lg transition-colors ${
-          view === "grid" ? "bg-[color:var(--color-ink)] text-white" : "text-[color:var(--color-ink-soft)] hover:bg-neutral-100"
+          view === "grid" ? "bg-[color:var(--color-ink)] text-white" : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
         }`}
       >
         <Icon name="grid" size={15} />
@@ -336,7 +336,7 @@ export default function SearchResults() {
         aria-pressed={view === "list"}
         onClick={() => setView("list")}
         className={`flex size-8 items-center justify-center rounded-lg transition-colors ${
-          view === "list" ? "bg-[color:var(--color-ink)] text-white" : "text-[color:var(--color-ink-soft)] hover:bg-neutral-100"
+          view === "list" ? "bg-[color:var(--color-ink)] text-white" : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
         }`}
       >
         <Icon name="list" size={15} />
@@ -367,7 +367,7 @@ export default function SearchResults() {
             className="hidden w-[292px] shrink-0 self-start overflow-y-auto lg:sticky lg:block"
             style={{ top: headerHeight + 16, maxHeight: `calc(100svh - ${headerHeight + 32}px)` }}
           >
-            <div className="rounded-2xl border border-[color:var(--color-border)] bg-white p-6 shadow-[0px_1px_3px_rgba(25,32,36,0.10)]">
+            <div className="rounded-2xl border border-[color:var(--color-border)] bg-white p-6 shadow-card">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="t-h3 text-[color:var(--color-ink)]">Filters</h2>
                 {activeFilterCount > 0 && (
@@ -451,7 +451,7 @@ export default function SearchResults() {
                       {sortOpen && (
                         <>
                           <button aria-label="Close" className="fixed inset-0 z-10 cursor-default" onClick={() => setSortOpen(false)} />
-                          <div className="animate-popover absolute right-0 z-20 mt-2 w-52 rounded-2xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-[0px_12px_32px_rgba(0,0,0,0.14)]">
+                          <div className="animate-popover absolute right-0 z-20 mt-2 w-52 rounded-2xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-pop">
                             {sortOptions.map((opt) => (
                               <button
                                 key={opt.value}
@@ -461,7 +461,7 @@ export default function SearchResults() {
                                   setSortOpen(false);
                                 }}
                                 className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
-                                  sort === opt.value ? "bg-[#f4f4f4] font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-neutral-50"
+                                  sort === opt.value ? "bg-[#f4f4f4] font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
                                 }`}
                               >
                                 {opt.label}
@@ -575,7 +575,7 @@ export default function SearchResults() {
                     setSort(opt.value);
                     setSortOpen(false);
                   }}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left hover:bg-neutral-50"
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left hover:bg-[color:var(--color-surface-soft)]"
                 >
                   <span
                     className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${

@@ -48,7 +48,7 @@ export default function AccountNotifications() {
         </div>
 
         {notifications.length === 0 ? (
-          <div className="mt-10 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] bg-white py-16 text-center shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
+          <div className="mt-10 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] bg-white py-16 text-center shadow-card">
             <Icon name="bell" size={32} className="text-[color:var(--color-muted)]" />
             <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No notifications yet</p>
           </div>
@@ -59,7 +59,7 @@ export default function AccountNotifications() {
                 key={n.id}
                 type="button"
                 onClick={() => toggleRead(n.id)}
-                className={`flex w-full items-start gap-3 rounded-xl border p-4 text-left shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-colors ${
+                className={`flex w-full items-start gap-3 rounded-xl border p-4 text-left shadow-card transition-colors ${
                   n.read
                     ? "border-[color:var(--color-border)] bg-white"
                     : "border-[color:var(--color-ink)]/20 bg-[#f7f7f7]"

@@ -66,7 +66,7 @@ export default function ProviderVehicles() {
                   type="button"
                   onClick={() => setOpenMenu((cur) => (cur === v.id ? null : v.id))}
                   aria-label="Vehicle options"
-                  className="shrink-0 rounded-full p-1.5 hover:bg-neutral-100"
+                  className="shrink-0 rounded-full p-1.5 hover:bg-[color:var(--color-surface-soft)]"
                 >
                   <Icon name="more" size={18} className="text-[color:var(--color-muted)]" />
                 </button>
@@ -78,18 +78,18 @@ export default function ProviderVehicles() {
                       className="fixed inset-0 z-30 cursor-default"
                       onClick={() => setOpenMenu(null)}
                     />
-                    <div className="absolute right-4 top-14 z-40 w-40 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white py-1 shadow-[0px_2px_14px_rgba(0,0,0,0.1)]">
+                    <div className="absolute right-4 top-14 z-40 w-40 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white py-1 shadow-pop">
                       <Link
                         to={`${routes.providerVehicleAdd}?edit=${v.id}`}
                         onClick={() => setOpenMenu(null)}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-[color:var(--color-ink-soft)] hover:bg-neutral-50"
+                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
                       >
                         <Icon name="edit" size={15} />
                         Edit
                       </Link>
                       <button
                         type="button"
-                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-[color:var(--color-danger)] hover:bg-neutral-50"
+                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-[color:var(--color-danger)] hover:bg-[color:var(--color-surface-soft)]"
                         onClick={() => handleRemove(v.id, v.name)}
                       >
                         <Icon name="trash" size={15} />

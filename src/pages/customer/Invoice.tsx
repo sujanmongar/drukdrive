@@ -63,10 +63,10 @@ export default function Invoice() {
           </Button>
         </div>
 
-        <div className="rounded-xl border border-[color:var(--color-border)] p-8 shadow-[0px_1px_3px_rgba(25,32,36,0.16)] print:border-0 print:p-0 print:shadow-none">
+        <div className="rounded-xl border border-[color:var(--color-border)] p-8 shadow-card print:border-0 print:p-0 print:shadow-none">
           <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-neutral-50 px-5 py-4">
             <DrukDriveLogo className="h-6 w-auto text-[color:var(--color-ink)]" />
-            <p className="text-lg font-bold text-[color:var(--color-ink)]">Invoice</p>
+            <p className="t-h3 text-[color:var(--color-ink)]">Invoice</p>
           </div>
 
           <div className="mt-5 flex flex-wrap items-start justify-between gap-4 border-b border-[color:var(--color-border)] pb-6 text-sm">

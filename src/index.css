@@ -33,8 +33,13 @@
   --radius-2xl: 1.5rem; /* 24px */
   --radius-3xl: 2rem; /* 32px */
 
-  --shadow-card: 0px 1px 3px rgba(25, 32, 36, 0.16);
-  --shadow-popup: 0px 2px 14px 0px rgba(0, 0, 0, 0.1);
+  /* Elevation scale. Four steps, used everywhere — resting surfaces, the
+     lift on hover, floating menus, and full modals. */
+  --shadow-card: 0 1px 3px rgba(25, 32, 36, 0.10);
+  --shadow-lift: 0 14px 32px rgba(25, 32, 36, 0.14);
+  --shadow-pop: 0 12px 32px rgba(25, 32, 36, 0.16);
+  --shadow-modal: 0 18px 48px rgba(25, 32, 36, 0.14);
+  --shadow-popup: 0 2px 14px rgba(0, 0, 0, 0.1);
 }
 
 html {

@@ -45,7 +45,7 @@ export default function EditSearchModal({
           <button type="button" onClick={onClose} aria-label="Close">
             <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />
           </button>
-          <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Edit your search</h2>
+          <h2 className="t-h3 text-[color:var(--color-ink)]">Edit your search</h2>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
@@ -104,7 +104,7 @@ export default function EditSearchModal({
                 <button
                   type="button"
                   onClick={() => setActiveField("date")}
-                  className="flex h-14 flex-1 items-center gap-2 px-3 text-left hover:bg-neutral-50"
+                  className="flex h-14 flex-1 items-center gap-2 px-3 text-left hover:bg-[color:var(--color-surface-soft)]"
                 >
                   <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                   <span className="flex min-w-0 flex-col gap-1">
@@ -118,7 +118,7 @@ export default function EditSearchModal({
                 <button
                   type="button"
                   onClick={() => setActiveField("date")}
-                  className="flex h-14 flex-1 items-center gap-2 px-3 text-left hover:bg-neutral-50"
+                  className="flex h-14 flex-1 items-center gap-2 px-3 text-left hover:bg-[color:var(--color-surface-soft)]"
                 >
                   <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                   <span className="flex min-w-0 flex-col gap-1">
@@ -133,7 +133,7 @@ export default function EditSearchModal({
               <button
                 type="button"
                 onClick={() => setActiveField("date")}
-                className="flex h-14 items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left hover:bg-neutral-50"
+                className="flex h-14 items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left hover:bg-[color:var(--color-surface-soft)]"
               >
                 <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                 <span className="flex min-w-0 flex-col gap-1">

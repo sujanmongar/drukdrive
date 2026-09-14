@@ -69,7 +69,7 @@ export default function Payment() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
           {/* Left: payment methods */}
           <div className="min-w-0">
-            <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Choose your payment method</h2>
+            <h2 className="t-h3 text-[color:var(--color-ink)]">Choose your payment method</h2>
 
             <div className="mt-4 flex flex-col gap-3">
               {/* Net Banking */}
@@ -238,7 +238,7 @@ export default function Payment() {
           {/* Right: booking summary sidebar */}
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="flex flex-col gap-4">
-              <h2 className="text-lg font-bold text-[color:var(--color-ink)]">Your Booking</h2>
+              <h2 className="t-h3 text-[color:var(--color-ink)]">Your Booking</h2>
               <BookingRouteCard vehicle={vehicle} pickup={pickup} dropoff={dropoff} date={date} />
 
               {travelerName && (

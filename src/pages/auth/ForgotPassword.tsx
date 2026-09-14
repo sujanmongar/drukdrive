@@ -60,7 +60,7 @@ export default function ForgotPassword() {
     <PageShell noFooter>
       <div className="mx-auto flex min-h-[75vh] w-full max-w-[1280px] items-center justify-center px-4 py-12 md:px-10">
         {/* Desktop */}
-        <div className="relative hidden w-full max-w-[440px] flex-col rounded-3xl bg-white p-9 shadow-[0px_18px_48px_rgba(25,32,36,0.14)] md:flex">
+        <div className="relative hidden w-full max-w-[440px] flex-col rounded-3xl bg-white p-9 shadow-modal md:flex">
           <button
             type="button"
             onClick={() => navigate(-1)}

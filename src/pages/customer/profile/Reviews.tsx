@@ -56,7 +56,7 @@ export default function AccountReviews() {
         </div>
 
         {reviews.length === 0 ? (
-          <div className="mt-10 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] bg-white py-16 text-center shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
+          <div className="mt-10 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] bg-white py-16 text-center shadow-card">
             <Icon name="star" size={32} className="text-[color:var(--color-muted)]" />
             <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No reviews yet</p>
           </div>
@@ -65,7 +65,7 @@ export default function AccountReviews() {
             {reviews.map((r) => (
               <div
                 key={r.id}
-                className="flex gap-4 rounded-xl border border-[color:var(--color-border)] bg-white p-4 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]"
+                className="flex gap-4 rounded-xl border border-[color:var(--color-border)] bg-white p-4 shadow-card"
               >
                 <img src={r.avatar} alt={r.author} className="size-11 shrink-0 rounded-full object-cover" />
                 <div className="min-w-0 flex-1">
