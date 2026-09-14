@@ -281,6 +281,8 @@ export default function Home() {
                       initialDropoff={dropoffDate ?? undefined}
                       initialPickupTime={pickupTime}
                       initialDropoffTime={dropoffTime}
+                      pickupLabel={firstPointLabel}
+                      dropoffLabel={secondPointLabel}
                       onConfirm={({ pickup: p, pickupTime: pt, dropoff: d, dropoffTime: dt }) => {
                         setPickupDate(p);
                         setPickupTime(pt);

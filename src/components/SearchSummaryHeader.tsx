@@ -156,6 +156,8 @@ export default function SearchSummaryHeader({
               initialDropoff={draft.dropoffDate ?? undefined}
               initialPickupTime={draft.pickupTime}
               initialDropoffTime={draft.dropoffTime}
+              pickupLabel="Pickup"
+              dropoffLabel="Drop off"
               onConfirm={({ pickup, pickupTime, dropoff, dropoffTime }) => {
                 setDraft((s) => ({
                   ...s,

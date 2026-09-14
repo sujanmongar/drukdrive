@@ -94,6 +94,8 @@ export default function DatePickerSheet({
   initialDropoff,
   initialPickupTime = "10:00",
   initialDropoffTime = "13:00",
+  pickupLabel = "Pick up",
+  dropoffLabel = "Drop off",
   onConfirm,
   onClose,
 }: {
@@ -103,6 +105,12 @@ export default function DatePickerSheet({
   initialDropoff?: Date;
   initialPickupTime?: string;
   initialDropoffTime?: string;
+  /** Footer label for the first date/time column — e.g. "Pickup", "Start",
+   * "Date" (single mode). Defaults to "Pick up" for existing callers. */
+  pickupLabel?: string;
+  /** Footer label for the second date/time column (range mode only) —
+   * e.g. "Dropoff", "End". Defaults to "Drop off". */
+  dropoffLabel?: string;
   onConfirm: (result: { pickup: Date; pickupTime: string; dropoff?: Date; dropoffTime?: string }) => void;
   onClose: () => void;
 }) {
@@ -182,7 +190,7 @@ export default function DatePickerSheet({
       <div className="shrink-0 border-t border-[color:var(--color-border)] p-4">
         <div className={`mb-4 flex ${mode === "range" ? "divide-x divide-[color:var(--color-border)]" : ""}`}>
           <div className="flex-1 pr-3">
-            <p className="text-xs text-[color:var(--color-muted)]">Pick up</p>
+            <p className="text-xs text-[color:var(--color-muted)]">{pickupLabel}</p>
             <p className="text-sm font-bold text-[color:var(--color-ink)]">{pickupDate ? formatShort(pickupDate) : "Select date"}</p>
             <select
               value={pickupTime}
@@ -196,7 +204,7 @@ export default function DatePickerSheet({
           </div>
           {mode === "range" && (
             <div className="flex-1 pl-3">
-              <p className="text-xs text-[color:var(--color-muted)]">Drop off</p>
+              <p className="text-xs text-[color:var(--color-muted)]">{dropoffLabel}</p>
               <p className="text-sm font-bold text-[color:var(--color-ink)]">
                 {dropoffDate ? formatShort(dropoffDate) : "Select date"}
               </p>
