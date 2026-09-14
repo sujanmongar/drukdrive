@@ -14,7 +14,7 @@ export default function AccountFinance() {
         <SecondaryTabs tabs={accountTabs} />
       </div>
 
-      <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-10 md:py-10">
+      <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <h2 className="t-h2 text-[color:var(--color-ink)]">Finance</h2>
         <FinanceLedger />
       </div>

@@ -39,7 +39,7 @@ export default function AccountReviews() {
         <SecondaryTabs tabs={accountTabs} />
       </div>
 
-      <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-10 md:py-10">
+      <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="t-h2 text-[color:var(--color-ink)]">Reviews</h2>

@@ -20,7 +20,7 @@ export default function AccountPreferences() {
         <SecondaryTabs tabs={accountTabs} />
       </div>
 
-      <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-10 md:py-10">
+      <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-1.5 text-sm text-[color:var(--color-muted)]">

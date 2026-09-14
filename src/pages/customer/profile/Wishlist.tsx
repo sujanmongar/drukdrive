@@ -20,12 +20,12 @@ export default function AccountWishlist() {
         <SecondaryTabs tabs={accountTabs} />
       </div>
 
-      <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-10 md:py-10">
+      <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <h2 className="t-h2 text-[color:var(--color-ink)]">Wishlist</h2>
         <p className="mt-1 text-sm text-[color:var(--color-muted)]">Vehicles you've saved for later.</p>
 
         {saved.length === 0 ? (
-          <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
+          <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-[color:var(--color-border)] py-16 text-center">
             <Icon name="heart" size={32} className="text-[color:var(--color-muted)]" />
             <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No saved vehicles yet</p>
             <p className="mt-1 max-w-xs text-sm text-[color:var(--color-muted)]">

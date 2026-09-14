@@ -29,7 +29,7 @@ export default function ProviderNotifications() {
         <SecondaryTabs tabs={providerTabs} />
       </div>
 
-      <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-10 md:py-10">
+      <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="t-h2 text-[color:var(--color-ink)]">Notifications</h2>
@@ -49,7 +49,7 @@ export default function ProviderNotifications() {
         </div>
 
         {notifications.length === 0 ? (
-          <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
+          <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-[color:var(--color-border)] py-16 text-center">
             <Icon name="bell" size={32} className="text-[color:var(--color-muted)]" />
             <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">You don&rsquo;t have any messages</p>
           </div>

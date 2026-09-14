@@ -396,7 +396,7 @@ export default function Home() {
                 key={v.id}
                 vehicle={v}
                 tripQuery={tripQuery}
-                className="w-[260px] shrink-0 sm:w-[280px] lg:w-[calc((100%-3.75rem)/4)]"
+                className="shrink-0 basis-[86%] sm:basis-[280px] lg:basis-[calc((100%-3.75rem)/4)]"
               />
             ))}
           </div>
@@ -413,7 +413,7 @@ export default function Home() {
                 key={t.category}
                 type="button"
                 onClick={() => navigate(`${routes.search}?category=${encodeURIComponent(t.category)}`)}
-                className="group w-[210px] shrink-0 cursor-pointer text-left sm:w-[220px] lg:w-[calc((100%-3.75rem)/4)]"
+                className="group shrink-0 basis-[86%] cursor-pointer text-left sm:basis-[220px] lg:basis-[calc((100%-3.75rem)/4)]"
               >
                 <div className="flex aspect-[5/4] items-center justify-center overflow-hidden rounded-2xl bg-[color:var(--color-surface-sunken)] transition-colors duration-300 group-hover:bg-[color:var(--color-surface-soft)]">
                   <VehicleImage

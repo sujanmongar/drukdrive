@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "./Icon";
 import { financeSummary } from "../data/mockData";
 
@@ -36,6 +36,25 @@ export default function FinanceLedger() {
 
   const totalDebit = rows.reduce((s, r) => s + r.debit, 0);
   const totalCredit = rows.reduce((s, r) => s + r.credit, 0);
+
+  // Hiding the scrollbar leaves a six-column table with no hint it scrolls on
+  // a phone. A right-edge fade stands in for it, and clears once the user has
+  // reached the last column.
+  const tableWrapRef = useRef<HTMLDivElement>(null);
+  const [moreToRight, setMoreToRight] = useState(false);
+  useEffect(() => {
+    const node = tableWrapRef.current;
+    if (!node) return;
+    const update = () => setMoreToRight(node.scrollLeft + node.clientWidth < node.scrollWidth - 1);
+    update();
+    node.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    return () => {
+      node.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
+  }, [rows]);
 
   return (
     <>
@@ -101,7 +120,8 @@ export default function FinanceLedger() {
           <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No {statusFilter.toLowerCase()} transactions</p>
         </div>
       ) : (
-        <div className="scrollbar-hide mt-6 overflow-x-auto rounded-xl border border-[color:var(--color-border)]">
+        <div className="relative mt-6 rounded-xl border border-[color:var(--color-border)]">
+          <div ref={tableWrapRef} className="scrollbar-hide overflow-x-auto rounded-xl">
           <table className="w-full min-w-[720px] text-sm">
             <thead>
               <tr className="border-b border-[color:var(--color-border)] bg-neutral-50 text-left text-xs font-semibold text-[color:var(--color-muted)]">
@@ -146,6 +166,13 @@ export default function FinanceLedger() {
               </tr>
             </tfoot>
           </table>
+          </div>
+          {moreToRight && (
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 right-0 w-12 rounded-r-xl bg-gradient-to-l from-white to-transparent"
+            />
+          )}
         </div>
       ) : (
         <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">

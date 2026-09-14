@@ -35,7 +35,7 @@ export default function AccountBookings() {
         <SecondaryTabs tabs={accountTabs} />
       </div>
 
-      <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-10 md:py-10">
+      <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <div className="flex items-center justify-between">
           <h2 className="t-h2 text-[color:var(--color-ink)]">Bookings</h2>
           <span className="text-sm font-semibold text-[color:var(--color-ink)] underline">See all booking ({bookings.length})</span>
@@ -59,12 +59,12 @@ export default function AccountBookings() {
         </div>
 
         {filtered.length === 0 ? (
-          <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
+          <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-[color:var(--color-border)] py-16 text-center">
             <Icon name="car" size={32} className="text-[color:var(--color-muted)]" />
             <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No {filter.toLowerCase()} bookings</p>
           </div>
         ) : (
-          <div className="mt-6 overflow-hidden rounded-xl border border-[color:var(--color-border)]">
+          <div className="mt-8 overflow-hidden rounded-2xl border border-[color:var(--color-border)]">
             {filtered.map((b, i) => {
               const vehicle = vehicles.find((v) => v.id === b.vehicleId) ?? vehicles[0];
               return (

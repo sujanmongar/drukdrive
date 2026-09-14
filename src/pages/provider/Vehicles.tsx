@@ -31,7 +31,7 @@ export default function ProviderVehicles() {
         <SecondaryTabs tabs={providerTabs} />
       </div>
 
-      <div className="mx-auto max-w-[1280px] px-4 py-8 md:px-10 md:py-10">
+      <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <div className="flex items-center justify-between">
           <h2 className="t-h2 text-[color:var(--color-ink)]">My Vehicle</h2>
           <Button to={routes.providerVehicleAdd} variant="primary" size="sm">
@@ -40,7 +40,7 @@ export default function ProviderVehicles() {
         </div>
 
         {driverVehicles.length === 0 ? (
-          <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
+          <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-[color:var(--color-border)] py-16 text-center">
             <Icon name="car" size={32} className="text-[color:var(--color-muted)]" />
             <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No vehicles added yet</p>
             <Button to={routes.providerVehicleAdd} variant="primary" size="sm" className="mt-4">
@@ -48,11 +48,11 @@ export default function ProviderVehicles() {
             </Button>
           </div>
         ) : (
-          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+          <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:flex-wrap">
             {driverVehicles.map((v) => (
               <div
                 key={v.id}
-                className="relative flex w-full items-center gap-4 rounded-xl border border-[color:var(--color-border)] p-4 sm:w-[380px]"
+                className="relative flex w-full items-center gap-4 rounded-2xl border border-[color:var(--color-border)] p-5 sm:w-[380px]"
               >
                 <VehicleImage vehicleId={v.id} category={v.category} className="size-14 shrink-0 rounded-lg" />
                 <div className="min-w-0 flex-1">
