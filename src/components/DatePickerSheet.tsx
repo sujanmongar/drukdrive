@@ -192,15 +192,19 @@ export default function DatePickerSheet({
           <div className="flex-1 pr-3">
             <p className="text-xs text-[color:var(--color-muted)]">{pickupLabel}</p>
             <p className="text-sm font-bold text-[color:var(--color-ink)]">{pickupDate ? formatShort(pickupDate) : "Select date"}</p>
-            <select
-              value={pickupTime}
-              onChange={(e) => setPickupTime(e.target.value)}
-              className="mt-0.5 rounded-md bg-transparent text-sm font-semibold text-[color:var(--color-success)] outline-none"
-            >
-              {TIME_OPTIONS.map((t) => (
-                <option key={t}>{t}</option>
-              ))}
-            </select>
+            <label className="mt-1.5 inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-[color:var(--color-success-bg)] px-2 py-1">
+              <Icon name="clock" size={12} className="shrink-0 text-[color:var(--color-success)]" />
+              <select
+                value={pickupTime}
+                onChange={(e) => setPickupTime(e.target.value)}
+                className="appearance-none bg-transparent text-sm font-semibold text-[color:var(--color-success)] outline-none"
+              >
+                {TIME_OPTIONS.map((t) => (
+                  <option key={t}>{t}</option>
+                ))}
+              </select>
+              <Icon name="chevron-down" size={11} className="shrink-0 text-[color:var(--color-success)]" />
+            </label>
           </div>
           {mode === "range" && (
             <div className="flex-1 pl-3">
@@ -208,15 +212,19 @@ export default function DatePickerSheet({
               <p className="text-sm font-bold text-[color:var(--color-ink)]">
                 {dropoffDate ? formatShort(dropoffDate) : "Select date"}
               </p>
-              <select
-                value={dropoffTime}
-                onChange={(e) => setDropoffTime(e.target.value)}
-                className="mt-0.5 rounded-md bg-transparent text-sm font-semibold text-[color:var(--color-success)] outline-none"
-              >
-                {TIME_OPTIONS.map((t) => (
-                  <option key={t}>{t}</option>
-                ))}
-              </select>
+              <label className="mt-1.5 inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-[color:var(--color-success-bg)] px-2 py-1">
+                <Icon name="clock" size={12} className="shrink-0 text-[color:var(--color-success)]" />
+                <select
+                  value={dropoffTime}
+                  onChange={(e) => setDropoffTime(e.target.value)}
+                  className="appearance-none bg-transparent text-sm font-semibold text-[color:var(--color-success)] outline-none"
+                >
+                  {TIME_OPTIONS.map((t) => (
+                    <option key={t}>{t}</option>
+                  ))}
+                </select>
+                <Icon name="chevron-down" size={11} className="shrink-0 text-[color:var(--color-success)]" />
+              </label>
             </div>
           )}
         </div>
