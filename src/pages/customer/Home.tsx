@@ -13,6 +13,7 @@ import type { BookingType } from "../../lib/routes";
 import { vehicles, recentSearches, popularCarTypes, faqs } from "../../data/mockData";
 import { useAuth } from "../../lib/auth";
 import { formatTripDate } from "../../lib/formatTripDate";
+import { estimateDurationHours, formatDurationHours } from "../../lib/tripDuration";
 
 type TripMode = "one-way" | "return";
 
@@ -40,6 +41,8 @@ export default function Home() {
   const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
 
   const showTripModeTabs = type === "outstation" || type === "rental";
+  const showDuration = type === "daily";
+  const durationHours = estimateDurationHours(pickup, dropoff);
   const dateMode = showTripModeTabs && tripMode === "return" ? "range" : "single";
 
   function toggleFaq(i: number) {
@@ -231,7 +234,11 @@ export default function Home() {
                 </div>
               </div>
 
-              <p className="mt-3 text-sm font-semibold text-[#00b53a]">Duration: 3 hrs</p>
+              {showDuration && (
+                <p className="mt-3 text-sm font-semibold text-[#00b53a]">
+                  Duration: {formatDurationHours(durationHours)}
+                </p>
+              )}
 
               <button
                 type="button"

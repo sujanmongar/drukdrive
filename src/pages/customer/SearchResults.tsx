@@ -12,6 +12,7 @@ import CheckboxRow from "../../components/CheckboxRow";
 import { vehicles as allVehicles, type Vehicle } from "../../data/mockData";
 import { formatTripDate } from "../../lib/formatTripDate";
 import { useCurrency } from "../../lib/currency";
+import { cityOf } from "../../lib/tripDuration";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 const DEFAULT_PICKUP = "Thimphu, Clock Tower Square";
@@ -51,10 +52,6 @@ function sortVehicles(list: Vehicle[], sort: SortOption): Vehicle[] {
     default:
       return copy;
   }
-}
-
-function cityOf(address: string) {
-  return address.split(",")[0]?.trim() || address;
 }
 
 // Checkbox list that truncates to `initialCount` options with a "View
