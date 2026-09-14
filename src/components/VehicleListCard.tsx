@@ -36,7 +36,7 @@ export default function VehicleListCard({
       onKeyDown={(e) => {
         if (e.key === "Enter") navigate(detailsHref);
       }}
-      className="flex w-full cursor-pointer items-stretch overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-[0px_14px_32px_rgba(25,32,36,0.14)] lg:items-center"
+      className="flex w-full cursor-pointer items-stretch overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-[0px_14px_32px_rgba(25,32,36,0.14)]"
     >
       <div className="relative w-[118px] shrink-0 self-stretch overflow-hidden sm:w-[180px] lg:w-[250px]">
         <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full p-2 lg:p-3" />
@@ -59,7 +59,7 @@ export default function VehicleListCard({
         </button>
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-3 p-3 sm:gap-4 sm:p-5 lg:flex-row lg:items-center lg:gap-6">
+      <div className="flex min-w-0 flex-1 flex-col gap-3 p-3 sm:gap-4 sm:p-5 lg:flex-row lg:items-stretch lg:gap-6">
         <div className="min-w-0 flex-1">
           <p className="t-h4 truncate text-[color:var(--color-ink)]">{vehicle.name}</p>
           <p className="t-caption text-[color:var(--color-muted)]">or similar {vehicleClassOf[vehicle.category]}</p>

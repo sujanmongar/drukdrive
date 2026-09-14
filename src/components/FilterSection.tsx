@@ -40,7 +40,7 @@ export default function FilterSection({
         </div>
         {open && children}
       </div>
-      {divider && <div className="-mx-5 my-5 border-b border-[color:var(--color-border)]" />}
+      {divider && <div className="-mx-6 my-5 border-b border-[color:var(--color-border)]" />}
     </>
   );
 }

@@ -376,7 +376,7 @@ export default function SearchResults() {
                   </button>
                 )}
               </div>
-              <div className="-mx-5 mb-5 border-b border-[color:var(--color-border)]" />
+              <div className="-mx-6 mb-5 border-b border-[color:var(--color-border)]" />
               {filterPanel}
             </div>
           </aside>
@@ -537,7 +537,7 @@ export default function SearchResults() {
                 <span className="w-[52px]" />
               )}
             </div>
-            <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">{filterPanel}</div>
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">{filterPanel}</div>
             <div className="shrink-0 border-t border-[color:var(--color-border)] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
               <button
                 type="button"
