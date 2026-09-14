@@ -39,7 +39,7 @@ export default function VehicleListCard({
       className="flex w-full cursor-pointer items-stretch gap-3 overflow-hidden rounded-xl bg-white p-3 shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] sm:gap-4 sm:p-4 lg:items-center"
     >
       <div className="relative w-[110px] shrink-0 self-stretch overflow-hidden rounded-lg sm:w-[140px] lg:h-[86px] lg:w-[150px] lg:self-auto">
-        <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full" />
+        <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full" transparent />
         <button
           type="button"
           aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}

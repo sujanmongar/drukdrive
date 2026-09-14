@@ -25,6 +25,7 @@ export default function VehicleImage({
   category,
   className = "",
   fit = "contain",
+  transparent = false,
 }: {
   vehicleId?: string;
   category?: string;
@@ -33,11 +34,14 @@ export default function VehicleImage({
    * for cards/thumbnails. "cover" fills the frame edge-to-edge — right for
    * fixed-aspect hero tiles like the "Popular car types" grid. */
   fit?: "contain" | "cover";
+  /** Drop the neutral backdrop — for cards whose own container already
+   * supplies a background (or wants the card's own bg to show through). */
+  transparent?: boolean;
 }) {
   const photo = vehicleId && photoByVehicleId[vehicleId];
   if (photo) {
     return (
-      <div className={`flex items-center justify-center overflow-hidden bg-neutral-100 ${className}`}>
+      <div className={`flex items-center justify-center overflow-hidden ${transparent ? "" : "bg-neutral-100"} ${className}`}>
         <img
           src={photo}
           alt={category ?? ""}
@@ -50,7 +54,7 @@ export default function VehicleImage({
 
   const accent = (category && accentByCategory[category]) || "#9ca3af";
   return (
-    <div className={`flex items-center justify-center bg-neutral-100 ${className}`}>
+    <div className={`flex items-center justify-center ${transparent ? "" : "bg-neutral-100"} ${className}`}>
       <svg viewBox="0 0 200 100" className="h-[62%] w-[82%]" aria-hidden="true">
         <ellipse cx="100" cy="82" rx="78" ry="6" fill="#00000012" />
         <path
