@@ -13,7 +13,14 @@ import type { BookingType } from "../../lib/routes";
 import { vehicles, recentSearches, popularCarTypes, faqs } from "../../data/mockData";
 import { useAuth } from "../../lib/auth";
 import { formatTripDate } from "../../lib/formatTripDate";
-import { estimateDurationHours, formatDurationHours } from "../../lib/tripDuration";
+import {
+  estimateDurationHours,
+  formatDurationHours,
+  daysBetween,
+  combineDateTime,
+  daysHoursBetween,
+  formatDayHour,
+} from "../../lib/tripDuration";
 
 type TripMode = "one-way" | "return";
 
@@ -40,10 +47,26 @@ export default function Home() {
 
   const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
 
-  const showTripModeTabs = type === "outstation" || type === "rental";
-  const showDuration = type === "daily";
+  // Each booking type has a genuinely different field set, matching the
+  // provided design: Daily Rides is the only tab with a One Way/Return
+  // toggle; Rental and Self Drive always show both ends of the date range
+  // (no toggle needed); Outstation and Self Drive only ask for a single
+  // "Location" (no separate pickup/drop-off pair).
+  const showTripModeTabs = type === "daily";
+  const isSingleLocation = type === "outstation" || type === "self-drive";
+  const showSecondDateBox = type === "rental" || type === "self-drive" || (type === "daily" && tripMode === "return");
+  const dateMode = showSecondDateBox ? "range" : "single";
+
   const durationHours = estimateDurationHours(pickup, dropoff);
-  const dateMode = showTripModeTabs && tripMode === "return" ? "range" : "single";
+  const dayCount = dropoffDate ? daysBetween(pickupDate, dropoffDate) : null;
+  const dayHourDuration = dropoffDate
+    ? daysHoursBetween(combineDateTime(pickupDate, pickupTime), combineDateTime(dropoffDate, dropoffTime))
+    : null;
+
+  const firstDateLabel = type === "outstation" ? "Date" : type === "self-drive" ? "Start date" : "Pick up date";
+  const firstTimeLabel = type === "outstation" ? "Time" : type === "self-drive" ? "Start time" : "Pick up time";
+  const secondDateLabel = type === "self-drive" ? "End date" : type === "rental" ? "Dropoff date" : "Drop off date";
+  const secondTimeLabel = type === "self-drive" ? "End time" : type === "rental" ? "Dropoff time" : "Drop off time";
 
   function toggleFaq(i: number) {
     setOpenFaqs((prev) => {
@@ -135,55 +158,84 @@ export default function Home() {
               )}
 
               <div className="mt-4 flex flex-col gap-3">
-                <div ref={pickupAnchorRef} className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
-                    className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left transition-colors hover:border-[color:var(--color-ink)]"
-                  >
-                    <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
-                    <span className="flex flex-col gap-1">
-                      <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up location</span>
-                      <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{pickup}</span>
-                    </span>
-                  </button>
-                  {activeField === "pickup" && (
-                    <LocationPickerSheet
-                      label="Pick up location"
-                      anchorRef={pickupAnchorRef}
-                      onSelect={(v) => {
-                        setPickup(v);
-                        setActiveField(null);
-                      }}
-                      onClose={() => setActiveField(null)}
-                    />
-                  )}
-                </div>
+                {isSingleLocation ? (
+                  <div ref={pickupAnchorRef} className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
+                      className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left transition-colors hover:border-[color:var(--color-ink)]"
+                    >
+                      <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
+                      <span className="flex flex-col gap-1">
+                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">Location</span>
+                        <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{pickup}</span>
+                      </span>
+                    </button>
+                    {activeField === "pickup" && (
+                      <LocationPickerSheet
+                        label="Location"
+                        anchorRef={pickupAnchorRef}
+                        onSelect={(v) => {
+                          setPickup(v);
+                          setActiveField(null);
+                        }}
+                        onClose={() => setActiveField(null)}
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <div ref={pickupAnchorRef} className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
+                        className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left transition-colors hover:border-[color:var(--color-ink)]"
+                      >
+                        <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
+                        <span className="flex flex-col gap-1">
+                          <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up location</span>
+                          <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{pickup}</span>
+                        </span>
+                      </button>
+                      {activeField === "pickup" && (
+                        <LocationPickerSheet
+                          label="Pick up location"
+                          anchorRef={pickupAnchorRef}
+                          onSelect={(v) => {
+                            setPickup(v);
+                            setActiveField(null);
+                          }}
+                          onClose={() => setActiveField(null)}
+                        />
+                      )}
+                    </div>
 
-                <div ref={dropoffAnchorRef} className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setActiveField(activeField === "dropoff" ? null : "dropoff")}
-                    className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left transition-colors hover:border-[color:var(--color-ink)]"
-                  >
-                    <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
-                    <span className="flex flex-col gap-1">
-                      <span className="text-[11px] text-[color:var(--color-ink-soft)]">Drop off location</span>
-                      <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{dropoff}</span>
-                    </span>
-                  </button>
-                  {activeField === "dropoff" && (
-                    <LocationPickerSheet
-                      label="Drop off location"
-                      anchorRef={dropoffAnchorRef}
-                      onSelect={(v) => {
-                        setDropoff(v);
-                        setActiveField(null);
-                      }}
-                      onClose={() => setActiveField(null)}
-                    />
-                  )}
-                </div>
+                    <div ref={dropoffAnchorRef} className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setActiveField(activeField === "dropoff" ? null : "dropoff")}
+                        className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] px-3 text-left transition-colors hover:border-[color:var(--color-ink)]"
+                      >
+                        <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
+                        <span className="flex flex-col gap-1">
+                          <span className="text-[11px] text-[color:var(--color-ink-soft)]">Drop off location</span>
+                          <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{dropoff}</span>
+                        </span>
+                      </button>
+                      {activeField === "dropoff" && (
+                        <LocationPickerSheet
+                          label="Drop off location"
+                          anchorRef={dropoffAnchorRef}
+                          onSelect={(v) => {
+                            setDropoff(v);
+                            setActiveField(null);
+                          }}
+                          onClose={() => setActiveField(null)}
+                        />
+                      )}
+                    </div>
+                  </>
+                )}
 
                 <div ref={dateAnchorRef} className="relative">
                   <div className="flex overflow-hidden rounded-xl border border-[color:var(--color-border)]">
@@ -194,7 +246,7 @@ export default function Home() {
                     >
                       <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                       <span className="flex flex-col gap-1">
-                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up date</span>
+                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">{firstDateLabel}</span>
                         <span className="text-sm font-bold text-[color:var(--color-ink-87)]">
                           {pickupDate.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })}
                         </span>
@@ -208,7 +260,7 @@ export default function Home() {
                     >
                       <Icon name="clock" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
                       <span className="flex flex-col gap-1">
-                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up time</span>
+                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">{firstTimeLabel}</span>
                         <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{pickupTime}</span>
                       </span>
                     </button>
@@ -232,12 +284,48 @@ export default function Home() {
                     />
                   )}
                 </div>
+
+                {showSecondDateBox && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveField(activeField === "date" ? null : "date")}
+                    className="flex overflow-hidden rounded-xl border border-[color:var(--color-border)] text-left"
+                  >
+                    <span className="flex h-14 flex-1 items-center gap-2 px-3 transition-colors hover:bg-neutral-50">
+                      <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
+                      <span className="flex flex-col gap-1">
+                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">{secondDateLabel}</span>
+                        <span className="text-sm font-bold text-[color:var(--color-ink-87)]">
+                          {dropoffDate
+                            ? dropoffDate.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })
+                            : "Select date"}
+                        </span>
+                      </span>
+                    </span>
+                    <span className="w-px bg-[color:var(--color-border)]" />
+                    <span className="flex h-14 flex-1 items-center gap-2 px-3 transition-colors hover:bg-neutral-50">
+                      <Icon name="clock" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
+                      <span className="flex flex-col gap-1">
+                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">{secondTimeLabel}</span>
+                        <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{dropoffTime}</span>
+                      </span>
+                    </span>
+                  </button>
+                )}
               </div>
 
-              {showDuration && (
+              {type === "daily" && (
                 <p className="mt-3 text-sm font-semibold text-[#00b53a]">
                   Duration: {formatDurationHours(durationHours)}
                 </p>
+              )}
+              {type === "rental" && dayCount !== null && (
+                <p className="mt-3 text-sm font-semibold text-[#00b53a]">
+                  Duration: {dayCount} day{dayCount === 1 ? "" : "s"}
+                </p>
+              )}
+              {type === "self-drive" && dayHourDuration !== null && (
+                <p className="mt-3 text-sm font-semibold text-[#00b53a]">Duration: {formatDayHour(dayHourDuration)}</p>
               )}
 
               <button

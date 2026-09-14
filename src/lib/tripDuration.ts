@@ -31,3 +31,33 @@ export function formatDurationHours(hours: number): string {
   if (Number.isInteger(hours)) return `${hours} hr${hours === 1 ? "" : "s"}`;
   return `${hours.toFixed(1)} hrs`;
 }
+
+// Whole calendar days between two dates (ignoring time-of-day) — for
+// Rental's "Duration: N days".
+export function daysBetween(start: Date, end: Date): number {
+  const a = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  const b = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+  return Math.max(0, Math.round((b.getTime() - a.getTime()) / 86_400_000));
+}
+
+// Merge a date with an "HH:MM" time string into one Date.
+export function combineDateTime(date: Date, time: string): Date {
+  const [h, m] = time.split(":").map(Number);
+  const combined = new Date(date);
+  combined.setHours(h || 0, m || 0, 0, 0);
+  return combined;
+}
+
+// Precise day+hour breakdown between two date-times — for Self Drive's
+// "Duration: N days M hrs".
+export function daysHoursBetween(start: Date, end: Date): { days: number; hours: number } {
+  const totalHours = Math.max(0, Math.round((end.getTime() - start.getTime()) / 3_600_000));
+  return { days: Math.floor(totalHours / 24), hours: totalHours % 24 };
+}
+
+export function formatDayHour({ days, hours }: { days: number; hours: number }): string {
+  const parts: string[] = [];
+  if (days > 0) parts.push(`${days} day${days === 1 ? "" : "s"}`);
+  if (hours > 0 || days === 0) parts.push(`${hours} hr${hours === 1 ? "" : "s"}`);
+  return parts.join(" ");
+}
