@@ -8,7 +8,6 @@ import Icon from "../../components/Icon";
 import HeroBlobs from "../../components/HeroBlobs";
 import LocationPickerSheet from "../../components/LocationPickerSheet";
 import DatePickerSheet from "../../components/DatePickerSheet";
-import TimePickerSheet from "../../components/TimePickerSheet";
 import { routes } from "../../lib/routes";
 import type { BookingType } from "../../lib/routes";
 import { vehicles, recentSearches, popularCarTypes, faqs } from "../../data/mockData";
@@ -45,12 +44,8 @@ export default function Home() {
   const pickupAnchorRef = useRef<HTMLDivElement>(null);
   const dropoffAnchorRef = useRef<HTMLDivElement>(null);
   const dateAnchorRef = useRef<HTMLDivElement>(null);
-  const pickupTimeAnchorRef = useRef<HTMLButtonElement>(null);
-  const dropoffTimeAnchorRef = useRef<HTMLButtonElement>(null);
 
-  const [activeField, setActiveField] = useState<
-    "pickup" | "dropoff" | "date" | "pickupTime" | "dropoffTime" | null
-  >(null);
+  const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
 
   // Each booking type has a genuinely different field set, matching the
   // provided design: Daily Rides is the only tab with a One Way/Return
@@ -259,9 +254,8 @@ export default function Home() {
                     </button>
                     <div className="w-px bg-[color:var(--color-border)]" />
                     <button
-                      ref={pickupTimeAnchorRef}
                       type="button"
-                      onClick={() => setActiveField(activeField === "pickupTime" ? null : "pickupTime")}
+                      onClick={() => setActiveField(activeField === "date" ? null : "date")}
                       className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
                     >
                       <Icon name="clock" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
@@ -289,18 +283,6 @@ export default function Home() {
                       onClose={() => setActiveField(null)}
                     />
                   )}
-                  {activeField === "pickupTime" && (
-                    <TimePickerSheet
-                      label={firstTimeLabel}
-                      value={pickupTime}
-                      anchorRef={pickupTimeAnchorRef}
-                      onSelect={(t) => {
-                        setPickupTime(t);
-                        setActiveField(null);
-                      }}
-                      onClose={() => setActiveField(null)}
-                    />
-                  )}
                 </div>
 
                 {showSecondDateBox && (
@@ -322,9 +304,8 @@ export default function Home() {
                     </button>
                     <div className="w-px bg-[color:var(--color-border)]" />
                     <button
-                      ref={dropoffTimeAnchorRef}
                       type="button"
-                      onClick={() => setActiveField(activeField === "dropoffTime" ? null : "dropoffTime")}
+                      onClick={() => setActiveField(activeField === "date" ? null : "date")}
                       className="flex h-14 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-neutral-50"
                     >
                       <Icon name="clock" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
@@ -333,18 +314,6 @@ export default function Home() {
                         <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{dropoffTime}</span>
                       </span>
                     </button>
-                    {activeField === "dropoffTime" && (
-                      <TimePickerSheet
-                        label={secondTimeLabel}
-                        value={dropoffTime}
-                        anchorRef={dropoffTimeAnchorRef}
-                        onSelect={(t) => {
-                          setDropoffTime(t);
-                          setActiveField(null);
-                        }}
-                        onClose={() => setActiveField(null)}
-                      />
-                    )}
                   </div>
                 )}
               </div>
