@@ -23,6 +23,9 @@ export default function VehicleCard({
   const bookingParams = new URLSearchParams(tripQuery);
   bookingParams.set("vehicleId", vehicle.id);
   const detailsHref = `${routes.reviewBooking}?${bookingParams.toString()}`;
+  const discountPct = vehicle.strikePrice
+    ? Math.round((1 - vehicle.pricePerDay / vehicle.strikePrice) * 100)
+    : null;
   return (
     <div
       role="link"
@@ -82,12 +85,15 @@ export default function VehicleCard({
         </div>
         <div className="flex items-end justify-between gap-x-2 gap-y-2">
           <div className="min-w-0 flex-1">
+            {vehicle.strikePrice && (
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-xs font-semibold text-red-500">{discountPct}% off</span>
+                <span className="text-xs text-[color:var(--color-muted)] line-through">{format(vehicle.strikePrice)}</span>
+              </div>
+            )}
             <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
               <span className="text-xl font-extrabold text-[color:var(--color-ink)]">{format(vehicle.pricePerDay)}</span>
               <span className="text-xs text-[color:var(--color-ink)]">/day</span>
-              {vehicle.strikePrice && (
-                <span className="text-xs text-red-500 line-through">{format(vehicle.strikePrice)}</span>
-              )}
             </div>
             <p className="text-[10px] text-[color:var(--color-muted)]">incl. taxes & fees</p>
           </div>

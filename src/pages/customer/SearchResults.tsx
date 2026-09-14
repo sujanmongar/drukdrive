@@ -6,12 +6,12 @@ import VehicleListCard from "../../components/VehicleListCard";
 import Icon from "../../components/Icon";
 import EditSearchModal from "../../components/EditSearchModal";
 import type { EditSearchValue } from "../../components/EditSearchModal";
-import DesktopEditSearchBar from "../../components/DesktopEditSearchBar";
 import SearchSummaryHeader from "../../components/SearchSummaryHeader";
 import FilterSection from "../../components/FilterSection";
 import CheckboxRow from "../../components/CheckboxRow";
 import { vehicles as allVehicles, type Vehicle } from "../../data/mockData";
 import { formatTripDate } from "../../lib/formatTripDate";
+import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 const DEFAULT_PICKUP = "Thimphu, Clock Tower Square";
@@ -51,10 +51,6 @@ function sortVehicles(list: Vehicle[], sort: SortOption): Vehicle[] {
     default:
       return copy;
   }
-}
-
-function formatDate(d: Date) {
-  return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
 }
 
 function cityOf(address: string) {
@@ -97,6 +93,7 @@ function ExpandableCheckboxList({
 
 export default function SearchResults() {
   usePageTitle("Search results");
+  const { format } = useCurrency();
   const [initialParams] = useSearchParams();
 
   const [search, setSearch] = useState<EditSearchValue>(() => {
@@ -236,9 +233,9 @@ export default function SearchResults() {
           className="w-full accent-[color:var(--color-ink)]"
         />
         <div className="mt-1 flex justify-between text-xs text-[color:var(--color-muted)]">
-          <span>$40</span>
-          <span className="font-semibold text-[color:var(--color-ink)]">${maxPrice}</span>
-          <span>$80</span>
+          <span>{format(40)}</span>
+          <span className="font-semibold text-[color:var(--color-ink)]">{format(maxPrice)}</span>
+          <span>{format(80)}</span>
         </div>
       </FilterSection>
 
@@ -312,13 +309,7 @@ export default function SearchResults() {
   return (
     <PageShell
       header={
-        <SearchSummaryHeader
-          pickup={search.pickup}
-          dropoff={search.dropoff}
-          dateLabel={formatDate(search.pickupDate)}
-          timeLabel={search.pickupTime}
-          onEdit={() => setEditOpen(true)}
-        />
+        <SearchSummaryHeader search={search} onSearch={handleEditSearch} onEditMobile={() => setEditOpen(true)} />
       }
     >
       <div className="mx-auto max-w-[1440px] px-4 py-6 md:px-[60px] md:py-8">
@@ -334,6 +325,7 @@ export default function SearchResults() {
                   </button>
                 )}
               </div>
+              <div className="-mx-5 mb-5 border-b border-[color:var(--color-border)]" />
               {filterPanel}
             </div>
           </aside>
@@ -387,7 +379,6 @@ export default function SearchResults() {
                     Found {results.length} cabs from {cityOf(search.pickup)} to {cityOf(search.dropoff)}
                   </h1>
                   <div className="flex items-center gap-4">
-                    {viewToggle}
                     <div className="relative">
                       <button
                         type="button"
@@ -422,6 +413,7 @@ export default function SearchResults() {
                         </>
                       )}
                     </div>
+                    {viewToggle}
                   </div>
                 </div>
 
@@ -521,14 +513,7 @@ export default function SearchResults() {
       )}
 
       {editOpen && (
-        <>
-          <div className="lg:hidden">
-            <EditSearchModal initial={search} onClose={() => setEditOpen(false)} onSearch={handleEditSearch} />
-          </div>
-          <div className="hidden lg:block">
-            <DesktopEditSearchBar initial={search} onClose={() => setEditOpen(false)} onSearch={handleEditSearch} />
-          </div>
-        </>
+        <EditSearchModal initial={search} onClose={() => setEditOpen(false)} onSearch={handleEditSearch} />
       )}
     </PageShell>
   );
