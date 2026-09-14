@@ -22,7 +22,7 @@ export default function BookingTypeTabs({
   return (
     // Pills hug their own content and the row scrolls sideways rather than
     // squeezing four equal columns into the width.
-    <div className="carousel-track -mx-1 -mb-2 flex items-stretch gap-2 overflow-x-auto px-1 pb-2 sm:gap-3">
+    <div className="carousel-track -mx-2 -my-3 flex items-stretch gap-2 overflow-x-auto px-2 py-3 sm:gap-3">
       {order.map(({ type, icon }) => {
         const active = type === value;
         return (

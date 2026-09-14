@@ -28,6 +28,11 @@
 
   --color-cream: #f8e8c8;
 
+  /* Rounder corners on cards, panels and sheets only. Controls (buttons,
+     inputs, tabs) keep Tailwind's tighter radii — they look wrong soft. */
+  --radius-2xl: 1.5rem; /* 24px */
+  --radius-3xl: 2rem; /* 32px */
+
   --shadow-card: 0px 1px 3px rgba(25, 32, 36, 0.16);
   --shadow-popup: 0px 2px 14px 0px rgba(0, 0, 0, 0.1);
 }
