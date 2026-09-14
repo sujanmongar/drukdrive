@@ -34,7 +34,7 @@ export default function VehicleCard({
       className={`w-full shrink-0 cursor-pointer overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] ${className}`}
     >
       <div className="relative h-[178px] w-full">
-        <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full" />
+        <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full p-3" />
         <button
           type="button"
           aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
