@@ -39,7 +39,7 @@ export default function VehicleListCard({
       className="flex w-full cursor-pointer items-stretch overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] lg:items-center"
     >
       <div className="relative w-[110px] shrink-0 self-stretch overflow-hidden sm:w-[140px] lg:h-[110px] lg:w-[170px] lg:self-auto">
-        <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full" transparent />
+        <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full p-3" />
         <button
           type="button"
           aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
@@ -91,7 +91,7 @@ export default function VehicleListCard({
           </div>
         </div>
 
-        <div className="mt-3 flex items-end justify-between gap-x-2 gap-y-2 lg:mt-0 lg:shrink-0">
+        <div className="mt-3 flex items-end justify-between gap-x-2 gap-y-2 lg:mt-0 lg:shrink-0 lg:gap-x-8">
           <div className="min-w-0 flex-1 lg:flex-none lg:text-right">
             {vehicle.strikePrice && (
               <div className="flex items-baseline gap-1.5 lg:justify-end">
