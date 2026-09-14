@@ -36,9 +36,9 @@ export default function VehicleListCard({
       onKeyDown={(e) => {
         if (e.key === "Enter") navigate(detailsHref);
       }}
-      className="flex w-full cursor-pointer items-start overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] lg:items-center"
+      className="flex w-full cursor-pointer items-stretch overflow-hidden rounded-xl bg-white shadow-[0px_1px_3px_rgba(25,32,36,0.16)] transition-shadow hover:shadow-[0px_4px_18px_rgba(25,32,36,0.22)] lg:items-center"
     >
-      <div className="relative size-[130px] shrink-0 overflow-hidden sm:size-[150px] lg:h-[110px] lg:w-[170px]">
+      <div className="relative w-[140px] shrink-0 self-stretch overflow-hidden sm:w-[160px] lg:h-[110px] lg:w-[170px] lg:self-auto">
         <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full p-2" />
         <button
           type="button"

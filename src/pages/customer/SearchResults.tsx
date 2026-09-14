@@ -269,7 +269,7 @@ export default function SearchResults() {
   );
 
   const viewToggle = (
-    <div className="flex items-center rounded-xl border border-[color:var(--color-border)] p-0.5">
+    <div className="flex h-11 items-center rounded-xl border border-[color:var(--color-border)] px-1">
       <button
         type="button"
         aria-label="Grid view"
@@ -343,7 +343,7 @@ export default function SearchResults() {
                 <div className="lg:hidden">
                   <h1 className="mb-4 text-lg font-bold text-[color:var(--color-ink)]">Found {results.length} cars</h1>
                   <div className="mb-4 flex items-center justify-between gap-3">
-                    <button type="button" onClick={() => setSortOpen(true)} className="flex flex-col items-start text-left">
+                    <button type="button" onClick={() => setSortOpen(true)} className="flex h-11 flex-col justify-center text-left">
                       <span className="text-xs text-[color:var(--color-muted)]">Sorted by</span>
                       <span className="flex items-center gap-1 text-sm font-bold text-[color:var(--color-ink)]">
                         {sortOptions.find((o) => o.value === sort)?.label}
@@ -355,7 +355,7 @@ export default function SearchResults() {
                       <button
                         type="button"
                         onClick={() => setFilterOpen(true)}
-                        className="flex items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-4 py-2.5 text-sm font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
+                        className="flex h-11 items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-4 text-sm font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
                       >
                         <Icon name="filter" size={16} />
                         Filter
