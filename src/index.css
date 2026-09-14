@@ -63,6 +63,44 @@ h6 {
   letter-spacing: -0.015em;
 }
 
+/* ---------------------------------------------------------------------------
+   Mobile typography floors.
+
+   The t-* scale covers what has been migrated to it, but most of the site is
+   still raw text-xs / text-sm / tiny arbitrary sizes, which never scale on a
+   phone. Tailwind emits utilities in @layer utilities, and an unlayered rule
+   wins over any layered one — so this one block raises every named size to a
+   standard phone floor (iOS HIG / Material) without touching desktop, where
+   the small badge sizes are deliberate.
+
+   Floors: 12px minimum for anything, 13px for footnotes, 15px for dense UI
+   copy. Form controls sit at 16px: below that iOS Safari zooms the page on
+   focus.
+--------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .text-\[9px\],
+  .text-\[10px\],
+  .text-\[11px\] {
+    font-size: 0.75rem; /* 12px */
+    line-height: 1.35;
+  }
+  .text-xs {
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.45;
+  }
+  .text-sm {
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.5;
+  }
+  /* A class floor above (.text-sm) would otherwise outrank this element
+     rule; the 16px input minimum is a hard iOS constraint, so it is forced. */
+  input,
+  select,
+  textarea {
+    font-size: 1rem !important;
+  }
+}
+
 /* Prices, dates and counts line up column-to-column. */
 .tabular {
   font-variant-numeric: tabular-nums;

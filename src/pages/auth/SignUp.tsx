@@ -150,8 +150,7 @@ export default function SignUp() {
   return (
     <PageShell noFooter>
       <div className="mx-auto flex min-h-[75vh] w-full max-w-[1280px] items-center justify-center px-4 py-12 md:px-10">
-        {/* Desktop */}
-        <div className="relative hidden w-full max-w-[440px] flex-col rounded-3xl bg-white p-9 shadow-modal md:flex">
+        <div className="relative flex w-full max-w-[440px] flex-col rounded-3xl bg-white p-6 shadow-modal sm:p-9">
           <button
             type="button"
             onClick={() => navigate(-1)}
@@ -161,18 +160,6 @@ export default function SignUp() {
             <Icon name="close" size={20} />
           </button>
           <h1 className="t-h2 mb-6 mt-8 text-[color:var(--color-ink)]">Create an account</h1>
-          {form}
-          {footerLinks}
-        </div>
-
-        {/* Mobile */}
-        <div className="w-full max-w-md md:hidden">
-          <div className="mb-8 flex items-center">
-            <button type="button" onClick={() => navigate(-1)} aria-label="Back" className="text-[color:var(--color-ink)]">
-              <Icon name="arrow-left" size={22} />
-            </button>
-          </div>
-          <h1 className="mb-6 text-[34px] font-bold leading-tight text-[color:var(--color-ink)]">Create an account</h1>
           {form}
           {footerLinks}
         </div>
