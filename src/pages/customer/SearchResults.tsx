@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import VehicleCard from "../../components/VehicleCard";
@@ -44,6 +44,9 @@ const priceBounds = {
   min: Math.min(...allVehicles.map((v) => v.pricePerDay)),
   max: Math.max(...allVehicles.map((v) => v.pricePerDay)),
 };
+
+// How many result cards to reveal per infinite-scroll batch.
+const PAGE_SIZE = 6;
 
 function sortVehicles(list: Vehicle[], sort: SortOption): Vehicle[] {
   const copy = [...list];
@@ -134,6 +137,20 @@ export default function SearchResults() {
   const [minRating, setMinRating] = useState<number | null>(null);
   const [priceRange, setPriceRange] = useState<[number, number]>([priceBounds.min, priceBounds.max]);
 
+  // Sticky header block (trip bar) reports its own height so the filter
+  // sidebar and sort/filter row below it know how far down to pin themselves.
+  const headerWrapRef = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  useEffect(() => {
+    const node = headerWrapRef.current;
+    if (!node) return;
+    const update = () => setHeaderHeight(node.offsetHeight);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   const results = useMemo(() => {
     const filtered = allVehicles.filter((v) => {
       if (selectedTypes.length > 0 && !selectedTypes.includes(v.category)) return false;
@@ -149,6 +166,36 @@ export default function SearchResults() {
     });
     return sortVehicles(filtered, sort);
   }, [sort, selectedTypes, selectedBrands, selectedFuels, capacity, minRating, priceRange]);
+
+  // Infinite scroll: only render a batch of `results` at a time, growing it
+  // as the sentinel below the list comes into view.
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const visibleResults = results.slice(0, visibleCount);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [results]);
+
+  useEffect(() => {
+    const node = sentinelRef.current;
+    if (!node || loadingMore || visibleCount >= results.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0].isIntersecting) return;
+        setLoadingMore(true);
+        window.setTimeout(() => {
+          setVisibleCount((v) => Math.min(v + PAGE_SIZE, results.length));
+          setLoadingMore(false);
+        }, 500);
+      },
+      { rootMargin: "300px" },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+    // `loading` matters: the sentinel only mounts once the spinner clears.
+  }, [results, visibleCount, loadingMore, loading]);
 
   const tripQuery = new URLSearchParams({
     pickup: search.pickup,
@@ -303,13 +350,18 @@ export default function SearchResults() {
   return (
     <PageShell
       header={
-        <SearchSummaryHeader search={search} onSearch={handleEditSearch} onEditMobile={() => setEditOpen(true)} />
+        <div ref={headerWrapRef} className="sticky top-0 z-30 bg-white">
+          <SearchSummaryHeader search={search} onSearch={handleEditSearch} onEditMobile={() => setEditOpen(true)} />
+        </div>
       }
     >
       <div className="mx-auto max-w-[1440px] px-4 py-6 md:px-[60px] md:py-8">
         <div className="flex flex-col gap-6 lg:flex-row">
-          {/* Desktop filter sidebar */}
-          <aside className="hidden w-[280px] shrink-0 lg:block">
+          {/* Desktop filter sidebar — pinned below the header, scrolls on its own */}
+          <aside
+            className="hidden w-[280px] shrink-0 self-start overflow-y-auto lg:sticky lg:block"
+            style={{ top: headerHeight + 16, maxHeight: `calc(100svh - ${headerHeight + 32}px)` }}
+          >
             <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-[0px_1px_3px_rgba(25,32,36,0.16)]">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-base font-bold text-[color:var(--color-ink)]">Filters</h2>
@@ -336,10 +388,16 @@ export default function SearchResults() {
               </div>
             ) : (
               <>
-                {/* Mobile: title on its own row, then Sort + Filter row */}
-                <div className="lg:hidden">
-                  <h1 className="mb-4 text-lg font-bold text-[color:var(--color-ink)]">Found {results.length} cars</h1>
-                  <div className="mb-4 flex items-center justify-between gap-3">
+                {/* Mobile: title on its own row, then the sticky Sort + Filter
+                    row. Both sit directly in the (tall) results column — a
+                    short wrapper would cap how far the sticky row can travel. */}
+                <h1 className="mb-4 text-lg font-bold text-[color:var(--color-ink)] lg:hidden">
+                  Found {results.length} cars
+                </h1>
+                <div
+                  className="sticky z-20 -mx-4 mb-4 flex items-center justify-between gap-3 border-b border-[color:var(--color-border)] bg-white px-4 py-2 lg:hidden"
+                  style={{ top: headerHeight }}
+                >
                     <button type="button" onClick={() => setSortOpen(true)} className="flex h-11 flex-col justify-center text-left">
                       <span className="text-xs text-[color:var(--color-muted)]">Sorted by</span>
                       <span className="flex items-center gap-1 text-sm font-bold text-[color:var(--color-ink)]">
@@ -364,11 +422,13 @@ export default function SearchResults() {
                       </button>
                       {viewToggle}
                     </div>
-                  </div>
                 </div>
 
                 {/* Desktop: title left, sort inline right, on one row */}
-                <div className="mb-4 hidden items-center justify-between gap-3 lg:flex">
+                <div
+                  className="sticky z-20 mb-4 hidden items-center justify-between gap-3 border-b border-[color:var(--color-border)] bg-white py-3 lg:flex"
+                  style={{ top: headerHeight }}
+                >
                   <h1 className="text-lg font-bold text-[color:var(--color-ink)]">
                     Found {results.length} cabs from {cityOf(search.pickup)} to {cityOf(search.dropoff)}
                   </h1>
@@ -421,15 +481,27 @@ export default function SearchResults() {
                   </div>
                 ) : view === "grid" ? (
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                    {results.map((vehicle) => (
+                    {visibleResults.map((vehicle) => (
                       <VehicleCard key={vehicle.id} vehicle={vehicle} tripQuery={tripQuery} />
                     ))}
                   </div>
                 ) : (
                   <div className="flex flex-col gap-4">
-                    {results.map((vehicle) => (
+                    {visibleResults.map((vehicle) => (
                       <VehicleListCard key={vehicle.id} vehicle={vehicle} tripQuery={tripQuery} />
                     ))}
+                  </div>
+                )}
+
+                {visibleCount < results.length && (
+                  <div ref={sentinelRef} className="flex h-16 items-center justify-center">
+                    {loadingMore && (
+                      <div
+                        className="size-7 animate-spin rounded-full border-[3px] border-[color:var(--color-border)] border-t-[color:var(--color-ink)]"
+                        role="status"
+                        aria-label="Loading more results"
+                      />
+                    )}
                   </div>
                 )}
               </>

@@ -9,6 +9,7 @@ import { useAuth } from "../lib/auth";
 import type { Role } from "../lib/auth";
 import CurrencySwitcher from "./CurrencySwitcher";
 import NotificationsDropdown from "./NotificationsDropdown";
+import { useWishlist } from "../lib/wishlist";
 
 const customerLinks: { to: string; label: string; icon: IconName }[] = [
   { to: routes.accountBookings, label: "Bookings", icon: "car" },
@@ -33,6 +34,28 @@ const switchTarget: Record<Role, { role: Role; label: string; to: string; icon: 
   customer: { role: "driver", label: "Switch to Driving", to: routes.providerBookings, icon: "car" },
   driver: { role: "customer", label: "Switch to Riding", to: routes.home, icon: "user" },
 };
+
+function WishlistButton({ compact = false }: { compact?: boolean }) {
+  const { ids } = useWishlist();
+  return (
+    <Link
+      to={routes.accountWishlist}
+      aria-label="Wishlist"
+      className={`relative flex items-center justify-center rounded-xl hover:bg-neutral-100 ${compact ? "size-9" : "size-[42px]"}`}
+    >
+      <Icon name="heart" size={compact ? 18 : 20} />
+      {ids.length > 0 && (
+        <span
+          className={`absolute flex items-center justify-center rounded-full bg-[color:var(--color-danger)] text-[9px] font-medium text-white ${
+            compact ? "right-0.5 top-0.5 size-[13px]" : "right-[9px] top-[9px] size-[14px]"
+          }`}
+        >
+          {ids.length}
+        </span>
+      )}
+    </Link>
+  );
+}
 
 function Logo() {
   const { role } = useAuth();
@@ -142,6 +165,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
       <div className="mx-auto hidden max-w-[1440px] items-center justify-between px-[60px] py-[23px] md:flex">
         <Logo />
         <div className="flex items-center gap-2">
+          {role === "customer" && <WishlistButton />}
           {isLoggedIn ? (
             <>
               <NotificationsDropdown
@@ -176,6 +200,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
           <DrukDriveLogo className="h-5 w-auto text-[color:var(--color-ink)]" />
         </Link>
         <div className="flex items-center gap-1">
+          {role === "customer" && <WishlistButton compact />}
           <CurrencySwitcher />
           {isLoggedIn ? (
             <Link
