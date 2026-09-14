@@ -38,7 +38,7 @@ const switchTarget: Record<Role, { role: Role; label: string; to: string; icon: 
 // Shared shell for the header's icon controls, so wishlist / notifications /
 // account all read as the same class of button.
 export const headerControl =
-  "flex items-center justify-center rounded-full border border-[color:var(--color-border)] bg-neutral-50 text-[color:var(--color-ink)] transition-colors hover:border-[color:var(--color-ink)] hover:bg-neutral-100";
+  "flex items-center justify-center rounded-full border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)] transition-colors hover:bg-neutral-200/70";
 
 function WishlistButton({ compact = false }: { compact?: boolean }) {
   const { ids } = useWishlist();
@@ -97,7 +97,7 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
         {isLoggedIn ? (
           <img src={currentUser.avatar} alt="" className="size-full rounded-full object-cover" />
         ) : (
-          <Icon name="user" size={compact ? 18 : 20} />
+          <Icon name="user" size={compact ? 18 : 20} className="fill-current" strokeWidth={1.4} />
         )}
       </button>
 
@@ -190,7 +190,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
       {/* Desktop */}
       <div className="hidden items-center justify-between px-6 py-[23px] md:flex lg:px-10">
         <Logo />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           {role === "customer" && <WishlistButton />}
           {isLoggedIn && (
             <NotificationsDropdown
@@ -207,7 +207,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
         <Link to={homeHref} className="flex items-center">
           <DrukDriveLogo className="h-5 w-auto text-[color:var(--color-ink)]" />
         </Link>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           {role === "customer" && <WishlistButton compact />}
           <AccountMenu onSignOut={handleSignOut} compact />
         </div>

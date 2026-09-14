@@ -1,4 +1,5 @@
 import { useMemo, useState, type RefObject } from "react";
+import { createPortal } from "react-dom";
 import Icon from "./Icon";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import AnchoredPopover from "./AnchoredPopover";
@@ -239,14 +240,14 @@ export default function DatePickerSheet({
     );
   }
 
-  return (
+  return createPortal(
     <>
       <button
         aria-label="Close"
         onClick={onClose}
         className="fixed inset-0 z-[59] cursor-default bg-black/40"
       />
-      <div className="fixed inset-x-0 top-0 z-[60] flex h-full flex-col bg-white">
+      <div className="fixed inset-0 z-[60] flex flex-col bg-white">
         <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] p-4">
           <button type="button" onClick={onClose} aria-label="Close">
             <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />
@@ -266,6 +267,7 @@ export default function DatePickerSheet({
           {confirmButton}
         </div>
       </div>
-    </>
+    </>,
+    document.body,
   );
 }

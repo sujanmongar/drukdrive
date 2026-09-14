@@ -25,7 +25,7 @@ export default function NotificationsDropdown({
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Notifications"
-        className="relative flex size-[42px] items-center justify-center rounded-full border border-[color:var(--color-border)] bg-neutral-50 text-[color:var(--color-ink)] transition-colors hover:border-[color:var(--color-ink)] hover:bg-neutral-100"
+        className="relative flex size-[42px] items-center justify-center rounded-full border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)] transition-colors hover:bg-neutral-200/70"
       >
         <Icon name="bell" size={20} />
         {unreadCount > 0 && (

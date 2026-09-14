@@ -93,7 +93,7 @@ export default function SearchSummaryHeader({
             type="button"
             onClick={() => navigate(-1)}
             aria-label="Back"
-            className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-border)] bg-neutral-50 text-[color:var(--color-ink)] transition-colors hover:border-[color:var(--color-ink)] hover:bg-neutral-100"
+            className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)] transition-colors hover:bg-neutral-200/70"
           >
             <Icon name="chevron-left" size={20} className="text-[color:var(--color-ink)]" />
           </button>
@@ -111,7 +111,7 @@ export default function SearchSummaryHeader({
             type="button"
             onClick={onEditMobile}
             aria-label="Edit search"
-            className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-border)] bg-neutral-50 text-[color:var(--color-ink)] transition-colors hover:border-[color:var(--color-ink)] hover:bg-neutral-100"
+            className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)] transition-colors hover:bg-neutral-200/70"
           >
             <Icon name="edit" size={15} />
           </button>
@@ -120,7 +120,7 @@ export default function SearchSummaryHeader({
             type="button"
             onClick={() => setWishlistOpen(true)}
             aria-label="Wishlist"
-            className="relative flex size-9 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-border)] bg-neutral-50 transition-colors hover:border-[color:var(--color-ink)] hover:bg-neutral-100"
+            className="relative flex size-9 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)] transition-colors hover:bg-neutral-200/70"
           >
             <Icon name="heart" size={18} className="text-[color:var(--color-ink)]" />
             {wishlistIds.length > 0 && (

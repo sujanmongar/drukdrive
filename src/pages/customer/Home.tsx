@@ -362,7 +362,7 @@ export default function Home() {
         {/* Recent searches */}
         <section className="py-12 md:py-20">
           <SectionHeader title="Recent searches" trackRef={recentTrackRef} />
-          <div ref={recentTrackRef} className="carousel-track -mx-2 -mb-8 flex gap-4 overflow-x-auto px-2 pb-12 pt-3">
+          <div ref={recentTrackRef} className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:px-6">
             {recentSearches.map((s) => {
               const vehicle = vehicles.find((v) => v.id === s.vehicleId);
               return (
@@ -390,7 +390,7 @@ export default function Home() {
       <section className="bg-[#f6f7f8] py-12 md:py-20">
         <div className="mx-auto max-w-[1280px] px-4 md:px-10">
           <SectionHeader title="Popular cars" trackRef={carsTrackRef} />
-          <div ref={carsTrackRef} className="carousel-track -mx-2 -mb-8 flex gap-5 overflow-x-auto px-2 pb-12 pt-3">
+          <div ref={carsTrackRef} className="carousel-track -mx-4 -mb-8 flex gap-5 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:px-6">
             {vehicles.map((v) => (
               <VehicleCard
                 key={v.id}
@@ -407,7 +407,7 @@ export default function Home() {
         {/* Popular car types — photo tiles, paged by the header arrows. */}
         <section className="py-12 md:py-20">
           <SectionHeader title="Popular car types" trackRef={typesTrackRef} />
-          <div ref={typesTrackRef} className="carousel-track -mx-2 -mb-8 flex gap-4 overflow-x-auto px-2 pb-12 pt-3 md:gap-5">
+          <div ref={typesTrackRef} className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:gap-5 md:px-6">
             {popularCarTypes.map((t) => (
               <button
                 key={t.category}

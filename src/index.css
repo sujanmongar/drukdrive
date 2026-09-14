@@ -10,6 +10,10 @@
   --color-ink-soft: #333333;
   --color-muted: #747474;
   --color-border: #e5ebf0;
+  /* Soft control surface: a barely-there hairline over a light fill, for
+     icon buttons and pills that should sit quietly in a header. */
+  --color-border-soft: rgba(17, 24, 39, 0.07);
+  --color-surface-soft: #f4f5f7;
 
   --color-success: #00b53a;
   --color-success-bg: #e6f8ea;

@@ -1,4 +1,5 @@
 import { useMemo, useState, type RefObject } from "react";
+import { createPortal } from "react-dom";
 import Icon from "./Icon";
 import { bhutanLocations } from "../data/mockData";
 import { useMediaQuery } from "../hooks/useMediaQuery";
@@ -79,10 +80,11 @@ export default function LocationPickerSheet({
     );
   }
 
-  return (
+  return createPortal(
     <>
       <button aria-label="Close" onClick={onClose} className="fixed inset-0 z-[59] cursor-default bg-black/40" />
-      <div className="fixed inset-x-0 top-0 z-[60] flex h-full flex-col bg-white">{content}</div>
-    </>
+      <div className="fixed inset-0 z-[60] flex flex-col bg-white">{content}</div>
+    </>,
+    document.body,
   );
 }
