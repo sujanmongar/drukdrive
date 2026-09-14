@@ -13,7 +13,6 @@ import {
   Clock,
   CreditCard,
   Download,
-  DoorOpen,
   Eye,
   EyeOff,
   Fuel,
@@ -26,7 +25,6 @@ import {
   Loader2,
   Lock,
   LogOut,
-  Luggage,
   Mail,
   MapPin,
   Menu,
@@ -91,8 +89,6 @@ const icons = {
   list: List,
   gearbox: Gauge,
   snowflake: Snowflake,
-  luggage: Luggage,
-  door: DoorOpen,
   spinner: Loader2,
 } satisfies Record<string, ComponentType<SVGProps<SVGSVGElement> & { size?: number | string }>>;
 
