@@ -19,25 +19,28 @@ export default function FilterSection({
 }) {
   const [open, setOpen] = useState(true);
   return (
-    <div className={divider ? "border-b border-[color:var(--color-border)] pb-5" : ""}>
-      <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-bold text-[color:var(--color-ink)]">{title}</h3>
-        <div className="flex items-center gap-3">
-          {hasSelection && (
-            <button type="button" onClick={onClear} className="text-xs font-semibold text-[color:var(--color-link)]">
-              Clear
+    <>
+      <div>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">{title}</h3>
+          <div className="flex items-center gap-3">
+            {hasSelection && (
+              <button type="button" onClick={onClear} className="text-xs font-semibold text-[color:var(--color-link)]">
+                Clear
+              </button>
+            )}
+            <button type="button" onClick={() => setOpen((v) => !v)} aria-label={open ? "Collapse" : "Expand"}>
+              <Icon
+                name="chevron-down"
+                size={16}
+                className={`text-[color:var(--color-ink)] transition-transform ${open ? "" : "-rotate-90"}`}
+              />
             </button>
-          )}
-          <button type="button" onClick={() => setOpen((v) => !v)} aria-label={open ? "Collapse" : "Expand"}>
-            <Icon
-              name="chevron-down"
-              size={16}
-              className={`text-[color:var(--color-ink)] transition-transform ${open ? "" : "-rotate-90"}`}
-            />
-          </button>
+          </div>
         </div>
+        {open && children}
       </div>
-      {open && children}
-    </div>
+      {divider && <div className="-mx-5 my-5 border-b border-[color:var(--color-border)]" />}
+    </>
   );
 }

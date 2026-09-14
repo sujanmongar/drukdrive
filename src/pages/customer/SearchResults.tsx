@@ -6,6 +6,7 @@ import VehicleListCard from "../../components/VehicleListCard";
 import Icon from "../../components/Icon";
 import EditSearchModal from "../../components/EditSearchModal";
 import type { EditSearchValue } from "../../components/EditSearchModal";
+import DesktopEditSearchBar from "../../components/DesktopEditSearchBar";
 import SearchSummaryHeader from "../../components/SearchSummaryHeader";
 import FilterSection from "../../components/FilterSection";
 import CheckboxRow from "../../components/CheckboxRow";
@@ -181,7 +182,7 @@ export default function SearchResults() {
   }
 
   const filterPanel = (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col">
       <FilterSection title="Vehicle type" hasSelection={selectedTypes.length > 0} onClear={() => setSelectedTypes([])}>
         <ExpandableCheckboxList
           options={vehicleTypeOptions}
@@ -467,7 +468,7 @@ export default function SearchResults() {
               <span className="w-[52px]" />
             )}
           </div>
-          <div className="flex-1 overflow-y-auto px-4 py-5">{filterPanel}</div>
+          <div className="flex-1 overflow-y-auto px-5 py-5">{filterPanel}</div>
           <div className="border-t border-[color:var(--color-border)] p-4">
             <button
               type="button"
@@ -520,7 +521,14 @@ export default function SearchResults() {
       )}
 
       {editOpen && (
-        <EditSearchModal initial={search} onClose={() => setEditOpen(false)} onSearch={handleEditSearch} />
+        <>
+          <div className="lg:hidden">
+            <EditSearchModal initial={search} onClose={() => setEditOpen(false)} onSearch={handleEditSearch} />
+          </div>
+          <div className="hidden lg:block">
+            <DesktopEditSearchBar initial={search} onClose={() => setEditOpen(false)} onSearch={handleEditSearch} />
+          </div>
+        </>
       )}
     </PageShell>
   );
