@@ -25,11 +25,11 @@ export default function NotificationsDropdown({
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Notifications"
-        className="relative flex size-[42px] items-center justify-center rounded-full border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)] transition-colors hover:bg-neutral-200/70"
+        className="relative flex size-[42px] items-center justify-center rounded-full text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
       >
         <Icon name="bell" size={20} />
         {unreadCount > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex size-[16px] items-center justify-center rounded-full bg-[color:var(--color-danger)] text-[9px] font-medium text-white">
+          <span className="absolute -right-0.5 -top-0.5 flex size-[17px] items-center justify-center rounded-full bg-[color:var(--color-danger)] text-[10px] font-semibold text-white ring-2 ring-white">
             {unreadCount}
           </span>
         )}

@@ -38,7 +38,7 @@ const switchTarget: Record<Role, { role: Role; label: string; to: string; icon: 
 // Shared shell for the header's icon controls, so wishlist / notifications /
 // account all read as the same class of button.
 export const headerControl =
-  "flex items-center justify-center rounded-full border border-[color:var(--color-border-soft)] bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)] transition-colors hover:bg-neutral-200/70";
+  "flex items-center justify-center rounded-full text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)]";
 
 function WishlistButton({ compact = false }: { compact?: boolean }) {
   const { ids } = useWishlist();
@@ -48,11 +48,15 @@ function WishlistButton({ compact = false }: { compact?: boolean }) {
       aria-label="Wishlist"
       className={`relative ${headerControl} ${compact ? "size-9" : "size-[42px]"}`}
     >
-      <Icon name="heart" size={compact ? 18 : 20} />
+      <Icon
+        name="heart"
+        size={compact ? 18 : 20}
+        className={ids.length > 0 ? "fill-current text-[color:var(--color-danger)]" : ""}
+      />
       {ids.length > 0 && (
         <span
-          className={`absolute flex items-center justify-center rounded-full bg-[color:var(--color-danger)] text-[9px] font-medium text-white ${
-            compact ? "-right-0.5 -top-0.5 size-[15px]" : "-right-0.5 -top-0.5 size-[16px]"
+          className={`absolute -right-0.5 -top-0.5 flex items-center justify-center rounded-full bg-[color:var(--color-danger)] font-semibold text-white ring-2 ring-white ${
+            compact ? "size-[15px] text-[9px]" : "size-[17px] text-[10px]"
           }`}
         >
           {ids.length}
