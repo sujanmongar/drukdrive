@@ -7,6 +7,8 @@ import Icon from "../../components/Icon";
 import EditSearchModal from "../../components/EditSearchModal";
 import type { EditSearchValue } from "../../components/EditSearchModal";
 import SearchSummaryHeader from "../../components/SearchSummaryHeader";
+import FilterSection from "../../components/FilterSection";
+import CheckboxRow from "../../components/CheckboxRow";
 import { vehicles as allVehicles, type Vehicle } from "../../data/mockData";
 import { formatTripDate } from "../../lib/formatTripDate";
 import { usePageTitle } from "../../hooks/usePageTitle";
@@ -56,6 +58,40 @@ function formatDate(d: Date) {
 
 function cityOf(address: string) {
   return address.split(",")[0]?.trim() || address;
+}
+
+// Checkbox list that truncates to `initialCount` options with a "View
+// more"/"View less" link — for filter sections with a long option list.
+function ExpandableCheckboxList({
+  options,
+  selected,
+  onToggle,
+  initialCount = 6,
+}: {
+  options: string[];
+  selected: string[];
+  onToggle: (option: string) => void;
+  initialCount?: number;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? options : options.slice(0, initialCount);
+  const hasMore = options.length > initialCount;
+  return (
+    <div className="flex flex-col gap-2.5">
+      {visible.map((option) => (
+        <CheckboxRow key={option} label={option} checked={selected.includes(option)} onChange={() => onToggle(option)} />
+      ))}
+      {hasMore && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="text-left text-xs font-semibold text-[color:var(--color-link)]"
+        >
+          {expanded ? "View less" : "View more"}
+        </button>
+      )}
+    </div>
+  );
 }
 
 export default function SearchResults() {
@@ -145,64 +181,24 @@ export default function SearchResults() {
   }
 
   const filterPanel = (
-    <div className="flex flex-col gap-6">
-      <div>
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Vehicle Type</h3>
-          {selectedTypes.length > 0 && (
-            <button type="button" onClick={() => setSelectedTypes([])} className="text-xs font-semibold text-[color:var(--color-link)]">
-              Clear
-            </button>
-          )}
-        </div>
-        <div className="flex flex-col gap-2.5">
-          {vehicleTypeOptions.map((option) => (
-            <label key={option} className="flex cursor-pointer items-center gap-2.5 text-sm text-[color:var(--color-ink)]">
-              <input
-                type="checkbox"
-                checked={selectedTypes.includes(option)}
-                onChange={() => toggle(selectedTypes, option, setSelectedTypes)}
-                className="size-4 rounded border-[color:var(--color-border)] accent-[color:var(--color-ink)]"
-              />
-              {option}
-            </label>
-          ))}
-        </div>
-      </div>
+    <div className="flex flex-col gap-5">
+      <FilterSection title="Vehicle type" hasSelection={selectedTypes.length > 0} onClear={() => setSelectedTypes([])}>
+        <ExpandableCheckboxList
+          options={vehicleTypeOptions}
+          selected={selectedTypes}
+          onToggle={(option) => toggle(selectedTypes, option, setSelectedTypes)}
+        />
+      </FilterSection>
 
-      <div>
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Brand</h3>
-          {selectedBrands.length > 0 && (
-            <button type="button" onClick={() => setSelectedBrands([])} className="text-xs font-semibold text-[color:var(--color-link)]">
-              Clear
-            </button>
-          )}
-        </div>
-        <div className="flex flex-col gap-2.5">
-          {brandOptions.map((option) => (
-            <label key={option} className="flex cursor-pointer items-center gap-2.5 text-sm text-[color:var(--color-ink)]">
-              <input
-                type="checkbox"
-                checked={selectedBrands.includes(option)}
-                onChange={() => toggle(selectedBrands, option, setSelectedBrands)}
-                className="size-4 rounded border-[color:var(--color-border)] accent-[color:var(--color-ink)]"
-              />
-              {option}
-            </label>
-          ))}
-        </div>
-      </div>
+      <FilterSection title="Brand" hasSelection={selectedBrands.length > 0} onClear={() => setSelectedBrands([])}>
+        <ExpandableCheckboxList
+          options={brandOptions}
+          selected={selectedBrands}
+          onToggle={(option) => toggle(selectedBrands, option, setSelectedBrands)}
+        />
+      </FilterSection>
 
-      <div>
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Capacity</h3>
-          {capacity && (
-            <button type="button" onClick={() => setCapacity(null)} className="text-xs font-semibold text-[color:var(--color-link)]">
-              Clear
-            </button>
-          )}
-        </div>
+      <FilterSection title="Capacity" hasSelection={capacity !== null} onClear={() => setCapacity(null)}>
         <div className="flex flex-wrap gap-2">
           {capacityRanges.map((range) => (
             <button
@@ -219,41 +215,17 @@ export default function SearchResults() {
             </button>
           ))}
         </div>
-      </div>
+      </FilterSection>
 
-      <div>
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Fuel Type</h3>
-          {selectedFuels.length > 0 && (
-            <button type="button" onClick={() => setSelectedFuels([])} className="text-xs font-semibold text-[color:var(--color-link)]">
-              Clear
-            </button>
-          )}
-        </div>
-        <div className="flex flex-col gap-2.5">
-          {fuelOptions.map((option) => (
-            <label key={option} className="flex cursor-pointer items-center gap-2.5 text-sm text-[color:var(--color-ink)]">
-              <input
-                type="checkbox"
-                checked={selectedFuels.includes(option)}
-                onChange={() => toggle(selectedFuels, option, setSelectedFuels)}
-                className="size-4 rounded border-[color:var(--color-border)] accent-[color:var(--color-ink)]"
-              />
-              {option}
-            </label>
-          ))}
-        </div>
-      </div>
+      <FilterSection title="Fuel Type" hasSelection={selectedFuels.length > 0} onClear={() => setSelectedFuels([])}>
+        <ExpandableCheckboxList
+          options={fuelOptions}
+          selected={selectedFuels}
+          onToggle={(option) => toggle(selectedFuels, option, setSelectedFuels)}
+        />
+      </FilterSection>
 
-      <div>
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Max Price / day</h3>
-          {maxPrice !== 80 && (
-            <button type="button" onClick={() => setMaxPrice(80)} className="text-xs font-semibold text-[color:var(--color-link)]">
-              Clear
-            </button>
-          )}
-        </div>
+      <FilterSection title="Max Price / day" hasSelection={maxPrice !== 80} onClear={() => setMaxPrice(80)}>
         <input
           type="range"
           min={40}
@@ -267,17 +239,9 @@ export default function SearchResults() {
           <span className="font-semibold text-[color:var(--color-ink)]">${maxPrice}</span>
           <span>$80</span>
         </div>
-      </div>
+      </FilterSection>
 
-      <div>
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">Ratings</h3>
-          {minRating !== null && (
-            <button type="button" onClick={() => setMinRating(null)} className="text-xs font-semibold text-[color:var(--color-link)]">
-              Clear
-            </button>
-          )}
-        </div>
+      <FilterSection title="Ratings" hasSelection={minRating !== null} onClear={() => setMinRating(null)} divider={false}>
         <div className="flex flex-wrap gap-2">
           {ratingOptions.map((r) => (
             <button
@@ -305,7 +269,7 @@ export default function SearchResults() {
             All
           </button>
         </div>
-      </div>
+      </FilterSection>
     </div>
   );
 
