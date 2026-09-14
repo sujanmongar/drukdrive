@@ -20,7 +20,7 @@ export default function BookingTypeTabs({
   onChange: (t: BookingType) => void;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-1 rounded-2xl border border-[color:var(--color-border)] bg-white p-1 sm:inline-flex sm:rounded-full">
+    <div className="flex items-stretch gap-2 border-b border-[color:var(--color-border)] sm:gap-7">
       {order.map(({ type, icon }) => {
         const active = type === value;
         return (
@@ -29,14 +29,19 @@ export default function BookingTypeTabs({
             type="button"
             onClick={() => onChange(type)}
             aria-pressed={active}
-            className={`flex items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 sm:justify-start sm:rounded-full sm:px-3.5 sm:py-2 ${
-              active
-                ? "bg-[color:var(--color-ink)] font-semibold text-white"
-                : "text-[color:var(--color-ink-soft)] hover:bg-neutral-100"
+            className={`group relative flex flex-1 flex-col items-center gap-1.5 pb-3 text-center transition-colors duration-200 sm:flex-none sm:flex-row sm:gap-2 sm:pb-2.5 ${
+              active ? "text-[color:var(--color-ink)]" : "text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
             }`}
           >
-            <Icon name={icon} size={15} strokeWidth={2.1} className="shrink-0" />
-            {bookingTypeLabels[type]}
+            <Icon name={icon} size={19} strokeWidth={active ? 2.3 : 1.9} className="shrink-0 sm:size-[17px]" />
+            <span className={`whitespace-nowrap text-[12px] leading-tight sm:text-sm ${active ? "font-bold" : "font-medium"}`}>
+              {bookingTypeLabels[type]}
+            </span>
+            <span
+              className={`absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-[color:var(--color-ink)] transition-transform duration-200 ${
+                active ? "scale-x-100" : "scale-x-0"
+              }`}
+            />
           </button>
         );
       })}

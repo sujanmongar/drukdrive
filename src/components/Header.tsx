@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Icon from "./Icon";
 import type { IconName } from "./Icon";
 import DrukDriveLogo from "./DrukDriveLogo";
@@ -59,18 +59,6 @@ function WishlistButton({ compact = false }: { compact?: boolean }) {
         </span>
       )}
     </Link>
-  );
-}
-
-// Neutral stand-in avatar for signed-out visitors — the account control keeps
-// its shape whether or not someone is signed in.
-function PlaceholderAvatar({ size = 32 }: { size?: number }) {
-  return (
-    <svg viewBox="0 0 40 40" width={size} height={size} className="rounded-full" aria-hidden="true">
-      <circle cx="20" cy="20" r="20" fill="#e3e8ed" />
-      <circle cx="20" cy="15.5" r="6.2" fill="#a8b4c0" />
-      <path d="M6.5 35.5a13.8 13.8 0 0 1 27 0Z" fill="#a8b4c0" />
-    </svg>
   );
 }
 
@@ -162,16 +150,13 @@ function AccountMenu({ onSignOut }: { onSignOut: () => void }) {
 }
 
 export default function Header({ transparent = false }: { transparent?: boolean }) {
-  const [menuOpen, setMenuOpen] = useState(false);
   const { user: currentUser } = useCurrentUser();
   const { isLoggedIn, logout, role } = useAuth();
   const navigate = useNavigate();
-  const links = role === "driver" ? driverLinks : customerLinks;
   const homeHref = role === "driver" ? routes.providerBookings : routes.home;
 
   function handleSignOut() {
     logout();
-    setMenuOpen(false);
     navigate(routes.home);
   }
 
@@ -191,8 +176,8 @@ export default function Header({ transparent = false }: { transparent?: boolean 
               <AccountMenu onSignOut={handleSignOut} />
             </>
           ) : (
-            <Link to={routes.signIn} aria-label="Login / Signup" className={`${headerControl} size-[42px] overflow-hidden`}>
-              <PlaceholderAvatar size={40} />
+            <Link to={routes.signIn} aria-label="Login / Signup" className={`${headerControl} size-[42px]`}>
+              <Icon name="user" size={20} />
             </Link>
           )}
           <CurrencySwitcher />
@@ -201,13 +186,6 @@ export default function Header({ transparent = false }: { transparent?: boolean 
 
       {/* Mobile */}
       <div className="flex h-[64px] items-center justify-between px-4 md:hidden">
-        <button
-          aria-label="Open menu"
-          onClick={() => setMenuOpen(true)}
-          className="flex size-9 items-center justify-center"
-        >
-          <Icon name="menu" size={24} />
-        </button>
         <Link to={homeHref} className="flex items-center">
           <DrukDriveLogo className="h-5 w-auto text-[color:var(--color-ink)]" />
         </Link>
@@ -223,99 +201,13 @@ export default function Header({ transparent = false }: { transparent?: boolean 
               <img src={currentUser.avatar} alt="" className="size-full rounded-full object-cover" />
             </Link>
           ) : (
-            <Link to={routes.signIn} aria-label="Login / Signup" className={`${headerControl} size-9 overflow-hidden`}>
-              <PlaceholderAvatar size={34} />
+            <Link to={routes.signIn} aria-label="Login / Signup" className={`${headerControl} size-9`}>
+              <Icon name="user" size={18} />
             </Link>
           )}
         </div>
       </div>
 
-      {menuOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <button
-            aria-label="Close menu"
-            className="absolute inset-0 bg-black/40"
-            onClick={() => setMenuOpen(false)}
-          />
-          <div className="absolute left-0 top-0 h-full w-[78%] max-w-[320px] bg-white p-5 shadow-xl">
-            <div className="mb-6 flex items-center justify-between">
-              <DrukDriveLogo className="h-5 w-auto text-[color:var(--color-ink)]" />
-              <button onClick={() => setMenuOpen(false)} aria-label="Close menu">
-                <Icon name="close" size={22} />
-              </button>
-            </div>
-            {isLoggedIn ? (
-              <>
-                <div className="mb-4 flex items-center gap-3 rounded-xl bg-neutral-50 p-3">
-                  <img src={currentUser.avatar} alt="" className="size-10 rounded-full object-cover" />
-                  <div>
-                    <p className="text-sm font-semibold">{currentUser.name}</p>
-                    <p className="text-xs text-[color:var(--color-muted)]">{currentUser.email}</p>
-                  </div>
-                </div>
-                <MobileSwitchButton onNavigated={() => setMenuOpen(false)} />
-                <nav className="mt-2 flex flex-col gap-1">
-                  {links.map((l) => (
-                    <NavLink
-                      key={l.to}
-                      to={l.to}
-                      onClick={() => setMenuOpen(false)}
-                      className={({ isActive }) =>
-                        `flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium ${isActive ? "bg-neutral-100 text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)]"}`
-                      }
-                    >
-                      <Icon name={l.icon} size={17} />
-                      {l.label}
-                    </NavLink>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={handleSignOut}
-                    className="mt-2 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-[color:var(--color-danger)]"
-                  >
-                    Sign out
-                  </button>
-                </nav>
-              </>
-            ) : (
-              <>
-                <p className="mb-4 text-sm text-[color:var(--color-muted)]">
-                  Sign in to book a ride, manage your bookings, or drive with DrukDrive.
-                </p>
-                <Link
-                  to={routes.signIn}
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 rounded-full border border-[color:var(--color-ink)] px-4 py-3 text-sm font-semibold text-[color:var(--color-ink)]"
-                >
-                  <Icon name="user" size={16} />
-                  Login / Signup
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      )}
     </header>
-  );
-}
-
-function MobileSwitchButton({ onNavigated }: { onNavigated: () => void }) {
-  const { role, switchRole } = useAuth();
-  const navigate = useNavigate();
-  const target = switchTarget[role];
-
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        switchRole(target.role);
-        onNavigated();
-        navigate(target.to);
-      }}
-      className="flex w-full items-center justify-center gap-2 rounded-xl border border-[color:var(--color-ink)] px-4 py-2.5 text-sm font-semibold text-[color:var(--color-ink)]"
-    >
-      <Icon name={target.icon} size={16} />
-      {target.label}
-    </button>
   );
 }
