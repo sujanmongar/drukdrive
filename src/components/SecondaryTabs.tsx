@@ -7,7 +7,7 @@ export type SecondaryTab = { to: string; label: string; icon: IconName };
 export default function SecondaryTabs({ tabs }: { tabs: SecondaryTab[] }) {
   return (
     <div className="border-b border-[color:var(--color-border)] bg-white">
-      <div className="mx-auto flex max-w-[1280px] gap-1 overflow-x-auto px-4 md:px-10">
+      <div className="scrollbar-hide mx-auto flex max-w-[1280px] gap-1 overflow-x-auto px-4 md:px-10">
         {tabs.map((t) => (
           <NavLink
             key={t.to}

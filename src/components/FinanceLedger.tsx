@@ -40,7 +40,7 @@ export default function FinanceLedger() {
   return (
     <>
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-2 overflow-x-auto">
+        <div className="scrollbar-hide flex gap-2 overflow-x-auto">
           {ledgerTabs.map((t) => (
             <button
               key={t}
@@ -101,7 +101,7 @@ export default function FinanceLedger() {
           <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No {statusFilter.toLowerCase()} transactions</p>
         </div>
       ) : (
-        <div className="mt-6 overflow-x-auto rounded-xl border border-[color:var(--color-border)]">
+        <div className="scrollbar-hide mt-6 overflow-x-auto rounded-xl border border-[color:var(--color-border)]">
           <table className="w-full min-w-[720px] text-sm">
             <thead>
               <tr className="border-b border-[color:var(--color-border)] bg-neutral-50 text-left text-xs font-semibold text-[color:var(--color-muted)]">

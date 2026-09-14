@@ -41,7 +41,7 @@ export default function AccountBookings() {
           <span className="text-sm font-semibold text-[color:var(--color-ink)] underline">See all booking ({bookings.length})</span>
         </div>
 
-        <div className="mt-5 flex gap-2 overflow-x-auto">
+        <div className="scrollbar-hide mt-5 flex gap-2 overflow-x-auto">
           {(["Current", "Upcoming", "Past"] as Filter[]).map((f) => (
             <button
               key={f}

@@ -44,7 +44,7 @@ export default function ProviderBookings() {
           </span>
         </div>
 
-        <div className="mt-5 flex gap-2 overflow-x-auto">
+        <div className="scrollbar-hide mt-5 flex gap-2 overflow-x-auto">
           {(["Current", "Past"] as Filter[]).map((f) => (
             <button
               key={f}
