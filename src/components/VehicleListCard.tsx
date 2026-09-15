@@ -96,7 +96,7 @@ export default function VehicleListCard({
               e.stopPropagation();
               toggle(vehicle.id);
             }}
-            className="icon-btn absolute -right-1 -top-1 size-9 bg-white/90 backdrop-blur-sm hover:!bg-white"
+            className="icon-btn icon-btn-filled absolute -right-1 -top-1 size-9 shadow-card"
           >
             <Icon
               name="heart"
@@ -130,10 +130,10 @@ export default function VehicleListCard({
             className="mt-3 !text-sm sm:!text-[15px]"
           />
           <div className="mt-3 flex items-center gap-2.5">
-            <span className="rounded-md bg-[color:var(--color-success)] px-2.5 py-1 t-body-sm font-bold tabular text-white">
+            <span className="rounded-md bg-[color:var(--color-success)] px-2 py-0.5 t-caption font-bold tabular text-white">
               {vehicle.rating.toFixed(1)}/5
             </span>
-            <span className="border-l border-[color:var(--color-border)] pl-2.5 t-body text-[color:var(--color-ink)]">
+            <span className="border-l border-[color:var(--color-border)] pl-2.5 t-body-sm text-[color:var(--color-ink)]">
               {vehicle.reviewCount} ratings
             </span>
           </div>
