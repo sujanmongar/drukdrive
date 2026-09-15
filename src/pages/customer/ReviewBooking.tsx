@@ -5,7 +5,6 @@ import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import BookingStepper from "../../components/BookingStepper";
 import BookingRouteCard from "../../components/BookingRouteCard";
-import PriceSummaryModal from "../../components/PriceSummaryModal";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { computeFare, RENTAL_DAYS } from "../../lib/pricing";
@@ -28,8 +27,7 @@ export default function ReviewBooking() {
   usePageTitle("Review your booking");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { format, symbol } = useCurrency();
-  const [priceSummaryOpen, setPriceSummaryOpen] = useState(false);
+  const { format } = useCurrency();
   const { isLoggedIn } = useAuth();
   const { user } = useCurrentUser();
 
@@ -108,16 +106,14 @@ export default function ReviewBooking() {
   return (
     <PageShell noFooter>
       <div className="mx-auto max-w-[1100px] px-4 py-6 pb-28 md:px-10 md:py-10 md:pb-10">
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="t-h3 mb-4 flex items-center gap-2 text-[color:var(--color-ink)]"
-        >
-          <Icon name="chevron-left" size={22} />
-          Review Your Booking
-        </button>
+        <div className="mb-5 flex items-center gap-2">
+          <button type="button" onClick={() => navigate(-1)} aria-label="Back" className="icon-btn -ml-2 size-10">
+            <Icon name="chevron-left" size={22} />
+          </button>
+          <h1 className="t-h2 text-[color:var(--color-ink)]">Review your booking</h1>
+        </div>
 
-        <div className="mb-6">
+        <div className="mb-8">
           <BookingStepper current={2} />
         </div>
 
@@ -247,22 +243,36 @@ export default function ReviewBooking() {
 
           {/* Right: price summary sidebar */}
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
-              <h2 className="t-h3 text-[color:var(--color-ink)]">Price Summary</h2>
+            <div id="price-summary" className="scroll-mt-24 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+              <h2 className="t-h3 text-[color:var(--color-ink)]">Price summary</h2>
 
-              <div className="mt-3 flex items-baseline justify-between">
-                <div>
-                  <p className="text-xl font-bold text-[color:var(--color-ink)]">{format(netPayable)}</p>
-                  <p className="t-caption text-[color:var(--color-muted)]">Inclusive of taxes and fees</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setPriceSummaryOpen(true)}
-                  className="t-caption font-semibold text-[color:var(--color-link)] underline decoration-dotted underline-offset-2"
-                >
-                  Fare summary
-                </button>
+              <div className="mt-3">
+                <p className="t-h2 tabular text-[color:var(--color-ink)]">{format(netPayable)}</p>
+                <p className="t-caption text-[color:var(--color-muted)]">Total for {RENTAL_DAYS} days, taxes and fees included</p>
               </div>
+
+              {/* Fare summary as always-visible chips — the same on every screen. */}
+              <ul className="mt-3 flex flex-wrap gap-2" aria-label="Fare summary">
+                {(
+                  [
+                    { label: `${format(vehicle.pricePerDay)} × ${RENTAL_DAYS} days`, value: format(baseFare) },
+                    { label: "Taxes & fees", value: format(taxes) },
+                    ...(discount > 0 ? [{ label: `Promo ${promoApplied?.code}`, value: `−${format(discount)}`, success: true }] : []),
+                  ] as { label: string; value: string; success?: boolean }[]
+                ).map((chip) => (
+                  <li
+                    key={chip.label}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 t-caption ${
+                      chip.success
+                        ? "border-[color:var(--color-success)]/30 bg-[color:var(--color-success-bg)] text-[color:var(--color-success)]"
+                        : "border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] text-[color:var(--color-ink-soft)]"
+                    }`}
+                  >
+                    {chip.label}
+                    <span className="tabular font-bold">{chip.value}</span>
+                  </li>
+                ))}
+              </ul>
 
               <div className="mt-4 flex flex-col gap-2.5">
                 {(
@@ -344,31 +354,15 @@ export default function ReviewBooking() {
 
       {/* Mobile sticky bottom bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
-        <button type="button" onClick={() => setPriceSummaryOpen(true)} className="flex flex-col items-start">
-          <span className="flex items-center gap-1.5 text-lg font-bold text-[color:var(--color-ink)]">
-            {format(netPayable)}
-            <Icon name="info" size={15} className="text-[color:var(--color-muted)]" />
-          </span>
-          <span className="t-label text-[color:var(--color-muted)]">incl. taxes &amp; fees</span>
-        </button>
+        <a href="#price-summary" className="flex flex-col items-start">
+          <span className="t-h3 tabular text-[color:var(--color-ink)]">{format(netPayable)}</span>
+          <span className="t-caption text-[color:var(--color-muted)]">incl. taxes &amp; fees</span>
+        </a>
         <Button variant="primary" size="lg" onClick={handleProceed}>
           Proceed To Payment
         </Button>
       </div>
 
-      {priceSummaryOpen && (
-        <PriceSummaryModal
-          baseFare={baseFare}
-          taxes={taxes}
-          total={total}
-          discount={discount}
-          netPayable={netPayable}
-          days={RENTAL_DAYS}
-          format={format}
-          symbol={symbol}
-          onClose={() => setPriceSummaryOpen(false)}
-        />
-      )}
     </PageShell>
   );
 }

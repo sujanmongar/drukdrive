@@ -1,42 +1,32 @@
-import Icon from "./Icon";
+const steps = ["Your selection", "Details", "Payment"];
 
-const steps = ["Your Selection", "Details", "Final Step"];
-
+// Checkout progress as three segments that fill left to right — the
+// Airbnb / Trip.com shape. Each segment carries its own step name, so the
+// bar reads the same on a phone and on desktop without labels colliding.
 export default function BookingStepper({ current, allDone = false }: { current: 1 | 2 | 3; allDone?: boolean }) {
   return (
-    <div className="mx-auto flex max-w-md items-center justify-between px-2">
+    <ol className="grid grid-cols-3 gap-2 sm:gap-3" aria-label="Booking progress">
       {steps.map((label, i) => {
         const stepNum = i + 1;
         const done = stepNum < current || allDone;
         const active = stepNum === current && !allDone;
         return (
-          <div key={label} className="flex flex-1 items-center last:flex-none">
-            <div className="flex flex-col items-center gap-1.5">
-              <div
-                className={`t-caption flex size-8 items-center justify-center rounded-full border-2 font-bold transition-colors ${
-                  done
-                    ? "border-[color:var(--color-success)] bg-[color:var(--color-success)] text-white"
-                    : active
-                      ? "border-[color:var(--color-ink)] text-[color:var(--color-ink)]"
-                      : "border-[color:var(--color-border)] text-[color:var(--color-muted)]"
-                }`}
-              >
-                {done ? <Icon name="check" size={14} /> : stepNum}
-              </div>
-              <span
-                className={`t-caption whitespace-nowrap font-medium ${
-                  done || active ? "text-[color:var(--color-ink)]" : "text-[color:var(--color-muted)]"
-                }`}
-              >
-                {label}
-              </span>
-            </div>
-            {stepNum < steps.length && (
-              <div className={`mx-2 mb-4 h-0.5 flex-1 ${done ? "bg-[color:var(--color-success)]" : "bg-[color:var(--color-border)]"}`} />
-            )}
-          </div>
+          <li key={label} aria-current={active ? "step" : undefined} className="min-w-0">
+            <span
+              className={`block h-1.5 rounded-full transition-colors ${
+                done ? "bg-[color:var(--color-success)]" : active ? "bg-[color:var(--color-ink)]" : "bg-[color:var(--color-border)]"
+              }`}
+            />
+            <span
+              className={`mt-2 block truncate t-caption sm:t-body-sm ${
+                active ? "font-bold text-[color:var(--color-ink)]" : done ? "font-semibold text-[color:var(--color-ink-soft)]" : "font-medium text-[color:var(--color-muted)]"
+              }`}
+            >
+              <span className="tabular">{stepNum}.</span> {label}
+            </span>
+          </li>
         );
       })}
-    </div>
+    </ol>
   );
 }
