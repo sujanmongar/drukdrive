@@ -53,6 +53,8 @@ html {
   text-rendering: optimizeLegibility;
 }
 
+/* Any heading element picks up the display face; the t-* role classes carry
+   the size, weight and tracking. */
 h1,
 h2,
 h3,
@@ -60,132 +62,112 @@ h4,
 h5,
 h6 {
   font-family: var(--font-display);
-  letter-spacing: -0.015em;
 }
 
-/* ---------------------------------------------------------------------------
-   Mobile typography floors.
+/* ===========================================================================
+   TYPE SYSTEM
 
-   The t-* scale covers what has been migrated to it, but most of the site is
-   still raw text-xs / text-sm / tiny arbitrary sizes, which never scale on a
-   phone. Tailwind emits utilities in @layer utilities, and an unlayered rule
-   wins over any layered one — so this one block raises every named size to a
-   standard phone floor (iOS HIG / Material) without touching desktop, where
-   the small badge sizes are deliberate.
+   Two scales, not one scale that shrinks. Phones and desktops are read at
+   different distances, so they get different sizes, weights, line-heights and
+   letter-spacing — the approach Airbnb, Booking and Trip use.
 
-   Floors: 12px minimum for anything, 13px for footnotes, 15px for dense UI
-   copy. Form controls sit at 16px: below that iOS Safari zooms the page on
-   focus.
---------------------------------------------------------------------------- */
-@media (max-width: 767px) {
-  .text-\[9px\],
-  .text-\[10px\],
-  .text-\[11px\] {
-    font-size: 0.75rem; /* 12px */
-    line-height: 1.35;
-  }
-  .text-xs {
-    font-size: 0.8125rem; /* 13px */
-    line-height: 1.45;
-  }
-  .text-sm {
-    font-size: 0.9375rem; /* 15px */
-    line-height: 1.5;
-  }
-  /* A class floor above (.text-sm) would otherwise outrank this element
-     rule; the 16px input minimum is a hard iOS constraint, so it is forced. */
-  input,
-  select,
-  textarea {
-    font-size: 1rem !important;
-  }
-}
+   The shape of the difference:
 
-/* Prices, dates and counts line up column-to-column. */
-.tabular {
-  font-variant-numeric: tabular-nums;
-}
+     - Body copy is LARGER on mobile (16px) than desktop (15px). A phone is
+       held closer but the column is narrower, and 16px in a form control is
+       also what stops iOS Safari zooming on focus.
+     - Headings are much SMALLER on mobile. A 44px desktop h1 becomes 28px;
+       big display type eats a phone screen and wraps badly.
+     - Line-height OPENS on desktop (1.6) and tightens on mobile (1.5).
+       Long desktop measures need the extra leading; a narrow phone column
+       does not, and tighter leading fits more of a card in one glance.
+     - Letter-spacing TIGHTENS as size grows and LOOSENS as it shrinks. Big
+       display type is negative-tracked on desktop (-0.03em); small captions
+       and labels are positive-tracked so they stay legible at 12–13px.
+     - Headings carry more weight on mobile (800 vs 700 at h1) because the
+       smaller size loses presence otherwise.
+=========================================================================== */
 
-/* ---------------------------------------------------------------------------
-   Type scale.
-
-   One semantic class per role, each stepping up at the md breakpoint so
-   desktop reads at a comfortable size without inflating mobile. Use these
-   instead of raw text-* utilities for anything that carries meaning:
-
-     t-h1 … t-h4   headings, largest to smallest
-     t-body-lg     lead paragraphs / prominent body copy
-     t-body        default body copy
-     t-body-sm     dense body copy (card meta, table cells)
-     t-caption     secondary/muted asides, fine print
-     t-label       form field labels and overlines
---------------------------------------------------------------------------- */
+/* --- Semantic roles. Mobile first; the desktop block follows. ------------ */
 .t-h1 {
   font-family: var(--font-display);
-  font-size: 1.875rem; /* 30px */
+  font-size: 1.75rem; /* 28px */
   line-height: 1.2;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.02em;
 }
 .t-h2 {
   font-family: var(--font-display);
-  font-size: 1.5rem; /* 24px */
-  line-height: 1.25;
+  font-size: 1.375rem; /* 22px */
+  line-height: 1.27;
   font-weight: 700;
   letter-spacing: -0.015em;
 }
 .t-h3 {
   font-family: var(--font-display);
-  font-size: 1.25rem; /* 20px */
-  line-height: 1.3;
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.33;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 .t-h4 {
   font-family: var(--font-display);
-  font-size: 1.0625rem; /* 17px */
-  line-height: 1.35;
+  font-size: 1rem; /* 16px */
+  line-height: 1.375;
   font-weight: 700;
+  letter-spacing: -0.005em;
 }
 .t-body-lg {
   font-size: 1.0625rem; /* 17px */
   line-height: 1.55;
+  letter-spacing: 0;
 }
 .t-body {
   font-size: 1rem; /* 16px */
-  line-height: 1.55;
+  line-height: 1.5;
+  letter-spacing: 0;
 }
 .t-body-sm {
-  font-size: 0.875rem; /* 14px */
-  line-height: 1.5;
+  font-size: 0.9375rem; /* 15px */
+  line-height: 1.47;
+  letter-spacing: 0;
 }
 .t-caption {
   font-size: 0.8125rem; /* 13px */
-  line-height: 1.45;
+  line-height: 1.38;
+  letter-spacing: 0.005em;
 }
 .t-label {
   font-size: 0.75rem; /* 12px */
-  line-height: 1.3;
-  font-weight: 500;
+  line-height: 1.33;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 @media (min-width: 768px) {
   .t-h1 {
-    font-size: 2.5rem; /* 40px */
-    line-height: 1.15;
+    font-size: 2.75rem; /* 44px */
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
   }
   .t-h2 {
     font-size: 1.875rem; /* 30px */
     line-height: 1.2;
+    letter-spacing: -0.022em;
   }
   .t-h3 {
     font-size: 1.375rem; /* 22px */
+    line-height: 1.27;
+    letter-spacing: -0.015em;
   }
   .t-h4 {
     font-size: 1.125rem; /* 18px */
+    line-height: 1.33;
+    letter-spacing: -0.01em;
   }
   .t-body-lg {
-    font-size: 1.0625rem; /* 17px */
+    font-size: 1.125rem; /* 18px */
     line-height: 1.6;
   }
   .t-body {
@@ -198,9 +180,146 @@ h6 {
   }
   .t-caption {
     font-size: 0.8125rem; /* 13px */
+    line-height: 1.5;
+    letter-spacing: 0;
   }
   .t-label {
     font-size: 0.75rem; /* 12px */
+    line-height: 1.35;
+  }
+}
+
+/* --- Raw Tailwind sizes, re-pointed at the same system. -----------------
+   Most of the app still uses text-xs / text-sm / text-base directly. Rather
+   than rewrite every call site, each raw step is redefined to a real mobile
+   value and a real desktop value, with the line-height and tracking that
+   belong to it. Tailwind emits its utilities in @layer utilities, and an
+   unlayered rule beats any layered one, so these definitions win.
+
+   Effective mapping:              mobile      desktop
+     text-[9px|10px|11px]          12px        11px
+     text-xs                       13px        12px
+     text-sm                       15px        14px
+     text-base                     16px        15px
+     text-lg / text-xl / text-2xl  smaller, tighter-tracked display steps
+----------------------------------------------------------------------- */
+.text-\[9px\],
+.text-\[10px\],
+.text-\[11px\] {
+  font-size: 0.75rem; /* 12px */
+  line-height: 1.33;
+  letter-spacing: 0.01em;
+}
+.text-xs {
+  font-size: 0.8125rem; /* 13px */
+  line-height: 1.4;
+  letter-spacing: 0.005em;
+}
+.text-sm {
+  font-size: 0.9375rem; /* 15px */
+  line-height: 1.47;
+  letter-spacing: 0;
+}
+.text-base {
+  font-size: 1rem; /* 16px */
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+.text-lg {
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+.text-xl {
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+.text-2xl,
+.lg\:text-2xl {
+  font-size: 1.5rem; /* 24px */
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+/* A 16px minimum on form controls is a hard iOS constraint: anything smaller
+   makes Safari zoom the page on focus. Forced, because the class-based sizes
+   above would otherwise outrank an element selector. */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 1rem !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .text-\[9px\],
+  .text-\[10px\],
+  .text-\[11px\] {
+    font-size: 0.6875rem; /* 11px */
+    line-height: 1.35;
+  }
+  .text-xs {
+    font-size: 0.75rem; /* 12px */
+    line-height: 1.45;
+    letter-spacing: 0;
+  }
+  .text-sm,
+  .md\:text-sm {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.55;
+  }
+  .text-base {
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.6;
+    letter-spacing: 0;
+  }
+  .text-lg {
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+  }
+  .text-xl {
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  .text-2xl,
+  .lg\:text-2xl {
+    font-size: 1.875rem; /* 30px */
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+}
+
+/* Prices, dates and counts line up column-to-column. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Vertical rhythm ----------------------------------------------------
+   Spacing scales with the viewport the same way type does: phones get a
+   compact rhythm so more of the page is usable at once, desktop gets the
+   generous whitespace the wider measure needs. */
+.section-y {
+  padding-block: 2.5rem; /* 40px */
+}
+.section-y-sm {
+  padding-block: 1.75rem; /* 28px */
+}
+.page-gutter {
+  padding-inline: 1rem; /* 16px */
+}
+@media (min-width: 768px) {
+  .section-y {
+    padding-block: 5rem; /* 80px */
+  }
+  .section-y-sm {
+    padding-block: 3rem; /* 48px */
+  }
+  .page-gutter {
+    padding-inline: 2.5rem; /* 40px */
   }
 }
 

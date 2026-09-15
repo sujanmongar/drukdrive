@@ -338,7 +338,7 @@ export default function Home() {
 
       <div className="mx-auto max-w-[1280px] px-4 md:px-10">
         {/* Recent searches */}
-        <section className="py-12 md:py-20">
+        <section className="section-y">
           <SectionHeader title="Recent searches" trackRef={recentTrackRef} />
           <div ref={recentTrackRef} className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:px-6">
             {recentSearches.map((s) => {
@@ -365,7 +365,7 @@ export default function Home() {
 
       {/* Popular cars — a full-bleed tinted band so the white cards and their
           hover shadow read against a ground. Content stays on the grid. */}
-      <section className="bg-[color:var(--color-surface-subtle)] py-12 md:py-20">
+      <section className="section-y bg-[color:var(--color-surface-subtle)]">
         <div className="mx-auto max-w-[1280px] px-4 md:px-10">
           <SectionHeader title="Popular cars" trackRef={carsTrackRef} />
           <div ref={carsTrackRef} className="carousel-track -mx-4 -mb-8 flex gap-5 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:px-6">
@@ -383,7 +383,7 @@ export default function Home() {
 
       <div className="mx-auto max-w-[1280px] px-4 md:px-10">
         {/* Popular car types — photo tiles, paged by the header arrows. */}
-        <section className="py-12 md:py-20">
+        <section className="section-y">
           <SectionHeader title="Popular car types" trackRef={typesTrackRef} />
           <div ref={typesTrackRef} className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:gap-5 md:px-6">
             {popularCarTypes.map((t) => (
@@ -411,7 +411,7 @@ export default function Home() {
         </section>
 
         {/* FAQ — one centred column of full-width accordion cards. */}
-        <section className="py-12 md:py-20">
+        <section className="section-y">
           <h2 className="t-h2 mb-6 text-center text-[color:var(--color-ink)] md:mb-8">Frequently asked questions</h2>
           <div className="mx-auto flex max-w-[860px] flex-col gap-3">
             {faqs.map((f, i) => {
@@ -456,7 +456,7 @@ export default function Home() {
         </section>
 
         {/* Company blurb */}
-        <section className="py-12 md:py-20">
+        <section className="section-y">
           <h2 className="t-h2 mb-4 text-[color:var(--color-ink)]">DrukDrive</h2>
           <p className="t-body-lg max-w-[860px] text-[color:var(--color-muted)]">
             DrukDrive partners with trusted local operators across Bhutan to make it easy to find, compare and
