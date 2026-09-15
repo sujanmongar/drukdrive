@@ -5,6 +5,7 @@ import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import BookingStepper from "../../components/BookingStepper";
 import BookingRouteCard from "../../components/BookingRouteCard";
+import PriceSummaryModal from "../../components/PriceSummaryModal";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import { computeFare, RENTAL_DAYS } from "../../lib/pricing";
@@ -28,7 +29,7 @@ export default function ReviewBooking() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { format, symbol } = useCurrency();
-  const [breakdownOpen, setBreakdownOpen] = useState(false);
+  const [priceSummaryOpen, setPriceSummaryOpen] = useState(false);
   const { isLoggedIn } = useAuth();
   const { user } = useCurrentUser();
 
@@ -107,14 +108,16 @@ export default function ReviewBooking() {
   return (
     <PageShell noFooter>
       <div className="mx-auto max-w-[1100px] px-4 py-6 pb-28 md:px-10 md:py-10 md:pb-10">
-        <div className="mb-5 flex items-center gap-2">
-          <button type="button" onClick={() => navigate(-1)} aria-label="Back" className="icon-btn -ml-2 size-10">
-            <Icon name="chevron-left" size={22} />
-          </button>
-          <h1 className="t-h2 text-[color:var(--color-ink)]">Review your booking</h1>
-        </div>
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="t-h3 mb-4 flex items-center gap-2 text-[color:var(--color-ink)]"
+        >
+          <Icon name="chevron-left" size={22} />
+          Review Your Booking
+        </button>
 
-        <div className="mb-8 rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] px-4 py-3.5 sm:px-6">
+        <div className="mb-6">
           <BookingStepper current={2} />
         </div>
 
@@ -244,48 +247,22 @@ export default function ReviewBooking() {
 
           {/* Right: price summary sidebar */}
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <div id="price-summary" className="scroll-mt-24 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
-              <h2 className="t-h3 text-[color:var(--color-ink)]">Price summary</h2>
+            <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+              <h2 className="t-h3 text-[color:var(--color-ink)]">Price Summary</h2>
 
-              <div className="mt-3">
-                <p className="t-h2 tabular text-[color:var(--color-ink)]">{format(netPayable)}</p>
-                <p className="t-caption text-[color:var(--color-muted)]">Total for {RENTAL_DAYS} days, taxes and fees included</p>
+              <div className="mt-3 flex items-baseline justify-between">
+                <div>
+                  <p className="text-xl font-bold text-[color:var(--color-ink)]">{format(netPayable)}</p>
+                  <p className="t-caption text-[color:var(--color-muted)]">Inclusive of taxes and fees</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPriceSummaryOpen(true)}
+                  className="t-caption font-semibold text-[color:var(--color-link)] underline decoration-dotted underline-offset-2"
+                >
+                  Fare summary
+                </button>
               </div>
-
-              {/* Fare breakdown lives in the card — no popup, same on every screen. */}
-              <button
-                type="button"
-                onClick={() => setBreakdownOpen((v) => !v)}
-                aria-expanded={breakdownOpen}
-                className="mt-3 flex w-full items-center justify-between rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 t-body-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
-              >
-                Fare breakdown
-                <Icon name="chevron-down" size={18} className={`transition-transform ${breakdownOpen ? "rotate-180" : ""}`} />
-              </button>
-              {breakdownOpen && (
-                <dl className="animate-popover mt-2 flex flex-col gap-2 rounded-xl bg-[color:var(--color-surface-subtle)] px-3.5 py-3 t-body-sm">
-                  <div className="flex justify-between gap-3">
-                    <dt className="text-[color:var(--color-ink-soft)]">
-                      {format(vehicle.pricePerDay)} &times; {RENTAL_DAYS} days
-                    </dt>
-                    <dd className="tabular font-semibold text-[color:var(--color-ink)]">{format(baseFare)}</dd>
-                  </div>
-                  <div className="flex justify-between gap-3">
-                    <dt className="text-[color:var(--color-ink-soft)]">Taxes &amp; fees</dt>
-                    <dd className="tabular font-semibold text-[color:var(--color-ink)]">{format(taxes)}</dd>
-                  </div>
-                  {discount > 0 && (
-                    <div className="flex justify-between gap-3 text-[color:var(--color-success)]">
-                      <dt>Promo {promoApplied?.code}</dt>
-                      <dd className="tabular font-semibold">&minus;{format(discount)}</dd>
-                    </div>
-                  )}
-                  <div className="flex justify-between gap-3 border-t border-[color:var(--color-border)] pt-2 font-bold text-[color:var(--color-ink)]">
-                    <dt>Total ({symbol})</dt>
-                    <dd className="tabular">{format(netPayable)}</dd>
-                  </div>
-                </dl>
-              )}
 
               <div className="mt-4 flex flex-col gap-2.5">
                 {(
@@ -367,15 +344,31 @@ export default function ReviewBooking() {
 
       {/* Mobile sticky bottom bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
-        <a href="#price-summary" className="flex flex-col items-start">
-          <span className="t-h3 tabular text-[color:var(--color-ink)]">{format(netPayable)}</span>
-          <span className="t-caption text-[color:var(--color-muted)]">incl. taxes &amp; fees</span>
-        </a>
+        <button type="button" onClick={() => setPriceSummaryOpen(true)} className="flex flex-col items-start">
+          <span className="flex items-center gap-1.5 text-lg font-bold text-[color:var(--color-ink)]">
+            {format(netPayable)}
+            <Icon name="info" size={15} className="text-[color:var(--color-muted)]" />
+          </span>
+          <span className="t-label text-[color:var(--color-muted)]">incl. taxes &amp; fees</span>
+        </button>
         <Button variant="primary" size="lg" onClick={handleProceed}>
           Proceed To Payment
         </Button>
       </div>
 
+      {priceSummaryOpen && (
+        <PriceSummaryModal
+          baseFare={baseFare}
+          taxes={taxes}
+          total={total}
+          discount={discount}
+          netPayable={netPayable}
+          days={RENTAL_DAYS}
+          format={format}
+          symbol={symbol}
+          onClose={() => setPriceSummaryOpen(false)}
+        />
+      )}
     </PageShell>
   );
 }

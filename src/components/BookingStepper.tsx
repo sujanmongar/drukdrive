@@ -1,52 +1,42 @@
 import Icon from "./Icon";
 
-const steps = ["Your selection", "Details", "Payment"];
+const steps = ["Your Selection", "Details", "Final Step"];
 
-// Checkout progress. Each step is a numbered disc with its label beside it
-// and a connector that fills once the step is done — the shape used by
-// Booking.com / Economy Bookings, so it reads as "where am I" at a glance
-// on a phone as well as on desktop.
 export default function BookingStepper({ current, allDone = false }: { current: 1 | 2 | 3; allDone?: boolean }) {
   return (
-    <ol className="flex items-center" aria-label="Booking progress">
+    <div className="mx-auto flex max-w-md items-center justify-between px-2">
       {steps.map((label, i) => {
         const stepNum = i + 1;
         const done = stepNum < current || allDone;
         const active = stepNum === current && !allDone;
-        const last = stepNum === steps.length;
         return (
-          <li key={label} className={`flex items-center ${last ? "shrink-0" : "min-w-0 flex-1"}`} aria-current={active ? "step" : undefined}>
-            <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
-              <span
-                className={`flex size-7 shrink-0 items-center justify-center rounded-full t-caption font-bold transition-colors sm:size-8 ${
+          <div key={label} className="flex flex-1 items-center last:flex-none">
+            <div className="flex flex-col items-center gap-1.5">
+              <div
+                className={`t-caption flex size-8 items-center justify-center rounded-full border-2 font-bold transition-colors ${
                   done
-                    ? "bg-[color:var(--color-success)] text-white"
+                    ? "border-[color:var(--color-success)] bg-[color:var(--color-success)] text-white"
                     : active
-                      ? "bg-[color:var(--color-ink)] text-white"
-                      : "border border-[color:var(--color-border)] bg-white text-[color:var(--color-muted)]"
+                      ? "border-[color:var(--color-ink)] text-[color:var(--color-ink)]"
+                      : "border-[color:var(--color-border)] text-[color:var(--color-muted)]"
                 }`}
               >
-                {done ? <Icon name="check" size={15} strokeWidth={2.5} /> : stepNum}
-              </span>
-              {/* Phones only have room for the current step's name; the
-                  other steps read from their disc alone. */}
+                {done ? <Icon name="check" size={14} /> : stepNum}
+              </div>
               <span
-                className={`whitespace-nowrap t-body-sm ${active ? "" : "hidden sm:inline"} ${
-                  active ? "font-bold text-[color:var(--color-ink)]" : done ? "font-semibold text-[color:var(--color-ink)]" : "font-medium text-[color:var(--color-muted)]"
+                className={`t-caption whitespace-nowrap font-medium ${
+                  done || active ? "text-[color:var(--color-ink)]" : "text-[color:var(--color-muted)]"
                 }`}
               >
                 {label}
               </span>
             </div>
-            {!last && (
-              <span
-                aria-hidden
-                className={`mx-3 h-px min-w-4 flex-1 sm:mx-4 ${done ? "bg-[color:var(--color-success)]" : "bg-[color:var(--color-border)]"}`}
-              />
+            {stepNum < steps.length && (
+              <div className={`mx-2 mb-4 h-0.5 flex-1 ${done ? "bg-[color:var(--color-success)]" : "bg-[color:var(--color-border)]"}`} />
             )}
-          </li>
+          </div>
         );
       })}
-    </ol>
+    </div>
   );
 }
