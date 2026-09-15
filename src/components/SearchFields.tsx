@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import type { ReactNode } from "react";
 import Icon from "./Icon";
+import { Checkbox } from "./CheckboxRow";
 import LocationPickerSheet from "./LocationPickerSheet";
 import DatePickerSheet from "./DatePickerSheet";
 import type { SearchValue } from "../lib/booking";
@@ -103,17 +104,16 @@ export default function SearchFields({
       {/* Checkbox above the fields on every screen; the duration sits beside
           it on desktop and moves below the fields, centred, on phones. */}
       <div className="order-1 mb-3 flex flex-wrap items-center gap-x-5 gap-y-1.5">
-        <label className="flex w-fit cursor-pointer items-center gap-2 t-body-sm text-[color:var(--color-ink)]">
-          <input
-            type="checkbox"
-            checked={differentDropoff}
-            onChange={(e) => setDifferentDropoff(e.target.checked)}
-            className="size-4 accent-[color:var(--color-ink)]"
-          />
-          {selfDrive
-            ? "Return the car to a different location"
-            : "Drop off at a different location"}
-        </label>
+        <Checkbox
+          inline
+          checked={differentDropoff}
+          onChange={setDifferentDropoff}
+          label={
+            selfDrive
+              ? "Return the car to a different location"
+              : "Drop off at a different location"
+          }
+        />
         {showDuration && (
           <p className="hidden t-body-sm font-semibold text-[color:var(--color-success)] lg:block">
             Duration: {durationLabel(value)}

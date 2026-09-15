@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
+import { Checkbox } from "../../components/CheckboxRow";
 import Button from "../../components/Button";
 import { routes } from "../../lib/routes";
 import { currentUser } from "../../data/mockData";
@@ -40,7 +41,9 @@ export default function SignIn() {
         type="button"
         onClick={() => setMethod("email")}
         className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-          method === "email" ? "bg-[color:var(--color-ink)] text-white" : "text-[color:var(--color-muted)]"
+          method === "email"
+            ? "bg-[color:var(--color-ink)] text-white"
+            : "text-[color:var(--color-muted)]"
         }`}
       >
         Email
@@ -49,7 +52,9 @@ export default function SignIn() {
         type="button"
         onClick={() => setMethod("phone")}
         className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-          method === "phone" ? "bg-[color:var(--color-ink)] text-white" : "text-[color:var(--color-muted)]"
+          method === "phone"
+            ? "bg-[color:var(--color-ink)] text-white"
+            : "text-[color:var(--color-muted)]"
         }`}
       >
         Phone
@@ -136,16 +141,16 @@ export default function SignIn() {
 
   const rememberAndForgot = (
     <div className="mt-4 flex items-center justify-between">
-      <label className="flex cursor-pointer items-center gap-2 text-sm text-[color:var(--color-ink)]">
-        <input
-          type="checkbox"
-          checked={remember}
-          onChange={(e) => setRemember(e.target.checked)}
-          className="size-[18px] rounded border-[color:var(--color-border)] accent-[color:var(--color-ink)]"
-        />
-        Remember me
-      </label>
-      <Link to={routes.forgotPassword} className="flex items-center gap-1.5 text-sm font-semibold text-[color:var(--color-ink)]">
+      <Checkbox
+        inline
+        checked={remember}
+        onChange={setRemember}
+        label="Remember me"
+      />
+      <Link
+        to={routes.forgotPassword}
+        className="flex items-center gap-1.5 text-sm font-semibold text-[color:var(--color-ink)]"
+      >
         <Icon name="lock" size={16} />
         Forgot password?
       </Link>
@@ -156,17 +161,30 @@ export default function SignIn() {
     <>
       <p className="mt-6 text-center text-sm text-[color:var(--color-ink)]">
         Don&rsquo;t have an account?{" "}
-        <Link to={routes.signUp} className="font-bold text-[color:var(--color-ink)]">
+        <Link
+          to={routes.signUp}
+          className="font-bold text-[color:var(--color-ink)]"
+        >
           Sign up
         </Link>
       </p>
       <p className="mt-6 text-center text-xs leading-relaxed text-[color:var(--color-ink-87)]">
         By continuing, you agree our{" "}
-        <Link to={routes.termsOfService} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
+        <Link
+          to={routes.termsOfService}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-[color:var(--color-link)] underline"
+        >
           Terms of Services
         </Link>{" "}
         and{" "}
-        <Link to={routes.privacyPolicy} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
+        <Link
+          to={routes.privacyPolicy}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-[color:var(--color-link)] underline"
+        >
           Privacy Policy
         </Link>
         .
@@ -186,7 +204,9 @@ export default function SignIn() {
           >
             <Icon name="close" size={20} />
           </button>
-          <h1 className="t-h2 mb-6 mt-8 text-[color:var(--color-ink)]">Sign in</h1>
+          <h1 className="t-h2 mb-6 mt-8 text-[color:var(--color-ink)]">
+            Sign in
+          </h1>
           <form onSubmit={handleSubmit} className="flex flex-col">
             {methodTabs}
             {fields}

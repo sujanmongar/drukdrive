@@ -4,6 +4,7 @@ import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import AddOnCard from "../../components/AddOnCard";
+import { Checkbox } from "../../components/CheckboxRow";
 import BookingStepper from "../../components/BookingStepper";
 import {
   StopsCard,
@@ -110,15 +111,14 @@ export default function BookingReview() {
                   Bhutan does not accept international driving permits. Visitors
                   from other countries can book a rental with a driver instead.
                 </p>
-                <label className="mt-3 flex cursor-pointer items-start gap-2.5 t-body-sm text-[color:var(--color-ink)]">
-                  <input
-                    type="checkbox"
+                <div className="mt-2">
+                  <Checkbox
+                    align="start"
                     checked={licenceConfirmed}
-                    onChange={(e) => setLicenceConfirmed(e.target.checked)}
-                    className="mt-0.5 size-4 accent-[color:var(--color-ink)]"
+                    onChange={setLicenceConfirmed}
+                    label="I hold a valid Indian driving licence and am 21 or over."
                   />
-                  I hold a valid Indian driving licence and am 21 or over.
-                </label>
+                </div>
               </div>
             )}
 
