@@ -22,7 +22,7 @@ export default function FilterSection({
     <>
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[color:var(--color-ink)]">{title}</h3>
+          <h4 className="t-body-sm font-bold text-[color:var(--color-ink)]">{title}</h4>
           <div className="flex items-center gap-3">
             {hasSelection && (
               <button type="button" onClick={onClear} className="text-xs font-semibold text-[color:var(--color-link)]">

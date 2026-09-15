@@ -74,7 +74,7 @@ export default function Payment() {
             <div className="mt-4 flex flex-col gap-3">
               {/* Net Banking */}
               <div
-                className={`rounded-xl bg-neutral-50 p-4 transition-colors ${method === "netbanking" ? "ring-2 ring-[color:var(--color-ink)]" : ""}`}
+                className={`rounded-xl bg-[color:var(--color-surface-subtle)] p-4 transition-colors ${method === "netbanking" ? "ring-2 ring-[color:var(--color-ink)]" : ""}`}
               >
                 <button
                   type="button"
@@ -131,7 +131,7 @@ export default function Payment() {
 
               {/* Card */}
               <div
-                className={`rounded-xl bg-neutral-50 p-4 transition-colors ${method === "card" ? "ring-2 ring-[color:var(--color-ink)]" : ""}`}
+                className={`rounded-xl bg-[color:var(--color-surface-subtle)] p-4 transition-colors ${method === "card" ? "ring-2 ring-[color:var(--color-ink)]" : ""}`}
               >
                 <button
                   type="button"
@@ -150,7 +150,7 @@ export default function Payment() {
                     </span>
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="rounded bg-white px-1.5 py-1 t-label font-extrabold italic text-blue-700 shadow-sm">VISA</span>
+                    <span className="rounded bg-white px-1.5 py-1 t-label font-bold italic text-[color:var(--color-link)] shadow-sm">VISA</span>
                     <span className="flex size-6 items-center justify-center rounded-full bg-gradient-to-r from-red-500 to-amber-400" />
                   </span>
                 </button>

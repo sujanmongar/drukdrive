@@ -143,7 +143,7 @@ export default function ProviderVehicleAdd() {
         </div>
 
         <div className="mt-6 max-w-2xl rounded-xl border border-[color:var(--color-border)] p-6">
-          <h3 className="text-base font-bold text-[color:var(--color-ink)]">
+          <h3 className="t-h4 text-[color:var(--color-ink)]">
             {editingVehicle ? "Edit vehicle" : "Add vehicle"}
           </h3>
 
@@ -275,10 +275,10 @@ export default function ProviderVehicleAdd() {
           </div>
 
           <div className="mt-6">
-            <h3 className="text-base font-bold text-[color:var(--color-ink)]">Set your price</h3>
+            <h3 className="t-h4 text-[color:var(--color-ink)]">Set your price</h3>
             <p className="text-sm text-[color:var(--color-muted)]">You can change it anytime</p>
             <div className="mt-3 flex flex-col items-center gap-1 rounded-xl bg-[color:var(--color-info-bg)] py-6">
-              <div className="flex items-center gap-1 text-2xl font-extrabold text-[color:var(--color-ink)]">
+              <div className="flex items-center gap-1 text-2xl font-bold text-[color:var(--color-ink)]">
                 <span>Nu.</span>
                 <input
                   type="text"

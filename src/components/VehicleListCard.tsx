@@ -71,7 +71,7 @@ export default function VehicleListCard({
             </span>
             <span className="text-[color:var(--color-muted)]">•</span>
             <span className="flex items-center gap-1">
-              <Icon name="star" size={13} className="fill-current text-amber-400" strokeWidth={2.3} />
+              <Icon name="star" size={13} className="fill-current text-[color:var(--color-star)]" strokeWidth={2.3} />
               <span className="font-semibold">{vehicle.rating}</span>
               <span className="text-[color:var(--color-muted)]">({vehicle.reviewCount})</span>
             </span>
@@ -84,12 +84,12 @@ export default function VehicleListCard({
           <div className="min-w-0 lg:text-right">
             {vehicle.strikePrice && (
               <div className="flex items-baseline gap-1.5 whitespace-nowrap lg:justify-end">
-                <span className="t-caption font-semibold text-red-500">{discountPct}% off</span>
+                <span className="t-caption font-semibold text-[color:var(--color-danger)]">{discountPct}% off</span>
                 <span className="t-caption text-[color:var(--color-muted)] line-through">{format(vehicle.strikePrice)}</span>
               </div>
             )}
             <div className="flex items-baseline gap-x-1.5 whitespace-nowrap lg:justify-end">
-              <span className="text-xl font-extrabold text-[color:var(--color-ink)] lg:text-2xl">
+              <span className="text-xl font-bold text-[color:var(--color-ink)] lg:text-2xl">
                 {format(vehicle.pricePerDay)}
               </span>
               <span className="t-caption text-[color:var(--color-ink)]">/day</span>

@@ -71,11 +71,11 @@ function MonthGrid({
               onClick={() => onPick(date)}
               className={`mx-auto flex size-9 items-center justify-center rounded-full text-sm transition-all duration-150 active:scale-90 ${
                 past
-                  ? "text-neutral-300"
+                  ? "text-[color:var(--color-placeholder)]"
                   : isPickup || isDropoff
                     ? "bg-[color:var(--color-ink)] font-bold text-white"
                     : inRange
-                      ? "bg-neutral-100 text-[color:var(--color-ink)]"
+                      ? "bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)]"
                       : "text-[color:var(--color-ink)] hover:bg-[color:var(--color-surface-soft)]"
               }`}
             >

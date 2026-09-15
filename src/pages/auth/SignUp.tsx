@@ -27,7 +27,7 @@ export default function SignUp() {
   };
 
   const methodTabs = (
-    <div className="mb-5 flex gap-2 rounded-xl bg-neutral-100 p-1">
+    <div className="mb-5 flex gap-2 rounded-xl bg-[color:var(--color-surface-soft)] p-1">
       <button
         type="button"
         onClick={() => setMethod("email")}

@@ -77,7 +77,7 @@ export default function StaticPage() {
           ))}
         </div>
 
-        <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl bg-neutral-50 p-6 text-center sm:flex-row sm:justify-between sm:text-left">
+        <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl bg-[color:var(--color-surface-subtle)] p-6 text-center sm:flex-row sm:justify-between sm:text-left">
           <div>
             <p className="text-sm font-bold text-[color:var(--color-ink)]">Still have questions?</p>
             <p className="mt-0.5 text-xs text-[color:var(--color-muted)]">

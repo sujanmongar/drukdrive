@@ -21,7 +21,7 @@ export default function BookingRouteCard({
   return (
     <div className="flex flex-col gap-3">
       {/* Trip strip */}
-      <div className="flex items-center gap-3 rounded-xl bg-neutral-50 px-4 py-3.5">
+      <div className="flex items-center gap-3 rounded-xl bg-[color:var(--color-surface-subtle)] px-4 py-3.5">
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-semibold text-[color:var(--color-muted)]">Pick up</p>
           <p className="truncate text-sm font-bold text-[color:var(--color-ink)]">{pickup}</p>

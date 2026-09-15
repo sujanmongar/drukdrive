@@ -14,7 +14,7 @@ const styles: Record<string, string> = {
 export default function StatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${styles[status] ?? "bg-neutral-100 text-neutral-600"}`}
+      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${styles[status] ?? "bg-[color:var(--color-surface-soft)] text-[color:var(--color-muted)]"}`}
     >
       {status}
     </span>

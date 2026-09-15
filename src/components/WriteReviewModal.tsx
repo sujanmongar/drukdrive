@@ -48,7 +48,7 @@ export default function WriteReviewModal({ onClose }: { onClose: () => void }) {
               <Icon
                 name="star"
                 size={28}
-                className={(hoverRating || rating) >= n ? "fill-current text-amber-400" : "text-neutral-200"}
+                className={(hoverRating || rating) >= n ? "fill-current text-[color:var(--color-star)]" : "text-[color:var(--color-border)]"}
               />
             </button>
           ))}

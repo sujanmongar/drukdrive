@@ -101,7 +101,7 @@ export default function FinanceLedger() {
                       setFilterOpen(false);
                     }}
                     className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
-                      statusFilter === s ? "bg-neutral-100 font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
+                      statusFilter === s ? "bg-[color:var(--color-surface-soft)] font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
                     }`}
                   >
                     {s}
@@ -124,7 +124,7 @@ export default function FinanceLedger() {
           <div ref={tableWrapRef} className="scrollbar-hide overflow-x-auto rounded-xl">
           <table className="w-full min-w-[720px] text-sm">
             <thead>
-              <tr className="border-b border-[color:var(--color-border)] bg-neutral-50 text-left text-xs font-semibold text-[color:var(--color-muted)]">
+              <tr className="border-b border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] text-left text-xs font-semibold text-[color:var(--color-muted)]">
                 <th className="px-4 py-3 font-semibold">Date</th>
                 <th className="px-4 py-3 font-semibold">Reference Number</th>
                 <th className="px-4 py-3 font-semibold">Particulars</th>
@@ -152,7 +152,7 @@ export default function FinanceLedger() {
               ))}
             </tbody>
             <tfoot>
-              <tr className="bg-neutral-50">
+              <tr className="bg-[color:var(--color-surface-subtle)]">
                 <td className="px-4 py-3 text-center font-bold text-[color:var(--color-ink)]" colSpan={3}>
                   Total
                 </td>

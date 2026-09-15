@@ -18,7 +18,7 @@ function Stars({ rating }: { rating: number }) {
           key={i}
           name="star"
           size={14}
-          className={i < rating ? "fill-current text-amber-400" : "text-neutral-200"}
+          className={i < rating ? "fill-current text-[color:var(--color-star)]" : "text-[color:var(--color-border)]"}
         />
       ))}
     </div>
@@ -46,7 +46,7 @@ export default function ProviderReviews() {
             <h2 className="t-h2 text-[color:var(--color-ink)]">Reviews</h2>
             {reviews.length > 0 && (
               <p className="mt-1 flex items-center gap-1.5 text-sm text-[color:var(--color-muted)]">
-                <Icon name="star" size={14} className="fill-current text-amber-400" />
+                <Icon name="star" size={14} className="fill-current text-[color:var(--color-star)]" />
                 <span className="font-semibold text-[color:var(--color-ink)]">{avgRating}</span> avg. of {reviews.length}
               </p>
             )}

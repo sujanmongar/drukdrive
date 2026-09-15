@@ -434,7 +434,7 @@ export default function Home() {
                     <span className="t-h4 text-[color:var(--color-ink)]">{f.q}</span>
                     <span
                       className={`flex size-9 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
-                        open ? "rotate-180 bg-[color:var(--color-ink)] text-white" : "bg-neutral-100 text-[color:var(--color-ink)]"
+                        open ? "rotate-180 bg-[color:var(--color-ink)] text-white" : "bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)]"
                       }`}
                     >
                       <Icon name="chevron-down" size={17} strokeWidth={2.2} />

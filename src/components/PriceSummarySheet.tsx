@@ -42,7 +42,7 @@ export default function PriceSummarySheet({
             <span className="font-medium text-[color:var(--color-ink)]">{format(taxes)}</span>
           </div>
 
-          <div className="flex items-center justify-between rounded-lg bg-neutral-50 px-3 py-3 font-bold text-[color:var(--color-ink)]">
+          <div className="flex items-center justify-between rounded-lg bg-[color:var(--color-surface-subtle)] px-3 py-3 font-bold text-[color:var(--color-ink)]">
             <span>Total</span>
             <span>{format(total)}</span>
           </div>

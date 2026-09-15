@@ -45,7 +45,7 @@ export default function VehicleImage({
   const photo = vehicleId && photoByVehicleId[vehicleId];
   if (photo) {
     return (
-      <div className={`flex items-center justify-center overflow-hidden ${transparent ? "" : "bg-neutral-100"} ${className}`}>
+      <div className={`flex items-center justify-center overflow-hidden ${transparent ? "" : "bg-[color:var(--color-surface-soft)]"} ${className}`}>
         <img
           src={photo}
           alt={category ?? ""}
@@ -62,7 +62,7 @@ export default function VehicleImage({
 
   const accent = (category && accentByCategory[category]) || "#9ca3af";
   return (
-    <div className={`flex items-center justify-center ${transparent ? "" : "bg-neutral-100"} ${className}`}>
+    <div className={`flex items-center justify-center ${transparent ? "" : "bg-[color:var(--color-surface-soft)]"} ${className}`}>
       <svg viewBox="0 0 200 100" className="h-[62%] w-[82%]" aria-hidden="true">
         <ellipse cx="100" cy="82" rx="78" ry="6" fill="#00000012" />
         <path

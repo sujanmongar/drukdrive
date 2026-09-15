@@ -31,6 +31,7 @@
   --color-placeholder: #bfc7cd;
 
   --color-cream: #f8e8c8;
+  --color-star: #f5b301;
 
   /* Rounder corners on cards, panels and sheets only. Controls (buttons,
      inputs, tabs) keep Tailwind's tighter radii — they look wrong soft. */
@@ -53,14 +54,12 @@ html {
   text-rendering: optimizeLegibility;
 }
 
-/* Any heading element picks up the display face; the t-* role classes carry
-   the size, weight and tracking. */
+/* Two families, one rule: Plus Jakarta Sans for page and section titles
+   (h1–h3 / t-h1–t-h3), Inter for everything else including card titles
+   (t-h4), so a bold card name and the body beside it share a face. */
 h1,
 h2,
-h3,
-h4,
-h5,
-h6 {
+h3 {
   font-family: var(--font-display);
 }
 
@@ -111,7 +110,7 @@ h6 {
   letter-spacing: -0.01em;
 }
 .t-h4 {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 1rem; /* 16px */
   line-height: 1.375;
   font-weight: 700;
@@ -399,7 +398,10 @@ body {
   background-color: var(--color-surface-soft);
 }
 @media (max-width: 767px) {
-  .icon-btn {
+  /* Give the ::after tap target a containing block — but only when the
+     button is in normal flow. An absolutely-positioned heart on a card
+     already has one, and forcing `relative` would drop it into the flow. */
+  .icon-btn:not(.absolute) {
     position: relative;
   }
   .icon-btn::after {

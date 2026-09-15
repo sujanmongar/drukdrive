@@ -17,7 +17,7 @@ export default function ProfileHero({
         <img
           src={currentUser.avatar}
           alt=""
-          className="size-20 shrink-0 rounded-full bg-neutral-100 object-cover md:size-24"
+          className="size-20 shrink-0 rounded-full bg-[color:var(--color-surface-soft)] object-cover md:size-24"
         />
         <div>
           <h1 className="t-h1 text-[color:var(--color-ink)]">Welcome, {currentUser.name.split(" ")[0]}</h1>

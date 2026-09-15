@@ -55,7 +55,7 @@ export default function WishlistSheet({ onClose, tripQuery = "" }: { onClose: ()
                       <p className="t-caption truncate text-[color:var(--color-muted)]">
                         {vehicle.location} &middot; {vehicle.seats} seats
                       </p>
-                      <p className="t-body font-extrabold text-[color:var(--color-ink)]">
+                      <p className="t-body font-bold text-[color:var(--color-ink)]">
                         {format(vehicle.pricePerDay)}
                         <span className="t-caption font-normal"> /day</span>
                       </p>

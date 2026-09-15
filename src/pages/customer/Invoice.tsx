@@ -64,7 +64,7 @@ export default function Invoice() {
         </div>
 
         <div className="rounded-xl border border-[color:var(--color-border)] p-8 shadow-card print:border-0 print:p-0 print:shadow-none">
-          <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-neutral-50 px-5 py-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-[color:var(--color-surface-subtle)] px-5 py-4">
             <DrukDriveLogo className="h-6 w-auto text-[color:var(--color-ink)]" />
             <p className="t-h3 text-[color:var(--color-ink)]">Invoice</p>
           </div>
@@ -137,7 +137,7 @@ export default function Invoice() {
                   <span>{format(taxes)}</span>
                 </div>
                 <div className="h-px bg-[color:var(--color-border)]" />
-                <div className="flex justify-between rounded-lg bg-neutral-50 px-3 py-2 text-sm font-bold text-[color:var(--color-ink)]">
+                <div className="flex justify-between rounded-lg bg-[color:var(--color-surface-subtle)] px-3 py-2 text-sm font-bold text-[color:var(--color-ink)]">
                   <span>Total</span>
                   <span>{format(total)}</span>
                 </div>

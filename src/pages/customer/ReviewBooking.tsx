@@ -230,13 +230,13 @@ export default function ReviewBooking() {
 
             <h2 className="t-h3 mt-10 text-[color:var(--color-ink)]">Read before you book!</h2>
             <div className="mt-4 rounded-xl border border-[color:var(--color-border)] p-5">
-              <h3 className="t-body-sm font-bold text-[color:var(--color-ink)]">Safety precautions</h3>
+              <h4 className="t-body-sm font-bold text-[color:var(--color-ink)]">Safety precautions</h4>
               <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body-sm text-[color:var(--color-ink-soft)]">
                 <li>Our cabs are sanitised before pickup, however you may request the driver to sanitise before you board.</li>
                 <li>Maintain social distancing and avoid touching your mouth, eyes or nose without sanitising your hands.</li>
                 <li>Avoid travel in case you&rsquo;re experiencing any symptoms of illness.</li>
               </ul>
-              <h3 className="mt-4 t-body-sm font-bold text-[color:var(--color-ink)]">Other information</h3>
+              <h4 className="mt-4 t-body-sm font-bold text-[color:var(--color-ink)]">Other information</h4>
               <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body-sm text-[color:var(--color-ink-soft)]">
                 <li>AC will be switched off in hilly areas.</li>
                 <li>If you opt for partial payment, please pay the balance to the driver within 45 min from pickup time.</li>
@@ -252,7 +252,7 @@ export default function ReviewBooking() {
 
               <div className="mt-3 flex items-baseline justify-between">
                 <div>
-                  <p className="text-xl font-extrabold text-[color:var(--color-ink)]">{format(netPayable)}</p>
+                  <p className="text-xl font-bold text-[color:var(--color-ink)]">{format(netPayable)}</p>
                   <p className="t-caption text-[color:var(--color-muted)]">Inclusive of taxes and fees</p>
                 </div>
                 <button
@@ -308,7 +308,7 @@ export default function ReviewBooking() {
                 </Button>
               </div>
 
-              <h3 className="mt-6 t-body-sm font-bold text-[color:var(--color-ink)]">Offer (Optional)</h3>
+              <h4 className="mt-6 t-body-sm font-bold text-[color:var(--color-ink)]">Offer (Optional)</h4>
               <div className="mt-2 rounded-xl border border-[color:var(--color-border)] p-3">
                 <p className="flex items-center gap-1.5 t-label font-semibold uppercase text-[color:var(--color-muted)]">
                   <Icon name="info" size={13} />
@@ -345,7 +345,7 @@ export default function ReviewBooking() {
       {/* Mobile sticky bottom bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
         <button type="button" onClick={() => setPriceSummaryOpen(true)} className="flex flex-col items-start">
-          <span className="flex items-center gap-1.5 text-lg font-extrabold text-[color:var(--color-ink)]">
+          <span className="flex items-center gap-1.5 text-lg font-bold text-[color:var(--color-ink)]">
             {format(netPayable)}
             <Icon name="info" size={15} className="text-[color:var(--color-muted)]" />
           </span>
