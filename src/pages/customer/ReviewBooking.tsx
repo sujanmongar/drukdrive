@@ -10,14 +10,22 @@ import FareSummary from "../../components/FareSummary";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import {
-  addOns,
+  addOnsFor,
   computeFare,
   isAddOnId,
   paymentSplit,
 } from "../../lib/pricing";
 import {
+  identityLabel,
+  needsFlightNumber,
+  notesFor,
+} from "../../lib/bookingContent";
+import { useClientType } from "../../lib/clientType";
+import { currencies } from "../../lib/currency";
+import {
   bookingToParams,
   formatDropoff,
+  formatPickup,
   parseBooking,
 } from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
@@ -34,7 +42,8 @@ export default function ReviewBooking() {
   usePageTitle("Your details");
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { format } = useCurrency();
+  const { format, currency } = useCurrency();
+  const { clientType } = useClientType();
   const { isLoggedIn } = useAuth();
   const { user } = useCurrentUser();
 
@@ -42,7 +51,7 @@ export default function ReviewBooking() {
   const vehicle =
     vehicles.find((v) => v.id === booking.vehicleId) ?? vehicles[0];
   const { addOnIds, pickup, dropoff } = booking;
-  const date = searchParams.get("date") || "";
+  const date = formatPickup(booking);
   // Add-ons can still be changed here; the URL stays the source of truth so
   // a refresh or back-navigation keeps the choice.
   function toggleAddOn(id: string) {
@@ -55,6 +64,15 @@ export default function ReviewBooking() {
   }
   const fare = computeFare(booking, vehicle.pricePerDay, format);
   const { total } = fare;
+  const addOns = addOnsFor(booking.type, clientType);
+  const selfDrive = booking.type === "self-drive";
+  const askFlight = needsFlightNumber(clientType, pickup, dropoff);
+  const notes = notesFor(booking.type, clientType);
+  // Visitors see the ngultrum amount too, since the balance is paid locally.
+  const nu = currencies.find((c) => c.code === "BTN")!;
+  const inNu = (usd: number) =>
+    `${nu.symbol} ${Math.round(usd * nu.rateFromUsd).toLocaleString()}`;
+  const showNu = clientType === "tourist" && currency !== "BTN";
 
   // Already signed in? Skip retyping — pull the traveler's details straight
   // from their account instead of starting from blank fields.
@@ -66,6 +84,10 @@ export default function ReviewBooking() {
   const [email, setEmail] = useState(isLoggedIn ? user.email : "");
   const [pickupAddress, setPickupAddress] = useState(pickup);
   const [dropoffAddress, setDropoffAddress] = useState("");
+  const [identity, setIdentity] = useState("");
+  const [flight, setFlight] = useState("");
+  const [licence, setLicence] = useState("");
+  const [dob, setDob] = useState("");
   const [touched, setTouched] = useState(false);
 
   const [promoInput, setPromoInput] = useState("");
@@ -88,7 +110,9 @@ export default function ReviewBooking() {
     fullName.trim() !== "" &&
     email.trim() !== "" &&
     phone.trim() !== "" &&
-    pickupAddress.trim() !== "";
+    pickupAddress.trim() !== "" &&
+    identity.trim() !== "" &&
+    (!selfDrive || (licence.trim() !== "" && dob.trim() !== ""));
 
   function applyPromo() {
     const code = promoInput.trim().toUpperCase();
@@ -123,6 +147,10 @@ export default function ReviewBooking() {
         travelerName: fullName,
         travelerEmail: email,
         travelerPhone: phone,
+        travelerId: identity,
+        clientType,
+        ...(flight ? { flight } : {}),
+        ...(selfDrive ? { licence, dob } : {}),
       },
     );
     navigate(`${routes.payment}?${params.toString()}`);
@@ -214,7 +242,10 @@ export default function ReviewBooking() {
               <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <label>
                   <span className={labelClass}>
-                    Phone * (Your confirmation code will be sent here)
+                    Phone *{" "}
+                    {clientType === "tourist"
+                      ? "(WhatsApp preferred)"
+                      : "(Your confirmation code will be sent here)"}
                   </span>
                   <input
                     type="tel"
@@ -273,6 +304,78 @@ export default function ReviewBooking() {
                 </label>
               </div>
 
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <label>
+                  <span className={labelClass}>
+                    {identityLabel(clientType)} *
+                  </span>
+                  <input
+                    type="text"
+                    placeholder={
+                      clientType === "tourist"
+                        ? "As shown in your passport"
+                        : "11-digit CID"
+                    }
+                    value={identity}
+                    onChange={(e) => setIdentity(e.target.value)}
+                    className={`${inputClass} ${touched && !identity.trim() ? errorClass : ""}`}
+                  />
+                  {touched && !identity.trim() && (
+                    <p className="mt-1 t-caption text-[color:var(--color-danger)]">
+                      {identityLabel(clientType)} is required for the driver to
+                      verify you.
+                    </p>
+                  )}
+                </label>
+                {askFlight && (
+                  <label>
+                    <span className={labelClass}>Flight number (Optional)</span>
+                    <input
+                      type="text"
+                      placeholder="e.g. KB 205"
+                      value={flight}
+                      onChange={(e) => setFlight(e.target.value)}
+                      className={inputClass}
+                    />
+                    <p className="mt-1 t-caption text-[color:var(--color-muted)]">
+                      So your driver can track a delayed flight.
+                    </p>
+                  </label>
+                )}
+                {selfDrive && (
+                  <>
+                    <label>
+                      <span className={labelClass}>
+                        Driving licence number *
+                      </span>
+                      <input
+                        type="text"
+                        placeholder={
+                          clientType === "tourist"
+                            ? "Indian licence number"
+                            : "Bhutanese licence number"
+                        }
+                        value={licence}
+                        onChange={(e) => setLicence(e.target.value)}
+                        className={`${inputClass} ${touched && !licence.trim() ? errorClass : ""}`}
+                      />
+                    </label>
+                    <label>
+                      <span className={labelClass}>Date of birth *</span>
+                      <input
+                        type="date"
+                        value={dob}
+                        onChange={(e) => setDob(e.target.value)}
+                        className={`${inputClass} ${touched && !dob.trim() ? errorClass : ""}`}
+                      />
+                      <p className="mt-1 t-caption text-[color:var(--color-muted)]">
+                        Drivers must be 21 or over.
+                      </p>
+                    </label>
+                  </>
+                )}
+              </div>
+
               <p className="mt-4 t-body-sm text-[color:var(--color-muted)]">
                 <span className="font-semibold text-[color:var(--color-ink-soft)]">
                   Note:
@@ -316,37 +419,18 @@ export default function ReviewBooking() {
               Read before you book!
             </h2>
             <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
-              <h4 className="t-body font-bold text-[color:var(--color-ink)]">
-                Safety precautions
-              </h4>
-              <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body text-[color:var(--color-ink-soft)]">
-                <li>
-                  Our cabs are sanitised before pickup, however you may request
-                  the driver to sanitise before you board.
-                </li>
-                <li>
-                  Maintain social distancing and avoid touching your mouth, eyes
-                  or nose without sanitising your hands.
-                </li>
-                <li>
-                  Avoid travel in case you&rsquo;re experiencing any symptoms of
-                  illness.
-                </li>
-              </ul>
-              <h4 className="mt-4 t-body font-bold text-[color:var(--color-ink)]">
-                Other information
-              </h4>
-              <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body text-[color:var(--color-ink-soft)]">
-                <li>AC will be switched off in hilly areas.</li>
-                <li>
-                  If you opt for partial payment, please pay the balance to the
-                  driver within 45 min from pickup time.
-                </li>
-                <li>
-                  Only one pick-up, one drop and one pit stop for a meal is
-                  included.
-                </li>
-              </ul>
+              {notes.map((note, i) => (
+                <div key={note.title} className={i > 0 ? "mt-4" : ""}>
+                  <h4 className="t-body font-bold text-[color:var(--color-ink)]">
+                    {note.title}
+                  </h4>
+                  <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body text-[color:var(--color-ink-soft)]">
+                    {note.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
 
             <div className="mt-8 hidden justify-end lg:flex">
@@ -406,6 +490,7 @@ export default function ReviewBooking() {
                       {split.later > 0
                         ? "Half the fare, to confirm your booking"
                         : "The full fare, to confirm your booking"}
+                      {showNu && ` · ≈ ${inNu(amountDue)}`}
                     </span>
                   </dt>
                   <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
@@ -419,11 +504,29 @@ export default function ReviewBooking() {
                         Pay at pick-up
                       </span>
                       <span className="block t-caption text-[color:var(--color-muted)]">
-                        The other half, to the driver
+                        {clientType === "tourist"
+                          ? "The other half, to the driver in cash (Nu) or by card"
+                          : "The other half, to the driver by mBoB, card or cash"}
+                        {showNu && ` · ≈ ${inNu(netPayable - amountDue)}`}
                       </span>
                     </dt>
                     <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
                       {format(netPayable - amountDue)}
+                    </dd>
+                  </div>
+                )}
+                {fare.deposit > 0 && (
+                  <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2">
+                    <dt>
+                      <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
+                        Deposit at collection
+                      </span>
+                      <span className="block t-caption text-[color:var(--color-muted)]">
+                        Refundable, released within 3 days of return
+                      </span>
+                    </dt>
+                    <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
+                      {format(fare.deposit)}
                     </dd>
                   </div>
                 )}
@@ -491,8 +594,10 @@ export default function ReviewBooking() {
           <span className="t-h3 tabular text-[color:var(--color-ink)]">
             {format(amountDue)}
           </span>
-          <span className="t-caption text-[color:var(--color-muted)]">
-            Pay now &middot; {format(netPayable)} total
+          <span className="whitespace-nowrap t-caption text-[color:var(--color-muted)]">
+            {split.later > 0
+              ? `Pay now · of ${format(netPayable)}`
+              : "incl. taxes & fees"}
           </span>
         </a>
         <Button variant="primary" size="lg" onClick={handleProceed}>

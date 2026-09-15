@@ -2,7 +2,8 @@
 // Confirmation and Invoice all agree with each other (no backend — this is
 // the one source of truth for the calculation).
 
-import type { Booking, SearchValue } from "./booking";
+import type { Booking, ClientType, SearchValue } from "./booking";
+import type { BookingType } from "./routes";
 import { bookingDays, isDayBased, isRoundTrip, rideHours } from "./booking";
 
 export const TAX_RATE = 0.1;
@@ -20,6 +21,8 @@ export type AddOn = {
   purpose: string;
   /** How it works, step by step. */
   howItWorks: string[];
+  /** Which bookings offer it. */
+  availableFor: (type: BookingType, client: ClientType) => boolean;
 };
 
 // Optional extras, priced per day.
@@ -37,6 +40,8 @@ export const addOns: AddOn[] = [
       "With it, you can cancel from your bookings page up to 1 hour before pick-up and the amount paid is refunded in full.",
       "The add-on fee itself is not refundable.",
     ],
+    // A same-day ride is small enough that the 24-hour rule is fine.
+    availableFor: (type) => type !== "daily",
   },
   {
     id: "rsa",
@@ -51,8 +56,28 @@ export const addOns: AddOn[] = [
       "We send the nearest partner mechanic for a breakdown, flat tyre or battery.",
       "If the vehicle can't continue, a replacement is sent to you at no extra cost.",
     ],
+    availableFor: () => true,
+  },
+  {
+    id: "guide",
+    name: "Licensed guide",
+    description:
+      "A licensed Bhutanese guide travels with you — required for most sights outside Thimphu and Paro.",
+    pricePerDay: 25,
+    purpose:
+      "For visitors touring beyond Thimphu and Paro, where a licensed guide is required at dzongs and monasteries.",
+    howItWorks: [
+      "A guide licensed by the Department of Tourism joins you from the first pick-up.",
+      "They handle route permits and entry at monuments, and speak English and Dzongkha.",
+      "The guide's meals and accommodation on overnight trips are included in this price.",
+    ],
+    availableFor: (type, client) => type === "rental" && client === "tourist",
   },
 ];
+
+export function addOnsFor(type: BookingType, client: ClientType): AddOn[] {
+  return addOns.filter((a) => a.availableFor(type, client));
+}
 
 export function isAddOnId(id: string) {
   return addOns.some((a) => a.id === id);

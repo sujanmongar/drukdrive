@@ -11,27 +11,18 @@ import {
 } from "../../components/BookingRouteCard";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
-import { addOns, computeFare, isAddOnId } from "../../lib/pricing";
+import { addOnsFor, computeFare, isAddOnId } from "../../lib/pricing";
+import { exclusionsFor, inclusionsFor } from "../../lib/bookingContent";
+import { useClientType } from "../../lib/clientType";
+import ClientTypeSwitch from "../../components/ClientTypeSwitch";
 import {
   bookingToParams,
   formatDropoff,
+  formatPickup,
   parseBooking,
 } from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
-
-const inclusions = [
-  "Professional driver",
-  "Fuel and tolls",
-  "Door-to-door pick-up and drop-off",
-  "One meal stop on the way",
-  "Free cancellation up to 24 hours before pick-up",
-];
-const exclusions = [
-  "Parking and entry permits",
-  "Extra stops beyond the route",
-  "Driver accommodation on overnight trips",
-];
 
 // Step 1 of checkout: everything about the trip, before any personal
 // details are asked for. Add-ons chosen here travel to the next steps as
@@ -42,13 +33,26 @@ export default function BookingReview() {
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
 
+  const { clientType } = useClientType();
   const booking = parseBooking(searchParams, isAddOnId);
   const vehicle =
     vehicles.find((v) => v.id === booking.vehicleId) ?? vehicles[0];
   const { pickup, dropoff } = booking;
-  const date = searchParams.get("date") || "";
+  const date = formatPickup(booking);
 
-  const [selected, setSelected] = useState<string[]>(booking.addOnIds);
+  const addOns = addOnsFor(booking.type, clientType);
+  const inclusions = inclusionsFor(booking.type, clientType);
+  const exclusions = exclusionsFor(booking.type, clientType);
+  const selfDrive = booking.type === "self-drive";
+  // Visitors may only self-drive on an Indian licence; they confirm it here.
+  const [licenceConfirmed, setLicenceConfirmed] = useState(false);
+  const licenceGate =
+    selfDrive && clientType === "tourist" && !licenceConfirmed;
+  const [selected, setSelectedRaw] = useState<string[]>(booking.addOnIds);
+  const setSelected = (fn: (s: string[]) => string[]) =>
+    setSelectedRaw((s) =>
+      fn(s).filter((id) => addOns.some((a) => a.id === id)),
+    );
   const fare = computeFare(
     { ...booking, addOnIds: selected },
     vehicle.pricePerDay,
@@ -86,6 +90,7 @@ export default function BookingReview() {
           <h1 className="t-h2 text-[color:var(--color-ink)]">
             Review your booking
           </h1>
+          <ClientTypeSwitch className="ml-auto" />
         </div>
 
         <div className="mb-8">
@@ -95,6 +100,27 @@ export default function BookingReview() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px] lg:gap-8">
           <div className="min-w-0">
             <VehicleSummaryCard vehicle={vehicle} />
+
+            {selfDrive && clientType === "tourist" && (
+              <div className="mt-6 rounded-2xl border border-[color:var(--color-warning)]/40 bg-[color:var(--color-warning-bg)] p-5">
+                <p className="t-body font-bold text-[color:var(--color-warning)]">
+                  Self drive is for Indian licence holders only
+                </p>
+                <p className="mt-1 t-body-sm text-[color:var(--color-ink-soft)]">
+                  Bhutan does not accept international driving permits. Visitors
+                  from other countries can book a rental with a driver instead.
+                </p>
+                <label className="mt-3 flex cursor-pointer items-start gap-2.5 t-body-sm text-[color:var(--color-ink)]">
+                  <input
+                    type="checkbox"
+                    checked={licenceConfirmed}
+                    onChange={(e) => setLicenceConfirmed(e.target.checked)}
+                    className="mt-0.5 size-4 accent-[color:var(--color-ink)]"
+                  />
+                  I hold a valid Indian driving licence and am 21 or over.
+                </label>
+              </div>
+            )}
 
             <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
               What&rsquo;s included
@@ -160,7 +186,12 @@ export default function BookingReview() {
             </div>
 
             <div className="mt-8 hidden justify-end lg:flex">
-              <Button variant="primary" size="lg" onClick={handleContinue}>
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={handleContinue}
+                disabled={licenceGate}
+              >
                 Continue to details
               </Button>
             </div>
@@ -186,6 +217,21 @@ export default function BookingReview() {
                   {format(total)}
                 </p>
               </div>
+              {fare.deposit > 0 && (
+                <p className="mt-2 px-1 t-caption text-[color:var(--color-muted)]">
+                  Plus a refundable deposit of{" "}
+                  <span className="tabular font-semibold text-[color:var(--color-ink)]">
+                    {format(fare.deposit)}
+                  </span>
+                  , held at collection.
+                </p>
+              )}
+              {clientType === "tourist" && booking.type !== "self-drive" && (
+                <p className="mt-2 px-1 t-caption text-[color:var(--color-muted)]">
+                  Bhutan&rsquo;s Sustainable Development Fee is not included; it
+                  is paid with your visa.
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -198,10 +244,17 @@ export default function BookingReview() {
             {format(total)}
           </span>
           <span className="t-caption text-[color:var(--color-muted)]">
-            incl. taxes &amp; fees
+            {fare.deposit > 0
+              ? `+ ${format(fare.deposit)} deposit`
+              : "incl. taxes & fees"}
           </span>
         </div>
-        <Button variant="primary" size="lg" onClick={handleContinue}>
+        <Button
+          variant="primary"
+          size="lg"
+          onClick={handleContinue}
+          disabled={licenceGate}
+        >
           Continue
         </Button>
       </div>
