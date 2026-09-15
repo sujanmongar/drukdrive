@@ -376,6 +376,67 @@ body {
   animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Blocks that rise in as they scroll into view (see useReveal). */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Result cards arrive one after another. No fill mode: the end state is
+   the card's own, and a lingering transform would trap fixed children. */
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-card-in {
+  animation: card-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+/* A tick that pops in when a box is checked. */
+@keyframes check-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.animate-check-pop {
+  animation: check-pop 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Form controls settle into focus with a soft ring, not a jump. */
+input,
+select,
+textarea {
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: 0 0 0 3px rgba(20, 24, 29, 0.08);
+}
+
 /* Route content eases in on navigation. No fill mode — a lingering transform
    would trap any fixed-position child inside it. */
 @keyframes page-in {
@@ -514,8 +575,15 @@ button:not(:disabled):active,
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
-  .animate-page-in {
+  .animate-page-in,
+  .animate-card-in,
+  .animate-check-pop {
     animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
   .carousel-track {
     scroll-behavior: auto;

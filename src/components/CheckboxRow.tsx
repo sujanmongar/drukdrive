@@ -20,7 +20,12 @@ export function CheckboxBox({
       } ${className}`}
     >
       {checked && (
-        <Icon name="check" size={13} strokeWidth={3} className="text-white" />
+        <Icon
+          name="check"
+          size={13}
+          strokeWidth={3}
+          className="animate-check-pop text-white"
+        />
       )}
     </span>
   );

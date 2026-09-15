@@ -607,12 +607,19 @@ export default function SearchResults() {
                   </div>
                 ) : (
                   <div className="flex flex-col gap-4">
-                    {visibleResults.map((vehicle) => (
-                      <VehicleListCard
+                    {visibleResults.map((vehicle, i) => (
+                      <div
                         key={vehicle.id}
-                        vehicle={vehicle}
-                        tripQuery={tripQuery}
-                      />
+                        className="animate-card-in"
+                        style={{
+                          animationDelay: `${Math.min(i % PAGE_SIZE, 8) * 50}ms`,
+                        }}
+                      >
+                        <VehicleListCard
+                          vehicle={vehicle}
+                          tripQuery={tripQuery}
+                        />
+                      </div>
                     ))}
                   </div>
                 )}
