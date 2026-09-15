@@ -92,11 +92,7 @@ export default function BookingReview() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px] lg:gap-8">
           <div className="min-w-0">
-            <VehicleSummaryCard
-              vehicle={vehicle}
-              total={format(total)}
-              days={RENTAL_DAYS}
-            />
+            <VehicleSummaryCard vehicle={vehicle} />
 
             <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
               What&rsquo;s included
