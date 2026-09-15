@@ -8,7 +8,12 @@ import BookingRouteCard from "../../components/BookingRouteCard";
 import FareSummary from "../../components/FareSummary";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
-import { addOns, computeFare, parseAddOnIds, RENTAL_DAYS } from "../../lib/pricing";
+import {
+  addOns,
+  computeFare,
+  parseAddOnIds,
+  RENTAL_DAYS,
+} from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
 import { useAuth } from "../../lib/auth";
 import { useCurrentUser } from "../../lib/currentUser";
@@ -27,14 +32,25 @@ const PROMO_CODES: Record<string, number> = {
 export default function ReviewBooking() {
   usePageTitle("Your details");
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { format } = useCurrency();
   const { isLoggedIn } = useAuth();
   const { user } = useCurrentUser();
 
   const vehicleId = searchParams.get("vehicleId");
   const vehicle = vehicles.find((v) => v.id === vehicleId) ?? vehicles[0];
+  // Add-ons can still be changed here; the URL stays the source of truth so
+  // a refresh or back-navigation keeps the choice.
   const addOnIds = parseAddOnIds(searchParams.get("addons"));
+  function toggleAddOn(id: string) {
+    const next = addOnIds.includes(id)
+      ? addOnIds.filter((x) => x !== id)
+      : [...addOnIds, id];
+    const params = new URLSearchParams(searchParams);
+    if (next.length) params.set("addons", next.join(","));
+    else params.delete("addons");
+    setSearchParams(params, { replace: true });
+  }
   const { baseFare, taxes, total } = computeFare(vehicle.pricePerDay, addOnIds);
 
   const pickup = searchParams.get("pickup") || DEFAULT_PICKUP;
@@ -135,7 +151,7 @@ export default function ReviewBooking() {
             <Icon name="chevron-left" size={22} />
           </button>
           <h1 className="t-h2 text-[color:var(--color-ink)]">
-            Review your booking
+            Your details
           </h1>
         </div>
 
@@ -364,7 +380,10 @@ export default function ReviewBooking() {
                     },
                     ...addOns
                       .filter((a) => addOnIds.includes(a.id))
-                      .map((a) => ({ label: a.name, value: format(a.pricePerDay * RENTAL_DAYS) })),
+                      .map((a) => ({
+                        label: a.name,
+                        value: format(a.pricePerDay * RENTAL_DAYS),
+                      })),
                     { label: "Taxes & fees", value: format(taxes) },
                     ...(discount > 0
                       ? [
@@ -459,6 +478,56 @@ export default function ReviewBooking() {
                   {payButtonLabel}
                 </Button>
               </div>
+            </div>
+
+            <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">Add-ons</h2>
+            <div className="mt-4 flex flex-col gap-4">
+              {addOns.map((addOn) => {
+                const added = addOnIds.includes(addOn.id);
+                return (
+                  <div
+                    key={addOn.id}
+                    className={`rounded-2xl border bg-white p-5 shadow-card transition-colors ${
+                      added
+                        ? "border-[color:var(--color-ink)]"
+                        : "border-[color:var(--color-border)]"
+                    }`}
+                  >
+                    <h3 className="t-h4 text-[color:var(--color-ink)]">
+                      {addOn.name}
+                    </h3>
+                    <p className="mt-1 t-body-sm text-[color:var(--color-ink-soft)]">
+                      {addOn.description}
+                    </p>
+                    <div className="mt-4 flex items-center justify-between gap-4">
+                      <p>
+                        <span className="block t-body-lg tabular font-bold text-[color:var(--color-ink)]">
+                          {format(addOn.pricePerDay)}
+                        </span>
+                        <span className="block t-caption text-[color:var(--color-muted)]">
+                          per day
+                        </span>
+                      </p>
+                      <Button
+                        variant={added ? "secondary" : "primary"}
+                        size="md"
+                        onClick={() => toggleAddOn(addOn.id)}
+                        aria-pressed={added}
+                        className="min-w-[104px]"
+                      >
+                        {added ? (
+                          <span className="flex items-center gap-1.5">
+                            <Icon name="check" size={16} strokeWidth={2.5} />
+                            Added
+                          </span>
+                        ) : (
+                          "Add"
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">
