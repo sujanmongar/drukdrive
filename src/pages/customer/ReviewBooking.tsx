@@ -22,7 +22,7 @@ import { usePageTitle } from "../../hooks/usePageTitle";
 const DEFAULT_PICKUP = "Thimphu, Druk School";
 const DEFAULT_DROPOFF = "Punakha, Taxi Parking";
 
-type PaymentOption = "half" | "full" | "hold";
+type PaymentOption = "half" | "full";
 
 const PROMO_CODES: Record<string, number> = {
   DRUK10: 0.1,
@@ -84,9 +84,7 @@ export default function ReviewBooking() {
   const amountDue =
     paymentOption === "full"
       ? netPayable
-      : paymentOption === "half"
-        ? Math.round((netPayable / 2) * 100) / 100
-        : 0;
+      : Math.round((netPayable / 2) * 100) / 100;
 
   const isValid =
     fullName.trim() !== "" &&
@@ -135,8 +133,7 @@ export default function ReviewBooking() {
     "mb-1.5 block t-body-sm font-semibold text-[color:var(--color-ink)]";
   const errorClass = "border-[color:var(--color-danger)]";
 
-  const payButtonLabel =
-    paymentOption === "hold" ? "Hold booking" : `Pay ${format(amountDue)} now`;
+  const payButtonLabel = `Pay ${format(amountDue)} now`;
 
   return (
     <PageShell noFooter>
@@ -400,21 +397,15 @@ export default function ReviewBooking() {
                 {[
                   {
                     value: "half" as const,
-                    label: "Make half payment now",
-                    hint: "Pay the rest to the driver",
+                    label: "Pay half now",
+                    hint: "Pay the rest to the driver at pick-up",
                     amount: Math.round((netPayable / 2) * 100) / 100,
                   },
                   {
                     value: "full" as const,
-                    label: "Make full payment now",
-                    hint: null,
+                    label: "Pay in full now",
+                    hint: "Nothing to pay at pick-up",
                     amount: netPayable,
-                  },
-                  {
-                    value: "hold" as const,
-                    label: "Hold booking",
-                    hint: null,
-                    amount: null,
                   },
                 ].map((opt) => (
                   <button
@@ -450,17 +441,9 @@ export default function ReviewBooking() {
                         )}
                       </span>
                     </span>
-                    {opt.amount !== null ? (
-                      <span className="shrink-0 t-body-sm font-bold text-[color:var(--color-ink)]">
-                        {format(opt.amount)}
-                      </span>
-                    ) : (
-                      <Icon
-                        name="info"
-                        size={16}
-                        className="shrink-0 text-[color:var(--color-muted)]"
-                      />
-                    )}
+                    <span className="shrink-0 t-body-sm font-bold tabular text-[color:var(--color-ink)]">
+                      {format(opt.amount)}
+                    </span>
                   </button>
                 ))}
               </div>
