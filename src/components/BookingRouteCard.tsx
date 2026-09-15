@@ -24,8 +24,8 @@ export function VehicleSummaryCard({
     <>
       {/* Vehicle — the search results list card, with the trip total where
           the per-day price and Book Now would be. */}
-      <div className="flex w-full items-stretch overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card">
-        <div className="relative w-[118px] shrink-0 self-stretch overflow-hidden sm:w-[180px] lg:w-[200px]">
+      <div className="@container flex w-full items-stretch overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card">
+        <div className="relative w-[112px] shrink-0 self-stretch overflow-hidden @md:w-[180px] @2xl:w-[200px]">
           <VehicleImage
             vehicleId={vehicle.id}
             category={vehicle.category}
@@ -33,7 +33,7 @@ export function VehicleSummaryCard({
           />
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col gap-3 p-3 sm:gap-4 sm:p-5 lg:flex-row lg:items-stretch lg:gap-6">
+        <div className="flex min-w-0 flex-1 flex-col gap-3 p-3 @md:gap-4 @md:p-5 @2xl:flex-row @2xl:items-stretch @2xl:gap-6">
           <div className="min-w-0 flex-1">
             <h3 className="t-h4 truncate text-[color:var(--color-ink)]">
               {vehicle.name}
@@ -108,12 +108,12 @@ export function StopsCard({
 
   return (
     <>
-      {/* Pick-up and drop-off: two stops on a rail, a pin marking each. */}
-      <div className="rounded-2xl border border-[color:var(--color-border)] bg-white p-4 sm:p-5">
-        <h3 className="t-h4 text-[color:var(--color-ink)]">
-          Pick-up and drop-off
-        </h3>
-        <ol className="mt-4">
+      {/* Pick-up and drop-off: title outside the card, like every other section. */}
+      <h2 className="t-h3 text-[color:var(--color-ink)]">
+        Pick-up and drop-off
+      </h2>
+      <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-4 shadow-card sm:p-5">
+        <ol>
           {stops.map((stop, i) => {
             const last = i === stops.length - 1;
             return (
