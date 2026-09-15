@@ -9,8 +9,9 @@ const order: { type: BookingType; icon: IconName }[] = [
   { type: "self-drive", icon: "gearbox" },
 ];
 
-// Segmented control rather than four standalone buttons: one rounded track
-// with the active pill inside it, so the group reads as a single switch.
+// One white pill strip holding the three types — icon left, label right,
+// the active one filled ink. It floats over the top edge of the search
+// card so the two read as a single control.
 export default function BookingTypeTabs({
   value,
   onChange,
@@ -19,12 +20,10 @@ export default function BookingTypeTabs({
   onChange: (t: BookingType) => void;
 }) {
   return (
-    // Three equal tiles, icon above the label. They fill the row on every
-    // width, so nothing scrolls or wraps.
     <div
-      className="grid grid-cols-3 gap-2.5 sm:gap-3 lg:flex lg:w-fit"
       role="tablist"
       aria-label="Booking type"
+      className="scrollbar-hide inline-flex max-w-full gap-0.5 overflow-x-auto rounded-full bg-white p-1 shadow-pop sm:gap-1 sm:p-1.5"
     >
       {order.map(({ type, icon }) => {
         const active = type === value;
@@ -35,23 +34,19 @@ export default function BookingTypeTabs({
             role="tab"
             aria-selected={active}
             onClick={() => onChange(type)}
-            className={`flex min-h-[72px] flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 transition-all duration-200 sm:min-h-[80px] lg:w-[150px] ${
+            className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-2.5 t-caption transition-all duration-200 sm:gap-2 sm:px-5 sm:t-body-sm ${
               active
-                ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white shadow-card"
-                : "border-[color:var(--color-border)] bg-white text-[color:var(--color-ink)] hover:-translate-y-0.5 hover:border-[color:var(--color-ink)]"
+                ? "bg-[color:var(--color-ink)] font-bold text-white shadow-card"
+                : "font-semibold text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)] hover:text-[color:var(--color-ink)]"
             }`}
           >
             <Icon
               name={icon}
-              size={22}
+              size={18}
               strokeWidth={active ? 2.2 : 1.9}
               className="shrink-0"
             />
-            <span
-              className={`whitespace-nowrap t-caption leading-none sm:t-body-sm ${active ? "font-bold" : "font-medium"}`}
-            >
-              {bookingTypeLabels[type]}
-            </span>
+            {bookingTypeLabels[type]}
           </button>
         );
       })}

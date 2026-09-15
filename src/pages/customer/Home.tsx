@@ -99,20 +99,21 @@ export default function Home() {
       <section className="relative -mt-16 overflow-hidden bg-[color:var(--color-surface-muted)] pt-16 md:-mt-[94px] md:pt-[94px]">
         <div className="animate-fade-up relative mx-auto max-w-[1280px] px-4 pb-14 pt-10 md:px-10 md:pb-20 md:pt-16">
           <div>
-            <h1 className="t-h1 max-w-[280px] text-[color:var(--color-ink)] sm:max-w-md md:max-w-[520px]">
+            <h1 className="t-h1 max-w-[280px] text-[color:var(--color-ink)] sm:max-w-md md:max-w-[560px]">
               Go anywhere in Bhutan.
             </h1>
+            <p className="mt-3 max-w-md t-body-lg text-[color:var(--color-muted)]">
+              A ride across town, a car with driver for the week, or the keys to
+              drive yourself.
+            </p>
 
-            {/* Mobile keeps the stacked card. From lg the widget goes
-                horizontal — one field row plus an icon-only search button —
-                so the hero costs far less vertical space. */}
-            {/* The type tiles sit on the hero itself, above the search card,
-                so the card holds only the search. */}
-            <div className="mt-8 w-full max-w-[506px] md:mt-10 lg:max-w-none">
+            {/* The type strip floats over the top edge of the search card,
+                so the switch and the search read as one control. */}
+            <div className="relative z-10 mt-10 pl-3 md:mt-12 md:pl-6">
               <BookingTypeTabs value={type} onChange={setType} />
             </div>
 
-            <div className="relative mt-4 w-full max-w-[506px] rounded-2xl bg-white p-5 shadow-card md:p-6 lg:mt-5 lg:max-w-none lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
+            <div className="relative -mt-6 w-full rounded-3xl bg-white p-5 pt-11 shadow-modal md:p-6 md:pt-12">
               <div>
                 <SearchFields
                   value={search}
