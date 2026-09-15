@@ -22,8 +22,6 @@ import { usePageTitle } from "../../hooks/usePageTitle";
 const DEFAULT_PICKUP = "Thimphu, Druk School";
 const DEFAULT_DROPOFF = "Punakha, Taxi Parking";
 
-type PaymentOption = "half" | "full";
-
 const PROMO_CODES: Record<string, number> = {
   DRUK10: 0.1,
   WELCOME: 0.05,
@@ -69,7 +67,6 @@ export default function ReviewBooking() {
   const [dropoffAddress, setDropoffAddress] = useState("");
   const [touched, setTouched] = useState(false);
 
-  const [paymentOption, setPaymentOption] = useState<PaymentOption>("half");
   const [promoInput, setPromoInput] = useState("");
   const [promoApplied, setPromoApplied] = useState<{
     code: string;
@@ -81,10 +78,8 @@ export default function ReviewBooking() {
     ? Math.round(total * promoApplied.discount * 100) / 100
     : 0;
   const netPayable = Math.round((total - discount) * 100) / 100;
-  const amountDue =
-    paymentOption === "full"
-      ? netPayable
-      : Math.round((netPayable / 2) * 100) / 100;
+  // Standard flow: half now, the other half to the driver at pick-up.
+  const amountDue = Math.round((netPayable / 2) * 100) / 100;
 
   const isValid =
     fullName.trim() !== "" &&
@@ -118,7 +113,7 @@ export default function ReviewBooking() {
       total: netPayable.toFixed(2),
       grandTotal: total.toFixed(2),
       amountDue: amountDue.toFixed(2),
-      paymentOption,
+      paymentOption: "half",
       ...(addOnIds.length ? { addons: addOnIds.join(",") } : {}),
       travelerName: fullName,
       travelerEmail: email,
@@ -393,61 +388,35 @@ export default function ReviewBooking() {
                 />
               </div>
 
-              <div className="mt-4 flex flex-col gap-2.5">
-                {[
-                  {
-                    value: "half" as const,
-                    label: "Pay half now",
-                    hint: "Pay the rest to the driver at pick-up",
-                    amount: Math.round((netPayable / 2) * 100) / 100,
-                  },
-                  {
-                    value: "full" as const,
-                    label: "Pay in full now",
-                    hint: "Nothing to pay at pick-up",
-                    amount: netPayable,
-                  },
-                ].map((opt) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => setPaymentOption(opt.value)}
-                    className={`flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-left transition-colors ${
-                      paymentOption === opt.value
-                        ? "bg-[color:var(--color-info-bg)]"
-                        : "hover:bg-[color:var(--color-surface-soft)]"
-                    }`}
-                  >
-                    <span className="flex items-start gap-3">
-                      <span
-                        className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${
-                          paymentOption === opt.value
-                            ? "border-[color:var(--color-ink)]"
-                            : "border-[color:var(--color-border)]"
-                        }`}
-                      >
-                        {paymentOption === opt.value && (
-                          <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />
-                        )}
-                      </span>
-                      <span>
-                        <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
-                          {opt.label}
-                        </span>
-                        {opt.hint && (
-                          <span className="block t-caption text-[color:var(--color-muted)]">
-                            {opt.hint}
-                          </span>
-                        )}
-                      </span>
+              {/* One flow: half now, half to the driver at pick-up. */}
+              <dl className="mt-4 flex flex-col gap-2 rounded-xl bg-[color:var(--color-surface-subtle)] px-4 py-3.5">
+                <div className="flex items-center justify-between gap-3">
+                  <dt>
+                    <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
+                      Pay now
                     </span>
-                    <span className="shrink-0 t-body-sm font-bold tabular text-[color:var(--color-ink)]">
-                      {format(opt.amount)}
+                    <span className="block t-caption text-[color:var(--color-muted)]">
+                      Half the fare, to confirm your booking
                     </span>
-                  </button>
-                ))}
-              </div>
-
+                  </dt>
+                  <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
+                    {format(amountDue)}
+                  </dd>
+                </div>
+                <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2">
+                  <dt>
+                    <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
+                      Pay at pick-up
+                    </span>
+                    <span className="block t-caption text-[color:var(--color-muted)]">
+                      The other half, to the driver
+                    </span>
+                  </dt>
+                  <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
+                    {format(netPayable - amountDue)}
+                  </dd>
+                </div>
+              </dl>
               <div className="hidden lg:block">
                 <Button
                   variant="primary"
@@ -557,10 +526,10 @@ export default function ReviewBooking() {
       <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
         <a href="#price-summary" className="flex flex-col items-start">
           <span className="t-h3 tabular text-[color:var(--color-ink)]">
-            {format(netPayable)}
+            {format(amountDue)}
           </span>
           <span className="t-caption text-[color:var(--color-muted)]">
-            incl. taxes &amp; fees
+            Pay now &middot; {format(netPayable)} total
           </span>
         </a>
         <Button variant="primary" size="lg" onClick={handleProceed}>
