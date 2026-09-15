@@ -67,10 +67,10 @@ export default function BookingStepper({
             <span
               className={`flex size-7 shrink-0 items-center justify-center rounded-full border-2 t-caption font-bold tabular ${
                 done
-                  ? "border-[color:var(--color-link)] text-[color:var(--color-link)]"
+                  ? "border-[color:var(--color-success)] bg-[color:var(--color-success)] text-white"
                   : active
                     ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
-                    : "border-[color:var(--color-border)] text-[color:var(--color-muted)]"
+                    : "border-[color:var(--color-ink-soft)]/40 bg-white text-[color:var(--color-ink)]"
               }`}
             >
               {done ? <Icon name="check" size={14} strokeWidth={3} /> : stepNum}
@@ -80,10 +80,10 @@ export default function BookingStepper({
             <span
               className={`whitespace-nowrap t-body-sm ${
                 done
-                  ? "font-semibold text-[color:var(--color-link)]"
+                  ? "font-semibold text-[color:var(--color-success)]"
                   : active
                     ? "font-bold text-[color:var(--color-ink)]"
-                    : "font-medium text-[color:var(--color-muted)]"
+                    : "font-medium text-[color:var(--color-ink-soft)]"
               }`}
             >
               {label}

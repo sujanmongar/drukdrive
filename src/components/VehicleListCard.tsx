@@ -45,9 +45,7 @@ export default function VehicleListCard({
         </div>
       )}
       <div className="flex items-baseline gap-x-1.5 whitespace-nowrap">
-        <span className="t-h2 font-bold tabular text-[color:var(--color-ink)]">
-          {format(price.amount)}
-        </span>
+        <span className="t-h2 t-amount">{format(price.amount)}</span>
         <span className="t-caption text-[color:var(--color-muted)]">
           {price.unit}
         </span>

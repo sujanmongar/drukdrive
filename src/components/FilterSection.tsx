@@ -26,9 +26,9 @@ export default function FilterSection({
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            className="flex min-h-11 flex-1 items-center justify-between gap-3 rounded-lg px-2 text-left transition-colors hover:bg-[color:var(--color-surface-soft)]"
+            className="flex min-h-11 flex-1 items-center justify-between gap-3 rounded-lg px-2 text-left transition-colors hover:bg-[color:var(--color-surface-soft)] lg:min-h-9"
           >
-            <h4 className="t-body font-bold text-[color:var(--color-ink)]">
+            <h4 className="t-body font-bold text-[color:var(--color-ink)] lg:t-body-sm">
               {title}
             </h4>
             <Icon
@@ -41,16 +41,16 @@ export default function FilterSection({
             <button
               type="button"
               onClick={onClear}
-              className="min-h-11 shrink-0 rounded-lg px-2 t-body-sm font-semibold text-[color:var(--color-link)] hover:bg-[color:var(--color-surface-soft)]"
+              className="min-h-11 shrink-0 rounded-lg px-2 t-body-sm font-semibold text-[color:var(--color-link)] hover:bg-[color:var(--color-surface-soft)] lg:min-h-9 lg:t-caption"
             >
               Clear
             </button>
           )}
         </div>
-        {open && <div className="mt-2">{children}</div>}
+        {open && <div className="mt-2 lg:mt-1">{children}</div>}
       </div>
       {divider && (
-        <div className="-mx-6 my-4 border-b border-[color:var(--color-border)]" />
+        <div className="-mx-6 my-4 border-b border-[color:var(--color-border)] lg:-mx-5 lg:my-3" />
       )}
     </>
   );

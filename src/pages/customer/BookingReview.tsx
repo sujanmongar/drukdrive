@@ -6,7 +6,10 @@ import Button from "../../components/Button";
 import AddOnCard from "../../components/AddOnCard";
 import { Checkbox } from "../../components/CheckboxRow";
 import BookingStepper from "../../components/BookingStepper";
-import BookingRouteCard from "../../components/BookingRouteCard";
+import {
+  StopsCard,
+  VehicleSummaryCard,
+} from "../../components/BookingRouteCard";
 import CheckoutLayout from "../../components/CheckoutLayout";
 import PriceSummaryCard from "../../components/PriceSummaryCard";
 import ContactCard from "../../components/ContactCard";
@@ -77,7 +80,7 @@ export default function BookingReview() {
   }
 
   return (
-    <PageShell noFooter>
+    <PageShell noFooter stickyHeader>
       <div className="mx-auto max-w-[1100px] px-4 py-6 pb-28 md:px-10 md:py-10">
         <div className="mb-5 flex items-center gap-2">
           <button
@@ -102,9 +105,9 @@ export default function BookingReview() {
         </div>
 
         <CheckoutLayout
+          vehicle={<VehicleSummaryCard vehicle={vehicle} />}
           trip={
-            <BookingRouteCard
-              vehicle={vehicle}
+            <StopsCard
               pickup={pickup}
               dropoff={dropoff}
               date={date}
@@ -131,21 +134,24 @@ export default function BookingReview() {
           main={
             <>
               {selfDrive && (
-                <div className="rounded-2xl border border-[color:var(--color-warning)]/40 bg-[color:var(--color-warning-bg)] p-5">
-                  <p className="t-body font-bold text-[color:var(--color-warning)]">
-                    Licence check
-                  </p>
-                  <p className="mt-1 t-body-sm text-[color:var(--color-ink-soft)]">
-                    Bhutan accepts Bhutanese and Indian driving licences only,
-                    not international driving permits.
-                  </p>
-                  <div className="mt-2">
-                    <Checkbox
-                      align="start"
-                      checked={licenceConfirmed}
-                      onChange={setLicenceConfirmed}
-                      label="I hold a valid Bhutanese or Indian driving licence and am 21 or over."
-                    />
+                <div className="flex gap-4 rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] p-5">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-warning-bg)] text-[color:var(--color-warning)]">
+                    <Icon name="info" size={20} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="t-h4">Licence check</p>
+                    <p className="mt-1 t-body-sm">
+                      Bhutan accepts Bhutanese and Indian driving licences only,
+                      not international driving permits.
+                    </p>
+                    <div className="mt-2">
+                      <Checkbox
+                        align="start"
+                        checked={licenceConfirmed}
+                        onChange={setLicenceConfirmed}
+                        label="I hold a valid Bhutanese or Indian driving licence and am 21 or over."
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -239,9 +245,7 @@ export default function BookingReview() {
       {/* Mobile sticky bottom bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
         <div className="flex flex-col items-start">
-          <span className="t-h3 tabular text-[color:var(--color-ink)]">
-            {format(total)}
-          </span>
+          <span className="t-h3 t-amount">{format(total)}</span>
           <span className="t-caption text-[color:var(--color-muted)]">
             {fare.deposit > 0
               ? `+ ${format(fare.deposit)} deposit`

@@ -1,8 +1,5 @@
-import { useState } from "react";
-import Icon from "./Icon";
 import FareSummary from "./FareSummary";
 import type { Fare } from "../lib/pricing";
-import { PROMO_CODES } from "../lib/pricing";
 import { currencies, useCurrency } from "../lib/currency";
 
 // The one price card used on Review, Details and Payment: total, the fare
@@ -16,7 +13,6 @@ export default function PriceSummaryCard({
   payLater,
   discount = 0,
   promoCode = null,
-  onPromoChange,
   id,
 }: {
   fare: Fare;
@@ -25,8 +21,6 @@ export default function PriceSummaryCard({
   payLater: number;
   discount?: number;
   promoCode?: string | null;
-  /** When given, a promo code field is shown and this receives a valid code (or null on clear). */
-  onPromoChange?: (code: string | null) => void;
   id?: string;
 }) {
   const { format, currency } = useCurrency();
@@ -34,29 +28,12 @@ export default function PriceSummaryCard({
   const inNu = (usd: number) =>
     `${nu.symbol} ${Math.round(usd * nu.rateFromUsd).toLocaleString()}`;
   const showNu = currency !== "BTN";
-  const [promoInput, setPromoInput] = useState(promoCode ?? "");
-  const [promoError, setPromoError] = useState("");
-
-  function applyPromo() {
-    const code = promoInput.trim().toUpperCase();
-    if (!code) return;
-    if (PROMO_CODES[code]) {
-      setPromoError("");
-      onPromoChange?.(code);
-    } else {
-      setPromoError("That code isn't valid.");
-      onPromoChange?.(null);
-    }
-  }
-
   return (
     <div
       id={id}
       className="scroll-mt-24 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card"
     >
-      <p className="t-h2 tabular text-[color:var(--color-ink)]">
-        {format(netPayable)}
-      </p>
+      <p className="t-h2 t-amount">{format(netPayable)}</p>
       <p className="t-body-sm text-[color:var(--color-muted)]">
         Total for {fare.unit}, taxes and fees included
         {showNu && ` · ≈ ${inNu(netPayable)}`}
@@ -132,41 +109,6 @@ export default function PriceSummaryCard({
           </div>
         )}
       </dl>
-
-      {onPromoChange && (
-        <div className="mt-4 border-t border-[color:var(--color-border)] pt-4">
-          <p className="flex items-center gap-1.5 t-label uppercase text-[color:var(--color-muted)]">
-            <Icon name="info" size={13} />
-            Promo code
-          </p>
-          <div className="mt-2 flex gap-2">
-            <input
-              type="text"
-              placeholder="Got a code? Enter it here"
-              value={promoInput}
-              onChange={(e) => setPromoInput(e.target.value)}
-              className="h-11 min-w-0 flex-1 rounded-lg border border-[color:var(--color-border)] px-3 t-body text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-ink)]"
-            />
-            <button
-              type="button"
-              onClick={applyPromo}
-              className="h-11 shrink-0 rounded-lg bg-[color:var(--color-ink)] px-4 t-body-sm font-bold text-white transition-all duration-200 hover:bg-black"
-            >
-              Apply
-            </button>
-          </div>
-          {promoCode && discount > 0 && (
-            <p className="mt-2 t-caption font-semibold text-[color:var(--color-success)]">
-              {promoCode} applied — {format(discount)} off
-            </p>
-          )}
-          {promoError && (
-            <p className="mt-2 t-caption text-[color:var(--color-danger)]">
-              {promoError}
-            </p>
-          )}
-        </div>
-      )}
     </div>
   );
 }

@@ -5,10 +5,14 @@ import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import AddOnCard from "../../components/AddOnCard";
 import BookingStepper from "../../components/BookingStepper";
-import BookingRouteCard from "../../components/BookingRouteCard";
+import {
+  StopsCard,
+  VehicleSummaryCard,
+} from "../../components/BookingRouteCard";
 import PriceSummaryCard from "../../components/PriceSummaryCard";
 import ContactCard from "../../components/ContactCard";
 import CheckoutLayout from "../../components/CheckoutLayout";
+import PromoCard from "../../components/PromoCard";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import {
@@ -330,7 +334,7 @@ export default function ReviewBooking() {
   );
 
   return (
-    <PageShell noFooter>
+    <PageShell noFooter stickyHeader>
       <div className="mx-auto max-w-[1100px] px-4 py-6 pb-28 md:px-10 md:py-10 md:pb-10">
         <div className="mb-5 flex items-center gap-2">
           <button
@@ -353,9 +357,9 @@ export default function ReviewBooking() {
         </div>
 
         <CheckoutLayout
+          vehicle={<VehicleSummaryCard vehicle={vehicle} />}
           trip={
-            <BookingRouteCard
-              vehicle={vehicle}
+            <StopsCard
               pickup={pickup}
               dropoff={dropoff}
               date={date}
@@ -371,7 +375,13 @@ export default function ReviewBooking() {
               payLater={split.later}
               discount={discount}
               promoCode={promoCode}
-              onPromoChange={(code) => updateBooking({}, { promo: code })}
+            />
+          }
+          promo={
+            <PromoCard
+              promoCode={promoCode}
+              discount={discount}
+              onChange={(code) => updateBooking({}, { promo: code })}
             />
           }
           help={<ContactCard />}
@@ -413,9 +423,7 @@ export default function ReviewBooking() {
       {/* Mobile sticky bottom bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
         <a href="#price-summary" className="flex flex-col items-start">
-          <span className="t-h3 tabular text-[color:var(--color-ink)]">
-            {format(amountDue)}
-          </span>
+          <span className="t-h3 t-amount">{format(amountDue)}</span>
           <span className="whitespace-nowrap t-caption text-[color:var(--color-muted)]">
             {split.later > 0
               ? `Pay now · of ${format(netPayable)}`

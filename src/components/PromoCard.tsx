@@ -1,0 +1,79 @@
+import { useState } from "react";
+import Icon from "./Icon";
+import { PROMO_CODES } from "../lib/pricing";
+import { useCurrency } from "../lib/currency";
+
+// Promo code entry, its own card beside the price summary. A valid code is
+// handed up and lives in the URL so every later step honours it.
+export default function PromoCard({
+  promoCode,
+  discount,
+  onChange,
+}: {
+  promoCode: string | null;
+  discount: number;
+  onChange: (code: string | null) => void;
+}) {
+  const { format } = useCurrency();
+  const [input, setInput] = useState(promoCode ?? "");
+  const [error, setError] = useState("");
+
+  function apply() {
+    const code = input.trim().toUpperCase();
+    if (!code) return;
+    if (PROMO_CODES[code]) {
+      setError("");
+      onChange(code);
+    } else {
+      setError("That code isn't valid.");
+      onChange(null);
+    }
+  }
+
+  return (
+    <div className="rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+      <div className="flex gap-2">
+        <span className="relative min-w-0 flex-1">
+          <Icon
+            name="info"
+            size={16}
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[color:var(--color-muted)]"
+          />
+          <input
+            type="text"
+            placeholder="Enter promo code"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") apply();
+            }}
+            className="h-12 w-full rounded-xl border border-[color:var(--color-border)] pl-10 pr-3 t-body text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-ink)]"
+          />
+        </span>
+        <button
+          type="button"
+          onClick={apply}
+          className="h-12 shrink-0 rounded-xl bg-[color:var(--color-ink)] px-5 t-body-sm font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.98]"
+        >
+          Apply
+        </button>
+      </div>
+      {promoCode && discount > 0 && (
+        <p className="mt-3 flex items-center gap-1.5 t-body-sm font-semibold text-[color:var(--color-success)]">
+          <Icon name="check-circle" size={16} />
+          {promoCode} applied — {format(discount)} off
+        </p>
+      )}
+      {error && (
+        <p className="mt-3 t-body-sm text-[color:var(--color-danger)]">
+          {error}
+        </p>
+      )}
+      {!promoCode && !error && (
+        <p className="mt-3 t-caption">
+          Try DRUK10 for 10% off your first booking.
+        </p>
+      )}
+    </div>
+  );
+}

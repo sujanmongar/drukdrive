@@ -5,10 +5,14 @@ import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import AddOnCard from "../../components/AddOnCard";
 import BookingStepper from "../../components/BookingStepper";
-import BookingRouteCard from "../../components/BookingRouteCard";
+import {
+  StopsCard,
+  VehicleSummaryCard,
+} from "../../components/BookingRouteCard";
 import PriceSummaryCard from "../../components/PriceSummaryCard";
 import ContactCard from "../../components/ContactCard";
 import CheckoutLayout from "../../components/CheckoutLayout";
+import PromoCard from "../../components/PromoCard";
 import {
   AmexMark,
   BankMark,
@@ -502,7 +506,7 @@ export default function Payment() {
   );
 
   return (
-    <PageShell noFooter>
+    <PageShell noFooter stickyHeader>
       <div className="mx-auto max-w-[1100px] px-4 py-6 pb-28 md:px-10 md:py-10 lg:pb-10">
         <div className="mb-5 flex items-center gap-2">
           <button
@@ -525,9 +529,9 @@ export default function Payment() {
         </div>
 
         <CheckoutLayout
+          vehicle={<VehicleSummaryCard vehicle={vehicle} />}
           trip={
-            <BookingRouteCard
-              vehicle={vehicle}
+            <StopsCard
               pickup={pickup}
               dropoff={dropoff}
               date={date}
@@ -542,7 +546,13 @@ export default function Payment() {
               payLater={balance}
               discount={discount}
               promoCode={promoCode}
-              onPromoChange={(code) => updateBooking({}, { promo: code })}
+            />
+          }
+          promo={
+            <PromoCard
+              promoCode={promoCode}
+              discount={discount}
+              onChange={(code) => updateBooking({}, { promo: code })}
             />
           }
           help={<ContactCard />}
@@ -621,9 +631,7 @@ export default function Payment() {
       {method === "card" && !otpStage && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
           <div className="flex flex-col items-start">
-            <span className="t-h3 tabular text-[color:var(--color-ink)]">
-              {format(amountDue)}
-            </span>
+            <span className="t-h3 t-amount">{format(amountDue)}</span>
             <span className="t-caption text-[color:var(--color-muted)]">
               {balance > 0
                 ? `of ${format(netPayable)} total`

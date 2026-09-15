@@ -114,7 +114,7 @@ export default function Confirmation() {
   ];
 
   return (
-    <PageShell noFooter>
+    <PageShell noFooter stickyHeader>
       <div className="mx-auto max-w-[720px] px-4 py-6 md:px-10 md:py-10">
         {fromCheckout && (
           <div className="mb-8">

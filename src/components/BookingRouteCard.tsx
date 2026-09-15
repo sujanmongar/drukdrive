@@ -39,7 +39,7 @@ export function VehicleSummaryCard({
           />
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col gap-3 p-3 @md:gap-4 @md:p-5 @2xl:flex-row @2xl:items-stretch @2xl:gap-6">
+        <div className="flex min-w-0 flex-1 flex-col gap-4 p-4 @md:gap-5 @md:p-6 @2xl:flex-row @2xl:items-stretch @2xl:gap-8">
           <div className="min-w-0 flex-1">
             <h3 className="t-h4 truncate text-[color:var(--color-ink)]">
               {vehicle.name}
@@ -48,7 +48,7 @@ export function VehicleSummaryCard({
               or similar {vehicleClassOf[vehicle.category]}
             </p>
 
-            <div className="t-caption mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[color:var(--color-ink)]">
+            <div className="t-caption mt-2.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[color:var(--color-ink)]">
               <span className="flex min-w-0 items-center gap-1.5">
                 <Icon
                   name="location"
@@ -73,7 +73,7 @@ export function VehicleSummaryCard({
               </span>
             </div>
 
-            <VehicleSpecs vehicle={vehicle} className="mt-2.5" />
+            <VehicleSpecs vehicle={vehicle} className="mt-3.5" />
           </div>
 
           {total && (
@@ -187,14 +187,16 @@ export default function BookingRouteCard({
   days,
 }: Props) {
   return (
-    <div className="flex flex-col gap-4">
+    <div>
       <VehicleSummaryCard vehicle={vehicle} total={total} days={days} />
-      <StopsCard
-        pickup={pickup}
-        dropoff={dropoff}
-        date={date}
-        dropoffWhen={dropoffWhen}
-      />
+      <div className="mt-8">
+        <StopsCard
+          pickup={pickup}
+          dropoff={dropoff}
+          date={date}
+          dropoffWhen={dropoffWhen}
+        />
+      </div>
     </div>
   );
 }

@@ -99,7 +99,7 @@ function ExpandableCheckboxList({
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="-mx-2 min-h-11 rounded-lg px-2 text-left t-body-sm font-semibold text-[color:var(--color-link)] hover:bg-[color:var(--color-surface-soft)]"
+          className="-mx-2 min-h-11 rounded-lg px-2 text-left t-body-sm font-semibold text-[color:var(--color-link)] hover:bg-[color:var(--color-surface-soft)] lg:min-h-9 lg:t-caption"
         >
           {expanded ? "View less" : "View more"}
         </button>
@@ -332,7 +332,7 @@ export default function SearchResults() {
               onClick={() =>
                 setCapacity(capacity === range.label ? null : range.label)
               }
-              className={`min-h-11 rounded-full border px-4 t-body-sm font-semibold transition-colors ${
+              className={`min-h-11 rounded-full border px-4 t-body-sm font-semibold transition-colors lg:min-h-9 lg:px-3.5 lg:t-caption ${
                 capacity === range.label
                   ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
                   : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
@@ -402,7 +402,7 @@ export default function SearchResults() {
               key={r}
               type="button"
               onClick={() => setMinRating(minRating === r ? null : r)}
-              className={`flex min-h-11 items-center gap-1 rounded-full border px-4 t-body-sm font-semibold transition-colors ${
+              className={`flex min-h-11 items-center gap-1 rounded-full border px-4 t-body-sm font-semibold transition-colors lg:min-h-9 lg:px-3.5 lg:t-caption ${
                 minRating === r
                   ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
                   : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
@@ -458,8 +458,8 @@ export default function SearchResults() {
               maxHeight: `calc(100svh - ${headerHeight + 32}px)`,
             }}
           >
-            <div className="rounded-2xl border border-[color:var(--color-border)] bg-white p-6 shadow-card">
-              <div className="mb-4 flex items-center justify-between">
+            <div className="rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+              <div className="mb-3 flex items-center justify-between">
                 <h2 className="t-h3 text-[color:var(--color-ink)]">Filters</h2>
                 {activeFilterCount > 0 && (
                   <button
@@ -471,7 +471,7 @@ export default function SearchResults() {
                   </button>
                 )}
               </div>
-              <div className="-mx-6 mb-5 border-b border-[color:var(--color-border)]" />
+              <div className="-mx-5 mb-4 border-b border-[color:var(--color-border)]" />
               {filterPanel}
             </div>
           </aside>

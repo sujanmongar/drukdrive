@@ -229,8 +229,10 @@ function AccountMenu({
 
 export default function Header({
   transparent = false,
+  sticky = false,
 }: {
   transparent?: boolean;
+  sticky?: boolean;
 }) {
   const { isLoggedIn, logout, role } = useAuth();
   const navigate = useNavigate();
@@ -243,7 +245,11 @@ export default function Header({
 
   return (
     <header
-      className={`relative z-20 ${transparent ? "bg-transparent" : "bg-white"}`}
+      className={`z-30 ${transparent ? "bg-transparent" : "bg-white"} ${
+        sticky
+          ? "sticky top-0 border-b border-[color:var(--color-border)] bg-white/95 backdrop-blur"
+          : "relative"
+      }`}
     >
       {/* Desktop */}
       <div className="hidden items-center justify-between px-6 py-[23px] md:flex lg:px-10">

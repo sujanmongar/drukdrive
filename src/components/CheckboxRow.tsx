@@ -13,7 +13,7 @@ export function CheckboxBox({
   return (
     <span
       aria-hidden
-      className={`flex size-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-colors ${
+      className={`flex size-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-colors lg:size-[18px] ${
         checked
           ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)]"
           : "border-[color:var(--color-border)] bg-white"
@@ -49,7 +49,7 @@ export function Checkbox({
 }) {
   return (
     <label
-      className={`flex min-h-11 cursor-pointer gap-3 rounded-lg t-body text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)] ${
+      className={`flex min-h-11 cursor-pointer gap-3 rounded-lg t-body text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)] lg:min-h-9 lg:gap-2.5 lg:t-body-sm ${
         inline ? "w-fit -mx-2 px-2" : "-mx-2 px-2"
       } ${align === "start" ? "items-start py-2.5" : "items-center"}`}
     >
