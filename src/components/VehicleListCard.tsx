@@ -123,22 +123,17 @@ export default function VehicleListCard({
               />
               <span className="truncate">{vehicle.location}</span>
             </span>
-            <span className="text-[color:var(--color-muted)]">•</span>
-            <span className="flex items-center gap-1">
-              <Icon
-                name="star"
-                size={13}
-                className="fill-current text-[color:var(--color-star)]"
-                strokeWidth={2.3}
-              />
-              <span className="font-semibold">{vehicle.rating}</span>
-              <span className="text-[color:var(--color-muted)]">
-                ({vehicle.reviewCount})
-              </span>
-            </span>
           </div>
 
           <VehicleSpecs vehicle={vehicle} className="mt-2.5" />
+          <div className="mt-3 flex items-center gap-2.5">
+            <span className="rounded-md bg-[color:var(--color-success)] px-2 py-0.5 t-caption font-bold tabular text-white">
+              {vehicle.rating.toFixed(1)}/5
+            </span>
+            <span className="border-l border-[color:var(--color-border)] pl-2.5 t-body-sm text-[color:var(--color-ink)]">
+              {vehicle.reviewCount} ratings
+            </span>
+          </div>
         </div>
       </div>
 
