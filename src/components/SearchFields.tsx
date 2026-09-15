@@ -174,6 +174,34 @@ export default function SearchFields({
           )}
         </div>
 
+        {/* Swap the two places. Sits on the seam between the fields: at the
+            right on phones (stacked), centred on desktop (side by side). */}
+        {differentDropoff && (
+          <button
+            type="button"
+            onClick={() =>
+              onChange({
+                ...value,
+                pickup: value.dropoff,
+                dropoff: value.pickup,
+              })
+            }
+            aria-label="Swap pick-up and drop-off"
+            className={`icon-btn icon-btn-filled z-10 -my-[26px] mr-3 size-9 self-end border-2 border-white ${
+              row
+                ? "lg:mx-[-26px] lg:my-0 lg:mr-[-26px] lg:mt-[10px] lg:self-start"
+                : ""
+            }`}
+          >
+            <Icon
+              name="swap"
+              size={16}
+              strokeWidth={2.3}
+              className={row ? "lg:rotate-90" : ""}
+            />
+          </button>
+        )}
+
         {/* Drop-off location, only when it differs */}
         {differentDropoff && (
           <div

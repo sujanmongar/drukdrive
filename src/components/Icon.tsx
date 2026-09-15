@@ -1,6 +1,7 @@
 import type { ComponentType, SVGProps } from "react";
 import {
   ArrowLeft,
+  ArrowUpDown,
   Armchair,
   Bell,
   Calendar,
@@ -65,6 +66,7 @@ const icons = {
   "check-circle": CheckCircle2,
   upload: Upload,
   "arrow-left": ArrowLeft,
+  swap: ArrowUpDown,
   "credit-card": CreditCard,
   bank: Landmark,
   wallet: Wallet,
@@ -90,13 +92,28 @@ const icons = {
   gearbox: Gauge,
   snowflake: Snowflake,
   spinner: Loader2,
-} satisfies Record<string, ComponentType<SVGProps<SVGSVGElement> & { size?: number | string }>>;
+} satisfies Record<
+  string,
+  ComponentType<SVGProps<SVGSVGElement> & { size?: number | string }>
+>;
 
 export type IconName = keyof typeof icons;
 
 type IconProps = SVGProps<SVGSVGElement> & { name: IconName; size?: number };
 
-export default function Icon({ name, size = 20, strokeWidth = 1.9, ...props }: IconProps) {
+export default function Icon({
+  name,
+  size = 20,
+  strokeWidth = 1.9,
+  ...props
+}: IconProps) {
   const Glyph = icons[name];
-  return <Glyph size={size} strokeWidth={strokeWidth} aria-hidden="true" {...props} />;
+  return (
+    <Glyph
+      size={size}
+      strokeWidth={strokeWidth}
+      aria-hidden="true"
+      {...props}
+    />
+  );
 }
