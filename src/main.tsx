@@ -7,7 +7,6 @@ import ScrollToTop from "./components/ScrollToTop.tsx";
 import { AuthProvider } from "./lib/auth.tsx";
 import { CurrencyProvider } from "./lib/currency.tsx";
 import { LanguageProvider } from "./lib/language.tsx";
-import { ClientTypeProvider } from "./lib/clientType.tsx";
 import { WishlistProvider } from "./lib/wishlist.tsx";
 import { CurrentUserProvider } from "./lib/currentUser.tsx";
 import { DriverVehiclesProvider } from "./lib/driverVehicles.tsx";
@@ -19,18 +18,16 @@ createRoot(document.getElementById("root")!).render(
       <AuthProvider>
         <CurrentUserProvider>
           <LanguageProvider>
-            <ClientTypeProvider>
-              <CurrencyProvider>
-                <WishlistProvider>
-                  <DriverVehiclesProvider>
-                    <ReviewsProvider>
-                      <ScrollToTop />
-                      <App />
-                    </ReviewsProvider>
-                  </DriverVehiclesProvider>
-                </WishlistProvider>
-              </CurrencyProvider>
-            </ClientTypeProvider>
+            <CurrencyProvider>
+              <WishlistProvider>
+                <DriverVehiclesProvider>
+                  <ReviewsProvider>
+                    <ScrollToTop />
+                    <App />
+                  </ReviewsProvider>
+                </DriverVehiclesProvider>
+              </WishlistProvider>
+            </CurrencyProvider>
           </LanguageProvider>
         </CurrentUserProvider>
       </AuthProvider>

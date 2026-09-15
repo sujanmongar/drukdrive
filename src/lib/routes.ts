@@ -16,7 +16,6 @@ export const routes = {
   bookingReview: "/checkout/review",
   reviewBooking: "/checkout/details",
   payment: "/checkout/payment",
-  paymentVerify: "/checkout/verify",
   paymentSuccess: "/checkout/success",
   confirmation: (id: string = ":id") => `/booking/${id}/confirmation`,
   invoice: (id: string = ":id") => `/booking/${id}/invoice`,

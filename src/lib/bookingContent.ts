@@ -1,11 +1,9 @@
 import type { BookingType } from "./routes";
-import type { ClientType } from "./booking";
 
-// What each booking type includes, excludes and asks the customer to read,
-// with the few lines that differ for visitors. Kept as data so the review
-// and details steps stay thin.
+// What each booking type includes and what to read before booking. Kept as
+// data so the review step stays thin.
 
-export function inclusionsFor(type: BookingType, client: ClientType): string[] {
+export function inclusionsFor(type: BookingType): string[] {
   switch (type) {
     case "daily":
       return [
@@ -21,9 +19,7 @@ export function inclusionsFor(type: BookingType, client: ClientType): string[] {
         "Fuel and tolls",
         "Unlimited kilometres within Bhutan",
         "One meal stop each day",
-        ...(client === "tourist"
-          ? ["Route permits arranged by the driver"]
-          : []),
+        "Route permits arranged by the driver",
         "Free cancellation up to 24 hours before pick-up",
       ];
     case "self-drive":
@@ -37,43 +33,15 @@ export function inclusionsFor(type: BookingType, client: ClientType): string[] {
   }
 }
 
-export function exclusionsFor(type: BookingType, client: ClientType): string[] {
-  switch (type) {
-    case "daily":
-      return [
-        "Parking and entry fees",
-        "Extra stops beyond the route",
-        "Overnight stays (book a rental)",
-      ];
-    case "rental":
-      return [
-        "Parking and entry permits",
-        "Driver accommodation on overnight trips",
-        ...(client === "tourist" ? ["Sustainable Development Fee"] : []),
-      ];
-    case "self-drive":
-      return [
-        "Fuel used",
-        "Driver",
-        "Traffic fines and tolls",
-        "Damage above the deposit",
-      ];
-  }
-}
-
 export type Note = { title: string; items: string[] };
 
-export function notesFor(type: BookingType, client: ClientType): Note[] {
-  const payment =
-    type === "daily"
-      ? "The full fare is paid now; nothing is due to the driver."
-      : client === "tourist"
-        ? "Half the fare is paid now by card. The other half is paid to the driver at pick-up in cash (Nu) or by card."
-        : "Half the fare is paid now. The other half is paid to the driver at pick-up by mBoB, card or cash.";
+export function notesFor(type: BookingType): Note[] {
   const common: Note = {
     title: "Payment and cancellation",
     items: [
-      payment,
+      type === "daily"
+        ? "The full fare is paid now; nothing is due to the driver."
+        : "Half the fare is paid now. The other half is paid to the driver at pick-up by mBoB, card or cash (Nu).",
       "Cancel free of charge up to 24 hours before pick-up; later cancellations forfeit the amount paid.",
     ],
   };
@@ -98,11 +66,7 @@ export function notesFor(type: BookingType, client: ClientType): Note[] {
           items: [
             "The driver is with you from pick-up to drop-off each day; the car is not driven overnight.",
             "Up to 8 hours a day are included; longer days are settled with the driver.",
-            ...(client === "tourist"
-              ? [
-                  "Route permits beyond Thimphu and Paro are arranged by the driver; carry your passport.",
-                ]
-              : []),
+            "Route permits beyond Thimphu and Paro are arranged by the driver; carry your passport or CID.",
             "AC is switched off on steep climbs.",
           ],
         },
@@ -113,9 +77,7 @@ export function notesFor(type: BookingType, client: ClientType): Note[] {
         {
           title: "Driver requirements",
           items: [
-            client === "tourist"
-              ? "Self drive is open to Indian licence holders only; other visitors are not licensed to drive in Bhutan."
-              : "A valid Bhutanese driving licence held for at least 1 year.",
+            "A valid Bhutanese or Indian driving licence held for at least 1 year. Bhutan does not accept international driving permits.",
             "Driver aged 21 or over.",
             "A refundable deposit is held at collection and released within 3 days of return.",
           ],
@@ -131,15 +93,6 @@ export function notesFor(type: BookingType, client: ClientType): Note[] {
   }
 }
 
-/** Fields the details step asks for, beyond name, phone and email. */
-export function identityLabel(client: ClientType) {
-  return client === "tourist" ? "Passport number" : "CID number";
-}
-
-export function needsFlightNumber(
-  client: ClientType,
-  pickup: string,
-  dropoff: string,
-) {
-  return client === "tourist" && /airport/i.test(pickup + " " + dropoff);
+export function needsFlightNumber(pickup: string, dropoff: string) {
+  return /airport/i.test(pickup + " " + dropoff);
 }

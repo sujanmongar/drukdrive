@@ -2,7 +2,7 @@
 // Confirmation and Invoice all agree with each other (no backend — this is
 // the one source of truth for the calculation).
 
-import type { Booking, ClientType, SearchValue } from "./booking";
+import type { Booking, SearchValue } from "./booking";
 import type { BookingType } from "./routes";
 import { bookingDays, isDayBased, isRoundTrip, rideHours } from "./booking";
 
@@ -22,7 +22,7 @@ export type AddOn = {
   /** How it works, step by step. */
   howItWorks: string[];
   /** Which bookings offer it. */
-  availableFor: (type: BookingType, client: ClientType) => boolean;
+  availableFor: (type: BookingType) => boolean;
 };
 
 // Optional extras, priced per day.
@@ -71,12 +71,23 @@ export const addOns: AddOn[] = [
       "They handle route permits and entry at monuments, and speak English and Dzongkha.",
       "The guide's meals and accommodation on overnight trips are included in this price.",
     ],
-    availableFor: (type, client) => type === "rental" && client === "tourist",
+    availableFor: (type) => type === "rental",
   },
 ];
 
-export function addOnsFor(type: BookingType, client: ClientType): AddOn[] {
-  return addOns.filter((a) => a.availableFor(type, client));
+export function addOnsFor(type: BookingType): AddOn[] {
+  return addOns.filter((a) => a.availableFor(type));
+}
+
+export const PROMO_CODES: Record<string, number> = {
+  DRUK10: 0.1,
+  WELCOME: 0.05,
+};
+
+/** Discount for a promo code against a total; 0 when the code is unknown. */
+export function promoDiscount(code: string | null, total: number): number {
+  const rate = code ? PROMO_CODES[code.toUpperCase()] : undefined;
+  return rate ? Math.round(total * rate * 100) / 100 : 0;
 }
 
 export function isAddOnId(id: string) {

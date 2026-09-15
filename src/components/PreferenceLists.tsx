@@ -2,7 +2,6 @@ import { useState } from "react";
 import Icon from "./Icon";
 import { currencies, useCurrency } from "../lib/currency";
 import { languages, useLanguage } from "../lib/language";
-import ClientTypeSwitch from "./ClientTypeSwitch";
 
 type View = "root" | "language" | "currency";
 
@@ -75,9 +74,6 @@ export default function PreferenceLists() {
 
   return (
     <>
-      <div className="px-4 pb-2 pt-3">
-        <ClientTypeSwitch className="w-full [&>button]:flex-1" />
-      </div>
       <button
         type="button"
         onClick={() => setView("language")}

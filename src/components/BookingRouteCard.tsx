@@ -160,12 +160,7 @@ export function StopsCard({
                     <span className="absolute bottom-0 size-2 rounded-full bg-[color:var(--color-ink)]" />
                   </span>
                   <div className="flex flex-col py-2">
-                    <Icon
-                      name="car"
-                      size={20}
-                      className="text-[color:var(--color-ink)]"
-                    />
-                    <span className="mt-0.5 t-body-sm font-semibold text-[color:var(--color-ink)]">
+                    <span className="t-body-sm font-semibold text-[color:var(--color-ink)]">
                       {formatDurationHours(hours)}
                     </span>
                   </div>

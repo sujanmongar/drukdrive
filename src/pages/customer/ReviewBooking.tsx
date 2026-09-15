@@ -6,7 +6,7 @@ import Button from "../../components/Button";
 import AddOnCard from "../../components/AddOnCard";
 import BookingStepper from "../../components/BookingStepper";
 import BookingRouteCard from "../../components/BookingRouteCard";
-import FareSummary from "../../components/FareSummary";
+import PriceSummaryCard from "../../components/PriceSummaryCard";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import {
@@ -14,14 +14,9 @@ import {
   computeFare,
   isAddOnId,
   paymentSplit,
+  promoDiscount,
 } from "../../lib/pricing";
-import {
-  identityLabel,
-  needsFlightNumber,
-  notesFor,
-} from "../../lib/bookingContent";
-import { useClientType } from "../../lib/clientType";
-import { currencies } from "../../lib/currency";
+import { needsFlightNumber } from "../../lib/bookingContent";
 import {
   bookingToParams,
   formatDropoff,
@@ -33,17 +28,13 @@ import { useAuth } from "../../lib/auth";
 import { useCurrentUser } from "../../lib/currentUser";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
-const PROMO_CODES: Record<string, number> = {
-  DRUK10: 0.1,
-  WELCOME: 0.05,
-};
-
+// Step 2 of checkout: who is travelling. The trip itself was settled on the
+// review step and travels in the URL.
 export default function ReviewBooking() {
   usePageTitle("Your details");
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { format, currency } = useCurrency();
-  const { clientType } = useClientType();
+  const { format } = useCurrency();
   const { isLoggedIn } = useAuth();
   const { user } = useCurrentUser();
 
@@ -52,30 +43,43 @@ export default function ReviewBooking() {
     vehicles.find((v) => v.id === booking.vehicleId) ?? vehicles[0];
   const { addOnIds, pickup, dropoff } = booking;
   const date = formatPickup(booking);
-  // Add-ons can still be changed here; the URL stays the source of truth so
-  // a refresh or back-navigation keeps the choice.
+  const reviewHref = `${routes.bookingReview}?${bookingToParams(booking).toString()}`;
+
+  // Add-ons and the promo code live in the URL, so a refresh or a step back
+  // keeps them and the payment page sees the same numbers.
+  function updateParams(next: Record<string, string | null>) {
+    const params = bookingToParams(booking);
+    for (const [k, v] of Object.entries(next)) {
+      if (v === null) params.delete(k);
+      else params.set(k, v);
+    }
+    // keep whatever else is already there (promo)
+    const promo = searchParams.get("promo");
+    if (promo && !("promo" in next)) params.set("promo", promo);
+    setSearchParams(params, { replace: true });
+  }
   function toggleAddOn(id: string) {
     const next = addOnIds.includes(id)
       ? addOnIds.filter((x) => x !== id)
       : [...addOnIds, id];
-    setSearchParams(bookingToParams({ ...booking, addOnIds: next }), {
-      replace: true,
-    });
+    const params = bookingToParams({ ...booking, addOnIds: next });
+    const promo = searchParams.get("promo");
+    if (promo) params.set("promo", promo);
+    setSearchParams(params, { replace: true });
   }
+
   const fare = computeFare(booking, vehicle.pricePerDay, format);
   const { total } = fare;
-  const addOns = addOnsFor(booking.type, clientType);
+  const addOns = addOnsFor(booking.type);
   const selfDrive = booking.type === "self-drive";
-  const askFlight = needsFlightNumber(clientType, pickup, dropoff);
-  const notes = notesFor(booking.type, clientType);
-  // Visitors see the ngultrum amount too, since the balance is paid locally.
-  const nu = currencies.find((c) => c.code === "BTN")!;
-  const inNu = (usd: number) =>
-    `${nu.symbol} ${Math.round(usd * nu.rateFromUsd).toLocaleString()}`;
-  const showNu = clientType === "tourist" && currency !== "BTN";
+  const askFlight = needsFlightNumber(pickup, dropoff);
+  const promoCode = searchParams.get("promo");
+  const discount = promoDiscount(promoCode, total);
+  const netPayable = Math.round((total - discount) * 100) / 100;
+  const split = paymentSplit(booking, netPayable);
+  const amountDue = split.now;
 
-  // Already signed in? Skip retyping — pull the traveler's details straight
-  // from their account instead of starting from blank fields.
+  // Already signed in? Pull the traveller's details from their account.
   const [title, setTitle] = useState(
     isLoggedIn && user.gender === "Female" ? "Ms" : "Mr",
   );
@@ -90,22 +94,6 @@ export default function ReviewBooking() {
   const [dob, setDob] = useState("");
   const [touched, setTouched] = useState(false);
 
-  const [promoInput, setPromoInput] = useState("");
-  const [promoApplied, setPromoApplied] = useState<{
-    code: string;
-    discount: number;
-  } | null>(null);
-  const [promoError, setPromoError] = useState("");
-
-  const discount = promoApplied
-    ? Math.round(total * promoApplied.discount * 100) / 100
-    : 0;
-  const netPayable = Math.round((total - discount) * 100) / 100;
-  // Daily rides are paid in full; rentals and self-drive pay half now and
-  // the other half to the driver at pick-up.
-  const split = paymentSplit(booking, netPayable);
-  const amountDue = split.now;
-
   const isValid =
     fullName.trim() !== "" &&
     email.trim() !== "" &&
@@ -113,19 +101,6 @@ export default function ReviewBooking() {
     pickupAddress.trim() !== "" &&
     identity.trim() !== "" &&
     (!selfDrive || (licence.trim() !== "" && dob.trim() !== ""));
-
-  function applyPromo() {
-    const code = promoInput.trim().toUpperCase();
-    if (!code) return;
-    const rate = PROMO_CODES[code];
-    if (rate) {
-      setPromoApplied({ code, discount: rate });
-      setPromoError("");
-    } else {
-      setPromoApplied(null);
-      setPromoError("Invalid promo code");
-    }
-  }
 
   function handleProceed() {
     if (!isValid) {
@@ -148,7 +123,7 @@ export default function ReviewBooking() {
         travelerEmail: email,
         travelerPhone: phone,
         travelerId: identity,
-        clientType,
+        ...(promoCode && discount > 0 ? { promo: promoCode } : {}),
         ...(flight ? { flight } : {}),
         ...(selfDrive ? { licence, dob } : {}),
       },
@@ -161,8 +136,9 @@ export default function ReviewBooking() {
   const labelClass =
     "mb-1.5 block t-body-sm font-semibold text-[color:var(--color-ink)]";
   const errorClass = "border-[color:var(--color-danger)]";
-
-  const payButtonLabel = `Pay ${format(amountDue)} now`;
+  const err = (msg: string) => (
+    <p className="mt-1 t-caption text-[color:var(--color-danger)]">{msg}</p>
+  );
 
   return (
     <PageShell noFooter>
@@ -180,30 +156,22 @@ export default function ReviewBooking() {
         </div>
 
         <div className="mb-8">
-          <BookingStepper current={2} />
+          <BookingStepper current={2} hrefs={[reviewHref]} />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
-          {/* Left: booking details + personal info */}
-          <div className="min-w-0 max-w-[640px]">
-            <BookingRouteCard
-              vehicle={vehicle}
-              pickup={pickup}
-              dropoff={dropoff}
-              date={date}
-              dropoffWhen={formatDropoff(booking)}
-            />
-
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px] lg:gap-8">
+          {/* Left: the form */}
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="t-h3 text-[color:var(--color-ink)]">
-                Personal Information
+                Personal information
               </h2>
               {!isLoggedIn && (
                 <Link
                   to={routes.signIn}
-                  className="rounded-lg bg-[color:var(--color-info-bg)] px-3 py-1.5 t-body-sm font-semibold text-[color:var(--color-info-text)] hover:opacity-90"
+                  className="inline-flex min-h-11 items-center rounded-lg bg-[color:var(--color-info-bg)] px-3 t-body-sm font-semibold text-[color:var(--color-info-text)] hover:opacity-90"
                 >
-                  Sign in/signup to speed up your booking process ↗
+                  Sign in to speed this up ↗
                 </Link>
               )}
             </div>
@@ -223,68 +191,55 @@ export default function ReviewBooking() {
                   </select>
                 </label>
                 <label>
-                  <span className={labelClass}>Full Name *</span>
+                  <span className={labelClass}>Full name *</span>
                   <input
                     type="text"
-                    placeholder="Enter full name"
+                    placeholder="As on your passport or CID"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className={`${inputClass} ${touched && !fullName.trim() ? errorClass : ""}`}
                   />
-                  {touched && !fullName.trim() && (
-                    <p className="mt-1 t-caption text-[color:var(--color-danger)]">
-                      Full name is required.
-                    </p>
-                  )}
+                  {touched && !fullName.trim() && err("Full name is required.")}
                 </label>
               </div>
 
               <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <label>
                   <span className={labelClass}>
-                    Phone *{" "}
-                    {clientType === "tourist"
-                      ? "(WhatsApp preferred)"
-                      : "(Your confirmation code will be sent here)"}
+                    Phone * (WhatsApp preferred)
                   </span>
                   <input
                     type="tel"
-                    placeholder="Enter phone number"
+                    placeholder="+975 17 000 000"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className={`${inputClass} ${touched && !phone.trim() ? errorClass : ""}`}
                   />
-                  {touched && !phone.trim() && (
-                    <p className="mt-1 t-caption text-[color:var(--color-danger)]">
-                      Phone number is required.
-                    </p>
-                  )}
+                  {touched && !phone.trim() && err("Phone number is required.")}
                 </label>
                 <label>
                   <span className={labelClass}>
-                    Email * (Your E-ticket and updates will be sent here)
+                    Email * (your e-ticket goes here)
                   </span>
                   <input
                     type="email"
-                    placeholder="Enter email"
+                    placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className={`${inputClass} ${touched && !email.trim() ? errorClass : ""}`}
                   />
-                  {touched && !email.trim() && (
-                    <p className="mt-1 t-caption text-[color:var(--color-danger)]">
-                      Email is required.
-                    </p>
-                  )}
+                  {touched && !email.trim() && err("Email is required.")}
                 </label>
               </div>
 
               <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <label>
-                  <span className={labelClass}>Pickup address *</span>
+                  <span className={labelClass}>
+                    {selfDrive ? "Collection address *" : "Pickup address *"}
+                  </span>
                   <input
                     type="text"
-                    placeholder="Pickup address/landmark"
+                    placeholder="Address or landmark"
                     value={pickupAddress}
                     onChange={(e) => setPickupAddress(e.target.value)}
                     className={`${inputClass} ${touched && !pickupAddress.trim() ? errorClass : ""}`}
@@ -292,11 +247,13 @@ export default function ReviewBooking() {
                 </label>
                 <label>
                   <span className={labelClass}>
-                    Drop off address (Optional)
+                    {selfDrive
+                      ? "Return address (optional)"
+                      : "Drop-off address (optional)"}
                   </span>
                   <input
                     type="text"
-                    placeholder="Drop address/landmark"
+                    placeholder="Address or landmark"
                     value={dropoffAddress}
                     onChange={(e) => setDropoffAddress(e.target.value)}
                     className={inputClass}
@@ -306,30 +263,21 @@ export default function ReviewBooking() {
 
               <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <label>
-                  <span className={labelClass}>
-                    {identityLabel(clientType)} *
-                  </span>
+                  <span className={labelClass}>Passport or CID number *</span>
                   <input
                     type="text"
-                    placeholder={
-                      clientType === "tourist"
-                        ? "As shown in your passport"
-                        : "11-digit CID"
-                    }
+                    placeholder="For the driver to verify you"
                     value={identity}
                     onChange={(e) => setIdentity(e.target.value)}
                     className={`${inputClass} ${touched && !identity.trim() ? errorClass : ""}`}
                   />
-                  {touched && !identity.trim() && (
-                    <p className="mt-1 t-caption text-[color:var(--color-danger)]">
-                      {identityLabel(clientType)} is required for the driver to
-                      verify you.
-                    </p>
-                  )}
+                  {touched &&
+                    !identity.trim() &&
+                    err("A passport or CID number is required.")}
                 </label>
                 {askFlight && (
                   <label>
-                    <span className={labelClass}>Flight number (Optional)</span>
+                    <span className={labelClass}>Flight number (optional)</span>
                     <input
                       type="text"
                       placeholder="e.g. KB 205"
@@ -350,11 +298,7 @@ export default function ReviewBooking() {
                       </span>
                       <input
                         type="text"
-                        placeholder={
-                          clientType === "tourist"
-                            ? "Indian licence number"
-                            : "Bhutanese licence number"
-                        }
+                        placeholder="Bhutanese or Indian licence"
                         value={licence}
                         onChange={(e) => setLicence(e.target.value)}
                         className={`${inputClass} ${touched && !licence.trim() ? errorClass : ""}`}
@@ -380,12 +324,11 @@ export default function ReviewBooking() {
                 <span className="font-semibold text-[color:var(--color-ink-soft)]">
                   Note:
                 </span>{" "}
-                Your information is required for driver verification, trip
-                updates, and issuing your booking confirmation.
+                Your information is used for driver verification, trip updates
+                and your booking confirmation.
               </p>
-
-              <p className="mt-4 t-body-sm text-[color:var(--color-muted)]">
-                By proceeding to book, I Agree to DrukDrive&rsquo;s{" "}
+              <p className="mt-3 t-body-sm text-[color:var(--color-muted)]">
+                By continuing you agree to DrukDrive&rsquo;s{" "}
                 <Link
                   to={routes.privacyPolicy}
                   target="_blank"
@@ -412,125 +355,41 @@ export default function ReviewBooking() {
                 >
                   Terms of Service
                 </Link>
+                .
               </p>
-            </div>
-
-            <h2 className="t-h3 mt-10 text-[color:var(--color-ink)]">
-              Read before you book!
-            </h2>
-            <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
-              {notes.map((note, i) => (
-                <div key={note.title} className={i > 0 ? "mt-4" : ""}>
-                  <h4 className="t-body font-bold text-[color:var(--color-ink)]">
-                    {note.title}
-                  </h4>
-                  <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body text-[color:var(--color-ink-soft)]">
-                    {note.items.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
             </div>
 
             <div className="mt-8 hidden justify-end lg:flex">
               <Button variant="primary" size="lg" onClick={handleProceed}>
-                {payButtonLabel}
+                Continue to payment
               </Button>
             </div>
           </div>
 
-          {/* Right: price summary sidebar */}
+          {/* Right: trip, price and add-ons */}
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <h2 className="t-h3 text-[color:var(--color-ink)]">
+            <BookingRouteCard
+              vehicle={vehicle}
+              pickup={pickup}
+              dropoff={dropoff}
+              date={date}
+              dropoffWhen={formatDropoff(booking)}
+            />
+
+            <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">
               Price summary
             </h2>
-            <div
-              id="price-summary"
-              className="mt-4 scroll-mt-24 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card"
-            >
-              <div>
-                <p className="t-h2 tabular text-[color:var(--color-ink)]">
-                  {format(netPayable)}
-                </p>
-                <p className="t-body-sm text-[color:var(--color-muted)]">
-                  Total for {fare.unit}, taxes and fees included
-                </p>
-              </div>
-              <div className="mt-3">
-                <FareSummary
-                  total={format(netPayable)}
-                  lines={[
-                    ...fare.lines.map((l) => ({
-                      label: l.label,
-                      value: format(l.amount),
-                    })),
-                    ...(discount > 0
-                      ? [
-                          {
-                            label: `Promo ${promoApplied?.code}`,
-                            value: `−${format(discount)}`,
-                            success: true,
-                          },
-                        ]
-                      : []),
-                  ]}
-                />
-              </div>
-
-              {/* Rides are paid in full; rentals and self-drive pay half now and
-                  half to the driver at pick-up. */}
-              <dl className="mt-4 flex flex-col gap-2 rounded-xl bg-[color:var(--color-surface-subtle)] px-4 py-3.5">
-                <div className="flex items-center justify-between gap-3">
-                  <dt>
-                    <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
-                      Pay now
-                    </span>
-                    <span className="block t-caption text-[color:var(--color-muted)]">
-                      {split.later > 0
-                        ? "Half the fare, to confirm your booking"
-                        : "The full fare, to confirm your booking"}
-                      {showNu && ` · ≈ ${inNu(amountDue)}`}
-                    </span>
-                  </dt>
-                  <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
-                    {format(amountDue)}
-                  </dd>
-                </div>
-                {split.later > 0 && (
-                  <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2">
-                    <dt>
-                      <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
-                        Pay at pick-up
-                      </span>
-                      <span className="block t-caption text-[color:var(--color-muted)]">
-                        {clientType === "tourist"
-                          ? "The other half, to the driver in cash (Nu) or by card"
-                          : "The other half, to the driver by mBoB, card or cash"}
-                        {showNu && ` · ≈ ${inNu(netPayable - amountDue)}`}
-                      </span>
-                    </dt>
-                    <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
-                      {format(netPayable - amountDue)}
-                    </dd>
-                  </div>
-                )}
-                {fare.deposit > 0 && (
-                  <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2">
-                    <dt>
-                      <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
-                        Deposit at collection
-                      </span>
-                      <span className="block t-caption text-[color:var(--color-muted)]">
-                        Refundable, released within 3 days of return
-                      </span>
-                    </dt>
-                    <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
-                      {format(fare.deposit)}
-                    </dd>
-                  </div>
-                )}
-              </dl>
+            <div className="mt-4">
+              <PriceSummaryCard
+                id="price-summary"
+                fare={fare}
+                netPayable={netPayable}
+                payNow={split.now}
+                payLater={split.later}
+                discount={discount}
+                promoCode={promoCode}
+                onPromoChange={(code) => updateParams({ promo: code })}
+              />
             </div>
 
             <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">Add-ons</h2>
@@ -544,45 +403,6 @@ export default function ReviewBooking() {
                   onToggle={() => toggleAddOn(addOn.id)}
                 />
               ))}
-            </div>
-
-            <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">
-              Offer{" "}
-              <span className="t-body-sm font-medium text-[color:var(--color-muted)]">
-                (Optional)
-              </span>
-            </h2>
-            <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-4 shadow-card">
-              <p className="flex items-center gap-1.5 t-label font-semibold uppercase text-[color:var(--color-muted)]">
-                <Icon name="info" size={13} />
-                Enter promo code
-              </p>
-              <div className="mt-2 flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Got a promo code? enter here"
-                  value={promoInput}
-                  onChange={(e) => setPromoInput(e.target.value)}
-                  className="h-11 min-w-0 flex-1 rounded-lg border border-[color:var(--color-border)] px-3 t-body text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-ink)]"
-                />
-                <button
-                  type="button"
-                  onClick={applyPromo}
-                  className="h-11 shrink-0 rounded-lg bg-[color:var(--color-ink)] px-4 t-body-sm font-bold text-white transition-all duration-200 hover:bg-black"
-                >
-                  Apply
-                </button>
-              </div>
-              {promoApplied && (
-                <p className="mt-2 t-caption font-semibold text-[color:var(--color-success)]">
-                  {promoApplied.code} applied — {format(discount)} off
-                </p>
-              )}
-              {promoError && (
-                <p className="mt-2 t-caption text-[color:var(--color-danger)]">
-                  {promoError}
-                </p>
-              )}
             </div>
           </div>
         </div>
@@ -601,7 +421,7 @@ export default function ReviewBooking() {
           </span>
         </a>
         <Button variant="primary" size="lg" onClick={handleProceed}>
-          Proceed To Payment
+          Continue
         </Button>
       </div>
     </PageShell>

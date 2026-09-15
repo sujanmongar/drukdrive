@@ -1,463 +1,564 @@
-import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useRef, useState } from "react";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
+import Button from "../../components/Button";
 import BookingStepper from "../../components/BookingStepper";
 import BookingRouteCard from "../../components/BookingRouteCard";
+import PriceSummaryCard from "../../components/PriceSummaryCard";
 import { routes } from "../../lib/routes";
 import { vehicles } from "../../data/mockData";
-import { useCurrency, currencies } from "../../lib/currency";
+import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
-import { formatDropoff, formatPickup, parseBooking } from "../../lib/booking";
-import { computeFare, isAddOnId } from "../../lib/pricing";
-import { useClientType } from "../../lib/clientType";
+import {
+  bookingToParams,
+  formatDropoff,
+  formatPickup,
+  parseBooking,
+} from "../../lib/booking";
+import { computeFare, isAddOnId, promoDiscount } from "../../lib/pricing";
 
-type PaymentMethod = "mbob" | "netbanking" | "card";
+type PaymentMethod = "card" | "netbanking" | "paypal";
 
+// RMA payment gateway banks, as on the reference.
 const banks = [
-  "Bank of Bhutan",
-  "Bhutan National Bank",
-  "Druk PNB Bank",
-  "T Bank",
+  { name: "Bank of Bhutan", short: "BoB" },
+  { name: "Bhutan National Bank", short: "BNB" },
+  { name: "Druk PNB Bank", short: "DPNB" },
+  { name: "T Bank", short: "TB" },
 ];
+
+// The driver assigned once the booking is confirmed. A prototype value;
+// the real one comes from dispatch.
+const assignedDriver = {
+  name: "Karma Dorji",
+  rating: 4.9,
+  trips: 312,
+  since: 2019,
+  languages: "Dzongkha, English, Hindi",
+  plate: "BP-1-A1234",
+};
+
+const OTP_LENGTH = 6;
 
 export default function Payment() {
   usePageTitle("Payment");
   const navigate = useNavigate();
-  const { format, currency } = useCurrency();
+  const { format } = useCurrency();
   const [searchParams] = useSearchParams();
-  const { clientType: storedClientType } = useClientType();
   const booking = parseBooking(searchParams, isAddOnId);
   const vehicle =
     vehicles.find((v) => v.id === booking.vehicleId) ?? vehicles[0];
-  // The details step stamps the client type into the URL so a refresh here
-  // keeps the same method list and wording.
-  const clientType =
-    searchParams.get("clientType") === "local"
-      ? "local"
-      : searchParams.get("clientType") === "tourist"
-        ? "tourist"
-        : storedClientType;
   const fare = computeFare(booking, vehicle.pricePerDay, format);
+  const selfDrive = booking.type === "self-drive";
 
   const { pickup, dropoff } = booking;
   const date = formatPickup(booking);
   const travelerName = searchParams.get("travelerName") || "";
   const travelerEmail = searchParams.get("travelerEmail") || "";
   const travelerPhone = searchParams.get("travelerPhone") || "";
-  const grandTotal = Number(searchParams.get("total")) || fare.total;
-  const amountDue = Number(searchParams.get("amountDue")) || grandTotal;
-  const balance = Math.round((grandTotal - amountDue) * 100) / 100;
+  const promoCode = searchParams.get("promo");
+  const discount = promoDiscount(promoCode, fare.total);
+  const netPayable =
+    Number(searchParams.get("total")) ||
+    Math.round((fare.total - discount) * 100) / 100;
+  const amountDue = Number(searchParams.get("amountDue")) || netPayable;
+  const balance = Math.round((netPayable - amountDue) * 100) / 100;
 
-  // Residents pay by mBoB, net banking or card; visitors by card.
-  const methods: PaymentMethod[] =
-    clientType === "local" ? ["mbob", "netbanking", "card"] : ["card"];
-  const [method, setMethod] = useState<PaymentMethod>(methods[0]);
-  const [mbobNumber, setMbobNumber] = useState("");
-  const nu = currencies.find((c) => c.code === "BTN")!;
-  const inNu = (usd: number) =>
-    `${nu.symbol} ${Math.round(usd * nu.rateFromUsd).toLocaleString()}`;
-  const showNu = clientType === "tourist" && currency !== "BTN";
-  const [bank, setBank] = useState(banks[0]);
+  const stepHrefs = [
+    `${routes.bookingReview}?${bookingToParams(booking).toString()}`,
+    `${routes.reviewBooking}?${searchParams.toString()}`,
+  ];
+
+  const [method, setMethod] = useState<PaymentMethod>("card");
+  const [bank, setBank] = useState(banks[0].name);
   const [accountNumber, setAccountNumber] = useState("");
   const [cardName, setCardName] = useState("");
   const [cardNumber, setCardNumber] = useState("");
-  const [expiryMonth, setExpiryMonth] = useState("");
-  const [expiryYear, setExpiryYear] = useState("");
+  const [expiry, setExpiry] = useState("");
   const [cardCvv, setCardCvv] = useState("");
+  // Net banking: after Pay, the bank sends an OTP; it is entered here.
+  const [otpStage, setOtpStage] = useState(false);
+  const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const inputClasses =
-    "w-full rounded-lg border border-[color:var(--color-border)] px-3.5 py-2.5 t-body-sm text-[color:var(--color-ink)] placeholder:text-[color:var(--color-muted)] outline-none focus:border-[color:var(--color-ink)] focus:ring-2 focus:ring-[color:var(--color-ink)]/10";
-  const labelClasses =
-    "mb-1.5 block t-caption font-semibold text-[color:var(--color-ink-soft)]";
+  const inputClass =
+    "h-12 w-full rounded-xl border border-[color:var(--color-border)] px-3.5 t-body text-[color:var(--color-ink)] placeholder:text-[color:var(--color-muted)] outline-none focus:border-[color:var(--color-ink)]";
+  const labelClass =
+    "mb-1.5 block t-body-sm font-semibold text-[color:var(--color-ink)]";
 
-  function handlePay() {
+  function finish(methodLabel: string) {
     const params = new URLSearchParams(searchParams);
     params.set("vehicleId", vehicle.id);
-    params.set(
-      "method",
-      method === "card"
-        ? "Credit Card"
-        : method === "mbob"
-          ? "mBoB"
-          : `Net Banking (${bank})`,
-    );
-    navigate(`${routes.paymentVerify}?${params.toString()}`);
+    params.set("method", methodLabel);
+    navigate(`${routes.paymentSuccess}?${params.toString()}`);
   }
+
+  function handlePay() {
+    if (method === "card") finish("Credit Card");
+    else if (method === "netbanking") setOtpStage(true);
+  }
+
+  function setDigit(i: number, v: string) {
+    const d = v.replace(/\D/g, "").slice(-1);
+    setDigits((prev) => {
+      const next = [...prev];
+      next[i] = d;
+      return next;
+    });
+    if (d && i < OTP_LENGTH - 1) otpRefs.current[i + 1]?.focus();
+  }
+
+  const methods: {
+    value: PaymentMethod;
+    title: string;
+    hint: string;
+    icon: "credit-card" | "bank" | "wallet";
+  }[] = [
+    {
+      value: "card",
+      title: "Credit or debit card",
+      hint: "Visa, Mastercard, Amex",
+      icon: "credit-card",
+    },
+    {
+      value: "netbanking",
+      title: "Net banking",
+      hint: "All major Bhutanese banks via RMA — mBoB, mPay and more",
+      icon: "bank",
+    },
+    {
+      value: "paypal",
+      title: "PayPal",
+      hint: "Pay with your PayPal balance or a linked card",
+      icon: "wallet",
+    },
+  ];
+
+  const terms = (
+    <p className="mt-3 text-center t-caption text-[color:var(--color-muted)]">
+      By paying you accept DrukDrive&rsquo;s{" "}
+      <Link
+        to={routes.termsOfService}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-semibold text-[color:var(--color-link)] underline"
+      >
+        Terms of Service
+      </Link>{" "}
+      and{" "}
+      <Link
+        to={routes.refundPolicy}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-semibold text-[color:var(--color-link)] underline"
+      >
+        Refund Policy
+      </Link>
+      .
+    </p>
+  );
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-6 md:px-10 md:pt-10">
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="mb-4 inline-flex min-h-11 cursor-pointer items-center gap-2 t-body-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
-        >
-          <Icon name="arrow-left" size={18} />
-          Back
-        </button>
-
-        <div className="mb-6">
-          <BookingStepper current={3} />
+      <div className="mx-auto max-w-[1100px] px-4 py-6 md:px-10 md:py-10">
+        <div className="mb-5 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            aria-label="Back"
+            className="icon-btn -ml-2 size-10"
+          >
+            <Icon name="chevron-left" size={22} />
+          </button>
+          <h1 className="t-h2 text-[color:var(--color-ink)]">Payment</h1>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
-          {/* Left: payment methods */}
+        <div className="mb-8">
+          <BookingStepper current={3} hrefs={stepHrefs} />
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px] lg:gap-8">
+          {/* Main: who drives, then how to pay */}
           <div className="min-w-0">
             <h2 className="t-h3 text-[color:var(--color-ink)]">
-              Choose your payment method
+              {selfDrive ? "Collecting the car" : "Your driver"}
             </h2>
-
-            <div className="mt-4 flex flex-col gap-3">
-              {/* mBoB — residents only */}
-              {methods.includes("mbob") && (
-                <div
-                  className={`rounded-xl bg-[color:var(--color-surface-subtle)] p-4 transition-colors ${method === "mbob" ? "ring-2 ring-[color:var(--color-ink)]" : ""}`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setMethod("mbob")}
-                    className="flex min-h-11 w-full items-center justify-between gap-3"
-                  >
-                    <span className="flex items-center gap-3">
-                      <span
-                        className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${method === "mbob" ? "border-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"}`}
-                      >
-                        {method === "mbob" && (
-                          <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />
-                        )}
-                      </span>
-                      <span className="text-left">
-                        <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
-                          mBoB
-                        </span>
-                        <span className="block t-caption text-[color:var(--color-muted)]">
-                          Approve the payment in the Bank of Bhutan app
-                        </span>
-                      </span>
-                    </span>
-                    <Icon
-                      name="phone"
-                      size={22}
-                      className="shrink-0 text-[color:var(--color-ink)]"
-                    />
-                  </button>
-                  {method === "mbob" && (
-                    <div className="mt-4 flex flex-col gap-3 border-t border-[color:var(--color-border)] pt-4">
-                      <div>
-                        <label className={labelClasses}>
-                          Mobile number linked to mBoB
-                        </label>
-                        <input
-                          type="tel"
-                          inputMode="numeric"
-                          placeholder="+975 17 000 000"
-                          value={mbobNumber}
-                          onChange={(e) => setMbobNumber(e.target.value)}
-                          className={inputClasses}
+            <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+              {selfDrive ? (
+                <div className="flex flex-col gap-2 t-body text-[color:var(--color-ink-soft)]">
+                  <p>
+                    Collect{" "}
+                    <span className="font-semibold text-[color:var(--color-ink)]">
+                      {vehicle.name}
+                    </span>{" "}
+                    at{" "}
+                    <span className="font-semibold text-[color:var(--color-ink)]">
+                      {pickup}
+                    </span>{" "}
+                    on {date}.
+                  </p>
+                  <p>
+                    Bring your driving licence, your passport or CID, and a card
+                    for the refundable deposit.
+                  </p>
+                  <p>
+                    The car is handed over with a full tank; return it full.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-start gap-4">
+                  <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-ink)] t-h4 text-white">
+                    {assignedDriver.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="t-h4 text-[color:var(--color-ink)]">
+                      {assignedDriver.name}
+                    </p>
+                    <p className="mt-0.5 flex flex-wrap items-center gap-x-2 t-body-sm text-[color:var(--color-ink-soft)]">
+                      <span className="flex items-center gap-1">
+                        <Icon
+                          name="star"
+                          size={14}
+                          className="fill-current text-[color:var(--color-star)]"
                         />
+                        <span className="font-semibold text-[color:var(--color-ink)]">
+                          {assignedDriver.rating}
+                        </span>
+                      </span>
+                      <span className="text-[color:var(--color-muted)]">•</span>
+                      <span>{assignedDriver.trips} trips</span>
+                      <span className="text-[color:var(--color-muted)]">•</span>
+                      <span>Driving since {assignedDriver.since}</span>
+                    </p>
+                    <dl className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 t-body-sm sm:grid-cols-2">
+                      <div>
+                        <dt className="t-caption text-[color:var(--color-muted)]">
+                          Vehicle
+                        </dt>
+                        <dd className="font-semibold text-[color:var(--color-ink)]">
+                          {vehicle.name} · {assignedDriver.plate}
+                        </dd>
                       </div>
-                      <p className="t-caption text-[color:var(--color-muted)]">
-                        A payment request is sent to your phone; approve it in
-                        the app to confirm the booking.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={handlePay}
-                        className="mt-1 w-full rounded-xl bg-[color:var(--color-ink)] py-3 t-body-sm font-bold text-white transition-colors hover:bg-black"
-                      >
-                        Pay {format(amountDue)}
-                      </button>
-                    </div>
-                  )}
+                      <div>
+                        <dt className="t-caption text-[color:var(--color-muted)]">
+                          Speaks
+                        </dt>
+                        <dd className="font-semibold text-[color:var(--color-ink)]">
+                          {assignedDriver.languages}
+                        </dd>
+                      </div>
+                    </dl>
+                    <p className="mt-3 t-caption text-[color:var(--color-muted)]">
+                      The driver&rsquo;s phone number is shared 2 hours before
+                      pick-up. Our support line is open until then.
+                    </p>
+                  </div>
                 </div>
               )}
+            </div>
 
-              {/* Net Banking — residents only */}
-              {methods.includes("netbanking") && (
-                <div
-                  className={`rounded-xl bg-[color:var(--color-surface-subtle)] p-4 transition-colors ${method === "netbanking" ? "ring-2 ring-[color:var(--color-ink)]" : ""}`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setMethod("netbanking")}
-                    className="flex min-h-11 w-full items-center justify-between gap-3"
-                  >
-                    <span className="flex items-center gap-3">
-                      <span
-                        className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${method === "netbanking" ? "border-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"}`}
-                      >
-                        {method === "netbanking" && (
-                          <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />
-                        )}
-                      </span>
-                      <span className="text-left">
-                        <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
-                          Net Banking
-                        </span>
-                        <span className="block t-caption text-[color:var(--color-muted)]">
-                          All the major banks available
-                        </span>
-                      </span>
-                    </span>
-                    <Icon
-                      name="bank"
-                      size={22}
-                      className="shrink-0 text-[color:var(--color-ink)]"
-                    />
-                  </button>
-
-                  {method === "netbanking" && (
-                    <div className="mt-4 flex flex-col gap-3 border-t border-[color:var(--color-border)] pt-4">
-                      <div>
-                        <label className={labelClasses}>Select your bank</label>
-                        <select
-                          value={bank}
-                          onChange={(e) => setBank(e.target.value)}
-                          className={inputClasses}
-                        >
-                          {banks.map((b) => (
-                            <option key={b}>{b}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className={labelClasses}>
-                          Bank account number{" "}
-                          <span className="font-normal text-[color:var(--color-muted)]">
-                            (Savings/Current/Overdraft only)
-                          </span>
-                        </label>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          placeholder="Enter your bank account number"
-                          value={accountNumber}
-                          onChange={(e) => setAccountNumber(e.target.value)}
-                          className={inputClasses}
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={handlePay}
-                        className="mt-1 w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 t-body-sm font-bold text-white transition-colors hover:bg-black"
-                      >
-                        Pay {format(amountDue)}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Card */}
-              <div
-                className={`rounded-xl bg-[color:var(--color-surface-subtle)] p-4 transition-colors ${method === "card" ? "ring-2 ring-[color:var(--color-ink)]" : ""}`}
-              >
-                <button
-                  type="button"
-                  onClick={() => setMethod("card")}
-                  className="flex min-h-11 w-full items-center justify-between gap-3"
-                >
-                  <span className="flex items-center gap-3">
-                    <span
-                      className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${method === "card" ? "border-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"}`}
-                    >
-                      {method === "card" && (
-                        <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />
-                      )}
-                    </span>
-                    <span className="text-left">
-                      <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
-                        {clientType === "tourist"
-                          ? "Credit or debit card"
-                          : "Debit/Credit/ATM Card"}
-                      </span>
-                      <span className="block t-caption text-[color:var(--color-muted)]">
-                        Visa, Mastercard, Rupay and more
-                      </span>
-                    </span>
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="rounded bg-white px-1.5 py-1 t-label font-bold italic text-[color:var(--color-link)] shadow-sm">
-                      VISA
-                    </span>
-                    <span className="flex size-6 items-center justify-center rounded-full bg-gradient-to-r from-red-500 to-amber-400" />
-                  </span>
-                </button>
-
-                {method === "card" && (
-                  <div className="mt-4 flex flex-col gap-3 border-t border-[color:var(--color-border)] pt-4">
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className={labelClasses}>Cardholder Name</label>
-                        <input
-                          type="text"
-                          placeholder="Enter your name"
-                          value={cardName}
-                          onChange={(e) => setCardName(e.target.value)}
-                          className={inputClasses}
-                        />
-                      </div>
-                      <div>
-                        <label className={labelClasses}>Card Number</label>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          placeholder="0000 0000 0000 0000"
-                          maxLength={19}
-                          value={cardNumber}
-                          onChange={(e) => setCardNumber(e.target.value)}
-                          className={inputClasses}
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className={labelClasses}>
-                          Expiry Date (MM / YYYY)
-                        </label>
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            inputMode="numeric"
-                            placeholder="MM"
-                            maxLength={2}
-                            value={expiryMonth}
-                            onChange={(e) =>
-                              setExpiryMonth(e.target.value.replace(/\D/g, ""))
-                            }
-                            className={inputClasses}
-                          />
-                          <input
-                            type="text"
-                            inputMode="numeric"
-                            placeholder="YYYY"
-                            maxLength={4}
-                            value={expiryYear}
-                            onChange={(e) =>
-                              setExpiryYear(e.target.value.replace(/\D/g, ""))
-                            }
-                            className={inputClasses}
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label className={labelClasses}>CVC/CVV</label>
-                        <input
-                          type="password"
-                          inputMode="numeric"
-                          placeholder="0000"
-                          maxLength={4}
-                          value={cardCvv}
-                          onChange={(e) => setCardCvv(e.target.value)}
-                          className={inputClasses}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 t-caption text-[color:var(--color-muted)]">
-                      <Icon name="lock" size={14} />
-                      Your payment info is encrypted and secure.
-                    </div>
+            <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
+              Pay {format(amountDue)}
+            </h2>
+            <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-4 shadow-card sm:p-5">
+              {otpStage ? (
+                <div>
+                  <p className="t-body font-bold text-[color:var(--color-ink)]">
+                    Request sent to {bank}
+                  </p>
+                  <p className="mt-1 t-body-sm text-[color:var(--color-ink-soft)]">
+                    Approve the payment in your banking app, then enter the
+                    one-time code your bank sent you.
+                  </p>
+                  <div className="mt-5 flex justify-between gap-2 sm:justify-start">
+                    {digits.map((d, i) => (
+                      <input
+                        key={i}
+                        ref={(el) => {
+                          otpRefs.current[i] = el;
+                        }}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={d}
+                        onChange={(e) => setDigit(i, e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Backspace" && !digits[i] && i > 0)
+                            otpRefs.current[i - 1]?.focus();
+                        }}
+                        aria-label={`Digit ${i + 1}`}
+                        className="h-12 w-11 rounded-xl border border-[color:var(--color-border)] text-center t-h4 text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)] sm:w-12"
+                      />
+                    ))}
+                  </div>
+                  <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <button
                       type="button"
-                      onClick={handlePay}
-                      className="mt-1 w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 t-body-sm font-bold text-white transition-colors hover:bg-black"
+                      onClick={() => {
+                        setOtpStage(false);
+                        setDigits(Array(OTP_LENGTH).fill(""));
+                      }}
+                      className="inline-flex min-h-11 items-center t-body-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
                     >
-                      Pay {format(amountDue)}
+                      Use a different method
                     </button>
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      disabled={digits.some((d) => !d)}
+                      onClick={() => finish(`Net Banking (${bank})`)}
+                    >
+                      Confirm payment
+                    </Button>
                   </div>
-                )}
-              </div>
+                  {terms}
+                </div>
+              ) : (
+                <>
+                  <div
+                    className="flex flex-col gap-2"
+                    role="radiogroup"
+                    aria-label="Payment method"
+                  >
+                    {methods.map((m) => {
+                      const active = method === m.value;
+                      return (
+                        <div
+                          key={m.value}
+                          className={`rounded-xl border transition-colors ${
+                            active
+                              ? "border-[color:var(--color-ink)]"
+                              : "border-[color:var(--color-border)]"
+                          }`}
+                        >
+                          <button
+                            type="button"
+                            role="radio"
+                            aria-checked={active}
+                            onClick={() => setMethod(m.value)}
+                            className="flex min-h-14 w-full items-center gap-3 px-4 text-left"
+                          >
+                            <span
+                              className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                                active
+                                  ? "border-[color:var(--color-ink)]"
+                                  : "border-[color:var(--color-border)]"
+                              }`}
+                            >
+                              {active && (
+                                <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />
+                              )}
+                            </span>
+                            <span className="min-w-0 flex-1">
+                              <span className="block t-body font-bold text-[color:var(--color-ink)]">
+                                {m.title}
+                              </span>
+                              <span className="block t-caption text-[color:var(--color-muted)]">
+                                {m.hint}
+                              </span>
+                            </span>
+                            <Icon
+                              name={m.icon}
+                              size={22}
+                              className="shrink-0 text-[color:var(--color-ink)]"
+                            />
+                          </button>
+
+                          {active && m.value === "card" && (
+                            <div className="grid grid-cols-1 gap-4 border-t border-[color:var(--color-border)] p-4 sm:grid-cols-2">
+                              <label className="sm:col-span-2">
+                                <span className={labelClass}>Name on card</span>
+                                <input
+                                  type="text"
+                                  value={cardName}
+                                  onChange={(e) => setCardName(e.target.value)}
+                                  placeholder="As printed on the card"
+                                  className={inputClass}
+                                />
+                              </label>
+                              <label className="sm:col-span-2">
+                                <span className={labelClass}>Card number</span>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  value={cardNumber}
+                                  onChange={(e) =>
+                                    setCardNumber(e.target.value)
+                                  }
+                                  placeholder="1234 5678 9012 3456"
+                                  className={inputClass}
+                                />
+                              </label>
+                              <label>
+                                <span className={labelClass}>Expiry</span>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  value={expiry}
+                                  onChange={(e) => setExpiry(e.target.value)}
+                                  placeholder="MM / YY"
+                                  className={inputClass}
+                                />
+                              </label>
+                              <label>
+                                <span className={labelClass}>CVV</span>
+                                <input
+                                  type="password"
+                                  inputMode="numeric"
+                                  maxLength={4}
+                                  value={cardCvv}
+                                  onChange={(e) => setCardCvv(e.target.value)}
+                                  placeholder="•••"
+                                  className={inputClass}
+                                />
+                              </label>
+                            </div>
+                          )}
+
+                          {active && m.value === "netbanking" && (
+                            <div className="flex flex-col gap-4 border-t border-[color:var(--color-border)] p-4">
+                              <div className="flex flex-wrap gap-2">
+                                {banks.map((b) => (
+                                  <button
+                                    key={b.name}
+                                    type="button"
+                                    onClick={() => setBank(b.name)}
+                                    aria-pressed={bank === b.name}
+                                    className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-3.5 t-body-sm font-semibold transition-colors ${
+                                      bank === b.name
+                                        ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
+                                        : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
+                                    }`}
+                                  >
+                                    <span
+                                      className={`rounded-md px-1.5 py-0.5 t-label ${bank === b.name ? "bg-white/20" : "bg-[color:var(--color-surface-soft)]"}`}
+                                    >
+                                      {b.short}
+                                    </span>
+                                    {b.name}
+                                  </button>
+                                ))}
+                              </div>
+                              <label>
+                                <span className={labelClass}>
+                                  Bank account number{" "}
+                                  <span className="font-normal text-[color:var(--color-muted)]">
+                                    (savings, current or overdraft)
+                                  </span>
+                                </span>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  placeholder="Enter your account number"
+                                  value={accountNumber}
+                                  onChange={(e) =>
+                                    setAccountNumber(e.target.value)
+                                  }
+                                  className={inputClass}
+                                />
+                              </label>
+                              <p className="t-caption text-[color:var(--color-muted)]">
+                                A payment request is sent to your bank. Approve
+                                it in mBoB, mPay or your bank&rsquo;s app and
+                                enter the one-time code it sends you.
+                              </p>
+                            </div>
+                          )}
+
+                          {active && m.value === "paypal" && (
+                            <div className="border-t border-[color:var(--color-border)] p-4">
+                              <p className="t-body-sm text-[color:var(--color-ink-soft)]">
+                                You&rsquo;ll be taken to PayPal to approve{" "}
+                                {format(amountDue)}, then brought back here.
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* The action sits in the same place whichever method is chosen. */}
+                  <div className="mt-5">
+                    {method === "paypal" ? (
+                      <a
+                        href="https://www.paypal.com/checkoutnow"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => finish("PayPal")}
+                        className="flex h-12 w-full items-center justify-center gap-1.5 rounded-xl bg-[#ffc439] t-body font-bold text-[#003087] transition-colors hover:bg-[#f2b92c]"
+                      >
+                        <span className="italic tracking-tight">Pay</span>
+                        <span className="italic tracking-tight text-[#0070ba]">
+                          Pal
+                        </span>
+                        <span className="ml-1 font-semibold text-[#003087]">
+                          Checkout
+                        </span>
+                      </a>
+                    ) : (
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        fullWidth
+                        onClick={handlePay}
+                      >
+                        {method === "card"
+                          ? `Pay ${format(amountDue)}`
+                          : `Send request for ${format(amountDue)}`}
+                      </Button>
+                    )}
+                    {terms}
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
-          {/* Right: booking summary sidebar */}
+          {/* Right: trip, price, travellers — as on the details step */}
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <div className="flex flex-col gap-4">
-              <h2 className="t-h3 text-[color:var(--color-ink)]">
-                Your Booking
-              </h2>
-              <BookingRouteCard
-                vehicle={vehicle}
-                pickup={pickup}
-                dropoff={dropoff}
-                date={date}
-                dropoffWhen={formatDropoff(booking)}
-              />
+            <BookingRouteCard
+              vehicle={vehicle}
+              pickup={pickup}
+              dropoff={dropoff}
+              date={date}
+              dropoffWhen={formatDropoff(booking)}
+            />
 
-              {travelerName && (
-                <div className="rounded-xl border border-[color:var(--color-border)] bg-white p-4">
-                  <p className="flex items-center gap-1.5 t-body-sm font-bold text-[color:var(--color-ink)]">
-                    <Icon name="user" size={15} />
-                    Travelers
-                  </p>
-                  <p className="mt-2 t-body-sm font-semibold uppercase text-[color:var(--color-ink)]">
+            <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">
+              Price summary
+            </h2>
+            <div className="mt-4">
+              <PriceSummaryCard
+                fare={fare}
+                netPayable={netPayable}
+                payNow={amountDue}
+                payLater={balance}
+                discount={discount}
+                promoCode={promoCode}
+              />
+            </div>
+
+            {travelerName && (
+              <>
+                <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">
+                  Traveller
+                </h2>
+                <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+                  <p className="t-body font-semibold text-[color:var(--color-ink)]">
                     {travelerName}
                   </p>
-                  <p className="t-caption text-[color:var(--color-muted)]">
+                  <p className="t-body-sm text-[color:var(--color-muted)]">
                     {travelerEmail}
-                    {travelerPhone && ` | ${travelerPhone}`}
+                    {travelerPhone && ` · ${travelerPhone}`}
                   </p>
                 </div>
-              )}
-
-              {/* What is paid now, what is paid later, and any deposit. */}
-              <dl className="flex flex-col gap-2 rounded-xl border border-[color:var(--color-border)] bg-white p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <dt>
-                    <span className="block t-body font-bold text-[color:var(--color-ink)]">
-                      Paying now
-                    </span>
-                    <span className="block t-caption text-[color:var(--color-muted)]">
-                      {balance > 0 ? "Half the fare" : "The full fare"}
-                      {showNu && ` · ≈ ${inNu(amountDue)}`}
-                    </span>
-                  </dt>
-                  <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-success)]">
-                    {format(amountDue)}
-                  </dd>
-                </div>
-                {balance > 0 && (
-                  <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2">
-                    <dt>
-                      <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
-                        Balance at pick-up
-                      </span>
-                      <span className="block t-caption text-[color:var(--color-muted)]">
-                        {clientType === "tourist"
-                          ? "To the driver, cash (Nu) or card"
-                          : "To the driver, mBoB, card or cash"}
-                        {showNu && ` · ≈ ${inNu(balance)}`}
-                      </span>
-                    </dt>
-                    <dd className="shrink-0 t-body-sm font-bold tabular text-[color:var(--color-ink)]">
-                      {format(balance)}
-                    </dd>
-                  </div>
-                )}
-                {fare.deposit > 0 && (
-                  <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2">
-                    <dt>
-                      <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
-                        Deposit at collection
-                      </span>
-                      <span className="block t-caption text-[color:var(--color-muted)]">
-                        Refundable within 3 days of return
-                      </span>
-                    </dt>
-                    <dd className="shrink-0 t-body-sm font-bold tabular text-[color:var(--color-ink)]">
-                      {format(fare.deposit)}
-                    </dd>
-                  </div>
-                )}
-                <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2 t-caption text-[color:var(--color-muted)]">
-                  <dt>Trip total, taxes and fees included</dt>
-                  <dd className="tabular font-semibold">
-                    {format(grandTotal)}
-                  </dd>
-                </div>
-              </dl>
-            </div>
+              </>
+            )}
           </div>
         </div>
       </div>

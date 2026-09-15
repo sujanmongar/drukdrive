@@ -15,7 +15,6 @@ const SearchResults = lazy(() => import("./pages/customer/SearchResults"));
 const BookingReview = lazy(() => import("./pages/customer/BookingReview"));
 const ReviewBooking = lazy(() => import("./pages/customer/ReviewBooking"));
 const Payment = lazy(() => import("./pages/customer/Payment"));
-const PaymentVerify = lazy(() => import("./pages/customer/PaymentVerify"));
 const PaymentSuccess = lazy(() => import("./pages/customer/PaymentSuccess"));
 const Confirmation = lazy(() => import("./pages/customer/Confirmation"));
 const Invoice = lazy(() => import("./pages/customer/Invoice"));
@@ -74,7 +73,6 @@ export default function App() {
         <Route path={routes.bookingReview} element={<BookingReview />} />
         <Route path={routes.reviewBooking} element={<ReviewBooking />} />
         <Route path={routes.payment} element={<Payment />} />
-        <Route path={routes.paymentVerify} element={<PaymentVerify />} />
         <Route path={routes.paymentSuccess} element={<PaymentSuccess />} />
         <Route path={routes.confirmation()} element={<Confirmation />} />
         <Route path={routes.invoice()} element={<Invoice />} />

@@ -10,12 +10,17 @@ import {
   StopsCard,
   VehicleSummaryCard,
 } from "../../components/BookingRouteCard";
+import PriceSummaryCard from "../../components/PriceSummaryCard";
+import ContactCard from "../../components/ContactCard";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
-import { addOnsFor, computeFare, isAddOnId } from "../../lib/pricing";
-import { exclusionsFor, inclusionsFor } from "../../lib/bookingContent";
-import { useClientType } from "../../lib/clientType";
-import ClientTypeSwitch from "../../components/ClientTypeSwitch";
+import {
+  addOnsFor,
+  computeFare,
+  isAddOnId,
+  paymentSplit,
+} from "../../lib/pricing";
+import { inclusionsFor, notesFor } from "../../lib/bookingContent";
 import {
   bookingToParams,
   formatDropoff,
@@ -34,32 +39,27 @@ export default function BookingReview() {
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
 
-  const { clientType } = useClientType();
   const booking = parseBooking(searchParams, isAddOnId);
   const vehicle =
     vehicles.find((v) => v.id === booking.vehicleId) ?? vehicles[0];
   const { pickup, dropoff } = booking;
   const date = formatPickup(booking);
 
-  const addOns = addOnsFor(booking.type, clientType);
-  const inclusions = inclusionsFor(booking.type, clientType);
-  const exclusions = exclusionsFor(booking.type, clientType);
+  const addOns = addOnsFor(booking.type);
+  const inclusions = inclusionsFor(booking.type);
+  const notes = notesFor(booking.type);
   const selfDrive = booking.type === "self-drive";
-  // Visitors may only self-drive on an Indian licence; they confirm it here.
+  // Self drive needs a licence Bhutan accepts; the driver confirms it here.
   const [licenceConfirmed, setLicenceConfirmed] = useState(false);
-  const licenceGate =
-    selfDrive && clientType === "tourist" && !licenceConfirmed;
-  const [selected, setSelectedRaw] = useState<string[]>(booking.addOnIds);
-  const setSelected = (fn: (s: string[]) => string[]) =>
-    setSelectedRaw((s) =>
-      fn(s).filter((id) => addOns.some((a) => a.id === id)),
-    );
+  const licenceGate = selfDrive && !licenceConfirmed;
+  const [selected, setSelected] = useState<string[]>(booking.addOnIds);
   const fare = computeFare(
     { ...booking, addOnIds: selected },
     vehicle.pricePerDay,
     format,
   );
   const { total } = fare;
+  const split = paymentSplit(booking, total);
 
   function toggle(id: string) {
     setSelected((s) =>
@@ -91,7 +91,6 @@ export default function BookingReview() {
           <h1 className="t-h2 text-[color:var(--color-ink)]">
             Review your booking
           </h1>
-          <ClientTypeSwitch className="ml-auto" />
         </div>
 
         <div className="mb-8">
@@ -102,21 +101,21 @@ export default function BookingReview() {
           <div className="min-w-0">
             <VehicleSummaryCard vehicle={vehicle} />
 
-            {selfDrive && clientType === "tourist" && (
+            {selfDrive && (
               <div className="mt-6 rounded-2xl border border-[color:var(--color-warning)]/40 bg-[color:var(--color-warning-bg)] p-5">
                 <p className="t-body font-bold text-[color:var(--color-warning)]">
-                  Self drive is for Indian licence holders only
+                  Licence check
                 </p>
                 <p className="mt-1 t-body-sm text-[color:var(--color-ink-soft)]">
-                  Bhutan does not accept international driving permits. Visitors
-                  from other countries can book a rental with a driver instead.
+                  Bhutan accepts Bhutanese and Indian driving licences only, not
+                  international driving permits.
                 </p>
                 <div className="mt-2">
                   <Checkbox
                     align="start"
                     checked={licenceConfirmed}
                     onChange={setLicenceConfirmed}
-                    label="I hold a valid Indian driving licence and am 21 or over."
+                    label="I hold a valid Bhutanese or Indian driving licence and am 21 or over."
                   />
                 </div>
               </div>
@@ -125,49 +124,23 @@ export default function BookingReview() {
             <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
               What&rsquo;s included
             </h2>
-            <div className="mt-4 grid grid-cols-1 gap-6 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card sm:grid-cols-2">
-              <div>
-                <h3 className="t-body font-bold text-[color:var(--color-ink)]">
-                  Inclusions
-                </h3>
-                <ul className="mt-3 flex flex-col gap-2.5">
-                  {inclusions.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-start gap-2 t-body text-[color:var(--color-ink-soft)]"
-                    >
-                      <Icon
-                        name="check"
-                        size={18}
-                        strokeWidth={2.5}
-                        className="mt-0.5 shrink-0 text-[color:var(--color-success)]"
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="t-body font-bold text-[color:var(--color-ink)]">
-                  Exclusions
-                </h3>
-                <ul className="mt-3 flex flex-col gap-2.5">
-                  {exclusions.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-start gap-2 t-body text-[color:var(--color-ink-soft)]"
-                    >
-                      <Icon
-                        name="close"
-                        size={18}
-                        strokeWidth={2.5}
-                        className="mt-0.5 shrink-0 text-[color:var(--color-muted)]"
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+              <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                {inclusions.map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-start gap-2 t-body text-[color:var(--color-ink-soft)]"
+                  >
+                    <Icon
+                      name="check"
+                      size={18}
+                      strokeWidth={2.5}
+                      className="mt-0.5 shrink-0 text-[color:var(--color-success)]"
+                    />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
@@ -185,6 +158,24 @@ export default function BookingReview() {
               ))}
             </div>
 
+            <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
+              Read before you book
+            </h2>
+            <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+              {notes.map((note, i) => (
+                <div key={note.title} className={i > 0 ? "mt-4" : ""}>
+                  <h4 className="t-body font-bold text-[color:var(--color-ink)]">
+                    {note.title}
+                  </h4>
+                  <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body text-[color:var(--color-ink-soft)]">
+                    {note.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
             <div className="mt-8 hidden justify-end lg:flex">
               <Button
                 variant="primary"
@@ -197,7 +188,7 @@ export default function BookingReview() {
             </div>
           </div>
 
-          {/* Right: the stops and the running total, sticky like the price summary on the next step. */}
+          {/* Right: stops, price and a way to reach us. */}
           <div className="lg:sticky lg:top-24 lg:self-start">
             <StopsCard
               pickup={pickup}
@@ -205,33 +196,30 @@ export default function BookingReview() {
               date={date}
               dropoffWhen={formatDropoff(booking)}
             />
-            <div className="mt-6 hidden lg:block">
-              <div className="flex items-end justify-between gap-3 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
-                <p className="t-body-sm text-[color:var(--color-muted)]">
-                  Total for {fare.unit}
-                  <span className="block t-caption">
-                    taxes and fees included
-                  </span>
-                </p>
-                <p className="t-h3 tabular text-[color:var(--color-ink)]">
-                  {format(total)}
-                </p>
-              </div>
-              {fare.deposit > 0 && (
-                <p className="mt-2 px-1 t-caption text-[color:var(--color-muted)]">
-                  Plus a refundable deposit of{" "}
-                  <span className="tabular font-semibold text-[color:var(--color-ink)]">
-                    {format(fare.deposit)}
-                  </span>
-                  , held at collection.
-                </p>
-              )}
-              {clientType === "tourist" && booking.type !== "self-drive" && (
-                <p className="mt-2 px-1 t-caption text-[color:var(--color-muted)]">
-                  Bhutan&rsquo;s Sustainable Development Fee is not included; it
-                  is paid with your visa.
-                </p>
-              )}
+
+            <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">
+              Price summary
+            </h2>
+            <div className="mt-4">
+              <PriceSummaryCard
+                fare={fare}
+                netPayable={total}
+                payNow={split.now}
+                payLater={split.later}
+              />
+            </div>
+            {booking.type === "rental" && (
+              <p className="mt-2 px-1 t-caption text-[color:var(--color-muted)]">
+                Bhutan&rsquo;s Sustainable Development Fee is not included;
+                visitors pay it with their visa.
+              </p>
+            )}
+
+            <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">
+              Need a hand?
+            </h2>
+            <div className="mt-4">
+              <ContactCard />
             </div>
           </div>
         </div>
