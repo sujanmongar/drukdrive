@@ -82,7 +82,7 @@ export function VehicleSummaryCard({
                 Total for {days} days
               </p>
               <div className="lg:text-right">
-                <span className="block text-xl font-bold tabular text-[color:var(--color-ink)] lg:text-2xl">
+                <span className="block t-h3 font-bold tabular text-[color:var(--color-ink)] ">
                   {total}
                 </span>
                 <p className="t-label mt-0.5 whitespace-nowrap text-[color:var(--color-muted)]">

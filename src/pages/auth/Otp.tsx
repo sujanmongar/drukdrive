@@ -88,7 +88,7 @@ export default function Otp() {
           onKeyDown={(e) => handleKeyDown(i, e)}
           inputMode="numeric"
           maxLength={1}
-          className={`size-[48px] rounded-xl border text-center text-xl font-bold text-[color:var(--color-ink-87)] outline-none transition-colors sm:size-[56px] ${
+          className={`size-[48px] rounded-xl border text-center t-h3 font-bold text-[color:var(--color-ink-87)] outline-none transition-colors sm:size-[56px] ${
             digit
               ? "border-[color:var(--color-ink-87)]"
               : "border-[color:var(--color-border)]"
@@ -99,7 +99,7 @@ export default function Otp() {
   );
 
   const resendRow = (
-    <div className="mt-6 flex items-center justify-between text-sm text-[color:var(--color-ink-87)]">
+    <div className="mt-6 flex items-center justify-between t-body-sm text-[color:var(--color-ink-87)]">
       <span>
         {secondsLeft > 0
           ? `Time remaining ${secondsLeft}s`
@@ -140,9 +140,9 @@ export default function Otp() {
           <h1 className="t-h2 mb-1 mt-8 text-[color:var(--color-ink)]">
             Verify your mobile number
           </h1>
-          <p className="mb-6 text-sm text-[color:var(--color-ink-87)]">
+          <p className="mb-6 t-body-sm text-[color:var(--color-ink-87)]">
             OTP has been sent to{" "}
-            <span className="text-lg font-bold">{currentUser.phone}</span>
+            <span className="t-h4 font-bold">{currentUser.phone}</span>
           </p>
           <form onSubmit={handleSubmit} className="flex flex-col">
             {boxes}

@@ -26,7 +26,7 @@ export default function ProviderPreferences() {
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <div className="flex items-center gap-1.5 text-sm text-[color:var(--color-muted)]">
+            <div className="flex items-center gap-1.5 t-body-sm text-[color:var(--color-muted)]">
               <Link
                 to={routes.providerAccount}
                 className="inline-flex min-h-11 items-center hover:text-[color:var(--color-ink)]"

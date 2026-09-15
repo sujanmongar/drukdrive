@@ -1,5 +1,15 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { driverVehicles as defaultVehicles, type DriverVehicle } from "../data/mockData";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import {
+  driverVehicles as defaultVehicles,
+  type DriverVehicle,
+} from "../data/mockData";
 
 // The signed-in driver's vehicle fleet — persisted to localStorage so
 // add/edit/remove from "My Vehicle" is real and survives a refresh.
@@ -12,7 +22,9 @@ type DriverVehiclesContextValue = {
   removeVehicle: (id: string) => void;
 };
 
-const DriverVehiclesContext = createContext<DriverVehiclesContextValue | null>(null);
+const DriverVehiclesContext = createContext<DriverVehiclesContextValue | null>(
+  null,
+);
 
 function slugify(name: string) {
   return (
@@ -59,17 +71,27 @@ export function DriverVehiclesProvider({ children }: { children: ReactNode }) {
         return newVehicle;
       },
       updateVehicle: (id: string, patch: Partial<DriverVehicle>) =>
-        setVehicles((prev) => prev.map((v) => (v.id === id ? { ...v, ...patch } : v))),
-      removeVehicle: (id: string) => setVehicles((prev) => prev.filter((v) => v.id !== id)),
+        setVehicles((prev) =>
+          prev.map((v) => (v.id === id ? { ...v, ...patch } : v)),
+        ),
+      removeVehicle: (id: string) =>
+        setVehicles((prev) => prev.filter((v) => v.id !== id)),
     }),
     [vehicles],
   );
 
-  return <DriverVehiclesContext.Provider value={value}>{children}</DriverVehiclesContext.Provider>;
+  return (
+    <DriverVehiclesContext.Provider value={value}>
+      {children}
+    </DriverVehiclesContext.Provider>
+  );
 }
 
 export function useDriverVehicles() {
   const ctx = useContext(DriverVehiclesContext);
-  if (!ctx) throw new Error("useDriverVehicles must be used within DriverVehiclesProvider");
+  if (!ctx)
+    throw new Error(
+      "useDriverVehicles must be used within DriverVehiclesProvider",
+    );
   return ctx;
 }

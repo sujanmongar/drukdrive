@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { reviews as defaultReviews, type Review } from "../data/mockData";
 
 // Reviews written from within the app — persisted to localStorage so
@@ -8,7 +15,12 @@ const STORAGE_KEY = "drukdrive:reviews";
 
 type ReviewsContextValue = {
   reviews: Review[];
-  addReview: (review: { author: string; avatar: string; rating: number; comment: string }) => void;
+  addReview: (review: {
+    author: string;
+    avatar: string;
+    rating: number;
+    comment: string;
+  }) => void;
 };
 
 const ReviewsContext = createContext<ReviewsContextValue | null>(null);
@@ -34,10 +46,19 @@ export function ReviewsProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       reviews,
-      addReview: (review: { author: string; avatar: string; rating: number; comment: string }) => {
+      addReview: (review: {
+        author: string;
+        avatar: string;
+        rating: number;
+        comment: string;
+      }) => {
         const newReview: Review = {
           id: `r${Date.now()}`,
-          date: new Date().toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }),
+          date: new Date().toLocaleDateString(undefined, {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }),
           ...review,
         };
         setReviews((prev) => [newReview, ...prev]);
@@ -46,7 +67,9 @@ export function ReviewsProvider({ children }: { children: ReactNode }) {
     [reviews],
   );
 
-  return <ReviewsContext.Provider value={value}>{children}</ReviewsContext.Provider>;
+  return (
+    <ReviewsContext.Provider value={value}>{children}</ReviewsContext.Provider>
+  );
 }
 
 export function useReviews() {

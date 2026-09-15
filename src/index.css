@@ -87,7 +87,10 @@ h3 {
        smaller size loses presence otherwise.
 =========================================================================== */
 
-/* --- Semantic roles. Mobile first; the desktop block follows. ------------ */
+/* --- Semantic roles. Mobile first; the desktop block follows. ------------
+   Emitted in the components layer so a utility (text-white, text-xl) can
+   still override a role's colour or size where a page needs to. */
+@layer components {
 .t-h1 {
   font-family: var(--font-display);
   color: var(--color-ink);
@@ -194,6 +197,7 @@ h3 {
     font-size: 0.75rem; /* 12px */
     line-height: 1.35;
   }
+}
 }
 
 /* --- Raw Tailwind sizes, re-pointed at the same system. -----------------

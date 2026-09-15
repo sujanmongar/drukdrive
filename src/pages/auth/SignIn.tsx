@@ -12,7 +12,7 @@ import { usePageTitle } from "../../hooks/usePageTitle";
 type Method = "email" | "phone";
 
 const inputClass =
-  "w-full rounded-xl border border-[color:var(--color-border)] px-5 py-4 text-sm text-[color:var(--color-ink)] placeholder:text-[color:var(--color-placeholder)] outline-none transition-colors focus:border-[color:var(--color-ink)]";
+  "w-full rounded-xl border border-[color:var(--color-border)] px-5 py-4 t-body-sm text-[color:var(--color-ink)] placeholder:text-[color:var(--color-placeholder)] outline-none transition-colors focus:border-[color:var(--color-ink)]";
 
 export default function SignIn() {
   usePageTitle("Sign in");
@@ -40,7 +40,7 @@ export default function SignIn() {
       <button
         type="button"
         onClick={() => setMethod("email")}
-        className={`min-h-11 flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+        className={`min-h-11 flex-1 rounded-lg px-4 py-2 t-body-sm font-semibold transition-colors ${
           method === "email"
             ? "bg-[color:var(--color-ink)] text-white"
             : "text-[color:var(--color-muted)]"
@@ -51,7 +51,7 @@ export default function SignIn() {
       <button
         type="button"
         onClick={() => setMethod("phone")}
-        className={`min-h-11 flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+        className={`min-h-11 flex-1 rounded-lg px-4 py-2 t-body-sm font-semibold transition-colors ${
           method === "phone"
             ? "bg-[color:var(--color-ink)] text-white"
             : "text-[color:var(--color-muted)]"
@@ -129,7 +129,7 @@ export default function SignIn() {
         setEmail(DEMO_EMAIL);
         setPassword(DEMO_PASSWORD);
       }}
-      className="mt-3 flex w-full items-start gap-2 rounded-xl bg-[color:var(--color-info-bg)] px-3.5 py-3 text-left text-xs text-[color:var(--color-info-text)]"
+      className="mt-3 flex w-full items-start gap-2 rounded-xl bg-[color:var(--color-info-bg)] px-3.5 py-3 text-left t-caption text-[color:var(--color-info-text)]"
     >
       <Icon name="info" size={16} className="mt-0.5 shrink-0" />
       <span>
@@ -149,7 +149,7 @@ export default function SignIn() {
       />
       <Link
         to={routes.forgotPassword}
-        className="min-h-11 inline-flex items-center flex items-center gap-1.5 text-sm font-semibold text-[color:var(--color-ink)]"
+        className="min-h-11 inline-flex items-center flex items-center gap-1.5 t-body-sm font-semibold text-[color:var(--color-ink)]"
       >
         <Icon name="lock" size={16} />
         Forgot password?
@@ -159,7 +159,7 @@ export default function SignIn() {
 
   const footerLinks = (
     <>
-      <p className="mt-6 text-center text-sm text-[color:var(--color-ink)]">
+      <p className="mt-6 text-center t-body-sm text-[color:var(--color-ink)]">
         Don&rsquo;t have an account?{" "}
         <Link
           to={routes.signUp}
@@ -168,7 +168,7 @@ export default function SignIn() {
           Sign up
         </Link>
       </p>
-      <p className="mt-6 text-center text-xs leading-relaxed text-[color:var(--color-ink-87)]">
+      <p className="mt-6 text-center t-caption leading-relaxed text-[color:var(--color-ink-87)]">
         By continuing, you agree our{" "}
         <Link
           to={routes.termsOfService}

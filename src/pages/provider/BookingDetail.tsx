@@ -39,10 +39,10 @@ export default function ProviderBookingDetail() {
                 className="size-16 rounded-lg"
               />
               <div>
-                <p className="text-base font-bold text-[color:var(--color-ink)]">
+                <p className="t-body font-bold text-[color:var(--color-ink)]">
                   {vehicle.name}
                 </p>
-                <p className="text-xs text-[color:var(--color-muted)]">
+                <p className="t-caption text-[color:var(--color-muted)]">
                   {vehicle.plate}
                 </p>
               </div>
@@ -63,10 +63,10 @@ export default function ProviderBookingDetail() {
               className="text-[color:var(--color-ink-soft)]"
             />
             <div>
-              <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+              <p className="t-caption font-semibold text-[color:var(--color-muted)]">
                 Rider
               </p>
-              <p className="text-sm text-[color:var(--color-ink)]">
+              <p className="t-body-sm text-[color:var(--color-ink)]">
                 {booking.riderName}
               </p>
             </div>
@@ -80,10 +80,10 @@ export default function ProviderBookingDetail() {
                 className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]"
               />
               <div>
-                <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+                <p className="t-caption font-semibold text-[color:var(--color-muted)]">
                   Pickup
                 </p>
-                <p className="text-sm text-[color:var(--color-ink)]">
+                <p className="t-body-sm text-[color:var(--color-ink)]">
                   {booking.pickup}
                 </p>
               </div>
@@ -95,10 +95,10 @@ export default function ProviderBookingDetail() {
                 className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]"
               />
               <div>
-                <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+                <p className="t-caption font-semibold text-[color:var(--color-muted)]">
                   Drop-off
                 </p>
-                <p className="text-sm text-[color:var(--color-ink)]">
+                <p className="t-body-sm text-[color:var(--color-ink)]">
                   {booking.dropoff}
                 </p>
               </div>
@@ -110,10 +110,10 @@ export default function ProviderBookingDetail() {
                 className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]"
               />
               <div>
-                <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+                <p className="t-caption font-semibold text-[color:var(--color-muted)]">
                   Date &amp; time
                 </p>
-                <p className="text-sm text-[color:var(--color-ink)]">
+                <p className="t-body-sm text-[color:var(--color-ink)]">
                   {booking.date}
                 </p>
               </div>
@@ -123,10 +123,10 @@ export default function ProviderBookingDetail() {
           <div className="my-5 h-px bg-[color:var(--color-border)]" />
 
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+            <p className="t-caption font-semibold text-[color:var(--color-muted)]">
               Booking reference
             </p>
-            <p className="font-mono text-sm font-bold tracking-wide text-[color:var(--color-ink)]">
+            <p className="font-mono t-body-sm font-bold tracking-wide text-[color:var(--color-ink)]">
               {booking.id}
             </p>
           </div>

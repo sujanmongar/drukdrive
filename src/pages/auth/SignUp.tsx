@@ -9,7 +9,7 @@ import { usePageTitle } from "../../hooks/usePageTitle";
 type Method = "email" | "phone";
 
 const inputClass =
-  "w-full rounded-xl border border-[color:var(--color-border)] px-5 py-4 text-sm text-[color:var(--color-ink)] placeholder:text-[color:var(--color-placeholder)] outline-none transition-colors focus:border-[color:var(--color-ink)]";
+  "w-full rounded-xl border border-[color:var(--color-border)] px-5 py-4 t-body-sm text-[color:var(--color-ink)] placeholder:text-[color:var(--color-placeholder)] outline-none transition-colors focus:border-[color:var(--color-ink)]";
 
 export default function SignUp() {
   usePageTitle("Sign up");
@@ -31,7 +31,7 @@ export default function SignUp() {
       <button
         type="button"
         onClick={() => setMethod("email")}
-        className={`min-h-11 flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+        className={`min-h-11 flex-1 rounded-lg px-4 py-2 t-body-sm font-semibold transition-colors ${
           method === "email"
             ? "bg-[color:var(--color-ink)] text-white"
             : "text-[color:var(--color-muted)]"
@@ -42,7 +42,7 @@ export default function SignUp() {
       <button
         type="button"
         onClick={() => setMethod("phone")}
-        className={`min-h-11 flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+        className={`min-h-11 flex-1 rounded-lg px-4 py-2 t-body-sm font-semibold transition-colors ${
           method === "phone"
             ? "bg-[color:var(--color-ink)] text-white"
             : "text-[color:var(--color-muted)]"
@@ -131,7 +131,7 @@ export default function SignUp() {
 
   const footerLinks = (
     <>
-      <p className="mt-6 text-center text-sm text-[color:var(--color-ink)]">
+      <p className="mt-6 text-center t-body-sm text-[color:var(--color-ink)]">
         Already have an account?{" "}
         <Link
           to={routes.signIn}
@@ -140,7 +140,7 @@ export default function SignUp() {
           Sign in
         </Link>
       </p>
-      <p className="mt-6 text-center text-xs leading-relaxed text-[color:var(--color-ink-87)]">
+      <p className="mt-6 text-center t-caption leading-relaxed text-[color:var(--color-ink-87)]">
         By continuing, you agree our{" "}
         <Link
           to={routes.termsOfService}

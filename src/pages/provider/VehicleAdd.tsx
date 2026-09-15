@@ -14,10 +14,10 @@ import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 const selectClass =
-  "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)]";
+  "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 t-body-sm text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)]";
 const inputClass = selectClass;
 const labelClass =
-  "mb-1.5 block text-xs font-medium text-[color:var(--color-muted)]";
+  "mb-1.5 block t-caption font-medium text-[color:var(--color-muted)]";
 
 const vehicleTypes = [
   "SUV",
@@ -63,7 +63,7 @@ function YesNo({
       {[true, false].map((v) => (
         <label
           key={String(v)}
-          className="-mx-2 flex min-h-11 cursor-pointer items-center gap-2.5 rounded-lg px-2 text-sm text-[color:var(--color-ink)] hover:bg-[color:var(--color-surface-soft)]"
+          className="-mx-2 flex min-h-11 cursor-pointer items-center gap-2.5 rounded-lg px-2 t-body-sm text-[color:var(--color-ink)] hover:bg-[color:var(--color-surface-soft)]"
         >
           <input
             type="radio"
@@ -86,10 +86,10 @@ function Dropzone({ label }: { label: string }) {
         size={22}
         className="text-[color:var(--color-muted)]"
       />
-      <p className="text-sm font-semibold text-[color:var(--color-ink)]">
+      <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
         Drag your photo here
       </p>
-      <p className="text-xs text-[color:var(--color-muted)]">{label}</p>
+      <p className="t-caption text-[color:var(--color-muted)]">{label}</p>
     </div>
   );
 }
@@ -238,7 +238,7 @@ export default function ProviderVehicleAdd() {
           </div>
 
           <div className="mt-5">
-            <p className="mb-2 text-sm text-[color:var(--color-ink-soft)]">
+            <p className="mb-2 t-body-sm text-[color:var(--color-ink-soft)]">
               Or pick a common model to prefill the name.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -260,7 +260,7 @@ export default function ProviderVehicleAdd() {
                       : "border-[color:var(--color-border)]"
                   }`}
                 >
-                  <span className="text-sm font-semibold text-[color:var(--color-ink)]">
+                  <span className="t-body-sm font-semibold text-[color:var(--color-ink)]">
                     {v.name}
                   </span>
                   <VehicleImage
@@ -363,11 +363,11 @@ export default function ProviderVehicleAdd() {
             <h3 className="t-h4 text-[color:var(--color-ink)]">
               Set your price
             </h3>
-            <p className="text-sm text-[color:var(--color-muted)]">
+            <p className="t-body-sm text-[color:var(--color-muted)]">
               You can change it anytime
             </p>
             <div className="mt-3 flex flex-col items-center gap-1 rounded-xl bg-[color:var(--color-info-bg)] py-6">
-              <div className="flex items-center gap-1 text-2xl font-bold text-[color:var(--color-ink)]">
+              <div className="flex items-center gap-1 t-h2 font-bold text-[color:var(--color-ink)]">
                 <span>Nu.</span>
                 <input
                   type="text"
@@ -377,12 +377,12 @@ export default function ProviderVehicleAdd() {
                   className="h-11 w-28 bg-transparent text-center outline-none"
                 />
               </div>
-              <span className="text-sm text-[color:var(--color-muted)]">
+              <span className="t-body-sm text-[color:var(--color-muted)]">
                 per day
               </span>
             </div>
             {touched && !(Number(price) > 0) && (
-              <p className="mt-2 text-xs text-[color:var(--color-danger)]">
+              <p className="mt-2 t-caption text-[color:var(--color-danger)]">
                 Enter a price greater than 0.
               </p>
             )}

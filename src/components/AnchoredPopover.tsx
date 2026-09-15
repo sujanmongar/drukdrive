@@ -1,4 +1,10 @@
-import { useLayoutEffect, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
+import {
+  useLayoutEffect,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+  type RefObject,
+} from "react";
 import { createPortal } from "react-dom";
 
 // Portals its content to <body> and positions it with `position: fixed`
@@ -28,16 +34,22 @@ export default function AnchoredPopover({
       const gap = 8;
       const spaceBelow = window.innerHeight - r.bottom;
       const spaceAbove = r.top;
-      const placeAbove = spaceBelow < maxHeight + gap && spaceAbove > spaceBelow;
+      const placeAbove =
+        spaceBelow < maxHeight + gap && spaceAbove > spaceBelow;
       const rawLeft = align === "right" ? r.right - width : r.left;
-      const left = Math.min(Math.max(12, rawLeft), window.innerWidth - width - 12);
+      const left = Math.min(
+        Math.max(12, rawLeft),
+        window.innerWidth - width - 12,
+      );
 
       setStyle({
         position: "fixed",
         left,
         width,
         maxHeight: Math.min(maxHeight, window.innerHeight - 24),
-        ...(placeAbove ? { bottom: window.innerHeight - r.top + gap } : { top: r.bottom + gap }),
+        ...(placeAbove
+          ? { bottom: window.innerHeight - r.top + gap }
+          : { top: r.bottom + gap }),
       });
     }
     update();

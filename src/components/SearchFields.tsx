@@ -91,9 +91,9 @@ export default function SearchFields({
   const fieldClass =
     "flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 text-left transition-colors hover:border-[color:var(--color-ink)] lg:h-[56px]";
   const labelClass =
-    "whitespace-nowrap text-[11px] text-[color:var(--color-ink-soft)]";
+    "whitespace-nowrap t-label text-[color:var(--color-ink-soft)]";
   const valueClass =
-    "truncate text-sm font-bold text-[color:var(--color-ink-87)]";
+    "truncate t-body-sm font-bold text-[color:var(--color-ink-87)]";
   const row = layout === "row";
   const selfDrive = value.type === "self-drive";
 
@@ -226,7 +226,7 @@ export default function SearchFields({
                   className={
                     value.dropoff
                       ? valueClass
-                      : "text-sm text-[color:var(--color-muted)]"
+                      : "t-body-sm text-[color:var(--color-muted)]"
                   }
                 >
                   {value.dropoff || "Choose a place"}

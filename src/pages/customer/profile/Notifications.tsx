@@ -40,7 +40,7 @@ export default function AccountNotifications() {
             <h2 className="t-h2 text-[color:var(--color-ink)]">
               Notifications
             </h2>
-            <p className="mt-1 text-sm text-[color:var(--color-muted)]">
+            <p className="mt-1 t-body-sm text-[color:var(--color-muted)]">
               {unreadCount > 0
                 ? `You have ${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}.`
                 : "You're all caught up."}
@@ -50,7 +50,7 @@ export default function AccountNotifications() {
             <button
               type="button"
               onClick={markAllRead}
-              className="-mr-2 min-h-11 rounded-lg px-2 text-xs font-bold text-[color:var(--color-ink)] underline underline-offset-2 hover:no-underline"
+              className="-mr-2 min-h-11 rounded-lg px-2 t-caption font-bold text-[color:var(--color-ink)] underline underline-offset-2 hover:no-underline"
             >
               Mark all as read
             </button>
@@ -64,7 +64,7 @@ export default function AccountNotifications() {
               size={32}
               className="text-[color:var(--color-muted)]"
             />
-            <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">
+            <p className="mt-3 t-body-sm font-semibold text-[color:var(--color-ink)]">
               No notifications yet
             </p>
           </div>
@@ -92,7 +92,7 @@ export default function AccountNotifications() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <p
-                      className={`text-sm text-[color:var(--color-ink)] ${n.read ? "font-medium" : "font-bold"}`}
+                      className={`t-body-sm text-[color:var(--color-ink)] ${n.read ? "font-medium" : "font-bold"}`}
                     >
                       {n.title}
                     </p>
@@ -100,12 +100,12 @@ export default function AccountNotifications() {
                       <span className="size-2 shrink-0 rounded-full bg-[color:var(--color-danger)]" />
                     )}
                   </div>
-                  <p className="mt-0.5 text-sm text-[color:var(--color-muted)]">
+                  <p className="mt-0.5 t-body-sm text-[color:var(--color-muted)]">
                     {n.body}
                   </p>
                 </div>
 
-                <span className="shrink-0 text-xs text-[color:var(--color-muted)]">
+                <span className="shrink-0 t-caption text-[color:var(--color-muted)]">
                   {n.time}
                 </span>
               </button>

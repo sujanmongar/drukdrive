@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { currentUser as defaultUser } from "../data/mockData";
 
 // The signed-in user's editable profile — persisted to localStorage so
@@ -20,7 +27,9 @@ export function CurrentUserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<CurrentUser>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? { ...defaultUser, ...(JSON.parse(raw) as Partial<CurrentUser>) } : defaultUser;
+      return raw
+        ? { ...defaultUser, ...(JSON.parse(raw) as Partial<CurrentUser>) }
+        : defaultUser;
     } catch {
       return defaultUser;
     }
@@ -37,17 +46,23 @@ export function CurrentUserProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       user,
-      updateUser: (patch: Partial<CurrentUser>) => setUser((prev) => ({ ...prev, ...patch })),
+      updateUser: (patch: Partial<CurrentUser>) =>
+        setUser((prev) => ({ ...prev, ...patch })),
       resetUser: () => setUser(defaultUser),
     }),
     [user],
   );
 
-  return <CurrentUserContext.Provider value={value}>{children}</CurrentUserContext.Provider>;
+  return (
+    <CurrentUserContext.Provider value={value}>
+      {children}
+    </CurrentUserContext.Provider>
+  );
 }
 
 export function useCurrentUser() {
   const ctx = useContext(CurrentUserContext);
-  if (!ctx) throw new Error("useCurrentUser must be used within CurrentUserProvider");
+  if (!ctx)
+    throw new Error("useCurrentUser must be used within CurrentUserProvider");
   return ctx;
 }

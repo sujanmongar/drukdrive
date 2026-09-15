@@ -62,7 +62,7 @@ export default function SearchSummaryHeader({
           </button>
 
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-bold text-[color:var(--color-ink)]">
+            <p className="truncate t-body-sm font-bold text-[color:var(--color-ink)]">
               {search.pickup}
               {search.dropoff !== search.pickup && (
                 <>
@@ -74,7 +74,7 @@ export default function SearchSummaryHeader({
                 </>
               )}
             </p>
-            <p className="truncate text-xs text-[color:var(--color-muted)]">
+            <p className="truncate t-caption text-[color:var(--color-muted)]">
               {bookingTypeLabels[search.type]} &middot; {dateLabel},{" "}
               {search.pickupTime}
             </p>
@@ -101,7 +101,7 @@ export default function SearchSummaryHeader({
               className="text-[color:var(--color-ink)]"
             />
             {wishlistIds.length > 0 && (
-              <span className="absolute right-0 top-0 flex size-[15px] items-center justify-center rounded-full bg-[color:var(--color-danger)] text-[9px] font-medium text-white">
+              <span className="absolute right-0 top-0 flex size-[15px] items-center justify-center rounded-full bg-[color:var(--color-danger)] t-label font-medium text-white">
                 {wishlistIds.length}
               </span>
             )}
@@ -132,7 +132,7 @@ export default function SearchSummaryHeader({
                 <button
                   type="button"
                   onClick={handleUpdate}
-                  className="flex h-[56px] shrink-0 items-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-6 text-sm font-bold text-white transition-all duration-200 hover:bg-black"
+                  className="flex h-[56px] shrink-0 items-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-6 t-body-sm font-bold text-white transition-all duration-200 hover:bg-black"
                 >
                   <Icon name="search" size={16} />
                   Update

@@ -30,9 +30,22 @@ const driverLinks: { to: string; label: string; icon: IconName }[] = [
 ];
 
 // Airbnb-style "switch to hosting" — DrukDrive's rider/driver equivalent.
-const switchTarget: Record<Role, { role: Role; label: string; to: string; icon: IconName }> = {
-  customer: { role: "driver", label: "Switch to Driving", to: routes.providerBookings, icon: "car" },
-  driver: { role: "customer", label: "Switch to Riding", to: routes.home, icon: "user" },
+const switchTarget: Record<
+  Role,
+  { role: Role; label: string; to: string; icon: IconName }
+> = {
+  customer: {
+    role: "driver",
+    label: "Switch to Driving",
+    to: routes.providerBookings,
+    icon: "car",
+  },
+  driver: {
+    role: "customer",
+    label: "Switch to Riding",
+    to: routes.home,
+    icon: "user",
+  },
 };
 
 // Shared shell for the header's icon controls, so wishlist / notifications /
@@ -50,12 +63,14 @@ function WishlistButton({ compact = false }: { compact?: boolean }) {
       <Icon
         name="heart"
         size={20}
-        className={ids.length > 0 ? "fill-current text-[color:var(--color-danger)]" : ""}
+        className={
+          ids.length > 0 ? "fill-current text-[color:var(--color-danger)]" : ""
+        }
       />
       {ids.length > 0 && (
         <span
           className={`absolute -right-0.5 -top-0.5 flex items-center justify-center rounded-full bg-[color:var(--color-danger)] font-semibold text-white ring-2 ring-white ${
-            compact ? "size-[15px] text-[9px]" : "size-[17px] text-[10px]"
+            compact ? "size-[15px] t-label" : "size-[17px] t-label"
           }`}
         >
           {ids.length}
@@ -69,19 +84,31 @@ function Logo() {
   const { role } = useAuth();
   const homeHref = role === "driver" ? routes.providerBookings : routes.home;
   return (
-    <Link to={homeHref} aria-label="DrukDrive home" className="flex shrink-0 items-center">
+    <Link
+      to={homeHref}
+      aria-label="DrukDrive home"
+      className="flex shrink-0 items-center"
+    >
       <DrukDriveLogo className="h-7 w-auto text-[color:var(--color-ink)]" />
     </Link>
   );
 }
 
-function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; compact?: boolean }) {
+function AccountMenu({
+  onSignOut,
+  compact = false,
+}: {
+  onSignOut: () => void;
+  compact?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const { user: currentUser } = useCurrentUser();
   const { isLoggedIn, role, switchRole } = useAuth();
   const navigate = useNavigate();
   // The menu is a shortcut, not the full tab bar: bookings and account only.
-  const links = (role === "driver" ? driverLinks : customerLinks).filter((l) => /Bookings|Account/.test(l.label));
+  const links = (role === "driver" ? driverLinks : customerLinks).filter((l) =>
+    /Bookings|Account/.test(l.label),
+  );
   const target = switchTarget[role];
 
   function handleSwitch() {
@@ -99,30 +126,51 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
         className={`icon-btn icon-btn-avatar overflow-hidden ${compact ? "size-10" : "size-[42px]"}`}
       >
         {isLoggedIn ? (
-          <img src={currentUser.avatar} alt="" className="size-full rounded-full object-cover" />
+          <img
+            src={currentUser.avatar}
+            alt=""
+            className="size-full rounded-full object-cover"
+          />
         ) : (
-          <Icon name="user" size={20} className="fill-current" strokeWidth={1.4} />
+          <Icon
+            name="user"
+            size={20}
+            className="fill-current"
+            strokeWidth={1.4}
+          />
         )}
       </button>
 
       {open && (
         <>
-          <button aria-label="Close" className="fixed inset-0 z-40 cursor-default" onClick={() => setOpen(false)} />
+          <button
+            aria-label="Close"
+            className="fixed inset-0 z-40 cursor-default"
+            onClick={() => setOpen(false)}
+          />
           <div className="animate-popover absolute right-0 top-full z-50 mt-2 max-h-[80svh] w-64 overflow-y-auto rounded-2xl border border-[color:var(--color-border)] bg-white py-1.5 shadow-pop">
             {isLoggedIn ? (
               <>
                 <div className="flex items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3">
-                  <img src={currentUser.avatar} alt="" className="size-9 rounded-full object-cover" />
+                  <img
+                    src={currentUser.avatar}
+                    alt=""
+                    className="size-9 rounded-full object-cover"
+                  />
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-[color:var(--color-ink)]">{currentUser.name}</p>
-                    <p className="truncate text-xs text-[color:var(--color-muted)]">{currentUser.email}</p>
+                    <p className="truncate t-body-sm font-semibold text-[color:var(--color-ink)]">
+                      {currentUser.name}
+                    </p>
+                    <p className="truncate t-caption text-[color:var(--color-muted)]">
+                      {currentUser.email}
+                    </p>
                   </div>
                 </div>
 
                 <button
                   type="button"
                   onClick={handleSwitch}
-                  className="flex w-full items-center gap-2.5 border-b border-[color:var(--color-border)] px-4 py-3 text-left text-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
+                  className="flex w-full items-center gap-2.5 border-b border-[color:var(--color-border)] px-4 py-3 text-left t-body-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
                 >
                   <Icon name={target.icon} size={17} />
                   {target.label}
@@ -134,7 +182,7 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
                       key={l.to}
                       to={l.to}
                       onClick={() => setOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[color:var(--color-ink-soft)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
+                      className="flex items-center gap-2.5 px-4 py-2.5 t-body-sm text-[color:var(--color-ink-soft)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
                     >
                       <Icon name={l.icon} size={17} />
                       {l.label}
@@ -147,7 +195,7 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
                 <Link
                   to={routes.signIn}
                   onClick={() => setOpen(false)}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-black"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-4 py-2.5 t-body-sm font-bold text-white transition-colors hover:bg-black"
                 >
                   <Icon name="user" size={16} />
                   Login / Signup
@@ -166,7 +214,7 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
                   setOpen(false);
                   onSignOut();
                 }}
-                className="flex w-full items-center gap-2.5 border-t border-[color:var(--color-border)] px-4 py-2.5 text-left text-sm font-semibold text-[color:var(--color-danger)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
+                className="flex w-full items-center gap-2.5 border-t border-[color:var(--color-border)] px-4 py-2.5 text-left t-body-sm font-semibold text-[color:var(--color-danger)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
               >
                 <Icon name="logout" size={17} />
                 Sign out
@@ -179,7 +227,11 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
   );
 }
 
-export default function Header({ transparent = false }: { transparent?: boolean }) {
+export default function Header({
+  transparent = false,
+}: {
+  transparent?: boolean;
+}) {
   const { isLoggedIn, logout, role } = useAuth();
   const navigate = useNavigate();
   const homeHref = role === "driver" ? routes.providerBookings : routes.home;
@@ -190,7 +242,9 @@ export default function Header({ transparent = false }: { transparent?: boolean 
   }
 
   return (
-    <header className={`relative z-20 ${transparent ? "bg-transparent" : "bg-white"}`}>
+    <header
+      className={`relative z-20 ${transparent ? "bg-transparent" : "bg-white"}`}
+    >
       {/* Desktop */}
       <div className="hidden items-center justify-between px-6 py-[23px] md:flex lg:px-10">
         <Logo />
@@ -199,7 +253,11 @@ export default function Header({ transparent = false }: { transparent?: boolean 
           {isLoggedIn && (
             <NotificationsDropdown
               role={role}
-              viewAllHref={role === "driver" ? routes.providerNotifications : routes.accountNotifications}
+              viewAllHref={
+                role === "driver"
+                  ? routes.providerNotifications
+                  : routes.accountNotifications
+              }
             />
           )}
           <AccountMenu onSignOut={handleSignOut} />
@@ -208,7 +266,11 @@ export default function Header({ transparent = false }: { transparent?: boolean 
 
       {/* Mobile */}
       <div className="flex h-[64px] items-center justify-between px-4 md:hidden">
-        <Link to={homeHref} aria-label="DrukDrive home" className="-ml-2 flex min-h-11 items-center px-2">
+        <Link
+          to={homeHref}
+          aria-label="DrukDrive home"
+          className="-ml-2 flex min-h-11 items-center px-2"
+        >
           <DrukDriveLogo className="h-5 w-auto text-[color:var(--color-ink)]" />
         </Link>
         <div className="flex items-center gap-3">
@@ -216,7 +278,6 @@ export default function Header({ transparent = false }: { transparent?: boolean 
           <AccountMenu onSignOut={handleSignOut} compact />
         </div>
       </div>
-
     </header>
   );
 }

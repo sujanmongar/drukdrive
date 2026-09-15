@@ -3,7 +3,12 @@ import Icon from "./Icon";
 import { financeSummary } from "../data/mockData";
 
 type LedgerTab = "Ledger" | "Report" | "Credit Notes" | "Debit Notes";
-const ledgerTabs: LedgerTab[] = ["Ledger", "Report", "Credit Notes", "Debit Notes"];
+const ledgerTabs: LedgerTab[] = [
+  "Ledger",
+  "Report",
+  "Credit Notes",
+  "Debit Notes",
+];
 
 // Same wallet, same ledger, whichever hat the account is wearing — shared by
 // the customer Finance page and the driver Finance page.
@@ -18,7 +23,11 @@ export default function FinanceLedger() {
   const allRows = useMemo(
     () =>
       financeSummary.transactions.reduce<
-        ((typeof financeSummary.transactions)[number] & { debit: number; credit: number; balance: number })[]
+        ((typeof financeSummary.transactions)[number] & {
+          debit: number;
+          credit: number;
+          balance: number;
+        })[]
       >((acc, t) => {
         const debit = t.amount < 0 ? Math.abs(t.amount) : 0;
         const credit = t.amount > 0 ? t.amount : 0;
@@ -30,7 +39,10 @@ export default function FinanceLedger() {
   );
 
   const rows = useMemo(
-    () => (statusFilter === "All" ? allRows : allRows.filter((r) => r.status === statusFilter)),
+    () =>
+      statusFilter === "All"
+        ? allRows
+        : allRows.filter((r) => r.status === statusFilter),
     [allRows, statusFilter],
   );
 
@@ -45,7 +57,8 @@ export default function FinanceLedger() {
   useEffect(() => {
     const node = tableWrapRef.current;
     if (!node) return;
-    const update = () => setMoreToRight(node.scrollLeft + node.clientWidth < node.scrollWidth - 1);
+    const update = () =>
+      setMoreToRight(node.scrollLeft + node.clientWidth < node.scrollWidth - 1);
     update();
     node.addEventListener("scroll", update, { passive: true });
     const observer = new ResizeObserver(update);
@@ -65,7 +78,7 @@ export default function FinanceLedger() {
               key={t}
               type="button"
               onClick={() => setTab(t)}
-              className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+              className={`shrink-0 rounded-full border px-4 py-2 t-body-sm font-medium transition-colors ${
                 tab === t
                   ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
                   : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
@@ -79,7 +92,7 @@ export default function FinanceLedger() {
           <button
             type="button"
             onClick={() => setFilterOpen((v) => !v)}
-            className={`flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium transition-colors ${
+            className={`flex items-center gap-2 rounded-xl border px-4 py-2 t-body-sm font-medium transition-colors ${
               statusFilter !== "All"
                 ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
                 : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
@@ -90,7 +103,11 @@ export default function FinanceLedger() {
           </button>
           {filterOpen && (
             <>
-              <button aria-label="Close" className="fixed inset-0 z-10 cursor-default" onClick={() => setFilterOpen(false)} />
+              <button
+                aria-label="Close"
+                className="fixed inset-0 z-10 cursor-default"
+                onClick={() => setFilterOpen(false)}
+              />
               <div className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-pop">
                 {statusFilters.map((s) => (
                   <button
@@ -100,8 +117,10 @@ export default function FinanceLedger() {
                       setStatusFilter(s);
                       setFilterOpen(false);
                     }}
-                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
-                      statusFilter === s ? "bg-[color:var(--color-surface-soft)] font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
+                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left t-body-sm ${
+                      statusFilter === s
+                        ? "bg-[color:var(--color-surface-soft)] font-semibold text-[color:var(--color-ink)]"
+                        : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
                     }`}
                   >
                     {s}
@@ -114,70 +133,107 @@ export default function FinanceLedger() {
         </div>
       </div>
 
-      {tab === "Ledger" ? rows.length === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
-          <Icon name="wallet" size={32} className="text-[color:var(--color-muted)]" />
-          <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No {statusFilter.toLowerCase()} transactions</p>
-        </div>
-      ) : (
-        <div className="relative mt-6 rounded-xl border border-[color:var(--color-border)]">
-          <div ref={tableWrapRef} className="scrollbar-hide overflow-x-auto rounded-xl">
-          <table className="w-full min-w-[720px] text-sm">
-            <thead>
-              <tr className="border-b border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] text-left text-xs font-semibold text-[color:var(--color-muted)]">
-                <th className="px-4 py-3 font-semibold">Date</th>
-                <th className="px-4 py-3 font-semibold">Reference Number</th>
-                <th className="px-4 py-3 font-semibold">Particulars</th>
-                <th className="px-4 py-3 text-right font-semibold">Debit</th>
-                <th className="px-4 py-3 text-right font-semibold">Credit</th>
-                <th className="px-4 py-3 text-right font-semibold">Running Balance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.id} className="border-b border-[color:var(--color-border)] last:border-b-0">
-                  <td className="whitespace-nowrap px-4 py-3 text-[color:var(--color-ink-soft)]">{r.date}</td>
-                  <td className="whitespace-nowrap px-4 py-3 font-medium text-[color:var(--color-link)]">{r.id.toUpperCase()}</td>
-                  <td className="px-4 py-3 text-[color:var(--color-ink)]">{r.label}</td>
-                  <td className="whitespace-nowrap px-4 py-3 text-right text-[color:var(--color-ink)]">
-                    {r.debit ? r.debit.toFixed(2) : "0"}
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-right text-[color:var(--color-ink)]">
-                    {r.credit ? r.credit.toFixed(2) : "0"}
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-right font-medium text-[color:var(--color-ink)]">
-                    {r.balance.toFixed(2)} {r.balance >= 0 ? "Cr" : "Dr"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr className="bg-[color:var(--color-surface-subtle)]">
-                <td className="px-4 py-3 text-center font-bold text-[color:var(--color-ink)]" colSpan={3}>
-                  Total
-                </td>
-                <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-[color:var(--color-ink)]">
-                  {totalDebit.toFixed(2)}
-                </td>
-                <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-[color:var(--color-ink)]">
-                  {totalCredit.toFixed(2)}
-                </td>
-                <td />
-              </tr>
-            </tfoot>
-          </table>
-          </div>
-          {moreToRight && (
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 right-0 w-12 rounded-r-xl bg-gradient-to-l from-white to-transparent"
+      {tab === "Ledger" ? (
+        rows.length === 0 ? (
+          <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
+            <Icon
+              name="wallet"
+              size={32}
+              className="text-[color:var(--color-muted)]"
             />
-          )}
-        </div>
+            <p className="mt-3 t-body-sm font-semibold text-[color:var(--color-ink)]">
+              No {statusFilter.toLowerCase()} transactions
+            </p>
+          </div>
+        ) : (
+          <div className="relative mt-6 rounded-xl border border-[color:var(--color-border)]">
+            <div
+              ref={tableWrapRef}
+              className="scrollbar-hide overflow-x-auto rounded-xl"
+            >
+              <table className="w-full min-w-[720px] t-body-sm">
+                <thead>
+                  <tr className="border-b border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] text-left t-caption font-semibold text-[color:var(--color-muted)]">
+                    <th className="px-4 py-3 font-semibold">Date</th>
+                    <th className="px-4 py-3 font-semibold">
+                      Reference Number
+                    </th>
+                    <th className="px-4 py-3 font-semibold">Particulars</th>
+                    <th className="px-4 py-3 text-right font-semibold">
+                      Debit
+                    </th>
+                    <th className="px-4 py-3 text-right font-semibold">
+                      Credit
+                    </th>
+                    <th className="px-4 py-3 text-right font-semibold">
+                      Running Balance
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((r) => (
+                    <tr
+                      key={r.id}
+                      className="border-b border-[color:var(--color-border)] last:border-b-0"
+                    >
+                      <td className="whitespace-nowrap px-4 py-3 text-[color:var(--color-ink-soft)]">
+                        {r.date}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 font-medium text-[color:var(--color-link)]">
+                        {r.id.toUpperCase()}
+                      </td>
+                      <td className="px-4 py-3 text-[color:var(--color-ink)]">
+                        {r.label}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 text-right text-[color:var(--color-ink)]">
+                        {r.debit ? r.debit.toFixed(2) : "0"}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 text-right text-[color:var(--color-ink)]">
+                        {r.credit ? r.credit.toFixed(2) : "0"}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 text-right font-medium text-[color:var(--color-ink)]">
+                        {r.balance.toFixed(2)} {r.balance >= 0 ? "Cr" : "Dr"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr className="bg-[color:var(--color-surface-subtle)]">
+                    <td
+                      className="px-4 py-3 text-center font-bold text-[color:var(--color-ink)]"
+                      colSpan={3}
+                    >
+                      Total
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-[color:var(--color-ink)]">
+                      {totalDebit.toFixed(2)}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-[color:var(--color-ink)]">
+                      {totalCredit.toFixed(2)}
+                    </td>
+                    <td />
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            {moreToRight && (
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 right-0 w-12 rounded-r-xl bg-gradient-to-l from-white to-transparent"
+              />
+            )}
+          </div>
+        )
       ) : (
         <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
-          <Icon name="wallet" size={32} className="text-[color:var(--color-muted)]" />
-          <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No {tab.toLowerCase()} yet</p>
+          <Icon
+            name="wallet"
+            size={32}
+            className="text-[color:var(--color-muted)]"
+          />
+          <p className="mt-3 t-body-sm font-semibold text-[color:var(--color-ink)]">
+            No {tab.toLowerCase()} yet
+          </p>
         </div>
       )}
     </>

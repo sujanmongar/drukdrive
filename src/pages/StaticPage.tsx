@@ -49,7 +49,7 @@ export default function StaticPage() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="mb-4 flex min-h-11 items-center gap-1.5 text-sm font-medium text-[color:var(--color-ink)] hover:underline"
+          className="mb-4 flex min-h-11 items-center gap-1.5 t-body-sm font-medium text-[color:var(--color-ink)] hover:underline"
         >
           <Icon name="arrow-left" size={16} />
           Back
@@ -67,7 +67,7 @@ export default function StaticPage() {
             <h1 className="t-h2 text-[color:var(--color-ink)]">
               {content.title}
             </h1>
-            <p className="mt-2 text-sm leading-relaxed text-[color:var(--color-ink-soft)]">
+            <p className="mt-2 t-body-sm leading-relaxed text-[color:var(--color-ink-soft)]">
               {content.intro}
             </p>
           </div>
@@ -79,10 +79,10 @@ export default function StaticPage() {
               key={section.heading}
               className="rounded-2xl border border-[color:var(--color-border)] p-5 shadow-[var(--shadow-card)]"
             >
-              <h2 className="mb-1.5 text-base font-bold text-[color:var(--color-ink)]">
+              <h2 className="mb-1.5 t-body font-bold text-[color:var(--color-ink)]">
                 {section.heading}
               </h2>
-              <p className="text-sm leading-relaxed text-[color:var(--color-ink-soft)]">
+              <p className="t-body-sm leading-relaxed text-[color:var(--color-ink-soft)]">
                 {section.body}
               </p>
             </div>
@@ -91,10 +91,10 @@ export default function StaticPage() {
 
         <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl bg-[color:var(--color-surface-subtle)] p-6 text-center sm:flex-row sm:justify-between sm:text-left">
           <div>
-            <p className="text-sm font-bold text-[color:var(--color-ink)]">
+            <p className="t-body-sm font-bold text-[color:var(--color-ink)]">
               Still have questions?
             </p>
-            <p className="mt-0.5 text-xs text-[color:var(--color-muted)]">
+            <p className="mt-0.5 t-caption text-[color:var(--color-muted)]">
               Visit the Help & FAQ page, or head back and keep exploring
               DrukDrive.
             </p>

@@ -85,7 +85,7 @@ export default function Invoice() {
           <button
             type="button"
             onClick={() => window.history.back()}
-            className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
+            className="inline-flex min-h-11 cursor-pointer items-center gap-2 t-body-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
           >
             <Icon name="arrow-left" size={18} />
             Back
@@ -102,7 +102,7 @@ export default function Invoice() {
             <p className="t-h3 text-[color:var(--color-ink)]">Invoice</p>
           </div>
 
-          <div className="mt-5 flex flex-wrap items-start justify-between gap-4 border-b border-[color:var(--color-border)] pb-6 text-sm">
+          <div className="mt-5 flex flex-wrap items-start justify-between gap-4 border-b border-[color:var(--color-border)] pb-6 t-body-sm">
             <div>
               <p className="text-[color:var(--color-muted)]">
                 Invoice No:{" "}
@@ -127,57 +127,57 @@ export default function Invoice() {
 
           <div className="grid grid-cols-1 gap-4 border-b border-[color:var(--color-border)] py-6 sm:grid-cols-2">
             <div>
-              <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+              <p className="t-caption font-semibold text-[color:var(--color-muted)]">
                 Invoiced To
               </p>
-              <p className="mt-1 text-sm font-semibold text-[color:var(--color-ink)]">
+              <p className="mt-1 t-body-sm font-semibold text-[color:var(--color-ink)]">
                 {travelerName}
               </p>
-              <p className="text-sm text-[color:var(--color-muted)]">
+              <p className="t-body-sm text-[color:var(--color-muted)]">
                 {currentUser.address}
               </p>
-              <p className="text-sm text-[color:var(--color-muted)]">
+              <p className="t-body-sm text-[color:var(--color-muted)]">
                 {travelerPhone}
               </p>
-              <p className="text-sm text-[color:var(--color-muted)]">
+              <p className="t-body-sm text-[color:var(--color-muted)]">
                 {travelerEmail}
               </p>
             </div>
             <div className="sm:text-right">
-              <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+              <p className="t-caption font-semibold text-[color:var(--color-muted)]">
                 Pay To
               </p>
-              <p className="mt-1 text-sm font-semibold text-[color:var(--color-ink)]">
+              <p className="mt-1 t-body-sm font-semibold text-[color:var(--color-ink)]">
                 DrukDrive
               </p>
-              <p className="text-sm text-[color:var(--color-muted)]">
+              <p className="t-body-sm text-[color:var(--color-muted)]">
                 Norzin Lam, Thimphu 11001
               </p>
-              <p className="text-sm text-[color:var(--color-muted)]">
+              <p className="t-body-sm text-[color:var(--color-muted)]">
                 +975 17 617 107
               </p>
-              <p className="text-sm text-[color:var(--color-muted)]">
+              <p className="t-body-sm text-[color:var(--color-muted)]">
                 www.drukdrive.bt
               </p>
             </div>
           </div>
 
           <div className="border-b border-[color:var(--color-border)] py-6">
-            <p className="mb-1 text-xs font-semibold text-[color:var(--color-muted)]">
+            <p className="mb-1 t-caption font-semibold text-[color:var(--color-muted)]">
               Payment Method
             </p>
-            <p className="text-sm font-semibold text-[color:var(--color-ink)]">
+            <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
               {method}
             </p>
           </div>
 
           <div className="py-6">
-            <h2 className="mb-3 text-base font-bold text-[color:var(--color-ink)]">
+            <h2 className="t-h4 mb-3 text-[color:var(--color-ink)]">
               Booking Summary
             </h2>
-            <table className="w-full text-sm">
+            <table className="w-full t-body-sm">
               <thead>
-                <tr className="border-b border-[color:var(--color-border)] text-left text-xs font-semibold text-[color:var(--color-muted)]">
+                <tr className="border-b border-[color:var(--color-border)] text-left t-caption font-semibold text-[color:var(--color-muted)]">
                   <th className="pb-2 font-semibold">Description</th>
                   <th className="pb-2 font-semibold">Booked for</th>
                   <th className="pb-2 text-right font-semibold">Amount</th>
@@ -192,7 +192,7 @@ export default function Invoice() {
                     <td className="py-3 text-[color:var(--color-ink)]">
                       {i === 0 ? `${vehicleName} · ${typeLabel}` : l.label}
                       {i === 0 && fare && (
-                        <span className="block text-xs text-[color:var(--color-muted)]">
+                        <span className="block t-caption text-[color:var(--color-muted)]">
                           {l.label}
                         </span>
                       )}
@@ -210,43 +210,43 @@ export default function Invoice() {
 
             <div className="mt-4 flex justify-end">
               <div className="w-full max-w-[260px] space-y-2">
-                <div className="flex justify-between text-sm text-[color:var(--color-ink-soft)]">
+                <div className="flex justify-between t-body-sm text-[color:var(--color-ink-soft)]">
                   <span>Sub Total</span>
                   <span>{format(baseFare)}</span>
                 </div>
-                <div className="flex justify-between text-sm text-[color:var(--color-ink-soft)]">
+                <div className="flex justify-between t-body-sm text-[color:var(--color-ink-soft)]">
                   <span>Taxes &amp; Fees</span>
                   <span>{format(taxes)}</span>
                 </div>
                 <div className="h-px bg-[color:var(--color-border)]" />
-                <div className="flex justify-between rounded-lg bg-[color:var(--color-surface-subtle)] px-3 py-2 text-sm font-bold text-[color:var(--color-ink)]">
+                <div className="flex justify-between rounded-lg bg-[color:var(--color-surface-subtle)] px-3 py-2 t-body-sm font-bold text-[color:var(--color-ink)]">
                   <span>Total</span>
                   <span>{format(total)}</span>
                 </div>
                 {discount > 0 && (
-                  <div className="flex justify-between text-sm font-semibold text-[color:var(--color-success)]">
+                  <div className="flex justify-between t-body-sm font-semibold text-[color:var(--color-success)]">
                     <span>Discount</span>
                     <span>-{format(discount)}</span>
                   </div>
                 )}
-                <div className="flex justify-between rounded-lg bg-[color:var(--color-info-bg)] px-3 py-2.5 text-sm font-bold text-[color:var(--color-ink)]">
+                <div className="flex justify-between rounded-lg bg-[color:var(--color-info-bg)] px-3 py-2.5 t-body-sm font-bold text-[color:var(--color-ink)]">
                   <span>Net Payable</span>
                   <span>{format(netPayable)}</span>
                 </div>
                 {balance > 0 && (
                   <>
-                    <div className="flex justify-between text-sm text-[color:var(--color-ink-soft)]">
+                    <div className="flex justify-between t-body-sm text-[color:var(--color-ink-soft)]">
                       <span>Paid now</span>
                       <span>{format(amountPaid)}</span>
                     </div>
-                    <div className="flex justify-between text-sm font-semibold text-[color:var(--color-ink)]">
+                    <div className="flex justify-between t-body-sm font-semibold text-[color:var(--color-ink)]">
                       <span>Balance due at pick-up</span>
                       <span>{format(balance)}</span>
                     </div>
                   </>
                 )}
                 {fare && fare.deposit > 0 && (
-                  <p className="text-xs text-[color:var(--color-muted)]">
+                  <p className="t-caption text-[color:var(--color-muted)]">
                     A refundable deposit of {format(fare.deposit)} is held at
                     collection and is not part of this invoice.
                   </p>
@@ -255,7 +255,7 @@ export default function Invoice() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-2 border-t border-[color:var(--color-border)] py-6 text-sm sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-2 border-t border-[color:var(--color-border)] py-6 t-body-sm sm:grid-cols-2">
             <div className="flex justify-between sm:block">
               <span className="text-[color:var(--color-muted)]">
                 Transaction Date
@@ -286,7 +286,7 @@ export default function Invoice() {
             </div>
           </div>
 
-          <div className="border-t border-[color:var(--color-border)] pt-6 text-center text-xs text-[color:var(--color-muted)]">
+          <div className="border-t border-[color:var(--color-border)] pt-6 text-center t-caption text-[color:var(--color-muted)]">
             Thank you for booking with DrukDrive. This is a computer-generated
             invoice.
           </div>

@@ -53,21 +53,28 @@ export default function Footer() {
   const { language, setLanguage } = useLanguage();
 
   const selectClass =
-    "w-full cursor-pointer appearance-none rounded-xl border border-white/25 bg-transparent px-4 py-3 text-sm font-semibold text-white outline-none transition-colors hover:border-white/60 focus-visible:border-white";
+    "w-full cursor-pointer appearance-none rounded-xl border border-white/25 bg-transparent px-4 py-3 t-body-sm font-semibold text-white outline-none transition-colors hover:border-white/60 focus-visible:border-white";
 
   return (
     <footer className="mt-auto bg-[#161616] text-white">
       <div className="mx-auto max-w-[1280px] px-6 py-12 md:px-10 md:py-14">
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-6">
           <div className="col-span-2 md:col-span-2">
-            <Link to={routes.home} aria-label="DrukDrive home" className="-m-2 inline-flex p-2">
+            <Link
+              to={routes.home}
+              aria-label="DrukDrive home"
+              className="-m-2 inline-flex p-2"
+            >
               <DrukDriveLogo className="h-7 w-auto text-white" />
             </Link>
             <p className="t-body-sm mt-4 max-w-[280px] text-white/60">
-              Compare and book vehicles from trusted local operators across Bhutan.
+              Compare and book vehicles from trusted local operators across
+              Bhutan.
             </p>
 
-            <p className="t-caption mb-3 mt-7 font-semibold uppercase tracking-wide text-white/50">Follow us</p>
+            <p className="t-caption mb-3 mt-7 font-semibold uppercase tracking-wide text-white/50">
+              Follow us
+            </p>
             <div className="flex gap-3">
               {socials.map((s) => (
                 <a
@@ -85,11 +92,16 @@ export default function Footer() {
 
           {columns.map((col) => (
             <nav key={col.title} aria-label={col.title}>
-              <p className="t-caption mb-3 font-semibold uppercase tracking-wide text-white/50">{col.title}</p>
+              <p className="t-caption mb-3 font-semibold uppercase tracking-wide text-white/50">
+                {col.title}
+              </p>
               <ul className="flex flex-col">
                 {col.links.map((l) => (
                   <li key={l.label}>
-                    <Link to={l.to} className="t-body-sm -ml-1 inline-flex min-h-11 items-center rounded-lg px-1 text-white/75 transition-colors hover:text-white">
+                    <Link
+                      to={l.to}
+                      className="t-body-sm -ml-1 inline-flex min-h-11 items-center rounded-lg px-1 text-white/75 transition-colors hover:text-white"
+                    >
                       {l.label}
                     </Link>
                   </li>
@@ -99,17 +111,25 @@ export default function Footer() {
           ))}
 
           <div className="col-span-2 md:col-span-1">
-            <p className="t-caption mb-3 font-semibold uppercase tracking-wide text-white/50">Preferences</p>
+            <p className="t-caption mb-3 font-semibold uppercase tracking-wide text-white/50">
+              Preferences
+            </p>
             <div className="flex flex-col gap-2.5">
               <div className="relative">
                 <select
                   aria-label="Language"
                   value={language}
-                  onChange={(e) => setLanguage(e.target.value as typeof language)}
+                  onChange={(e) =>
+                    setLanguage(e.target.value as typeof language)
+                  }
                   className={selectClass}
                 >
                   {languages.map((l) => (
-                    <option key={l.code} value={l.code} className="text-[color:var(--color-ink)]">
+                    <option
+                      key={l.code}
+                      value={l.code}
+                      className="text-[color:var(--color-ink)]"
+                    >
                       {l.native}
                     </option>
                   ))}
@@ -124,11 +144,17 @@ export default function Footer() {
                 <select
                   aria-label="Currency"
                   value={currency}
-                  onChange={(e) => setCurrency(e.target.value as typeof currency)}
+                  onChange={(e) =>
+                    setCurrency(e.target.value as typeof currency)
+                  }
                   className={selectClass}
                 >
                   {currencies.map((c) => (
-                    <option key={c.code} value={c.code} className="text-[color:var(--color-ink)]">
+                    <option
+                      key={c.code}
+                      value={c.code}
+                      className="text-[color:var(--color-ink)]"
+                    >
                       {c.code} — {c.label}
                     </option>
                   ))}
@@ -141,12 +167,14 @@ export default function Footer() {
               </div>
             </div>
 
-            <p className="t-caption mb-3 mt-7 font-semibold uppercase tracking-wide text-white/50">We accept</p>
+            <p className="t-caption mb-3 mt-7 font-semibold uppercase tracking-wide text-white/50">
+              We accept
+            </p>
             <div className="flex flex-wrap gap-2">
               {["VISA", "MC", "PayPal", "GPay"].map((p) => (
                 <span
                   key={p}
-                  className="flex h-8 items-center rounded-lg bg-white px-2.5 text-[10px] font-bold text-[color:var(--color-ink)]"
+                  className="flex h-8 items-center rounded-lg bg-white px-2.5 t-label font-bold text-[color:var(--color-ink)]"
                 >
                   {p}
                 </span>
@@ -156,10 +184,14 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-[1280px] flex-col gap-3 border-t border-white/10 px-6 py-5 text-[11px] text-white/55 md:flex-row md:items-center md:justify-between md:px-10">
+      <div className="mx-auto flex max-w-[1280px] flex-col gap-3 border-t border-white/10 px-6 py-5 t-label text-white/55 md:flex-row md:items-center md:justify-between md:px-10">
         <div className="flex flex-wrap gap-x-2">
           {bottomLinks.map((l) => (
-            <Link key={l.label} to={l.to} className="-ml-2 inline-flex min-h-11 items-center px-2 transition-colors hover:text-white">
+            <Link
+              key={l.label}
+              to={l.to}
+              className="-ml-2 inline-flex min-h-11 items-center px-2 transition-colors hover:text-white"
+            >
               {l.label}
             </Link>
           ))}

@@ -22,7 +22,7 @@ export default function AccountWishlist() {
 
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <h2 className="t-h2 text-[color:var(--color-ink)]">Wishlist</h2>
-        <p className="mt-1 text-sm text-[color:var(--color-muted)]">
+        <p className="mt-1 t-body-sm text-[color:var(--color-muted)]">
           Vehicles you've saved for later.
         </p>
 
@@ -33,10 +33,10 @@ export default function AccountWishlist() {
               size={32}
               className="text-[color:var(--color-muted)]"
             />
-            <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">
+            <p className="mt-3 t-body-sm font-semibold text-[color:var(--color-ink)]">
               No saved vehicles yet
             </p>
-            <p className="mt-1 max-w-xs text-sm text-[color:var(--color-muted)]">
+            <p className="mt-1 max-w-xs t-body-sm text-[color:var(--color-muted)]">
               Tap the heart icon on any vehicle to save it here for later.
             </p>
           </div>

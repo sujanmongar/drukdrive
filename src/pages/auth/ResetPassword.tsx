@@ -7,7 +7,7 @@ import { routes } from "../../lib/routes";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 const inputClass =
-  "w-full rounded-xl border border-[color:var(--color-border)] px-5 py-4 text-sm text-[color:var(--color-ink)] placeholder:text-[color:var(--color-placeholder)] outline-none transition-colors focus:border-[color:var(--color-ink)]";
+  "w-full rounded-xl border border-[color:var(--color-border)] px-5 py-4 t-body-sm text-[color:var(--color-ink)] placeholder:text-[color:var(--color-placeholder)] outline-none transition-colors focus:border-[color:var(--color-ink)]";
 
 export default function ResetPassword() {
   usePageTitle("Reset password");
@@ -30,7 +30,7 @@ export default function ResetPassword() {
 
   const form = (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <p className="text-center text-sm text-[color:var(--color-ink-87)]">
+      <p className="text-center t-body-sm text-[color:var(--color-ink-87)]">
         Your new password must be different from previously used passwords.
       </p>
       <div className="relative">
@@ -78,7 +78,7 @@ export default function ResetPassword() {
         </button>
       </div>
       {error && (
-        <p className="text-sm font-medium text-[color:var(--color-danger)]">
+        <p className="t-body-sm font-medium text-[color:var(--color-danger)]">
           {error}
         </p>
       )}
@@ -87,7 +87,7 @@ export default function ResetPassword() {
       </Button>
       <Link
         to={routes.signIn}
-        className="mt-1 flex min-h-11 items-center justify-center text-center text-sm font-medium text-[color:var(--color-ink)]"
+        className="mt-1 flex min-h-11 items-center justify-center text-center t-body-sm font-medium text-[color:var(--color-ink)]"
       >
         Back to sign in
       </Link>
@@ -95,7 +95,7 @@ export default function ResetPassword() {
   );
 
   const footer = (
-    <p className="mt-6 text-center text-xs leading-relaxed text-[color:var(--color-ink-87)]">
+    <p className="mt-6 text-center t-caption leading-relaxed text-[color:var(--color-ink-87)]">
       By continuing, you agree our{" "}
       <span className="font-semibold text-[color:var(--color-link)] underline">
         Terms of Services

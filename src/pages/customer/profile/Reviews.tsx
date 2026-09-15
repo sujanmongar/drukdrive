@@ -50,7 +50,7 @@ export default function AccountReviews() {
           <div>
             <h2 className="t-h2 text-[color:var(--color-ink)]">Reviews</h2>
             {reviews.length > 0 && (
-              <p className="mt-1 flex items-center gap-1.5 text-sm text-[color:var(--color-muted)]">
+              <p className="mt-1 flex items-center gap-1.5 t-body-sm text-[color:var(--color-muted)]">
                 <Icon
                   name="star"
                   size={14}
@@ -75,7 +75,7 @@ export default function AccountReviews() {
               size={32}
               className="text-[color:var(--color-muted)]"
             />
-            <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">
+            <p className="mt-3 t-body-sm font-semibold text-[color:var(--color-ink)]">
               No reviews yet
             </p>
           </div>
@@ -93,17 +93,17 @@ export default function AccountReviews() {
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-sm font-bold text-[color:var(--color-ink)]">
+                    <p className="t-body-sm font-bold text-[color:var(--color-ink)]">
                       {r.author}
                     </p>
-                    <span className="text-xs text-[color:var(--color-muted)]">
+                    <span className="t-caption text-[color:var(--color-muted)]">
                       {r.date}
                     </span>
                   </div>
                   <div className="mt-1">
                     <Stars rating={r.rating} />
                   </div>
-                  <p className="mt-2 text-sm text-[color:var(--color-ink-soft)]">
+                  <p className="mt-2 t-body-sm text-[color:var(--color-ink-soft)]">
                     {r.comment}
                   </p>
                 </div>

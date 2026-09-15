@@ -19,7 +19,12 @@ export default function WriteReviewModal({ onClose }: { onClose: () => void }) {
       setTouched(true);
       return;
     }
-    addReview({ author: user.name, avatar: user.avatar, rating, comment: comment.trim() });
+    addReview({
+      author: user.name,
+      avatar: user.avatar,
+      rating,
+      comment: comment.trim(),
+    });
     onClose();
   }
 
@@ -29,11 +34,17 @@ export default function WriteReviewModal({ onClose }: { onClose: () => void }) {
         <div className="flex items-center justify-between">
           <h2 className="t-h3 text-[color:var(--color-ink)]">Write a review</h2>
           <button type="button" onClick={onClose} aria-label="Close">
-            <Icon name="close" size={20} className="text-[color:var(--color-ink)]" />
+            <Icon
+              name="close"
+              size={20}
+              className="text-[color:var(--color-ink)]"
+            />
           </button>
         </div>
 
-        <p className="mt-4 text-xs font-medium text-[color:var(--color-muted)]">Your rating</p>
+        <p className="mt-4 t-caption font-medium text-[color:var(--color-muted)]">
+          Your rating
+        </p>
         <div className="mt-2 flex items-center gap-1.5">
           {[1, 2, 3, 4, 5].map((n) => (
             <button
@@ -48,29 +59,45 @@ export default function WriteReviewModal({ onClose }: { onClose: () => void }) {
               <Icon
                 name="star"
                 size={28}
-                className={(hoverRating || rating) >= n ? "fill-current text-[color:var(--color-star)]" : "text-[color:var(--color-border)]"}
+                className={
+                  (hoverRating || rating) >= n
+                    ? "fill-current text-[color:var(--color-star)]"
+                    : "text-[color:var(--color-border)]"
+                }
               />
             </button>
           ))}
         </div>
 
         <label className="mt-4 block">
-          <span className="mb-1.5 block text-xs font-medium text-[color:var(--color-muted)]">Your review</span>
+          <span className="mb-1.5 block t-caption font-medium text-[color:var(--color-muted)]">
+            Your review
+          </span>
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             rows={4}
             placeholder="Share how your trip went..."
-            className={`w-full resize-none rounded-xl border px-3.5 py-2.5 text-sm text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)] ${
-              touched && !isValid ? "border-[color:var(--color-danger)]" : "border-[color:var(--color-border)]"
+            className={`w-full resize-none rounded-xl border px-3.5 py-2.5 t-body-sm text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)] ${
+              touched && !isValid
+                ? "border-[color:var(--color-danger)]"
+                : "border-[color:var(--color-border)]"
             }`}
           />
           {touched && !isValid && (
-            <p className="mt-1 text-xs text-[color:var(--color-danger)]">Write a few words before submitting.</p>
+            <p className="mt-1 t-caption text-[color:var(--color-danger)]">
+              Write a few words before submitting.
+            </p>
           )}
         </label>
 
-        <Button variant="primary" size="lg" fullWidth className="mt-5" onClick={handleSubmit}>
+        <Button
+          variant="primary"
+          size="lg"
+          fullWidth
+          className="mt-5"
+          onClick={handleSubmit}
+        >
           Submit review
         </Button>
       </div>

@@ -45,7 +45,7 @@ export default function VehicleListCard({
         </div>
       )}
       <div className="flex items-baseline gap-x-1.5 whitespace-nowrap">
-        <span className="text-2xl font-bold tabular text-[color:var(--color-ink)]">
+        <span className="t-h2 font-bold tabular text-[color:var(--color-ink)]">
           {format(price.amount)}
         </span>
         <span className="t-caption text-[color:var(--color-muted)]">
@@ -127,7 +127,7 @@ export default function VehicleListCard({
 
           <VehicleSpecs
             vehicle={vehicle}
-            className="mt-3 !text-sm sm:!text-[15px]"
+            className="mt-3 !t-body-sm sm:!text-[15px]"
           />
           <div className="mt-3 flex items-center gap-2.5">
             <span className="rounded-md bg-[color:var(--color-success)] px-2 py-0.5 t-caption font-bold tabular text-white">

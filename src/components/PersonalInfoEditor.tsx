@@ -16,9 +16,9 @@ type FieldKey = "gender" | "email" | "phone" | "address" | "bio";
 type FieldType = "text" | "email" | "tel" | "select" | "textarea";
 
 const editButtonClass =
-  "min-h-11 shrink-0 rounded-lg px-3 text-sm font-medium text-[color:var(--color-ink)] underline hover:bg-[color:var(--color-surface-soft)]";
+  "min-h-11 shrink-0 rounded-lg px-3 t-body-sm font-medium text-[color:var(--color-ink)] underline hover:bg-[color:var(--color-surface-soft)]";
 const inputClass =
-  "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 text-sm font-semibold text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)]";
+  "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 t-body-sm font-semibold text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)]";
 
 // The inline "click Edit, the row becomes a form in place, Save collapses
 // it back to a read-only row" pattern used across the customer and driver
@@ -91,16 +91,16 @@ export default function PersonalInfoEditor() {
       <div className="border-b border-[color:var(--color-border)] pb-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-[color:var(--color-ink)]">
+            <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
               Legal name
             </p>
             {editingName ? (
-              <p className="mt-0.5 text-xs text-[color:var(--color-muted)]">
+              <p className="mt-0.5 t-caption text-[color:var(--color-muted)]">
                 This is the name on your travel document, which could be a
                 license or a passport.
               </p>
             ) : (
-              <p className="mt-0.5 text-sm text-[color:var(--color-ink-soft)]">
+              <p className="mt-0.5 t-body-sm text-[color:var(--color-ink-soft)]">
                 {user.name}
               </p>
             )}
@@ -120,7 +120,7 @@ export default function PersonalInfoEditor() {
           <div className="mt-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <label className="flex flex-col gap-1.5">
-                <span className="text-xs font-medium text-[color:var(--color-muted)]">
+                <span className="t-caption font-medium text-[color:var(--color-muted)]">
                   First name
                 </span>
                 <input
@@ -131,7 +131,7 @@ export default function PersonalInfoEditor() {
                 />
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="text-xs font-medium text-[color:var(--color-muted)]">
+                <span className="t-caption font-medium text-[color:var(--color-muted)]">
                   Last name
                 </span>
                 <input
@@ -149,7 +149,7 @@ export default function PersonalInfoEditor() {
               <button
                 type="button"
                 onClick={() => setEditingName(false)}
-                className="text-sm font-medium text-[color:var(--color-ink)] underline"
+                className="t-body-sm font-medium text-[color:var(--color-ink)] underline"
               >
                 Cancel
               </button>
@@ -165,11 +165,11 @@ export default function PersonalInfoEditor() {
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-[color:var(--color-muted)]">
+              <p className="t-caption font-medium text-[color:var(--color-muted)]">
                 {row.label}
               </p>
               {editingField !== row.key && (
-                <p className="mt-0.5 whitespace-pre-wrap text-sm font-semibold text-[color:var(--color-ink)]">
+                <p className="mt-0.5 whitespace-pre-wrap t-body-sm font-semibold text-[color:var(--color-ink)]">
                   {row.display}
                 </p>
               )}
@@ -219,7 +219,7 @@ export default function PersonalInfoEditor() {
                 <button
                   type="button"
                   onClick={() => setEditingField(null)}
-                  className="text-sm font-medium text-[color:var(--color-ink)] underline"
+                  className="t-body-sm font-medium text-[color:var(--color-ink)] underline"
                 >
                   Cancel
                 </button>
@@ -232,7 +232,7 @@ export default function PersonalInfoEditor() {
       <button
         type="button"
         onClick={handleDelete}
-        className="mt-8 flex items-center gap-2 rounded-xl border border-[color:var(--color-danger)] px-4 py-2.5 text-sm font-semibold text-[color:var(--color-danger)] hover:bg-[color:var(--color-danger-bg)]"
+        className="mt-8 flex items-center gap-2 rounded-xl border border-[color:var(--color-danger)] px-4 py-2.5 t-body-sm font-semibold text-[color:var(--color-danger)] hover:bg-[color:var(--color-danger-bg)]"
       >
         <Icon name="trash" size={15} />
         Delete account

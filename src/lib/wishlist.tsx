@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
 const STORAGE_KEY = "drukdrive:wishlist";
 
@@ -33,12 +40,18 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       ids,
       isSaved: (id: string) => ids.includes(id),
       toggle: (id: string) =>
-        setIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])),
+        setIds((prev) =>
+          prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+        ),
     }),
     [ids],
   );
 
-  return <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>;
+  return (
+    <WishlistContext.Provider value={value}>
+      {children}
+    </WishlistContext.Provider>
+  );
 }
 
 export function useWishlist() {

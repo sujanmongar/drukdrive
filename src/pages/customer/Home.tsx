@@ -121,7 +121,7 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={handleSearch}
-                      className="hidden h-[56px] shrink-0 items-center justify-center rounded-xl bg-[color:var(--color-ink)] px-8 text-base font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.98] lg:flex"
+                      className="hidden h-[56px] shrink-0 items-center justify-center rounded-xl bg-[color:var(--color-ink)] px-8 t-body font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.98] lg:flex"
                     >
                       Search
                     </button>
@@ -132,7 +132,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={handleSearch}
-                className="mt-5 w-full rounded-xl bg-[color:var(--color-ink)] py-4 text-base font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.99] lg:hidden"
+                className="mt-5 w-full rounded-xl bg-[color:var(--color-ink)] py-4 t-body font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.99] lg:hidden"
               >
                 Search
               </button>

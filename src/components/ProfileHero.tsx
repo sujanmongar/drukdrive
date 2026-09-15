@@ -23,16 +23,16 @@ export default function ProfileHero({
           <h1 className="t-h1 text-[color:var(--color-ink)]">
             Welcome, {currentUser.name.split(" ")[0]}
           </h1>
-          <p className="mt-1 text-sm text-[color:var(--color-muted)]">
+          <p className="mt-1 t-body-sm text-[color:var(--color-muted)]">
             Joined in {currentUser.joinedYear}
           </p>
           <Link
             to={editHref}
-            className="mt-1 inline-flex min-h-11 items-center text-sm font-semibold text-[color:var(--color-ink)] underline"
+            className="mt-1 inline-flex min-h-11 items-center t-body-sm font-semibold text-[color:var(--color-ink)] underline"
           >
             Edit profile
           </Link>
-          <div className="mt-3 flex flex-col gap-1.5 text-sm text-[color:var(--color-ink-soft)] sm:flex-row sm:items-center sm:gap-4">
+          <div className="mt-3 flex flex-col gap-1.5 t-body-sm text-[color:var(--color-ink-soft)] sm:flex-row sm:items-center sm:gap-4">
             <span className="flex items-center gap-1.5">
               <Icon name="location" size={16} />
               {currentUser.location}
@@ -46,7 +46,7 @@ export default function ProfileHero({
       </div>
       <Link
         to={reviewHref}
-        className="flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[color:var(--color-ink)] underline"
+        className="flex min-h-11 items-center gap-1.5 t-body-sm font-semibold text-[color:var(--color-ink)] underline"
       >
         <Icon name="edit" size={16} />
         Write review

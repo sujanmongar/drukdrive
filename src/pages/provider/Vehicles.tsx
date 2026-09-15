@@ -49,7 +49,7 @@ export default function ProviderVehicles() {
               size={32}
               className="text-[color:var(--color-muted)]"
             />
-            <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">
+            <p className="mt-3 t-body-sm font-semibold text-[color:var(--color-ink)]">
               No vehicles added yet
             </p>
             <Button
@@ -74,10 +74,10 @@ export default function ProviderVehicles() {
                   className="size-14 shrink-0 rounded-lg"
                 />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-bold text-[color:var(--color-ink)]">
+                  <p className="truncate t-body-sm font-bold text-[color:var(--color-ink)]">
                     {v.name}
                   </p>
-                  <p className="mt-0.5 text-xs text-[color:var(--color-muted)]">
+                  <p className="mt-0.5 t-caption text-[color:var(--color-muted)]">
                     {v.plate}
                   </p>
                   <div className="mt-1.5">
@@ -110,14 +110,14 @@ export default function ProviderVehicles() {
                       <Link
                         to={`${routes.providerVehicleAdd}?edit=${v.id}`}
                         onClick={() => setOpenMenu(null)}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
+                        className="flex w-full items-center gap-2 px-3 py-2 text-left t-body-sm text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
                       >
                         <Icon name="edit" size={15} />
                         Edit
                       </Link>
                       <button
                         type="button"
-                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-[color:var(--color-danger)] hover:bg-[color:var(--color-surface-soft)]"
+                        className="flex w-full items-center gap-2 px-3 py-2 text-left t-body-sm text-[color:var(--color-danger)] hover:bg-[color:var(--color-surface-soft)]"
                         onClick={() => handleRemove(v.id, v.name)}
                       >
                         <Icon name="trash" size={15} />

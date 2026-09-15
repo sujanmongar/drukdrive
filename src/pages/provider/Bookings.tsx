@@ -42,7 +42,7 @@ export default function ProviderBookings() {
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <div className="flex items-center justify-between">
           <h2 className="t-h2 text-[color:var(--color-ink)]">Bookings</h2>
-          <span className="text-sm font-semibold text-[color:var(--color-ink)] underline">
+          <span className="t-body-sm font-semibold text-[color:var(--color-ink)] underline">
             See all booking ({driverBookings.length})
           </span>
         </div>
@@ -53,7 +53,7 @@ export default function ProviderBookings() {
               key={f}
               type="button"
               onClick={() => setFilter(f)}
-              className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+              className={`shrink-0 rounded-full border px-4 py-2 t-body-sm font-medium transition-colors ${
                 filter === f
                   ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
                   : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
@@ -71,7 +71,7 @@ export default function ProviderBookings() {
               size={32}
               className="text-[color:var(--color-muted)]"
             />
-            <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">
+            <p className="mt-3 t-body-sm font-semibold text-[color:var(--color-ink)]">
               No {filter.toLowerCase()} bookings
             </p>
           </div>
@@ -96,13 +96,13 @@ export default function ProviderBookings() {
                       className="size-12 rounded-lg"
                     />
                     <div>
-                      <p className="text-xs text-[color:var(--color-muted)]">
+                      <p className="t-caption text-[color:var(--color-muted)]">
                         Booking ID
                       </p>
-                      <p className="text-sm font-bold text-[color:var(--color-success)]">
+                      <p className="t-body-sm font-bold text-[color:var(--color-success)]">
                         #{b.id}
                       </p>
-                      <p className="text-xs font-medium text-[color:var(--color-ink-soft)]">
+                      <p className="t-caption font-medium text-[color:var(--color-ink-soft)]">
                         {vehicle.name}
                       </p>
                     </div>
@@ -110,10 +110,10 @@ export default function ProviderBookings() {
 
                   <div className="flex flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
                     <div>
-                      <p className="text-xs text-[color:var(--color-muted)]">
+                      <p className="t-caption text-[color:var(--color-muted)]">
                         Pick up
                       </p>
-                      <p className="text-sm font-bold text-[color:var(--color-ink)]">
+                      <p className="t-body-sm font-bold text-[color:var(--color-ink)]">
                         {b.pickup}
                       </p>
                     </div>
@@ -123,14 +123,14 @@ export default function ProviderBookings() {
                       className="hidden shrink-0 text-[color:var(--color-muted)] sm:block"
                     />
                     <div>
-                      <p className="text-xs text-[color:var(--color-muted)]">
+                      <p className="t-caption text-[color:var(--color-muted)]">
                         Drop off
                       </p>
-                      <p className="text-sm font-bold text-[color:var(--color-ink)]">
+                      <p className="t-body-sm font-bold text-[color:var(--color-ink)]">
                         {b.dropoff}
                       </p>
                     </div>
-                    <p className="text-xs text-[color:var(--color-muted)] sm:ml-auto">
+                    <p className="t-caption text-[color:var(--color-muted)] sm:ml-auto">
                       {b.date}
                     </p>
                   </div>

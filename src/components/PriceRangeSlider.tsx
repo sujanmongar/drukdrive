@@ -47,7 +47,7 @@ export default function PriceRangeSlider({
           aria-label="Maximum price"
         />
       </div>
-      <div className="mt-1.5 flex justify-between text-xs text-[color:var(--color-muted)]">
+      <div className="mt-1.5 flex justify-between t-caption text-[color:var(--color-muted)]">
         <span>{formatLabel(lo)}</span>
         <span>{formatLabel(hi)}</span>
       </div>

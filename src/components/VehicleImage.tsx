@@ -45,7 +45,9 @@ export default function VehicleImage({
   const photo = vehicleId && photoByVehicleId[vehicleId];
   if (photo) {
     return (
-      <div className={`flex items-center justify-center overflow-hidden ${transparent ? "" : "bg-[color:var(--color-surface-soft)]"} ${className}`}>
+      <div
+        className={`flex items-center justify-center overflow-hidden ${transparent ? "" : "bg-[color:var(--color-surface-soft)]"} ${className}`}
+      >
         <img
           src={photo}
           alt={category ?? ""}
@@ -62,7 +64,9 @@ export default function VehicleImage({
 
   const accent = (category && accentByCategory[category]) || "#9ca3af";
   return (
-    <div className={`flex items-center justify-center ${transparent ? "" : "bg-[color:var(--color-surface-soft)]"} ${className}`}>
+    <div
+      className={`flex items-center justify-center ${transparent ? "" : "bg-[color:var(--color-surface-soft)]"} ${className}`}
+    >
       <svg viewBox="0 0 200 100" className="h-[62%] w-[82%]" aria-hidden="true">
         <ellipse cx="100" cy="82" rx="78" ry="6" fill="#00000012" />
         <path
@@ -74,7 +78,15 @@ export default function VehicleImage({
           fill="#e5eaf0"
           opacity="0.9"
         />
-        <rect x="18" y="60" width="166" height="10" rx="5" fill="#222" opacity="0.85" />
+        <rect
+          x="18"
+          y="60"
+          width="166"
+          height="10"
+          rx="5"
+          fill="#222"
+          opacity="0.85"
+        />
         <circle cx="56" cy="72" r="14" fill="#222" />
         <circle cx="56" cy="72" r="6" fill="#cbd5e1" />
         <circle cx="146" cy="72" r="14" fill="#222" />

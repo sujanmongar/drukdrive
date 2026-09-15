@@ -22,10 +22,21 @@ export default function EditSearchModal({
     <div className="fixed inset-0 z-[55] flex items-start justify-center bg-black/40 p-0 sm:items-center sm:p-4">
       <div className="flex h-full w-full flex-col bg-white sm:h-auto sm:max-w-[440px] sm:rounded-2xl">
         <div className="flex items-center gap-4 border-b border-[color:var(--color-border)] p-4">
-          <button type="button" onClick={onClose} aria-label="Close" className="icon-btn size-10 -ml-2">
-            <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="icon-btn size-10 -ml-2"
+          >
+            <Icon
+              name="close"
+              size={22}
+              className="text-[color:var(--color-ink)]"
+            />
           </button>
-          <h2 className="t-h3 text-[color:var(--color-ink)]">Edit your search</h2>
+          <h2 className="t-h3 text-[color:var(--color-ink)]">
+            Edit your search
+          </h2>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
@@ -36,7 +47,7 @@ export default function EditSearchModal({
           <button
             type="button"
             onClick={() => onSearch(value)}
-            className="w-full rounded-xl bg-[color:var(--color-ink)] py-4 text-base font-bold text-white transition-colors hover:bg-black"
+            className="w-full rounded-xl bg-[color:var(--color-ink)] py-4 t-body font-bold text-white transition-colors hover:bg-black"
           >
             Search
           </button>

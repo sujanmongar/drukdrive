@@ -16,9 +16,20 @@ const paths: Record<string, string> = {
 
 export type SocialName = keyof typeof paths;
 
-export default function SocialIcon({ name, size = 18, ...props }: SVGProps<SVGSVGElement> & { name: SocialName; size?: number }) {
+export default function SocialIcon({
+  name,
+  size = 18,
+  ...props
+}: SVGProps<SVGSVGElement> & { name: SocialName; size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      {...props}
+    >
       <path d={paths[name]} />
     </svg>
   );

@@ -105,7 +105,7 @@ export default function VehicleCard({
               </div>
             )}
             <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-              <span className="text-xl font-bold text-[color:var(--color-ink)]">
+              <span className="t-h3 font-bold text-[color:var(--color-ink)]">
                 {format(price.amount)}
               </span>
               <span className="t-caption text-[color:var(--color-ink)]">
@@ -119,7 +119,7 @@ export default function VehicleCard({
           <Link
             to={detailsHref}
             onClick={(e) => e.stopPropagation()}
-            className="hidden shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-2.5 text-xs font-bold text-white transition-all duration-200 hover:bg-black lg:inline-flex"
+            className="hidden shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-2.5 t-caption font-bold text-white transition-all duration-200 hover:bg-black lg:inline-flex"
           >
             Book Now
           </Link>

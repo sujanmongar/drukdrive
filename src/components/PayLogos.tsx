@@ -5,7 +5,7 @@
 export function VisaMark() {
   return (
     <span
-      className="inline-flex h-6 items-center rounded-[4px] border border-[color:var(--color-border)] bg-white px-1.5 text-[11px] font-black italic tracking-tight text-[#1a1f71]"
+      className="inline-flex h-6 items-center rounded-[4px] border border-[color:var(--color-border)] bg-white px-1.5 t-label font-black italic tracking-tight text-[#1a1f71]"
       aria-label="Visa"
     >
       VISA
@@ -28,7 +28,7 @@ export function MastercardMark() {
 export function AmexMark() {
   return (
     <span
-      className="inline-flex h-6 items-center rounded-[4px] bg-[#016fd0] px-1.5 text-[10px] font-black tracking-wide text-white"
+      className="inline-flex h-6 items-center rounded-[4px] bg-[#016fd0] px-1.5 t-label font-black tracking-wide text-white"
       aria-label="American Express"
     >
       AMEX
@@ -37,7 +37,7 @@ export function AmexMark() {
 }
 
 export function PayPalMark({ size = "sm" }: { size?: "sm" | "lg" }) {
-  const cls = size === "lg" ? "text-xl" : "text-sm";
+  const cls = size === "lg" ? "t-h3" : "t-body-sm";
   return (
     <span
       className={`inline-flex items-baseline font-black italic tracking-tight ${cls}`}
@@ -59,7 +59,7 @@ const bankColours: Record<string, string> = {
 export function BankMark({ short }: { short: string }) {
   return (
     <span
-      className="inline-flex h-6 min-w-8 items-center justify-center rounded-[4px] px-1.5 text-[10px] font-black tracking-wide text-white"
+      className="inline-flex h-6 min-w-8 items-center justify-center rounded-[4px] px-1.5 t-label font-black tracking-wide text-white"
       style={{ backgroundColor: bankColours[short] ?? "#333" }}
       aria-label={short}
     >

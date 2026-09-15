@@ -414,7 +414,7 @@ export default function SearchResults() {
           <button
             type="button"
             onClick={() => setMinRating(null)}
-            className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+            className={`rounded-full border px-3.5 py-1.5 t-caption font-semibold transition-colors ${
               minRating === null
                 ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
                 : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
@@ -465,7 +465,7 @@ export default function SearchResults() {
                   <button
                     type="button"
                     onClick={clearAllFilters}
-                    className="text-xs font-semibold text-[color:var(--color-link)]"
+                    className="t-caption font-semibold text-[color:var(--color-link)]"
                   >
                     Clear all
                   </button>
@@ -484,7 +484,7 @@ export default function SearchResults() {
                   role="status"
                   aria-label="Loading results"
                 />
-                <p className="text-sm text-[color:var(--color-muted)]">
+                <p className="t-body-sm text-[color:var(--color-muted)]">
                   Finding the best rides for you&hellip;
                 </p>
               </div>
@@ -505,10 +505,10 @@ export default function SearchResults() {
                     onClick={() => setSortOpen(true)}
                     className="flex h-11 flex-col justify-center text-left"
                   >
-                    <span className="text-xs text-[color:var(--color-muted)]">
+                    <span className="t-caption text-[color:var(--color-muted)]">
                       Sorted by
                     </span>
-                    <span className="flex items-center gap-1 text-sm font-bold text-[color:var(--color-ink)]">
+                    <span className="flex items-center gap-1 t-body-sm font-bold text-[color:var(--color-ink)]">
                       {sortOptions.find((o) => o.value === sort)?.label}
                       <Icon name="chevron-down" size={14} />
                     </span>
@@ -518,12 +518,12 @@ export default function SearchResults() {
                     <button
                       type="button"
                       onClick={() => setFilterOpen(true)}
-                      className="flex h-11 items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-4 text-sm font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
+                      className="flex h-11 items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-4 t-body-sm font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
                     >
                       <Icon name="filter" size={16} />
                       Filter
                       {activeFilterCount > 0 && (
-                        <span className="flex size-4 items-center justify-center rounded-full bg-[color:var(--color-ink)] text-[9px] font-bold text-white">
+                        <span className="flex size-4 items-center justify-center rounded-full bg-[color:var(--color-ink)] t-label font-bold text-white">
                           {activeFilterCount}
                         </span>
                       )}
@@ -544,7 +544,7 @@ export default function SearchResults() {
                       <button
                         type="button"
                         onClick={() => setSortOpen((v) => !v)}
-                        className="flex items-center gap-1.5 text-sm text-[color:var(--color-ink-soft)]"
+                        className="flex items-center gap-1.5 t-body-sm text-[color:var(--color-ink-soft)]"
                       >
                         Sorted by
                         <span className="font-bold text-[color:var(--color-ink)]">
@@ -568,7 +568,7 @@ export default function SearchResults() {
                                   setSort(opt.value);
                                   setSortOpen(false);
                                 }}
-                                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
+                                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left t-body-sm ${
                                   sort === opt.value
                                     ? "bg-[#f4f4f4] font-semibold text-[color:var(--color-ink)]"
                                     : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
@@ -594,13 +594,13 @@ export default function SearchResults() {
                       size={32}
                       className="text-[color:var(--color-muted)]"
                     />
-                    <p className="text-sm font-semibold text-[color:var(--color-ink)]">
+                    <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
                       No vehicles match these filters
                     </p>
                     <button
                       type="button"
                       onClick={clearAllFilters}
-                      className="text-sm font-semibold text-[color:var(--color-ink)] underline"
+                      className="t-body-sm font-semibold text-[color:var(--color-ink)] underline"
                     >
                       Clear filters
                     </button>
@@ -734,7 +734,7 @@ export default function SearchResults() {
                     )}
                   </span>
                   <span
-                    className={`text-sm ${sort === opt.value ? "font-bold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)]"}`}
+                    className={`t-body-sm ${sort === opt.value ? "font-bold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)]"}`}
                   >
                     {opt.label}
                   </span>

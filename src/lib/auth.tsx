@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
 // Simulated auth state for this static prototype — there is no backend, so
 // "signing in" just flips this flag (persisted to localStorage so it survives

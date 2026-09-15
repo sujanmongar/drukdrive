@@ -1,4 +1,10 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
 // Language preference for the prototype. The choice is stored and reflected in
 // the UI, but copy itself is not translated — there is no i18n catalogue behind
@@ -6,7 +12,12 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from "re
 
 export type LanguageCode = "en" | "dz" | "hi" | "ne";
 
-export const languages: { code: LanguageCode; label: string; native: string; flag: string }[] = [
+export const languages: {
+  code: LanguageCode;
+  label: string;
+  native: string;
+  flag: string;
+}[] = [
   { code: "en", label: "English", native: "English", flag: "🇬🇧" },
   { code: "dz", label: "Dzongkha", native: "རྫོང་ཁ", flag: "🇧🇹" },
   { code: "hi", label: "Hindi", native: "हिन्दी", flag: "🇮🇳" },
@@ -42,7 +53,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(() => ({ language, setLanguage }), [language]);
 
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+  return (
+    <LanguageContext.Provider value={value}>
+      {children}
+    </LanguageContext.Provider>
+  );
 }
 
 export function useLanguage() {

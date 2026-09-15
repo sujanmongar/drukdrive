@@ -25,7 +25,11 @@ export default function SectionHeader({
     <div className="mb-6 flex items-end justify-between gap-4 md:mb-8">
       <div>
         <h2 className="t-h2 text-[color:var(--color-ink)]">{title}</h2>
-        {subtitle && <p className="t-body mt-1.5 text-[color:var(--color-muted)]">{subtitle}</p>}
+        {subtitle && (
+          <p className="t-body mt-1.5 text-[color:var(--color-muted)]">
+            {subtitle}
+          </p>
+        )}
       </div>
 
       {trackRef && (
@@ -38,7 +42,11 @@ export default function SectionHeader({
               aria-label={direction === -1 ? "Previous" : "Next"}
               className="icon-btn icon-btn-arrow size-10"
             >
-              <Icon name={direction === -1 ? "chevron-left" : "chevron-right"} size={18} strokeWidth={2.2} />
+              <Icon
+                name={direction === -1 ? "chevron-left" : "chevron-right"}
+                size={18}
+                strokeWidth={2.2}
+              />
             </button>
           ))}
         </div>

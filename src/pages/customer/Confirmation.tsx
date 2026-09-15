@@ -204,7 +204,7 @@ export default function Confirmation() {
             </Button>
             <a
               href={`mailto:?subject=${encodeURIComponent(`DrukDrive booking ${bookingId}`)}`}
-              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 text-xs font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)] md:min-h-0 md:py-2"
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 t-caption font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)] md:min-h-0 md:py-2"
             >
               <Icon name="mail" size={15} />
               Email
