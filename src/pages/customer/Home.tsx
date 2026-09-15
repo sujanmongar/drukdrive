@@ -105,7 +105,7 @@ export default function Home() {
       dropoff: recentDropoff,
       date: formatTripDate(pickupDate, pickupTime),
     });
-    navigate(`${routes.reviewBooking}?${params.toString()}`);
+    navigate(`${routes.bookingReview}?${params.toString()}`);
   }
 
   const tripQuery = new URLSearchParams({

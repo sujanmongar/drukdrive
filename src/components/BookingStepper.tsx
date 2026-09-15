@@ -1,4 +1,4 @@
-const steps = ["Your selection", "Details", "Payment"];
+const steps = ["Review", "Details", "Payment"];
 
 // Checkout progress as three segments that fill left to right — the
 // Airbnb / Trip.com shape. Each segment carries its own step name, so the

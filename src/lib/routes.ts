@@ -13,6 +13,7 @@ export const routes = {
   // customer booking flow
   home: "/",
   search: "/search",
+  bookingReview: "/checkout/review",
   reviewBooking: "/checkout/details",
   payment: "/checkout/payment",
   paymentVerify: "/checkout/verify",

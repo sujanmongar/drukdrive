@@ -23,7 +23,7 @@ export default function VehicleListCard({
   const saved = isSaved(vehicle.id);
   const bookingParams = new URLSearchParams(tripQuery);
   bookingParams.set("vehicleId", vehicle.id);
-  const detailsHref = `${routes.reviewBooking}?${bookingParams.toString()}`;
+  const detailsHref = `${routes.bookingReview}?${bookingParams.toString()}`;
   const discountPct = vehicle.strikePrice
     ? Math.round((1 - vehicle.pricePerDay / vehicle.strikePrice) * 100)
     : null;

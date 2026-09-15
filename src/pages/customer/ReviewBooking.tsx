@@ -8,7 +8,7 @@ import BookingRouteCard from "../../components/BookingRouteCard";
 import FareSummary from "../../components/FareSummary";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
-import { computeFare, RENTAL_DAYS } from "../../lib/pricing";
+import { addOns, computeFare, parseAddOnIds, RENTAL_DAYS } from "../../lib/pricing";
 import { useCurrency } from "../../lib/currency";
 import { useAuth } from "../../lib/auth";
 import { useCurrentUser } from "../../lib/currentUser";
@@ -25,7 +25,7 @@ const PROMO_CODES: Record<string, number> = {
 };
 
 export default function ReviewBooking() {
-  usePageTitle("Review your booking");
+  usePageTitle("Your details");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
@@ -34,7 +34,8 @@ export default function ReviewBooking() {
 
   const vehicleId = searchParams.get("vehicleId");
   const vehicle = vehicles.find((v) => v.id === vehicleId) ?? vehicles[0];
-  const { baseFare, taxes, total } = computeFare(vehicle.pricePerDay);
+  const addOnIds = parseAddOnIds(searchParams.get("addons"));
+  const { baseFare, taxes, total } = computeFare(vehicle.pricePerDay, addOnIds);
 
   const pickup = searchParams.get("pickup") || DEFAULT_PICKUP;
   const dropoff = searchParams.get("dropoff") || DEFAULT_DROPOFF;
@@ -104,6 +105,7 @@ export default function ReviewBooking() {
       grandTotal: total.toFixed(2),
       amountDue: amountDue.toFixed(2),
       paymentOption,
+      ...(addOnIds.length ? { addons: addOnIds.join(",") } : {}),
       travelerName: fullName,
       travelerEmail: email,
       travelerPhone: phone,
@@ -360,6 +362,9 @@ export default function ReviewBooking() {
                       label: `${format(vehicle.pricePerDay)} × ${RENTAL_DAYS} days`,
                       value: format(baseFare),
                     },
+                    ...addOns
+                      .filter((a) => addOnIds.includes(a.id))
+                      .map((a) => ({ label: a.name, value: format(a.pricePerDay * RENTAL_DAYS) })),
                     { label: "Taxes & fees", value: format(taxes) },
                     ...(discount > 0
                       ? [

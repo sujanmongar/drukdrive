@@ -11,11 +11,16 @@ export default function BookingRouteCard({
   pickup,
   dropoff,
   date,
+  total,
+  days,
 }: {
   vehicle: Vehicle;
   pickup: string;
   dropoff: string;
   date?: string;
+  /** Formatted trip total; shown in the car card on the review step only. */
+  total?: string;
+  days?: number;
 }) {
   const stops = [
     { key: "pickup", when: date || "Pick-up time to be confirmed", place: pickup },
@@ -31,8 +36,22 @@ export default function BookingRouteCard({
           <h3 className="t-h4 truncate text-[color:var(--color-ink)]">{vehicle.name}</h3>
           <p className="t-body-sm text-[color:var(--color-muted)]">or similar {vehicleClassOf[vehicle.category]}</p>
           <VehicleSpecs vehicle={vehicle} className="mt-3" />
+          <p className="mt-2 flex items-center gap-1.5 t-body-sm text-[color:var(--color-ink)]">
+            <Icon name="star" size={15} className="fill-current text-[color:var(--color-star)]" />
+            <span className="font-semibold">{vehicle.rating.toFixed(1)}</span>
+            <span className="text-[color:var(--color-muted)]">({vehicle.reviewCount} reviews)</span>
+          </p>
         </div>
       </div>
+      {total && (
+        <div className="-mt-4 flex items-end justify-between gap-3 rounded-b-2xl border border-t-0 border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] px-4 py-3 sm:px-5">
+          <p className="t-body-sm text-[color:var(--color-muted)]">
+            Total for {days} days
+            <span className="block t-caption">taxes and fees included</span>
+          </p>
+          <p className="t-h3 tabular text-[color:var(--color-ink)]">{total}</p>
+        </div>
+      )}
 
       {/* Pick-up and drop-off: two stops on a rail, a pin marking each. */}
       <div className="rounded-2xl border border-[color:var(--color-border)] bg-white p-4 sm:p-5">

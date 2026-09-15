@@ -47,7 +47,7 @@ export default function WishlistSheet({ onClose, tripQuery = "" }: { onClose: ()
                       <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-full p-1" />
                     </div>
                     <Link
-                      to={`${routes.reviewBooking}?${params.toString()}`}
+                      to={`${routes.bookingReview}?${params.toString()}`}
                       onClick={onClose}
                       className="min-w-0 flex-1"
                     >

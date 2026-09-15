@@ -12,6 +12,7 @@ const RoleSelect = lazy(() => import("./pages/auth/RoleSelect"));
 
 const Home = lazy(() => import("./pages/customer/Home"));
 const SearchResults = lazy(() => import("./pages/customer/SearchResults"));
+const BookingReview = lazy(() => import("./pages/customer/BookingReview"));
 const ReviewBooking = lazy(() => import("./pages/customer/ReviewBooking"));
 const Payment = lazy(() => import("./pages/customer/Payment"));
 const PaymentVerify = lazy(() => import("./pages/customer/PaymentVerify"));
@@ -70,6 +71,7 @@ export default function App() {
         {/* Customer booking flow */}
         <Route path={routes.home} element={<Home />} />
         <Route path={routes.search} element={<SearchResults />} />
+        <Route path={routes.bookingReview} element={<BookingReview />} />
         <Route path={routes.reviewBooking} element={<ReviewBooking />} />
         <Route path={routes.payment} element={<Payment />} />
         <Route path={routes.paymentVerify} element={<PaymentVerify />} />
