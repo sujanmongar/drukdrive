@@ -8,12 +8,19 @@ import { routes } from "../../lib/routes";
 import { vehicles } from "../../data/mockData";
 import { useCurrentUser } from "../../lib/currentUser";
 import { computeFare, isAddOnId } from "../../lib/pricing";
-import { parseBooking } from "../../lib/booking";
+import { formatDropoff, formatPickup, parseBooking } from "../../lib/booking";
+import { bookingTypeLabels } from "../../lib/routes";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 function todayFormatted() {
-  return new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).replace(/ /g, "-");
+  return new Date()
+    .toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })
+    .replace(/ /g, "-");
 }
 
 // A fresh, realistic-looking booking id for this just-completed purchase —
@@ -29,14 +36,16 @@ export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
   const { user: currentUser } = useCurrentUser();
-  const vehicleId = searchParams.get("vehicleId");
-  const vehicle = vehicles.find((v) => v.id === vehicleId) ?? vehicles[0];
-  const pickup = searchParams.get("pickup") || vehicle.location;
-  const dropoff = searchParams.get("dropoff") || vehicle.location;
-  const date = searchParams.get("date") || todayFormatted();
+  const booking = parseBooking(searchParams, isAddOnId);
+  const vehicle =
+    vehicles.find((v) => v.id === booking.vehicleId) ?? vehicles[0];
+  const { pickup, dropoff } = booking;
+  const date = formatPickup(booking);
+  const fare = computeFare(booking, vehicle.pricePerDay, format);
 
-  const grandTotalParam = searchParams.get("grandTotal") || searchParams.get("total");
-  const grandTotal = grandTotalParam ? Number(grandTotalParam) : computeFare(parseBooking(searchParams, isAddOnId), vehicle.pricePerDay).total;
+  const grandTotalParam =
+    searchParams.get("grandTotal") || searchParams.get("total");
+  const grandTotal = grandTotalParam ? Number(grandTotalParam) : fare.total;
   const amountDueParam = searchParams.get("amountDue");
   const amountDue = amountDueParam ? Number(amountDueParam) : grandTotal;
   const paymentOption = searchParams.get("paymentOption") || "full";
@@ -47,41 +56,67 @@ export default function PaymentSuccess() {
 
   const [bookingId] = useState(generateBookingId);
 
-  const followOnParams = new URLSearchParams({
-    vehicleId: vehicle.id,
-    total: grandTotal.toFixed(2),
-    pickup,
-    dropoff,
-    date,
-    travelerName,
-    travelerEmail,
-    travelerPhone,
-    method,
-  });
+  // Everything about the booking travels on to the confirmation and
+  // invoice, so they can show the same type, dates, add-ons and split.
+  const followOnParams = new URLSearchParams(searchParams);
+  followOnParams.set("vehicleId", vehicle.id);
+  followOnParams.set("total", grandTotal.toFixed(2));
+  followOnParams.set("amountDue", amountDue.toFixed(2));
+  followOnParams.set("travelerName", travelerName);
+  followOnParams.set("travelerEmail", travelerEmail);
+  followOnParams.set("travelerPhone", travelerPhone);
+  followOnParams.set("method", method);
   const invoiceUrl = `${routes.invoice(bookingId)}?${followOnParams.toString()}`;
   const confirmationUrl = `${routes.confirmation(bookingId)}?${followOnParams.toString()}`;
 
   const receiptRows = [
     { label: "Transactions ID", value: `HBTTB${bookingId.slice(-7)}` },
     { label: "Date", value: todayFormatted() },
+    {
+      label: "Booking",
+      value: `${bookingTypeLabels[booking.type]} · ${fare.unit}`,
+    },
     { label: "Mode of Payment", value: method },
     { label: "Transaction Status", value: "Success", accent: true },
     { label: "Customer Name", value: travelerName },
     { label: "Mobile No", value: travelerPhone },
     { label: "Email Address", value: travelerEmail },
     { label: "Payment Amount", value: format(amountDue) },
-    ...(paymentOption === "half" ? [{ label: "Balance due to driver", value: format(grandTotal - amountDue) }] : []),
+    ...(paymentOption === "half"
+      ? [
+          {
+            label: "Balance due at pick-up",
+            value: format(grandTotal - amountDue),
+          },
+        ]
+      : []),
+    ...(fare.deposit > 0
+      ? [
+          {
+            label: "Deposit at collection (refundable)",
+            value: format(fare.deposit),
+          },
+        ]
+      : []),
   ];
 
   const emailHref = `mailto:${travelerEmail}?subject=${encodeURIComponent(
     `DrukDrive receipt — ${bookingId}`,
   )}&body=${encodeURIComponent(
-    `Booking ${bookingId}\nVehicle: ${vehicle.name}\nPickup: ${pickup}\nDrop-off: ${dropoff}\nDate: ${date}\nAmount paid: ${format(amountDue)}`,
+    `Booking ${bookingId}\n${bookingTypeLabels[booking.type]}\nVehicle: ${vehicle.name}\nPickup: ${pickup}, ${date}\nDrop-off: ${dropoff}, ${formatDropoff(booking)}\nAmount paid: ${format(amountDue)}`,
   )}`;
 
   const actions = [
-    { icon: "download" as const, label: "Save as PDF", onClick: () => window.print() },
-    { icon: "download" as const, label: "Print Receipt", onClick: () => window.print() },
+    {
+      icon: "download" as const,
+      label: "Save as PDF",
+      onClick: () => window.print(),
+    },
+    {
+      icon: "download" as const,
+      label: "Print Receipt",
+      onClick: () => window.print(),
+    },
     { icon: "mail" as const, label: "Email Receipt", href: emailHref },
   ];
 
@@ -91,8 +126,14 @@ export default function PaymentSuccess() {
         <BookingStepper current={3} allDone />
 
         <div className="mt-8 flex flex-col items-center text-center">
-          <Icon name="check-circle" size={64} className="text-[color:var(--color-success)]" />
-          <h1 className="t-h1 mt-4 text-[color:var(--color-success)]">Booking Successful</h1>
+          <Icon
+            name="check-circle"
+            size={64}
+            className="text-[color:var(--color-success)]"
+          />
+          <h1 className="t-h1 mt-4 text-[color:var(--color-success)]">
+            Booking Successful
+          </h1>
           <p className="mt-2 max-w-sm text-sm text-[color:var(--color-ink-soft)]">
             We are processing the same and you will be notified via email.
           </p>
@@ -106,8 +147,12 @@ export default function PaymentSuccess() {
                 i !== 0 ? "border-t border-[color:var(--color-border)]" : ""
               }`}
             >
-              <span className="text-[color:var(--color-muted)]">{row.label}</span>
-              <span className={`font-bold ${row.accent ? "text-[color:var(--color-success)]" : "text-[color:var(--color-ink)]"}`}>
+              <span className="text-[color:var(--color-muted)]">
+                {row.label}
+              </span>
+              <span
+                className={`font-bold ${row.accent ? "text-[color:var(--color-success)]" : "text-[color:var(--color-ink)]"}`}
+              >
                 {row.value}
               </span>
             </div>
@@ -150,7 +195,12 @@ export default function PaymentSuccess() {
             <Button variant="ghost" size="md" to={invoiceUrl} fullWidth>
               View Invoice
             </Button>
-            <Button variant="ghost" size="md" to={routes.accountBookings} fullWidth>
+            <Button
+              variant="ghost"
+              size="md"
+              to={routes.accountBookings}
+              fullWidth
+            >
               My Bookings
             </Button>
           </div>

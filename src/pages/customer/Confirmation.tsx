@@ -6,8 +6,8 @@ import VehicleImage from "../../components/VehicleImage";
 import StatusBadge from "../../components/StatusBadge";
 import { routes, bookingTypeLabels } from "../../lib/routes";
 import { bookings, vehicles } from "../../data/mockData";
-import { computeFare, isAddOnId } from "../../lib/pricing";
-import { parseBooking, parseSearch } from "../../lib/booking";
+import { addOns, computeFare, isAddOnId } from "../../lib/pricing";
+import { formatDropoff, formatPickup, parseBooking } from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
@@ -30,15 +30,21 @@ export default function Confirmation() {
     vehicles.find((v) => v.id === historicalBooking.vehicleId) ?? vehicles[0];
 
   const vehicle = liveVehicle ?? historicalVehicle;
+  const booking = parseBooking(searchParams, isAddOnId);
+  const fare = liveVehicle
+    ? computeFare(booking, liveVehicle.pricePerDay, format)
+    : null;
   const totalParam = searchParams.get("total");
   const displayTotal = totalParam
     ? Number(totalParam)
-    : liveVehicle
-      ? computeFare(
-          parseBooking(searchParams, isAddOnId),
-          liveVehicle.pricePerDay,
-        ).total
+    : fare
+      ? fare.total
       : historicalBooking.total;
+  const amountPaid = Number(searchParams.get("amountDue")) || displayTotal;
+  const balance = Math.round((displayTotal - amountPaid) * 100) / 100;
+  const chosenAddOns = liveVehicle
+    ? addOns.filter((a) => booking.addOnIds.includes(a.id))
+    : [];
 
   const pickup = liveVehicle
     ? searchParams.get("pickup") || vehicle.location
@@ -46,12 +52,11 @@ export default function Confirmation() {
   const dropoff = liveVehicle
     ? searchParams.get("dropoff") || vehicle.location
     : historicalBooking.dropoff;
-  const date = liveVehicle
-    ? searchParams.get("date") || ""
-    : historicalBooking.date;
+  const date = liveVehicle ? formatPickup(booking) : historicalBooking.date;
+  const dropoffWhen = liveVehicle ? formatDropoff(booking) : null;
   const status = liveVehicle ? "Upcoming" : historicalBooking.status;
   const bookingType = liveVehicle
-    ? bookingTypeLabels[parseSearch(searchParams).type]
+    ? `${bookingTypeLabels[booking.type]}${fare ? ` · ${fare.unit}` : ""}`
     : historicalBooking.bookingType;
   const bookingId = liveVehicle
     ? (id ?? historicalBooking.id)
@@ -139,9 +144,14 @@ export default function Confirmation() {
               />
               <div>
                 <p className="text-xs font-semibold text-[color:var(--color-muted)]">
-                  Date &amp; time
+                  {dropoffWhen ? "Pick-up · Drop-off" : "Date & time"}
                 </p>
                 <p className="text-sm text-[color:var(--color-ink)]">{date}</p>
+                {dropoffWhen && (
+                  <p className="text-sm text-[color:var(--color-ink)]">
+                    {dropoffWhen}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -155,11 +165,42 @@ export default function Confirmation() {
                   Amount paid
                 </p>
                 <p className="text-sm text-[color:var(--color-ink)]">
-                  {format(displayTotal)}
+                  {format(amountPaid)}
                 </p>
+                {balance > 0 && (
+                  <p className="text-xs text-[color:var(--color-muted)]">
+                    {format(balance)} due to the driver at pick-up
+                  </p>
+                )}
+                {fare && fare.deposit > 0 && (
+                  <p className="text-xs text-[color:var(--color-muted)]">
+                    {format(fare.deposit)} refundable deposit at collection
+                  </p>
+                )}
               </div>
             </div>
           </div>
+
+          {chosenAddOns.length > 0 && (
+            <>
+              <div className="my-5 h-px bg-[color:var(--color-border)]" />
+              <div className="flex items-start gap-3">
+                <Icon
+                  name="check-circle"
+                  size={18}
+                  className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]"
+                />
+                <div>
+                  <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+                    Add-ons
+                  </p>
+                  <p className="text-sm text-[color:var(--color-ink)]">
+                    {chosenAddOns.map((a) => a.name).join(", ")}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
 
           <div className="my-5 h-px bg-[color:var(--color-border)]" />
 

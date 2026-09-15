@@ -321,7 +321,7 @@ export const bookings: Booking[] = [
     date: "12 Oct, 13:00",
     status: "Completed",
     total: 54,
-    bookingType: "Outstation",
+    bookingType: "Daily Rides",
   },
   {
     id: "GI1671176980",
