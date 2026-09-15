@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
+import AddOnCard from "../../components/AddOnCard";
 import BookingStepper from "../../components/BookingStepper";
 import {
   StopsCard,
@@ -146,56 +147,15 @@ export default function BookingReview() {
               Add-ons
             </h2>
             <div className="mt-4 flex flex-col gap-4">
-              {addOns.map((addOn) => {
-                const added = selected.includes(addOn.id);
-                return (
-                  <div
-                    key={addOn.id}
-                    className={`rounded-2xl border bg-white p-5 shadow-card transition-colors ${
-                      added
-                        ? "border-[color:var(--color-ink)]"
-                        : "border-[color:var(--color-border)]"
-                    }`}
-                  >
-                    <div className="flex flex-col gap-4">
-                      <div className="min-w-0">
-                        <h3 className="t-h4 text-[color:var(--color-ink)]">
-                          {addOn.name}
-                        </h3>
-                        <p className="mt-1 t-body-sm text-[color:var(--color-ink-soft)]">
-                          {addOn.description}
-                        </p>
-                      </div>
-                      <div className="flex items-center justify-between gap-4">
-                        <p className="text-right">
-                          <span className="block t-body-lg tabular font-bold text-[color:var(--color-ink)]">
-                            {format(addOn.pricePerDay)}
-                          </span>
-                          <span className="block t-caption text-[color:var(--color-muted)]">
-                            per day
-                          </span>
-                        </p>
-                        <Button
-                          variant={added ? "secondary" : "primary"}
-                          size="md"
-                          onClick={() => toggle(addOn.id)}
-                          aria-pressed={added}
-                          className="min-w-[104px]"
-                        >
-                          {added ? (
-                            <span className="flex items-center gap-1.5">
-                              <Icon name="check" size={16} strokeWidth={2.5} />
-                              Added
-                            </span>
-                          ) : (
-                            "Add"
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              {addOns.map((addOn) => (
+                <AddOnCard
+                  key={addOn.id}
+                  addOn={addOn}
+                  added={selected.includes(addOn.id)}
+                  price={format(addOn.pricePerDay)}
+                  onToggle={() => toggle(addOn.id)}
+                />
+              ))}
             </div>
 
             <div className="mt-8 hidden justify-end lg:flex">

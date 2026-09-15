@@ -5,7 +5,16 @@
 export const RENTAL_DAYS = 3;
 export const TAX_RATE = 0.1;
 
-export type AddOn = { id: string; name: string; description: string; pricePerDay: number };
+export type AddOn = {
+  id: string;
+  name: string;
+  description: string;
+  pricePerDay: number;
+  /** What the add-on is for, in one line. */
+  purpose: string;
+  /** How it works, step by step. */
+  howItWorks: string[];
+};
 
 // Optional extras offered on the review step, priced per day.
 export const addOns: AddOn[] = [
@@ -14,12 +23,24 @@ export const addOns: AddOn[] = [
     name: "Last-minute cancellation",
     description: "Cancel free of charge up until 1 hour before pick-up instead of 24 hours.",
     pricePerDay: 3.5,
+    purpose: "For plans that might change — a delayed flight, a shifted meeting, a change of heart.",
+    howItWorks: [
+      "Without it, a booking cancelled inside 24 hours of pick-up forfeits the amount paid.",
+      "With it, you can cancel from your bookings page up to 1 hour before pick-up and the amount paid is refunded in full.",
+      "The add-on fee itself is not refundable.",
+    ],
   },
   {
     id: "rsa",
     name: "Roadside assistance",
     description: "24/7 help on the road — breakdown, flat tyre or a replacement vehicle sent to you.",
     pricePerDay: 2,
+    purpose: "For long mountain routes where the nearest garage can be hours away.",
+    howItWorks: [
+      "Call the DrukDrive helpline any time during your trip; the number is on your booking confirmation.",
+      "We send the nearest partner mechanic for a breakdown, flat tyre or battery.",
+      "If the vehicle can't continue, a replacement is sent to you at no extra cost.",
+    ],
   },
 ];
 
