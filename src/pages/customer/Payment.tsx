@@ -132,7 +132,7 @@ export default function Payment() {
     params.set("total", netPayable.toFixed(2));
     params.set("amountDue", amountDue.toFixed(2));
     params.set("paymentOption", balance > 0 ? "half" : "full");
-    navigate(`${routes.paymentSuccess}?${params.toString()}`);
+    navigate(`${routes.confirmation(`GI${Date.now()}`)}?${params.toString()}`);
   }
 
   function setDigit(i: number, v: string) {

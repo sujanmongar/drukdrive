@@ -8,30 +8,38 @@ const SignUp = lazy(() => import("./pages/auth/SignUp"));
 const Otp = lazy(() => import("./pages/auth/Otp"));
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
-const RoleSelect = lazy(() => import("./pages/auth/RoleSelect"));
 
 const Home = lazy(() => import("./pages/customer/Home"));
 const SearchResults = lazy(() => import("./pages/customer/SearchResults"));
 const BookingReview = lazy(() => import("./pages/customer/BookingReview"));
 const ReviewBooking = lazy(() => import("./pages/customer/ReviewBooking"));
 const Payment = lazy(() => import("./pages/customer/Payment"));
-const PaymentSuccess = lazy(() => import("./pages/customer/PaymentSuccess"));
 const Confirmation = lazy(() => import("./pages/customer/Confirmation"));
 const Invoice = lazy(() => import("./pages/customer/Invoice"));
 
 const AccountBookings = lazy(() => import("./pages/customer/profile/Bookings"));
 const AccountWishlist = lazy(() => import("./pages/customer/profile/Wishlist"));
-const AccountNotifications = lazy(() => import("./pages/customer/profile/Notifications"));
+const AccountNotifications = lazy(
+  () => import("./pages/customer/profile/Notifications"),
+);
 const AccountReviews = lazy(() => import("./pages/customer/profile/Reviews"));
 const AccountFinance = lazy(() => import("./pages/customer/profile/Finance"));
 const AccountProfile = lazy(() => import("./pages/customer/profile/Account"));
-const AccountProfileEdit = lazy(() => import("./pages/customer/profile/AccountEdit"));
-const AccountPreferences = lazy(() => import("./pages/customer/profile/Preferences"));
+const AccountProfileEdit = lazy(
+  () => import("./pages/customer/profile/AccountEdit"),
+);
+const AccountPreferences = lazy(
+  () => import("./pages/customer/profile/Preferences"),
+);
 
 const ProviderProfile = lazy(() => import("./pages/provider/Profile"));
 const ProviderBookings = lazy(() => import("./pages/provider/Bookings"));
-const ProviderBookingDetail = lazy(() => import("./pages/provider/BookingDetail"));
-const ProviderNotifications = lazy(() => import("./pages/provider/Notifications"));
+const ProviderBookingDetail = lazy(
+  () => import("./pages/provider/BookingDetail"),
+);
+const ProviderNotifications = lazy(
+  () => import("./pages/provider/Notifications"),
+);
 const ProviderReviews = lazy(() => import("./pages/provider/Reviews"));
 const ProviderVehicles = lazy(() => import("./pages/provider/Vehicles"));
 const ProviderVehicleAdd = lazy(() => import("./pages/provider/VehicleAdd"));
@@ -65,7 +73,6 @@ export default function App() {
         <Route path={routes.otp} element={<Otp />} />
         <Route path={routes.forgotPassword} element={<ForgotPassword />} />
         <Route path={routes.resetPassword} element={<ResetPassword />} />
-        <Route path={routes.roleSelect} element={<RoleSelect />} />
 
         {/* Customer booking flow */}
         <Route path={routes.home} element={<Home />} />
@@ -73,7 +80,6 @@ export default function App() {
         <Route path={routes.bookingReview} element={<BookingReview />} />
         <Route path={routes.reviewBooking} element={<ReviewBooking />} />
         <Route path={routes.payment} element={<Payment />} />
-        <Route path={routes.paymentSuccess} element={<PaymentSuccess />} />
         <Route path={routes.confirmation()} element={<Confirmation />} />
         <Route path={routes.invoice()} element={<Invoice />} />
 

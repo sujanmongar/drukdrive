@@ -23,7 +23,7 @@ export default function SignUp() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    navigate(routes.roleSelect);
+    navigate(routes.otp, { state: { role: "customer" } });
   };
 
   const methodTabs = (

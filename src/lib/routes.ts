@@ -8,7 +8,6 @@ export const routes = {
   otp: "/sign-in/otp",
   forgotPassword: "/sign-in/forgot-password",
   resetPassword: "/sign-in/reset-password",
-  roleSelect: "/sign-up/role",
 
   // customer booking flow
   home: "/",
@@ -16,7 +15,6 @@ export const routes = {
   bookingReview: "/checkout/review",
   reviewBooking: "/checkout/details",
   payment: "/checkout/payment",
-  paymentSuccess: "/checkout/success",
   confirmation: (id: string = ":id") => `/booking/${id}/confirmation`,
   invoice: (id: string = ":id") => `/booking/${id}/invoice`,
 
