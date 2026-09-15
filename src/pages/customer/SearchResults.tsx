@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
-import VehicleCard from "../../components/VehicleCard";
 import VehicleListCard from "../../components/VehicleListCard";
 import Icon from "../../components/Icon";
 import EditSearchModal from "../../components/EditSearchModal";
@@ -28,7 +27,6 @@ import {
 import { displayPrice } from "../../lib/pricing";
 
 type SortOption = "recommended" | "price-low" | "price-high" | "rating";
-type ViewMode = "grid" | "list";
 
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: "recommended", label: "Recommended" },
@@ -126,7 +124,6 @@ export default function SearchResults() {
     return () => clearTimeout(t);
   }, []);
 
-  const [view, setView] = useState<ViewMode>("grid");
   const [sortOpen, setSortOpen] = useState(false);
   const [sort, setSort] = useState<SortOption>("recommended");
 
@@ -430,37 +427,6 @@ export default function SearchResults() {
     </div>
   );
 
-  const viewToggle = (
-    <div className="flex h-11 items-center rounded-xl border border-[color:var(--color-border)] px-1">
-      <button
-        type="button"
-        aria-label="Grid view"
-        aria-pressed={view === "grid"}
-        onClick={() => setView("grid")}
-        className={`flex size-8 items-center justify-center rounded-lg transition-colors ${
-          view === "grid"
-            ? "bg-[color:var(--color-ink)] text-white"
-            : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
-        }`}
-      >
-        <Icon name="grid" size={15} />
-      </button>
-      <button
-        type="button"
-        aria-label="List view"
-        aria-pressed={view === "list"}
-        onClick={() => setView("list")}
-        className={`flex size-8 items-center justify-center rounded-lg transition-colors ${
-          view === "list"
-            ? "bg-[color:var(--color-ink)] text-white"
-            : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
-        }`}
-      >
-        <Icon name="list" size={15} />
-      </button>
-    </div>
-  );
-
   const activeFilterCount =
     selectedTypes.length +
     selectedBrands.length +
@@ -562,7 +528,6 @@ export default function SearchResults() {
                         </span>
                       )}
                     </button>
-                    {viewToggle}
                   </div>
                 </div>
 
@@ -619,7 +584,6 @@ export default function SearchResults() {
                         </>
                       )}
                     </div>
-                    {viewToggle}
                   </div>
                 </div>
 
@@ -640,16 +604,6 @@ export default function SearchResults() {
                     >
                       Clear filters
                     </button>
-                  </div>
-                ) : view === "grid" ? (
-                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 xl:grid-cols-3">
-                    {visibleResults.map((vehicle) => (
-                      <VehicleCard
-                        key={vehicle.id}
-                        vehicle={vehicle}
-                        tripQuery={tripQuery}
-                      />
-                    ))}
                   </div>
                 ) : (
                   <div className="flex flex-col gap-4">

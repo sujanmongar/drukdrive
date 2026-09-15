@@ -9,9 +9,9 @@ import { parseSearch } from "../lib/booking";
 import { displayPrice } from "../lib/pricing";
 import { useWishlist } from "../lib/wishlist";
 
-// Horizontal row layout for the search results "List view" — image left,
-// details centre, price + Book Now in their own divided column on the right.
-// Shows the same fields as the grid VehicleCard, just laid out horizontally.
+// The one search-result card. Image left, details beside it (heart above
+// the name), then the price and Book Now: below a divider on phones, in
+// their own column on the right from lg.
 export default function VehicleListCard({
   vehicle,
   tripQuery = "",
@@ -32,6 +32,42 @@ export default function VehicleListCard({
     ? Math.round((1 - vehicle.pricePerDay / vehicle.strikePrice) * 100)
     : null;
 
+  const priceBlock = (
+    <div className="min-w-0">
+      {dayBased && vehicle.strikePrice && (
+        <div className="flex items-baseline gap-1.5 whitespace-nowrap">
+          <span className="t-caption font-semibold text-[color:var(--color-danger)]">
+            {discountPct}% off
+          </span>
+          <span className="t-caption text-[color:var(--color-muted)] line-through">
+            {format(vehicle.strikePrice)}
+          </span>
+        </div>
+      )}
+      <div className="flex items-baseline gap-x-1.5 whitespace-nowrap">
+        <span className="text-2xl font-bold tabular text-[color:var(--color-ink)]">
+          {format(price.amount)}
+        </span>
+        <span className="t-caption text-[color:var(--color-ink)]">
+          {price.unit}
+        </span>
+      </div>
+      <p className="t-caption whitespace-nowrap font-medium text-[color:var(--color-ink-soft)]">
+        {price.note}
+      </p>
+    </div>
+  );
+
+  const bookButton = (
+    <Link
+      to={detailsHref}
+      onClick={(e) => e.stopPropagation()}
+      className="inline-flex h-12 shrink-0 items-center justify-center whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-7 t-body-sm font-bold text-white transition-all duration-200 hover:bg-black"
+    >
+      Book Now
+    </Link>
+  );
+
   return (
     <div
       role="link"
@@ -40,34 +76,34 @@ export default function VehicleListCard({
       onKeyDown={(e) => {
         if (e.key === "Enter") navigate(detailsHref);
       }}
-      className="flex w-full cursor-pointer items-stretch overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-lift"
+      className="flex w-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-lift lg:flex-row lg:items-stretch"
     >
-      <div className="relative w-[118px] shrink-0 self-stretch overflow-hidden sm:w-[180px] lg:w-[250px]">
-        <VehicleImage
-          vehicleId={vehicle.id}
-          category={vehicle.category}
-          className="size-full p-2 lg:p-3"
-        />
-        <button
-          type="button"
-          aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
-          aria-pressed={saved}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggle(vehicle.id);
-          }}
-          className="icon-btn absolute right-2 top-2 size-9 bg-white/90 backdrop-blur-sm hover:!bg-white"
-        >
-          <Icon
-            name="heart"
-            size={16}
-            className={`transition-colors ${saved ? "fill-current text-[color:var(--color-danger)]" : "text-[color:var(--color-ink)]"}`}
+      {/* Image + details — the same content as before, only the layout moved. */}
+      <div className="flex min-w-0 flex-1 gap-3 p-3 sm:gap-5 sm:p-5">
+        <div className="relative flex w-[118px] shrink-0 items-center sm:w-[180px] lg:w-[200px]">
+          <VehicleImage
+            vehicleId={vehicle.id}
+            category={vehicle.category}
+            className="w-full"
           />
-        </button>
-      </div>
-
-      <div className="flex min-w-0 flex-1 flex-col gap-3 p-3 sm:gap-4 sm:p-5 lg:flex-row lg:items-stretch lg:gap-6">
+          <button
+            type="button"
+            aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
+            aria-pressed={saved}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggle(vehicle.id);
+            }}
+            className="icon-btn absolute -right-1 -top-1 size-9 bg-white/90 backdrop-blur-sm hover:!bg-white"
+          >
+            <Icon
+              name="heart"
+              size={16}
+              className={`transition-colors ${saved ? "fill-current text-[color:var(--color-danger)]" : "text-[color:var(--color-ink)]"}`}
+            />
+          </button>
+        </div>
         <div className="min-w-0 flex-1">
           <p className="t-h4 truncate text-[color:var(--color-ink)]">
             {vehicle.name}
@@ -103,39 +139,12 @@ export default function VehicleListCard({
 
           <VehicleSpecs vehicle={vehicle} className="mt-2.5" />
         </div>
+      </div>
 
-        <div className="flex items-end justify-between gap-3 border-t border-[color:var(--color-border)] pt-3 sm:pt-4 lg:w-[200px] lg:shrink-0 lg:flex-col lg:items-stretch lg:justify-center lg:gap-3 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-          <div className="min-w-0 lg:text-right">
-            {dayBased && vehicle.strikePrice && (
-              <div className="flex items-baseline gap-1.5 whitespace-nowrap lg:justify-end">
-                <span className="t-caption font-semibold text-[color:var(--color-danger)]">
-                  {discountPct}% off
-                </span>
-                <span className="t-caption text-[color:var(--color-muted)] line-through">
-                  {format(vehicle.strikePrice)}
-                </span>
-              </div>
-            )}
-            <div className="flex items-baseline gap-x-1.5 whitespace-nowrap lg:justify-end">
-              <span className="text-xl font-bold text-[color:var(--color-ink)] lg:text-2xl">
-                {format(price.amount)}
-              </span>
-              <span className="t-caption text-[color:var(--color-ink)]">
-                {price.unit}
-              </span>
-            </div>
-            <p className="t-label mt-0.5 whitespace-nowrap text-[color:var(--color-muted)]">
-              {price.note}
-            </p>
-          </div>
-          <Link
-            to={detailsHref}
-            onClick={(e) => e.stopPropagation()}
-            className="hidden shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-3 text-center text-sm font-bold text-white transition-all duration-200 hover:bg-black lg:block"
-          >
-            Book Now
-          </Link>
-        </div>
+      {/* Price + Book Now: a footer on phones, a right column from lg */}
+      <div className="flex items-end justify-between gap-4 border-t border-[color:var(--color-border)] px-4 py-4 sm:px-5 lg:w-[240px] lg:shrink-0 lg:flex-col lg:items-stretch lg:justify-center lg:gap-4 lg:border-l lg:border-t-0 lg:p-6">
+        {priceBlock}
+        {bookButton}
       </div>
     </div>
   );
