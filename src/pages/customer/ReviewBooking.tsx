@@ -150,9 +150,7 @@ export default function ReviewBooking() {
           >
             <Icon name="chevron-left" size={22} />
           </button>
-          <h1 className="t-h2 text-[color:var(--color-ink)]">
-            Your details
-          </h1>
+          <h1 className="t-h2 text-[color:var(--color-ink)]">Your details</h1>
         </div>
 
         <div className="mb-8">
@@ -362,15 +360,15 @@ export default function ReviewBooking() {
               id="price-summary"
               className="mt-4 scroll-mt-24 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="t-h2 tabular text-[color:var(--color-ink)]">
-                    {format(netPayable)}
-                  </p>
-                  <p className="t-body-sm text-[color:var(--color-muted)]">
-                    Total for {RENTAL_DAYS} days, taxes and fees included
-                  </p>
-                </div>
+              <div>
+                <p className="t-h2 tabular text-[color:var(--color-ink)]">
+                  {format(netPayable)}
+                </p>
+                <p className="t-body-sm text-[color:var(--color-muted)]">
+                  Total for {RENTAL_DAYS} days, taxes and fees included
+                </p>
+              </div>
+              <div className="mt-3">
                 <FareSummary
                   total={format(netPayable)}
                   lines={[
