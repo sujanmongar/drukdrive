@@ -56,7 +56,7 @@ export default function VehicleCard({
             e.stopPropagation();
             toggle(vehicle.id);
           }}
-          className="icon-btn absolute right-3 top-3 size-9 bg-white/90 backdrop-blur-sm hover:!bg-white"
+          className="icon-btn icon-btn-filled absolute right-3 top-3 size-9 shadow-card"
         >
           <Icon
             name="heart"

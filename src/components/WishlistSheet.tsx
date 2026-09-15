@@ -64,7 +64,7 @@ export default function WishlistSheet({ onClose, tripQuery = "" }: { onClose: ()
                       type="button"
                       onClick={() => toggle(vehicle.id)}
                       aria-label={`Remove ${vehicle.name} from wishlist`}
-                      className="icon-btn size-10 shrink-0"
+                      className="icon-btn icon-btn-filled size-10 shrink-0"
                     >
                       <Icon name="heart" size={18} className="fill-current text-[color:var(--color-danger)]" />
                     </button>

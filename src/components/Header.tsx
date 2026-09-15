@@ -96,7 +96,7 @@ function AccountMenu({ onSignOut, compact = false }: { onSignOut: () => void; co
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Account menu"
-        className={`icon-btn icon-btn-filled overflow-hidden ${compact ? "size-10" : "size-[42px]"}`}
+        className={`icon-btn icon-btn-avatar overflow-hidden ${compact ? "size-10" : "size-[42px]"}`}
       >
         {isLoggedIn ? (
           <img src={currentUser.avatar} alt="" className="size-full rounded-full object-cover" />

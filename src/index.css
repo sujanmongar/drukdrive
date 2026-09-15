@@ -420,9 +420,17 @@ body {
 /* Variant that keeps a resting fill — the avatar slot, and controls sitting
    on busy bars where a bare glyph reads as decoration. */
 .icon-btn-filled {
-  background-color: #e4e8ec;
+  background-color: var(--color-surface-muted);
 }
 .icon-btn-filled:hover {
+  background-color: #e9edf1;
+}
+/* The account avatar keeps a slightly deeper fill so it reads as a control
+   even when it holds a photo or a bare glyph on a white header. */
+.icon-btn-avatar {
+  background-color: #e4e8ec;
+}
+.icon-btn-avatar:hover {
   background-color: #d7dde3;
 }
 /* Carousel arrows: quiet at rest, solid ink on hover. */
