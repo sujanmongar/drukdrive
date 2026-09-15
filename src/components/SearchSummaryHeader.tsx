@@ -122,24 +122,23 @@ export default function SearchSummaryHeader({
         <div className="border-b border-[color:var(--color-border)] bg-white py-4">
           {/* Ride type is chosen on Home — changing it here would swap the
               whole product mid-results. Everything else is editable in place. */}
-          <div className="mx-auto flex max-w-[1280px] items-start gap-3 px-10">
-            <div className="min-w-0 flex-1">
-              <SearchFields
-                value={draft}
-                onChange={setDraft}
-                layout="row"
-                anchored
-                showDuration={false}
-              />
-            </div>
-            <button
-              type="button"
-              onClick={handleUpdate}
-              className="flex h-[56px] shrink-0 items-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-6 text-sm font-bold text-white transition-all duration-200 hover:bg-black"
-            >
-              <Icon name="search" size={16} />
-              Update
-            </button>
+          <div className="mx-auto max-w-[1280px] px-10">
+            <SearchFields
+              value={draft}
+              onChange={setDraft}
+              layout="row"
+              anchored
+              action={
+                <button
+                  type="button"
+                  onClick={handleUpdate}
+                  className="flex h-[56px] shrink-0 items-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-6 text-sm font-bold text-white transition-all duration-200 hover:bg-black"
+                >
+                  <Icon name="search" size={16} />
+                  Update
+                </button>
+              }
+            />
           </div>
         </div>
       </div>

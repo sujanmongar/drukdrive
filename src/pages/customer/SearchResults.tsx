@@ -10,12 +10,22 @@ import SearchSummaryHeader from "../../components/SearchSummaryHeader";
 import FilterSection from "../../components/FilterSection";
 import CheckboxRow from "../../components/CheckboxRow";
 import PriceRangeSlider from "../../components/PriceRangeSlider";
-import { vehicles as allVehicles, type Vehicle } from "../../data/mockData";
+import {
+  vehicles as allVehicles,
+  vehiclesForType,
+  type Vehicle,
+} from "../../data/mockData";
 import { useCurrency } from "../../lib/currency";
 import { cityOf } from "../../lib/tripDuration";
 import { usePageTitle } from "../../hooks/usePageTitle";
-import { bookingToParams, parseSearch } from "../../lib/booking";
-
+import {
+  bookingDays,
+  bookingToParams,
+  isDayBased,
+  isRoundTrip,
+  parseSearch,
+} from "../../lib/booking";
+import { displayPrice } from "../../lib/pricing";
 
 type SortOption = "recommended" | "price-low" | "price-high" | "rating";
 type ViewMode = "grid" | "list";
@@ -40,10 +50,9 @@ const vehicleTypeOptions = Array.from(
 const brandOptions = Array.from(new Set(allVehicles.map((v) => v.brand)));
 const fuelOptions = Array.from(new Set(allVehicles.map((v) => v.fuel)));
 const ratingOptions = [3, 4, 4.5];
-const priceBounds = {
-  min: Math.min(...allVehicles.map((v) => v.pricePerDay)),
-  max: Math.max(...allVehicles.map((v) => v.pricePerDay)),
-};
+const transmissionOptions = Array.from(
+  new Set(allVehicles.map((v) => v.transmission)),
+);
 
 // How many result cards to reveal per infinite-scroll batch.
 const PAGE_SIZE = 6;
@@ -128,12 +137,34 @@ export default function SearchResults() {
   });
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedFuels, setSelectedFuels] = useState<string[]>([]);
+  const [selectedTransmissions, setSelectedTransmissions] = useState<string[]>(
+    [],
+  );
+
+  // The pool and the price axis depend on the search: buses drop out of
+  // self-drive, bikes out of chauffeured trips, and a daily ride is priced
+  // per trip rather than per day.
+  const pool = useMemo(
+    () => vehiclesForType(allVehicles, search.type),
+    [search.type],
+  );
+  const priceOf = (v: Vehicle) => displayPrice(search, v.pricePerDay).amount;
+  const priceBounds = useMemo(() => {
+    const amounts = pool.map(priceOf);
+    return {
+      min: Math.floor(Math.min(...amounts)),
+      max: Math.ceil(Math.max(...amounts)),
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pool, search]);
+  const dayBased = isDayBased(search.type);
   const [capacity, setCapacity] = useState<string | null>(null);
   const [minRating, setMinRating] = useState<number | null>(null);
-  const [priceRange, setPriceRange] = useState<[number, number]>([
+  const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
+  const effectiveRange: [number, number] = priceRange ?? [
     priceBounds.min,
     priceBounds.max,
-  ]);
+  ];
 
   // Sticky header block (trip bar) reports its own height so the filter
   // sidebar and sort/filter row below it know how far down to pin themselves.
@@ -150,14 +181,20 @@ export default function SearchResults() {
   }, []);
 
   const results = useMemo(() => {
-    const filtered = allVehicles.filter((v) => {
+    const filtered = pool.filter((v) => {
       if (selectedTypes.length > 0 && !selectedTypes.includes(v.category))
         return false;
       if (selectedBrands.length > 0 && !selectedBrands.includes(v.brand))
         return false;
       if (selectedFuels.length > 0 && !selectedFuels.includes(v.fuel))
         return false;
-      if (v.pricePerDay < priceRange[0] || v.pricePerDay > priceRange[1])
+      if (
+        selectedTransmissions.length > 0 &&
+        !selectedTransmissions.includes(v.transmission)
+      )
+        return false;
+      const amount = priceOf(v);
+      if (amount < effectiveRange[0] || amount > effectiveRange[1])
         return false;
       if (minRating !== null && v.rating < minRating) return false;
       if (capacity) {
@@ -167,14 +204,19 @@ export default function SearchResults() {
       return true;
     });
     return sortVehicles(filtered, sort);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    pool,
+    search,
     sort,
     selectedTypes,
     selectedBrands,
     selectedFuels,
+    selectedTransmissions,
     capacity,
     minRating,
-    priceRange,
+    effectiveRange[0],
+    effectiveRange[1],
   ]);
 
   // Infinite scroll: only render a batch of `results` at a time, growing it
@@ -232,13 +274,24 @@ export default function SearchResults() {
     reload();
   }
 
+  const days = bookingDays(search);
+  const heading =
+    search.type === "rental"
+      ? `Found ${results.length} cars with driver for ${days} day${days === 1 ? "" : "s"} from ${cityOf(search.pickup)}`
+      : search.type === "self-drive"
+        ? `Found ${results.length} cars to drive yourself for ${days} day${days === 1 ? "" : "s"} from ${cityOf(search.pickup)}`
+        : isRoundTrip(search)
+          ? `Found ${results.length} cabs for a round trip from ${cityOf(search.pickup)}`
+          : `Found ${results.length} cabs from ${cityOf(search.pickup)} to ${cityOf(search.dropoff)}`;
+
   function clearAllFilters() {
     setSelectedTypes([]);
     setSelectedBrands([]);
     setSelectedFuels([]);
+    setSelectedTransmissions([]);
     setCapacity(null);
     setMinRating(null);
-    setPriceRange([priceBounds.min, priceBounds.max]);
+    setPriceRange(null);
   }
 
   const filterPanel = (
@@ -294,29 +347,47 @@ export default function SearchResults() {
         </div>
       </FilterSection>
 
-      <FilterSection
-        title="Fuel Type"
-        hasSelection={selectedFuels.length > 0}
-        onClear={() => setSelectedFuels([])}
-      >
-        <ExpandableCheckboxList
-          options={fuelOptions}
-          selected={selectedFuels}
-          onToggle={(option) => toggle(selectedFuels, option, setSelectedFuels)}
-        />
-      </FilterSection>
+      {/* Fuel and gearbox only matter when you drive it yourself. */}
+      {search.type === "self-drive" && (
+        <>
+          <FilterSection
+            title="Fuel Type"
+            hasSelection={selectedFuels.length > 0}
+            onClear={() => setSelectedFuels([])}
+          >
+            <ExpandableCheckboxList
+              options={fuelOptions}
+              selected={selectedFuels}
+              onToggle={(option) =>
+                toggle(selectedFuels, option, setSelectedFuels)
+              }
+            />
+          </FilterSection>
+          <FilterSection
+            title="Transmission"
+            hasSelection={selectedTransmissions.length > 0}
+            onClear={() => setSelectedTransmissions([])}
+          >
+            <ExpandableCheckboxList
+              options={transmissionOptions}
+              selected={selectedTransmissions}
+              onToggle={(option) =>
+                toggle(selectedTransmissions, option, setSelectedTransmissions)
+              }
+            />
+          </FilterSection>
+        </>
+      )}
 
       <FilterSection
-        title="Price / day"
-        hasSelection={
-          priceRange[0] !== priceBounds.min || priceRange[1] !== priceBounds.max
-        }
-        onClear={() => setPriceRange([priceBounds.min, priceBounds.max])}
+        title={dayBased ? "Price / day" : "Price / trip"}
+        hasSelection={priceRange !== null}
+        onClear={() => setPriceRange(null)}
       >
         <PriceRangeSlider
           min={priceBounds.min}
           max={priceBounds.max}
-          value={priceRange}
+          value={effectiveRange}
           onChange={setPriceRange}
           formatLabel={format}
         />
@@ -396,9 +467,7 @@ export default function SearchResults() {
     selectedFuels.length +
     (capacity ? 1 : 0) +
     (minRating !== null ? 1 : 0) +
-    (priceRange[0] !== priceBounds.min || priceRange[1] !== priceBounds.max
-      ? 1
-      : 0);
+    (priceRange !== null ? 1 : 0);
 
   return (
     <PageShell
@@ -503,8 +572,7 @@ export default function SearchResults() {
                   style={{ top: headerHeight }}
                 >
                   <h1 className="t-h3 text-[color:var(--color-ink)]">
-                    Found {results.length} cabs from {cityOf(search.pickup)} to{" "}
-                    {cityOf(search.dropoff)}
+                    {heading}
                   </h1>
                   <div className="flex items-center gap-4">
                     <div className="relative">

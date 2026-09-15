@@ -109,23 +109,23 @@ export default function Home() {
             <div className="relative mt-8 w-full max-w-[506px] rounded-2xl bg-white p-5 shadow-card md:mt-10 md:p-6 lg:max-w-none lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
               <BookingTypeTabs value={type} onChange={setType} />
 
-              <div className="mt-5 lg:flex lg:items-start lg:gap-3">
-                <div className="min-w-0 flex-1">
-                  <SearchFields
-                    value={search}
-                    onChange={setSearch}
-                    layout="row"
-                    anchored
-                  />
-                </div>
-                {/* Desktop: the search action sits at the end of the field row. */}
-                <button
-                  type="button"
-                  onClick={handleSearch}
-                  className="hidden h-[56px] shrink-0 items-center justify-center rounded-xl bg-[color:var(--color-ink)] px-8 text-base font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.98] lg:flex"
-                >
-                  Search
-                </button>
+              <div className="mt-5">
+                <SearchFields
+                  value={search}
+                  onChange={setSearch}
+                  layout="row"
+                  anchored
+                  action={
+                    /* Desktop: the search action sits at the end of the field row. */
+                    <button
+                      type="button"
+                      onClick={handleSearch}
+                      className="hidden h-[56px] shrink-0 items-center justify-center rounded-xl bg-[color:var(--color-ink)] px-8 text-base font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.98] lg:flex"
+                    >
+                      Search
+                    </button>
+                  }
+                />
               </div>
 
               <button

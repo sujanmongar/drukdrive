@@ -1,7 +1,8 @@
 // Dummy data for the DrukDrive prototype. No backend — everything here is
 // static fixture data used to make the flows feel real.
 
-export type VehicleCategory = "Prime SUV" | "Sedan SUV" | "Mini Bus" | "Bus" | "Two Wheels";
+export type VehicleCategory =
+  "Prime SUV" | "Sedan SUV" | "Mini Bus" | "Bus" | "Two Wheels";
 
 // Rental-industry style class shown under a car's name ("or similar Compact"),
 // so the listing reads as a class of vehicle rather than that exact car.
@@ -12,6 +13,18 @@ export const vehicleClassOf: Record<VehicleCategory, string> = {
   Bus: "Coach",
   "Two Wheels": "Motorbike",
 };
+
+import type { BookingType } from "../lib/routes";
+
+/** Which vehicles make sense for a booking type: no self-driving a bus, no
+ *  bike taxis on chauffeured trips. */
+export function vehiclesForType(list: Vehicle[], type: BookingType): Vehicle[] {
+  if (type === "self-drive")
+    return list.filter(
+      (v) => v.category !== "Bus" && v.category !== "Mini Bus",
+    );
+  return list.filter((v) => v.category !== "Two Wheels");
+}
 
 export type Vehicle = {
   id: string;
@@ -228,7 +241,11 @@ export const recentSearches = [
   },
 ];
 
-export const popularCarTypes: { category: VehicleCategory; label: string; vehicleId: string }[] = [
+export const popularCarTypes: {
+  category: VehicleCategory;
+  label: string;
+  vehicleId: string;
+}[] = [
   { category: "Prime SUV", label: "Prime SUV", vehicleId: "toyota-prado-gx" },
   { category: "Mini Bus", label: "Mini Bus", vehicleId: "toyota-hiace-bus" },
   { category: "Bus", label: "Bus", vehicleId: "toyota-coaster-bus" },
@@ -240,14 +257,38 @@ export const faqs = [
     q: "Which kinds of cars can I hire on DrukDrive?",
     a: "On DrukDrive you can find deals on all types of car hire, including small, medium, large, SUV, van, luxury, people movers and commercial vehicles.",
   },
-  { q: "How do I find the best car hire deals?", a: "Compare prices across verified local operators and filter by vehicle type, seats and price to find the best deal for your trip." },
-  { q: "Is there a speed limit?", a: "Yes — speed limits in Bhutan are generally 50 km/h in towns and 30-80 km/h on highways depending on the road." },
-  { q: "Are there any restricted areas?", a: "Some regions require a permit. Your driver or the DrukDrive support team can help arrange the right permits." },
-  { q: "Can new drivers hire a car?", a: "Most self-drive rentals require a minimum of 1 year of driving experience and a valid international license." },
-  { q: "Can I return a hire car to a different location?", a: "Yes, one-way rentals are available for an additional drop-off fee depending on distance." },
-  { q: "Can I extend / cancel / modify?", a: "You can modify or cancel most bookings free of charge up to 24 hours before pickup from My Bookings." },
-  { q: "Booking criteria & documents?", a: "You'll need a valid ID, driving license (for self-drive) and the reference ID sent to your email after booking." },
-  { q: "What is the minimum age to hire a car?", a: "The minimum age to hire a self-drive vehicle is 21 years old." },
+  {
+    q: "How do I find the best car hire deals?",
+    a: "Compare prices across verified local operators and filter by vehicle type, seats and price to find the best deal for your trip.",
+  },
+  {
+    q: "Is there a speed limit?",
+    a: "Yes — speed limits in Bhutan are generally 50 km/h in towns and 30-80 km/h on highways depending on the road.",
+  },
+  {
+    q: "Are there any restricted areas?",
+    a: "Some regions require a permit. Your driver or the DrukDrive support team can help arrange the right permits.",
+  },
+  {
+    q: "Can new drivers hire a car?",
+    a: "Most self-drive rentals require a minimum of 1 year of driving experience and a valid international license.",
+  },
+  {
+    q: "Can I return a hire car to a different location?",
+    a: "Yes, one-way rentals are available for an additional drop-off fee depending on distance.",
+  },
+  {
+    q: "Can I extend / cancel / modify?",
+    a: "You can modify or cancel most bookings free of charge up to 24 hours before pickup from My Bookings.",
+  },
+  {
+    q: "Booking criteria & documents?",
+    a: "You'll need a valid ID, driving license (for self-drive) and the reference ID sent to your email after booking.",
+  },
+  {
+    q: "What is the minimum age to hire a car?",
+    a: "The minimum age to hire a self-drive vehicle is 21 years old.",
+  },
 ];
 
 export type Booking = {
@@ -303,10 +344,34 @@ export type Notification = {
 };
 
 export const notifications: Notification[] = [
-  { id: "n1", title: "Booking confirmed", body: "Your ride with Toyota Prado GX is confirmed for 24 Sep.", time: "2h ago", read: false },
-  { id: "n2", title: "Payment received", body: "We received your payment of $58.00 for booking GI1671177263.", time: "2h ago", read: false },
-  { id: "n3", title: "Driver assigned", body: "Karma Dorji has been assigned as your driver.", time: "1d ago", read: true },
-  { id: "n4", title: "Trip completed", body: "Hope you enjoyed your trip! Rate your experience.", time: "3d ago", read: true },
+  {
+    id: "n1",
+    title: "Booking confirmed",
+    body: "Your ride with Toyota Prado GX is confirmed for 24 Sep.",
+    time: "2h ago",
+    read: false,
+  },
+  {
+    id: "n2",
+    title: "Payment received",
+    body: "We received your payment of $58.00 for booking GI1671177263.",
+    time: "2h ago",
+    read: false,
+  },
+  {
+    id: "n3",
+    title: "Driver assigned",
+    body: "Karma Dorji has been assigned as your driver.",
+    time: "1d ago",
+    read: true,
+  },
+  {
+    id: "n4",
+    title: "Trip completed",
+    body: "Hope you enjoyed your trip! Rate your experience.",
+    time: "3d ago",
+    read: true,
+  },
 ];
 
 export type Review = {
@@ -325,7 +390,8 @@ export const reviews: Review[] = [
     avatar: "https://i.pravatar.cc/80?img=47",
     rating: 5,
     date: "2 Oct 2024",
-    comment: "Smooth booking experience and the driver was extremely professional. Highly recommend!",
+    comment:
+      "Smooth booking experience and the driver was extremely professional. Highly recommend!",
   },
   {
     id: "r2",
@@ -333,7 +399,8 @@ export const reviews: Review[] = [
     avatar: "https://i.pravatar.cc/80?img=12",
     rating: 4,
     date: "18 Sep 2024",
-    comment: "Great vehicle condition, arrived a little late but overall a good trip.",
+    comment:
+      "Great vehicle condition, arrived a little late but overall a good trip.",
   },
   {
     id: "r3",
@@ -341,7 +408,8 @@ export const reviews: Review[] = [
     avatar: "https://i.pravatar.cc/80?img=32",
     rating: 5,
     date: "3 Sep 2024",
-    comment: "Best car rental service in Thimphu. Will book again for our next trip.",
+    comment:
+      "Best car rental service in Thimphu. Will book again for our next trip.",
   },
 ];
 
@@ -350,10 +418,34 @@ export const financeSummary = {
   pending: 420,
   withdrawn: 2820,
   transactions: [
-    { id: "t1", label: "Booking GI1671177263", date: "24 Sep 2024", amount: 58, status: "Credited" },
-    { id: "t2", label: "Booking GI1671177201", date: "12 Oct 2024", amount: 54, status: "Credited" },
-    { id: "t3", label: "Withdrawal to bank", date: "1 Oct 2024", amount: -500, status: "Processed" },
-    { id: "t4", label: "Booking GI1671176980", date: "27 Nov 2024", amount: 53, status: "Pending" },
+    {
+      id: "t1",
+      label: "Booking GI1671177263",
+      date: "24 Sep 2024",
+      amount: 58,
+      status: "Credited",
+    },
+    {
+      id: "t2",
+      label: "Booking GI1671177201",
+      date: "12 Oct 2024",
+      amount: 54,
+      status: "Credited",
+    },
+    {
+      id: "t3",
+      label: "Withdrawal to bank",
+      date: "1 Oct 2024",
+      amount: -500,
+      status: "Processed",
+    },
+    {
+      id: "t4",
+      label: "Booking GI1671176980",
+      date: "27 Nov 2024",
+      amount: 53,
+      status: "Pending",
+    },
   ],
 };
 
@@ -447,7 +539,13 @@ export const driverBookings: DriverBooking[] = [
   },
 ];
 
-export type DriverNotification = { id: string; title: string; body: string; time: string; read: boolean };
+export type DriverNotification = {
+  id: string;
+  title: string;
+  body: string;
+  time: string;
+  read: boolean;
+};
 
 export const driverNotifications: DriverNotification[] = [
   {
@@ -481,7 +579,11 @@ export const driverNotifications: DriverNotification[] = [
 ];
 
 // Selectable vehicle templates shown when adding a new vehicle.
-export const vehicleTemplates: { id: string; name: string; category: VehicleCategory }[] = [
+export const vehicleTemplates: {
+  id: string;
+  name: string;
+  category: VehicleCategory;
+}[] = [
   { id: "prado-v8", name: "Toyota Prado V8", category: "Prime SUV" },
   { id: "prado-gx", name: "Toyota Prado GX", category: "Prime SUV" },
   { id: "innova", name: "Toyota Innova Crysta", category: "Prime SUV" },

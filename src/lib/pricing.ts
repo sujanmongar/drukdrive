@@ -2,7 +2,7 @@
 // Confirmation and Invoice all agree with each other (no backend — this is
 // the one source of truth for the calculation).
 
-import type { Booking } from "./booking";
+import type { Booking, SearchValue } from "./booking";
 import { bookingDays, isDayBased, isRoundTrip, rideHours } from "./booking";
 
 export const TAX_RATE = 0.1;
@@ -140,4 +140,20 @@ export function paymentSplit(booking: Booking, total: number) {
   if (booking.type === "daily") return { now: total, later: 0 };
   const now = r2(total / 2);
   return { now, later: r2(total - now) };
+}
+
+/** The price a result card shows for this search: the trip total for a
+ *  daily ride, the per-day rate for anything booked by the day. */
+export function displayPrice(
+  search: SearchValue,
+  pricePerDay: number,
+): { amount: number; unit: string; note: string } {
+  if (isDayBased(search.type)) {
+    return { amount: pricePerDay, unit: "/day", note: "+ taxes & fees" };
+  }
+  const { total } = computeFare(
+    { ...search, vehicleId: null, addOnIds: [] },
+    pricePerDay,
+  );
+  return { amount: total, unit: "/trip", note: "incl. taxes & fees" };
 }

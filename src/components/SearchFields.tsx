@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import type { ReactNode } from "react";
 import Icon from "./Icon";
 import LocationPickerSheet from "./LocationPickerSheet";
 import DatePickerSheet from "./DatePickerSheet";
@@ -16,6 +17,7 @@ export default function SearchFields({
   layout = "stack",
   anchored = false,
   showDuration = true,
+  action,
 }: {
   value: SearchValue;
   onChange: (next: SearchValue) => void;
@@ -24,6 +26,8 @@ export default function SearchFields({
   /** Open the pickers as popovers anchored to the field (desktop); otherwise as sheets. */
   anchored?: boolean;
   showDuration?: boolean;
+  /** Search / Update button, rendered at the end of the field row. */
+  action?: ReactNode;
 }) {
   const [active, setActive] = useState<"pickup" | "dropoff" | "date" | null>(
     null,
@@ -85,30 +89,40 @@ export default function SearchFields({
 
   const fieldClass =
     "flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 text-left transition-colors hover:border-[color:var(--color-ink)] lg:h-[56px]";
-  const labelClass = "text-[11px] text-[color:var(--color-ink-soft)]";
+  const labelClass =
+    "whitespace-nowrap text-[11px] text-[color:var(--color-ink-soft)]";
   const valueClass =
     "truncate text-sm font-bold text-[color:var(--color-ink-87)]";
   const row = layout === "row";
   const selfDrive = value.type === "self-drive";
 
   return (
-    <div>
-      {/* Sits between the type tabs and the fields, so it reads as a setting
-          for the search rather than a stray field. */}
-      <label className="mb-3 flex w-fit cursor-pointer items-center gap-2 t-body-sm text-[color:var(--color-ink)]">
-        <input
-          type="checkbox"
-          checked={differentDropoff}
-          onChange={(e) => setDifferentDropoff(e.target.checked)}
-          className="size-4 accent-[color:var(--color-ink)]"
-        />
-        {selfDrive
-          ? "Return the car to a different location"
-          : "Drop off at a different location"}
-      </label>
+    <div className="flex flex-col">
+      {/* Sits between the type tabs and the fields, with the duration beside
+          it, so the row reads as the settings for the search. */}
+      {/* Phones: after the fields, centred, right before the Search button.
+          Desktop: above the fields. */}
+      <div className="order-2 mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 lg:order-1 lg:mb-3 lg:mt-0 lg:justify-start">
+        <label className="flex w-fit cursor-pointer items-center gap-2 t-body-sm text-[color:var(--color-ink)]">
+          <input
+            type="checkbox"
+            checked={differentDropoff}
+            onChange={(e) => setDifferentDropoff(e.target.checked)}
+            className="size-4 accent-[color:var(--color-ink)]"
+          />
+          {selfDrive
+            ? "Return the car to a different location"
+            : "Drop off at a different location"}
+        </label>
+        {showDuration && (
+          <p className="t-body-sm font-semibold text-[color:var(--color-success)]">
+            Duration: {durationLabel(value)}
+          </p>
+        )}
+      </div>
 
       <div
-        className={`flex flex-col gap-3 ${row ? "lg:flex-row lg:items-start" : ""}`}
+        className={`order-1 flex flex-col gap-3 lg:order-2 ${row ? "lg:flex-row lg:items-start" : ""}`}
       >
         {/* Pick-up location */}
         <div
@@ -129,18 +143,18 @@ export default function SearchFields({
               <span className={labelClass}>
                 {selfDrive
                   ? differentDropoff
-                    ? "Collect the car at"
-                    : "Collect and return the car at"
+                    ? "Collect at"
+                    : "Collect & return at"
                   : differentDropoff
-                    ? "Pick up location"
-                    : "Pick up and drop off location"}
+                    ? "Pick up"
+                    : "Pick up & drop off"}
               </span>
               <span className={valueClass}>{value.pickup}</span>
             </span>
           </button>
           {active === "pickup" && (
             <LocationPickerSheet
-              label={selfDrive ? "Collect the car at" : "Pick up location"}
+              label={selfDrive ? "Collect at" : "Pick up"}
               anchorRef={anchored ? pickupRef : undefined}
               onSelect={(v) => {
                 onChange({
@@ -173,7 +187,7 @@ export default function SearchFields({
               />
               <span className="flex min-w-0 flex-col gap-1">
                 <span className={labelClass}>
-                  {selfDrive ? "Return the car at" : "Drop off location"}
+                  {selfDrive ? "Return at" : "Drop off"}
                 </span>
                 <span
                   className={
@@ -188,7 +202,7 @@ export default function SearchFields({
             </button>
             {active === "dropoff" && (
               <LocationPickerSheet
-                label={selfDrive ? "Return the car at" : "Drop off location"}
+                label={selfDrive ? "Return at" : "Drop off"}
                 anchorRef={anchored ? dropoffRef : undefined}
                 onSelect={(v) => {
                   onChange({ ...value, dropoff: v });
@@ -217,7 +231,7 @@ export default function SearchFields({
                 className="shrink-0 text-[color:var(--color-ink)]"
               />
               <span className="flex min-w-0 flex-col gap-1">
-                <span className={labelClass}>{startLabel} date & time</span>
+                <span className={labelClass}>{startLabel}</span>
                 <span className={valueClass}>
                   {fmtDate(value.pickupDate)}, {value.pickupTime}
                 </span>
@@ -235,7 +249,7 @@ export default function SearchFields({
                 className="shrink-0 text-[color:var(--color-ink)]"
               />
               <span className="flex min-w-0 flex-col gap-1">
-                <span className={labelClass}>{endLabel} date & time</span>
+                <span className={labelClass}>{endLabel}</span>
                 <span className={valueClass}>
                   {fmtDate(value.dropoffDate)}, {value.dropoffTime}
                 </span>
@@ -257,15 +271,11 @@ export default function SearchFields({
             />
           )}
         </div>
+        {action && <div className="shrink-0">{action}</div>}
       </div>
 
-      {showDuration && (
-        <p className="mt-3 t-body-sm font-semibold text-[color:var(--color-success)]">
-          Duration: {durationLabel(value)}
-        </p>
-      )}
       {note && (
-        <p className="mt-2 t-caption text-[color:var(--color-ink-soft)]">
+        <p className="order-3 mt-2 t-caption text-[color:var(--color-ink-soft)]">
           {note}
         </p>
       )}
