@@ -17,6 +17,13 @@ import {
   parseBooking,
 } from "../../lib/booking";
 import { computeFare, isAddOnId, promoDiscount } from "../../lib/pricing";
+import {
+  AmexMark,
+  BankMark,
+  MastercardMark,
+  PayPalMark,
+  VisaMark,
+} from "../../components/PayLogos";
 
 type PaymentMethod = "card" | "netbanking" | "paypal";
 
@@ -95,8 +102,7 @@ export default function Payment() {
   }
 
   function handlePay() {
-    if (method === "card") finish("Credit Card");
-    else if (method === "netbanking") setOtpStage(true);
+    finish("Credit Card");
   }
 
   function setDigit(i: number, v: string) {
@@ -109,31 +115,12 @@ export default function Payment() {
     if (d && i < OTP_LENGTH - 1) otpRefs.current[i + 1]?.focus();
   }
 
-  const methods: {
-    value: PaymentMethod;
-    title: string;
-    hint: string;
-    icon: "credit-card" | "bank" | "wallet";
-  }[] = [
-    {
-      value: "card",
-      title: "Credit or debit card",
-      hint: "Visa, Mastercard, Amex",
-      icon: "credit-card",
-    },
-    {
-      value: "netbanking",
-      title: "Net banking",
-      hint: "All major Bhutanese banks via RMA — mBoB, mPay and more",
-      icon: "bank",
-    },
-    {
-      value: "paypal",
-      title: "PayPal",
-      hint: "Pay with your PayPal balance or a linked card",
-      icon: "wallet",
-    },
+  const methods: { value: PaymentMethod; title: string }[] = [
+    { value: "card", title: "Credit or debit card" },
+    { value: "netbanking", title: "Net banking" },
+    { value: "paypal", title: "PayPal" },
   ];
+  const selectedBank = banks.find((b) => b.name === bank) ?? banks[0];
 
   const terms = (
     <p className="mt-3 text-center t-caption text-[color:var(--color-muted)]">
@@ -161,7 +148,7 @@ export default function Payment() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[1100px] px-4 py-6 md:px-10 md:py-10">
+      <div className="mx-auto max-w-[1100px] px-4 py-6 pb-28 md:px-10 md:py-10 lg:pb-10">
         <div className="mb-5 flex items-center gap-2">
           <button
             type="button"
@@ -262,7 +249,7 @@ export default function Payment() {
             </div>
 
             <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
-              Pay {format(amountDue)}
+              Payment method
             </h2>
             <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-4 shadow-card sm:p-5">
               {otpStage ? (
@@ -353,19 +340,23 @@ export default function Payment() {
                                 <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />
                               )}
                             </span>
-                            <span className="min-w-0 flex-1">
-                              <span className="block t-body font-bold text-[color:var(--color-ink)]">
-                                {m.title}
-                              </span>
-                              <span className="block t-caption text-[color:var(--color-muted)]">
-                                {m.hint}
-                              </span>
+                            <span className="min-w-0 flex-1 t-body font-bold text-[color:var(--color-ink)]">
+                              {m.title}
                             </span>
-                            <Icon
-                              name={m.icon}
-                              size={22}
-                              className="shrink-0 text-[color:var(--color-ink)]"
-                            />
+                            <span className="flex shrink-0 items-center gap-1.5">
+                              {m.value === "card" && (
+                                <>
+                                  <VisaMark />
+                                  <MastercardMark />
+                                  <AmexMark />
+                                </>
+                              )}
+                              {m.value === "netbanking" &&
+                                banks.map((b) => (
+                                  <BankMark key={b.short} short={b.short} />
+                                ))}
+                              {m.value === "paypal" && <PayPalMark />}
+                            </span>
                           </button>
 
                           {active && m.value === "card" && (
@@ -421,28 +412,30 @@ export default function Payment() {
 
                           {active && m.value === "netbanking" && (
                             <div className="flex flex-col gap-4 border-t border-[color:var(--color-border)] p-4">
-                              <div className="flex flex-wrap gap-2">
-                                {banks.map((b) => (
-                                  <button
-                                    key={b.name}
-                                    type="button"
-                                    onClick={() => setBank(b.name)}
-                                    aria-pressed={bank === b.name}
-                                    className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-3.5 t-body-sm font-semibold transition-colors ${
-                                      bank === b.name
-                                        ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
-                                        : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
-                                    }`}
+                              <label>
+                                <span className={labelClass}>
+                                  Select your bank
+                                </span>
+                                <span className="relative block">
+                                  <select
+                                    value={bank}
+                                    onChange={(e) => setBank(e.target.value)}
+                                    className={`${inputClass} appearance-none pr-24`}
                                   >
-                                    <span
-                                      className={`rounded-md px-1.5 py-0.5 t-label ${bank === b.name ? "bg-white/20" : "bg-[color:var(--color-surface-soft)]"}`}
-                                    >
-                                      {b.short}
-                                    </span>
-                                    {b.name}
-                                  </button>
-                                ))}
-                              </div>
+                                    {banks.map((b) => (
+                                      <option key={b.name}>{b.name}</option>
+                                    ))}
+                                  </select>
+                                  <span className="pointer-events-none absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-2">
+                                    <BankMark short={selectedBank.short} />
+                                    <Icon
+                                      name="chevron-down"
+                                      size={18}
+                                      className="text-[color:var(--color-muted)]"
+                                    />
+                                  </span>
+                                </span>
+                              </label>
                               <label>
                                 <span className={labelClass}>
                                   Bank account number{" "}
@@ -450,22 +443,36 @@ export default function Payment() {
                                     (savings, current or overdraft)
                                   </span>
                                 </span>
-                                <input
-                                  type="text"
-                                  inputMode="numeric"
-                                  placeholder="Enter your account number"
-                                  value={accountNumber}
-                                  onChange={(e) =>
-                                    setAccountNumber(e.target.value)
-                                  }
-                                  className={inputClass}
-                                />
+                                <span className="relative block">
+                                  <input
+                                    type="text"
+                                    inputMode="numeric"
+                                    placeholder="Enter your account number"
+                                    value={accountNumber}
+                                    onChange={(e) =>
+                                      setAccountNumber(e.target.value)
+                                    }
+                                    className={`${inputClass} pr-14`}
+                                  />
+                                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
+                                    <BankMark short={selectedBank.short} />
+                                  </span>
+                                </span>
                               </label>
                               <p className="t-caption text-[color:var(--color-muted)]">
                                 A payment request is sent to your bank. Approve
                                 it in mBoB, mPay or your bank&rsquo;s app and
                                 enter the one-time code it sends you.
                               </p>
+                              <Button
+                                variant="primary"
+                                size="lg"
+                                fullWidth
+                                onClick={() => setOtpStage(true)}
+                              >
+                                Send request for {format(amountDue)}
+                              </Button>
+                              {terms}
                             </div>
                           )}
 
@@ -475,48 +482,34 @@ export default function Payment() {
                                 You&rsquo;ll be taken to PayPal to approve{" "}
                                 {format(amountDue)}, then brought back here.
                               </p>
+                              <a
+                                href="https://www.paypal.com/checkoutnow"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => finish("PayPal")}
+                                className="mt-4 flex h-12 w-full items-center justify-center rounded-full bg-[#ffc439] transition-colors hover:bg-[#f2b92c]"
+                              >
+                                <PayPalMark size="lg" />
+                              </a>
+                              {terms}
                             </div>
                           )}
                         </div>
                       );
                     })}
                   </div>
-
-                  {/* The action sits in the same place whichever method is chosen. */}
-                  <div className="mt-5">
-                    {method === "paypal" ? (
-                      <a
-                        href="https://www.paypal.com/checkoutnow"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => finish("PayPal")}
-                        className="flex h-12 w-full items-center justify-center gap-1.5 rounded-xl bg-[#ffc439] t-body font-bold text-[#003087] transition-colors hover:bg-[#f2b92c]"
-                      >
-                        <span className="italic tracking-tight">Pay</span>
-                        <span className="italic tracking-tight text-[#0070ba]">
-                          Pal
-                        </span>
-                        <span className="ml-1 font-semibold text-[#003087]">
-                          Checkout
-                        </span>
-                      </a>
-                    ) : (
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        fullWidth
-                        onClick={handlePay}
-                      >
-                        {method === "card"
-                          ? `Pay ${format(amountDue)}`
-                          : `Send request for ${format(amountDue)}`}
-                      </Button>
-                    )}
-                    {terms}
-                  </div>
                 </>
               )}
             </div>
+
+            {method === "card" && !otpStage && (
+              <div className="mt-8 hidden flex-col items-end lg:flex">
+                <Button variant="primary" size="lg" onClick={handlePay}>
+                  Pay {format(amountDue)}
+                </Button>
+                {terms}
+              </div>
+            )}
           </div>
 
           {/* Right: trip, price, travellers — as on the details step */}
@@ -562,6 +555,25 @@ export default function Payment() {
           </div>
         </div>
       </div>
+
+      {/* Mobile: card payments confirm from the bottom bar, like Continue on the other steps. */}
+      {method === "card" && !otpStage && (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
+          <div className="flex flex-col items-start">
+            <span className="t-h3 tabular text-[color:var(--color-ink)]">
+              {format(amountDue)}
+            </span>
+            <span className="t-caption text-[color:var(--color-muted)]">
+              {balance > 0
+                ? `of ${format(netPayable)} total`
+                : "incl. taxes & fees"}
+            </span>
+          </div>
+          <Button variant="primary" size="lg" onClick={handlePay}>
+            Pay now
+          </Button>
+        </div>
+      )}
     </PageShell>
   );
 }
