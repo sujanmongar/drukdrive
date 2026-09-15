@@ -106,10 +106,14 @@ export default function Home() {
             {/* Mobile keeps the stacked card. From lg the widget goes
                 horizontal — one field row plus an icon-only search button —
                 so the hero costs far less vertical space. */}
-            <div className="relative mt-8 w-full max-w-[506px] rounded-2xl bg-white p-5 shadow-card md:mt-10 md:p-6 lg:max-w-none lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
+            {/* The type tiles sit on the hero itself, above the search card,
+                so the card holds only the search. */}
+            <div className="mt-8 w-full max-w-[506px] md:mt-10 lg:max-w-none">
               <BookingTypeTabs value={type} onChange={setType} />
+            </div>
 
-              <div className="mt-5">
+            <div className="relative mt-4 w-full max-w-[506px] rounded-2xl bg-white p-5 shadow-card md:p-6 lg:mt-5 lg:max-w-none lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
+              <div>
                 <SearchFields
                   value={search}
                   onChange={setSearch}

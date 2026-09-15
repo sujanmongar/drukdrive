@@ -302,7 +302,7 @@ h3 {
    compact rhythm so more of the page is usable at once, desktop gets the
    generous whitespace the wider measure needs. */
 .section-y {
-  padding-block: 2.5rem; /* 40px */
+  padding-block: 3.5rem; /* 56px */
 }
 .section-y-sm {
   padding-block: 1.75rem; /* 28px */
@@ -312,7 +312,7 @@ h3 {
 }
 @media (min-width: 768px) {
   .section-y {
-    padding-block: 5rem; /* 80px */
+    padding-block: 6rem; /* 96px */
   }
   .section-y-sm {
     padding-block: 3rem; /* 48px */
