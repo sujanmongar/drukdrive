@@ -3,6 +3,10 @@ import VehicleImage from "./VehicleImage";
 import VehicleSpecs from "./VehicleSpecs";
 import { vehicleClassOf } from "../data/mockData";
 import type { Vehicle } from "../data/mockData";
+import {
+  estimateDurationHours,
+  formatDurationHours,
+} from "../lib/tripDuration";
 
 type Props = {
   vehicle: Vehicle;
@@ -91,19 +95,22 @@ export function VehicleSummaryCard({
   );
 }
 
-// Pick-up and drop-off as two stops on a rail.
+// Pick-up and drop-off as two stops on a rail, with the estimated driving
+// time between them.
 export function StopsCard({
   pickup,
   dropoff,
   date,
 }: Pick<Props, "pickup" | "dropoff" | "date">) {
+  const hours = estimateDurationHours(pickup, dropoff);
   const stops = [
     {
       key: "pickup",
-      when: date || "Pick-up time to be confirmed",
+      label: "Pick up",
       place: pickup,
+      when: date || "Time to be confirmed",
     },
-    { key: "dropoff", when: "Drop-off on arrival", place: dropoff },
+    { key: "dropoff", label: "Drop off", place: dropoff, when: "On arrival" },
   ];
 
   return (
@@ -114,33 +121,50 @@ export function StopsCard({
       </h2>
       <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-4 shadow-card sm:p-5">
         <ol>
-          {stops.map((stop, i) => {
-            const last = i === stops.length - 1;
-            return (
-              <li key={stop.key} className="relative flex gap-3 pl-9">
+          {stops.map((stop, i) => (
+            <li key={stop.key}>
+              <div className="flex gap-3">
                 <span
                   aria-hidden
-                  className="absolute left-0 top-0.5 flex size-6 items-center justify-center rounded-full bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)]"
+                  className="mt-5 flex size-6 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)]"
                 >
                   <Icon name="location" size={15} strokeWidth={2.2} />
                 </span>
-                {!last && (
-                  <span
-                    aria-hidden
-                    className="absolute bottom-0 left-[11px] top-7 w-0.5 bg-[color:var(--color-border)]"
-                  />
-                )}
-                <div className={`min-w-0 flex-1 ${last ? "" : "pb-6"}`}>
-                  <p className="t-body text-[color:var(--color-ink)]">
-                    {stop.when}
+                <div className="min-w-0 flex-1">
+                  <p className="t-caption text-[color:var(--color-muted)]">
+                    {stop.label}
                   </p>
                   <p className="mt-0.5 t-body-lg font-bold text-[color:var(--color-ink)]">
                     {stop.place}
                   </p>
+                  <p className="mt-0.5 t-body-sm text-[color:var(--color-ink)]">
+                    {stop.when}
+                  </p>
                 </div>
-              </li>
-            );
-          })}
+              </div>
+              {i === 0 && (
+                <div className="my-2 flex gap-3">
+                  <span
+                    aria-hidden
+                    className="relative flex w-6 shrink-0 justify-center"
+                  >
+                    <span className="w-0.5 rounded-full bg-[color:var(--color-ink)]" />
+                    <span className="absolute bottom-0 size-2 rounded-full bg-[color:var(--color-ink)]" />
+                  </span>
+                  <div className="flex flex-col py-2">
+                    <Icon
+                      name="car"
+                      size={20}
+                      className="text-[color:var(--color-ink)]"
+                    />
+                    <span className="mt-0.5 t-body-sm font-semibold text-[color:var(--color-ink)]">
+                      {formatDurationHours(hours)}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </li>
+          ))}
         </ol>
       </div>
     </>
