@@ -34,6 +34,14 @@ const columns = [
   },
 ];
 
+const socialUrls: Record<SocialName, string> = {
+  facebook: "https://www.facebook.com/drukdrive",
+  instagram: "https://www.instagram.com/drukdrive",
+  x: "https://x.com/drukdrive",
+  linkedin: "https://www.linkedin.com/company/drukdrive",
+  youtube: "https://www.youtube.com/@drukdrive",
+};
+
 const socials: { name: SocialName; label: string }[] = [
   { name: "facebook", label: "Facebook" },
   { name: "instagram", label: "Instagram" },
@@ -79,8 +87,9 @@ export default function Footer() {
               {socials.map((s) => (
                 <a
                   key={s.name}
-                  href="/"
-                  onClick={(e) => e.preventDefault()}
+                  href={socialUrls[s.name]}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={s.label}
                   className="flex size-11 items-center justify-center rounded-full border border-white/20 text-white/80 transition-colors hover:border-white hover:bg-white hover:text-[color:var(--color-ink)]"
                 >

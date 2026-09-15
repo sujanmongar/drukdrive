@@ -38,9 +38,7 @@ export default function AccountBookings() {
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <div className="flex items-center justify-between">
           <h2 className="t-h2 text-[color:var(--color-ink)]">Bookings</h2>
-          <span className="t-body-sm font-semibold text-[color:var(--color-ink)] underline">
-            See all booking ({bookings.length})
-          </span>
+          <span className="t-body-sm">{bookings.length} in total</span>
         </div>
 
         <div className="scrollbar-hide mt-5 flex gap-2 overflow-x-auto">
@@ -49,7 +47,7 @@ export default function AccountBookings() {
               key={f}
               type="button"
               onClick={() => setFilter(f)}
-              className={`shrink-0 rounded-full border px-4 py-2 t-body-sm font-medium transition-colors ${
+              className={`min-h-11 shrink-0 rounded-full border px-4 t-body-sm font-medium transition-colors ${
                 filter === f
                   ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
                   : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
