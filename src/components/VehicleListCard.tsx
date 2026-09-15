@@ -106,14 +106,14 @@ export default function VehicleListCard({
           </button>
         </div>
         <div className="min-w-0 flex-1">
-          <p className="t-h4 truncate text-[color:var(--color-ink)]">
+          <p className="t-h3 truncate text-[color:var(--color-ink)]">
             {vehicle.name}
           </p>
-          <p className="t-caption text-[color:var(--color-muted)]">
+          <p className="t-body-sm text-[color:var(--color-muted)]">
             or similar {vehicleClassOf[vehicle.category]}
           </p>
 
-          <div className="t-caption mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[color:var(--color-ink)]">
+          <div className="t-body-sm mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[color:var(--color-ink)]">
             <span className="flex min-w-0 items-center gap-1.5">
               <Icon
                 name="location"
@@ -125,12 +125,15 @@ export default function VehicleListCard({
             </span>
           </div>
 
-          <VehicleSpecs vehicle={vehicle} className="mt-2.5" />
+          <VehicleSpecs
+            vehicle={vehicle}
+            className="mt-3 !text-sm sm:!text-[15px]"
+          />
           <div className="mt-3 flex items-center gap-2.5">
-            <span className="rounded-md bg-[color:var(--color-success)] px-2 py-0.5 t-caption font-bold tabular text-white">
+            <span className="rounded-md bg-[color:var(--color-success)] px-2.5 py-1 t-body-sm font-bold tabular text-white">
               {vehicle.rating.toFixed(1)}/5
             </span>
-            <span className="border-l border-[color:var(--color-border)] pl-2.5 t-body-sm text-[color:var(--color-ink)]">
+            <span className="border-l border-[color:var(--color-border)] pl-2.5 t-body text-[color:var(--color-ink)]">
               {vehicle.reviewCount} ratings
             </span>
           </div>
