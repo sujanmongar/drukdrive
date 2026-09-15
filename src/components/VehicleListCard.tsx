@@ -84,6 +84,7 @@ export default function VehicleListCard({
           <VehicleImage
             vehicleId={vehicle.id}
             category={vehicle.category}
+            transparent
             className="w-full"
           />
           <button
