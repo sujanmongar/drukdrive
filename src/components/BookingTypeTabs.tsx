@@ -19,25 +19,37 @@ export default function BookingTypeTabs({
   onChange: (t: BookingType) => void;
 }) {
   return (
-    // Pills hug their own content and the row scrolls sideways rather than
-    // squeezing four equal columns into the width.
-    <div className="carousel-track -mx-2 -my-3 flex items-stretch gap-2.5 overflow-x-auto px-2 py-3 sm:gap-3">
+    // Three equal tiles, icon above the label. They fill the row on every
+    // width, so nothing scrolls or wraps.
+    <div
+      className="grid grid-cols-3 gap-2.5 sm:gap-3 lg:flex lg:w-fit"
+      role="tablist"
+      aria-label="Booking type"
+    >
       {order.map(({ type, icon }) => {
         const active = type === value;
         return (
           <button
             key={type}
             type="button"
+            role="tab"
+            aria-selected={active}
             onClick={() => onChange(type)}
-            aria-pressed={active}
-            className={`flex shrink-0 items-center gap-2 min-h-11 rounded-xl border px-4 py-2.5 transition-all duration-200 sm:px-4 sm:py-3 ${
+            className={`flex min-h-[72px] flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 transition-all duration-200 sm:min-h-[80px] lg:w-[150px] ${
               active
                 ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white shadow-card"
                 : "border-[color:var(--color-border)] bg-white text-[color:var(--color-ink)] hover:-translate-y-0.5 hover:border-[color:var(--color-ink)]"
             }`}
           >
-            <Icon name={icon} size={17} strokeWidth={active ? 2.2 : 1.9} className="shrink-0" />
-            <span className={`whitespace-nowrap text-sm leading-none ${active ? "font-bold" : "font-medium"}`}>
+            <Icon
+              name={icon}
+              size={22}
+              strokeWidth={active ? 2.2 : 1.9}
+              className="shrink-0"
+            />
+            <span
+              className={`whitespace-nowrap t-caption leading-none sm:t-body-sm ${active ? "font-bold" : "font-medium"}`}
+            >
               {bookingTypeLabels[type]}
             </span>
           </button>
