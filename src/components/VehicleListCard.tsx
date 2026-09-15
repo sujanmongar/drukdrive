@@ -48,11 +48,11 @@ export default function VehicleListCard({
         <span className="text-2xl font-bold tabular text-[color:var(--color-ink)]">
           {format(price.amount)}
         </span>
-        <span className="t-caption text-[color:var(--color-ink)]">
+        <span className="t-caption text-[color:var(--color-muted)]">
           {price.unit}
         </span>
       </div>
-      <p className="t-caption whitespace-nowrap font-medium text-[color:var(--color-ink-soft)]">
+      <p className="t-caption whitespace-nowrap text-[color:var(--color-muted)]">
         {price.note}
       </p>
     </div>
