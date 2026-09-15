@@ -141,6 +141,12 @@ export default function BookingReview() {
                 </ul>
               </div>
             </div>
+
+            <div className="mt-8 hidden justify-end lg:flex">
+              <Button variant="primary" size="lg" onClick={handleContinue}>
+                Continue to details
+              </Button>
+            </div>
           </div>
 
           {/* Right: add-ons, sticky beside the trip like the price summary on the next step. */}
@@ -212,15 +218,6 @@ export default function BookingReview() {
                   {format(total)}
                 </p>
               </div>
-              <Button
-                variant="primary"
-                size="lg"
-                fullWidth
-                className="mt-4"
-                onClick={handleContinue}
-              >
-                Continue to details
-              </Button>
             </div>
           </div>
         </div>

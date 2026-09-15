@@ -341,6 +341,12 @@ export default function ReviewBooking() {
                 </li>
               </ul>
             </div>
+
+            <div className="mt-8 hidden justify-end lg:flex">
+              <Button variant="primary" size="lg" onClick={handleProceed}>
+                {payButtonLabel}
+              </Button>
+            </div>
           </div>
 
           {/* Right: price summary sidebar */}
@@ -417,17 +423,6 @@ export default function ReviewBooking() {
                   </dd>
                 </div>
               </dl>
-              <div className="hidden lg:block">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  fullWidth
-                  className="mt-4"
-                  onClick={handleProceed}
-                >
-                  {payButtonLabel}
-                </Button>
-              </div>
             </div>
 
             <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">Add-ons</h2>
