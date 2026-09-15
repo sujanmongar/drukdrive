@@ -102,14 +102,10 @@ export default function Home() {
             <h1 className="t-h1 max-w-[280px] text-[color:var(--color-ink)] sm:max-w-md md:max-w-[560px]">
               Go anywhere in Bhutan.
             </h1>
-            <p className="mt-3 max-w-md t-body-lg text-[color:var(--color-muted)]">
-              A ride across town, a car with driver for the week, or the keys to
-              drive yourself.
-            </p>
 
             {/* The type strip floats over the top edge of the search card,
                 so the switch and the search read as one control. */}
-            <div className="relative z-10 mt-10 pl-3 md:mt-12 md:pl-6">
+            <div className="relative z-10 mt-10 flex justify-center md:mt-12 lg:justify-start lg:pl-6">
               <BookingTypeTabs value={type} onChange={setType} />
             </div>
 
