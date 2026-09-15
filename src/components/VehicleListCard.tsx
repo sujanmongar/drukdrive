@@ -80,7 +80,7 @@ export default function VehicleListCard({
     >
       {/* Image + details — the same content as before, only the layout moved. */}
       <div className="flex min-w-0 flex-1 gap-3 p-3 sm:gap-5 sm:p-5">
-        <div className="relative flex w-[118px] shrink-0 items-center sm:w-[180px] lg:w-[200px]">
+        <div className="relative flex w-[136px] shrink-0 items-center sm:w-[200px] lg:w-[230px]">
           <VehicleImage
             vehicleId={vehicle.id}
             category={vehicle.category}
