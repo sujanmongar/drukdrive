@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
+import Icon from "./Icon";
 
 const steps = ["Review", "Details", "Payment"];
 
-// Checkout progress as three segments that fill left to right. A completed
-// step is a link back to that page (with the booking preserved in the
-// URL), so anything can be revisited and the flow continued from there.
+// Numbered discs with the label beside each and a short rule between —
+// centred on every width. A completed step is a link back to that page
+// (with the booking preserved in the URL), so it can be revisited and the
+// flow continued from there.
 export default function BookingStepper({
   current,
   allDone = false,
@@ -17,7 +19,7 @@ export default function BookingStepper({
 }) {
   return (
     <ol
-      className="grid grid-cols-3 gap-2 sm:gap-3"
+      className="scrollbar-hide flex items-center justify-center gap-1.5 overflow-x-auto sm:gap-3"
       aria-label="Booking progress"
     >
       {steps.map((label, i) => {
@@ -25,51 +27,58 @@ export default function BookingStepper({
         const done = stepNum < current || allDone;
         const active = stepNum === current && !allDone;
         const href = done && !allDone ? hrefs[i] : undefined;
-        const body = (
-          <>
-            <span
-              className={`block h-1.5 rounded-full transition-colors ${
-                done
-                  ? "bg-[color:var(--color-success)]"
-                  : active
-                    ? "bg-[color:var(--color-ink)]"
-                    : "bg-[color:var(--color-border)]"
-              }`}
-            />
-            <span
-              className={`mt-2 flex min-h-8 items-center gap-1 truncate t-caption sm:t-body-sm ${
-                active
+        const disc = (
+          <span
+            className={`flex size-7 shrink-0 items-center justify-center rounded-full border-2 t-caption font-bold tabular ${
+              done
+                ? "border-[color:var(--color-link)] text-[color:var(--color-link)]"
+                : active
+                  ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
+                  : "border-[color:var(--color-border)] text-[color:var(--color-muted)]"
+            }`}
+          >
+            {done ? <Icon name="check" size={14} strokeWidth={3} /> : stepNum}
+          </span>
+        );
+        const text = (
+          <span
+            className={`whitespace-nowrap t-body-sm ${
+              done
+                ? "font-semibold text-[color:var(--color-link)]"
+                : active
                   ? "font-bold text-[color:var(--color-ink)]"
-                  : done
-                    ? "font-semibold text-[color:var(--color-ink-soft)]"
-                    : "font-medium text-[color:var(--color-muted)]"
-              }`}
-            >
-              <span className="tabular">{stepNum}.</span> {label}
-              {href && (
-                <span className="t-caption font-medium text-[color:var(--color-link)]">
-                  · Edit
-                </span>
-              )}
-            </span>
-          </>
+                  : "font-medium text-[color:var(--color-muted)]"
+            }`}
+          >
+            {label}
+          </span>
         );
         return (
           <li
             key={label}
             aria-current={active ? "step" : undefined}
-            className="min-w-0"
+            className="flex shrink-0 items-center gap-1.5 sm:gap-3"
           >
             {href ? (
               <Link
                 to={href}
-                className="block rounded-md hover:opacity-80"
+                className="flex min-h-11 items-center gap-2 rounded-lg hover:opacity-80"
                 aria-label={`Back to ${label}`}
               >
-                {body}
+                {disc}
+                {text}
               </Link>
             ) : (
-              body
+              <span className="flex min-h-11 items-center gap-2">
+                {disc}
+                {text}
+              </span>
+            )}
+            {stepNum < steps.length && (
+              <span
+                aria-hidden
+                className={`h-px w-3 sm:w-8 ${done ? "bg-[color:var(--color-link)]" : "bg-[color:var(--color-border)]"}`}
+              />
             )}
           </li>
         );
