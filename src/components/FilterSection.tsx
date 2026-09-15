@@ -1,9 +1,9 @@
 import { useState, type ReactNode } from "react";
 import Icon from "./Icon";
 
-// One collapsible row in the Filters sidebar/sheet: title, an optional
-// Clear link, and a chevron to expand/collapse — with a full-width divider
-// below (skip it on the last section in a list).
+// One collapsible group in the Filters sidebar/sheet. The whole header row
+// is the toggle — a 44px-tall target — with Clear as its own button beside
+// the chevron. A full-width hairline separates groups.
 export default function FilterSection({
   title,
   hasSelection,
@@ -21,26 +21,37 @@ export default function FilterSection({
   return (
     <>
       <div>
-        <div className="mb-3 flex items-center justify-between">
-          <h4 className="t-body-sm font-bold text-[color:var(--color-ink)]">{title}</h4>
-          <div className="flex items-center gap-3">
-            {hasSelection && (
-              <button type="button" onClick={onClear} className="text-xs font-semibold text-[color:var(--color-link)]">
-                Clear
-              </button>
-            )}
-            <button type="button" onClick={() => setOpen((v) => !v)} aria-label={open ? "Collapse" : "Expand"}>
-              <Icon
-                name="chevron-down"
-                size={16}
-                className={`text-[color:var(--color-ink)] transition-transform ${open ? "" : "-rotate-90"}`}
-              />
+        <div className="-mx-2 flex items-center">
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            className="flex min-h-11 flex-1 items-center justify-between gap-3 rounded-lg px-2 text-left transition-colors hover:bg-[color:var(--color-surface-soft)]"
+          >
+            <h4 className="t-body font-bold text-[color:var(--color-ink)]">
+              {title}
+            </h4>
+            <Icon
+              name="chevron-down"
+              size={18}
+              className={`shrink-0 text-[color:var(--color-muted)] transition-transform ${open ? "" : "-rotate-90"}`}
+            />
+          </button>
+          {hasSelection && (
+            <button
+              type="button"
+              onClick={onClear}
+              className="min-h-11 shrink-0 rounded-lg px-2 t-body-sm font-semibold text-[color:var(--color-link)] hover:bg-[color:var(--color-surface-soft)]"
+            >
+              Clear
             </button>
-          </div>
+          )}
         </div>
-        {open && children}
+        {open && <div className="mt-2">{children}</div>}
       </div>
-      {divider && <div className="-mx-6 my-5 border-b border-[color:var(--color-border)]" />}
+      {divider && (
+        <div className="-mx-6 my-4 border-b border-[color:var(--color-border)]" />
+      )}
     </>
   );
 }

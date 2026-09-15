@@ -86,7 +86,7 @@ function ExpandableCheckboxList({
   const visible = expanded ? options : options.slice(0, initialCount);
   const hasMore = options.length > initialCount;
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="flex flex-col">
       {visible.map((option) => (
         <CheckboxRow
           key={option}
@@ -99,7 +99,7 @@ function ExpandableCheckboxList({
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="text-left text-xs font-semibold text-[color:var(--color-link)]"
+          className="-mx-2 min-h-11 rounded-lg px-2 text-left t-body-sm font-semibold text-[color:var(--color-link)] hover:bg-[color:var(--color-surface-soft)]"
         >
           {expanded ? "View less" : "View more"}
         </button>
@@ -332,7 +332,7 @@ export default function SearchResults() {
               onClick={() =>
                 setCapacity(capacity === range.label ? null : range.label)
               }
-              className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+              className={`min-h-11 rounded-full border px-4 t-body-sm font-semibold transition-colors ${
                 capacity === range.label
                   ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
                   : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
@@ -402,7 +402,7 @@ export default function SearchResults() {
               key={r}
               type="button"
               onClick={() => setMinRating(minRating === r ? null : r)}
-              className={`flex items-center gap-1 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+              className={`flex min-h-11 items-center gap-1 rounded-full border px-4 t-body-sm font-semibold transition-colors ${
                 minRating === r
                   ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
                   : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
@@ -651,6 +651,7 @@ export default function SearchResults() {
                 type="button"
                 onClick={() => setFilterOpen(false)}
                 aria-label="Close filters"
+                className="icon-btn icon-btn-filled size-10"
               >
                 <Icon
                   name="close"
@@ -663,12 +664,12 @@ export default function SearchResults() {
                 <button
                   type="button"
                   onClick={clearAllFilters}
-                  className="text-xs font-semibold text-[color:var(--color-link)]"
+                  className="min-h-10 rounded-lg px-2 t-body-sm font-semibold text-[color:var(--color-link)]"
                 >
                   Clear all
                 </button>
               ) : (
-                <span className="w-[52px]" />
+                <span className="w-10" />
               )}
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
@@ -678,7 +679,7 @@ export default function SearchResults() {
               <button
                 type="button"
                 onClick={() => setFilterOpen(false)}
-                className="w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-sm font-bold text-white transition-all duration-200 hover:bg-black"
+                className="h-12 w-full rounded-xl bg-[color:var(--color-ink)] t-body font-bold text-white transition-all duration-200 hover:bg-black"
               >
                 See {results.length} cars
               </button>
