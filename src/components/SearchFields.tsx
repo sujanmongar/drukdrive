@@ -100,9 +100,9 @@ export default function SearchFields({
     <div className="flex flex-col">
       {/* Sits between the type tabs and the fields, with the duration beside
           it, so the row reads as the settings for the search. */}
-      {/* Phones: after the fields, centred, right before the Search button.
-          Desktop: above the fields. */}
-      <div className="order-2 mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 lg:order-1 lg:mb-3 lg:mt-0 lg:justify-start">
+      {/* Checkbox above the fields on every screen; the duration sits beside
+          it on desktop and moves below the fields, centred, on phones. */}
+      <div className="order-1 mb-3 flex flex-wrap items-center gap-x-5 gap-y-1.5">
         <label className="flex w-fit cursor-pointer items-center gap-2 t-body-sm text-[color:var(--color-ink)]">
           <input
             type="checkbox"
@@ -115,14 +115,19 @@ export default function SearchFields({
             : "Drop off at a different location"}
         </label>
         {showDuration && (
-          <p className="t-body-sm font-semibold text-[color:var(--color-success)]">
+          <p className="hidden t-body-sm font-semibold text-[color:var(--color-success)] lg:block">
             Duration: {durationLabel(value)}
           </p>
         )}
       </div>
+      {showDuration && (
+        <p className="order-3 mt-3 text-center t-body-sm font-semibold text-[color:var(--color-success)] lg:hidden">
+          Duration: {durationLabel(value)}
+        </p>
+      )}
 
       <div
-        className={`order-1 flex flex-col gap-3 lg:order-2 ${row ? "lg:flex-row lg:items-start" : ""}`}
+        className={`order-2 flex flex-col gap-3 ${row ? "lg:flex-row lg:items-start" : ""}`}
       >
         {/* Pick-up location */}
         <div
@@ -275,7 +280,7 @@ export default function SearchFields({
       </div>
 
       {note && (
-        <p className="order-3 mt-2 t-caption text-[color:var(--color-ink-soft)]">
+        <p className="order-4 mt-2 t-caption text-[color:var(--color-ink-soft)]">
           {note}
         </p>
       )}
