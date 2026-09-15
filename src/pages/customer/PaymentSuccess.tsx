@@ -7,7 +7,8 @@ import BookingStepper from "../../components/BookingStepper";
 import { routes } from "../../lib/routes";
 import { vehicles } from "../../data/mockData";
 import { useCurrentUser } from "../../lib/currentUser";
-import { computeFare } from "../../lib/pricing";
+import { computeFare, isAddOnId } from "../../lib/pricing";
+import { parseBooking } from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
@@ -35,7 +36,7 @@ export default function PaymentSuccess() {
   const date = searchParams.get("date") || todayFormatted();
 
   const grandTotalParam = searchParams.get("grandTotal") || searchParams.get("total");
-  const grandTotal = grandTotalParam ? Number(grandTotalParam) : computeFare(vehicle.pricePerDay).total;
+  const grandTotal = grandTotalParam ? Number(grandTotalParam) : computeFare(parseBooking(searchParams, isAddOnId), vehicle.pricePerDay).total;
   const amountDueParam = searchParams.get("amountDue");
   const amountDue = amountDueParam ? Number(amountDueParam) : grandTotal;
   const paymentOption = searchParams.get("paymentOption") || "full";

@@ -59,11 +59,10 @@ export const routes = {
   careers: "/careers",
 } as const;
 
-export type BookingType = "daily" | "outstation" | "rental" | "self-drive";
+export type BookingType = "daily" | "rental" | "self-drive";
 
 export const bookingTypeLabels: Record<BookingType, string> = {
   daily: "Daily Rides",
-  outstation: "Outstation",
   rental: "Rental",
   "self-drive": "Self Drive",
 };

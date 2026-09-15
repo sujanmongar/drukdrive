@@ -11,16 +11,11 @@ import FilterSection from "../../components/FilterSection";
 import CheckboxRow from "../../components/CheckboxRow";
 import PriceRangeSlider from "../../components/PriceRangeSlider";
 import { vehicles as allVehicles, type Vehicle } from "../../data/mockData";
-import { formatTripDate } from "../../lib/formatTripDate";
 import { useCurrency } from "../../lib/currency";
 import { cityOf } from "../../lib/tripDuration";
 import { usePageTitle } from "../../hooks/usePageTitle";
-import type { BookingType } from "../../lib/routes";
+import { bookingToParams, parseSearch } from "../../lib/booking";
 
-const bookingTypes: BookingType[] = ["daily", "outstation", "rental", "self-drive"];
-
-const DEFAULT_PICKUP = "Thimphu, Clock Tower Square";
-const DEFAULT_DROPOFF = "Paro, Airport";
 
 type SortOption = "recommended" | "price-low" | "price-high" | "rating";
 type ViewMode = "grid" | "list";
@@ -39,7 +34,9 @@ const capacityRanges: CapacityRange[] = [
   { label: "10 to 20", min: 10, max: 20 },
 ];
 
-const vehicleTypeOptions = Array.from(new Set(allVehicles.map((v) => v.category)));
+const vehicleTypeOptions = Array.from(
+  new Set(allVehicles.map((v) => v.category)),
+);
 const brandOptions = Array.from(new Set(allVehicles.map((v) => v.brand)));
 const fuelOptions = Array.from(new Set(allVehicles.map((v) => v.fuel)));
 const ratingOptions = [3, 4, 4.5];
@@ -84,7 +81,12 @@ function ExpandableCheckboxList({
   return (
     <div className="flex flex-col gap-2.5">
       {visible.map((option) => (
-        <CheckboxRow key={option} label={option} checked={selected.includes(option)} onChange={() => onToggle(option)} />
+        <CheckboxRow
+          key={option}
+          label={option}
+          checked={selected.includes(option)}
+          onChange={() => onToggle(option)}
+        />
       ))}
       {hasMore && (
         <button
@@ -104,21 +106,9 @@ export default function SearchResults() {
   const { format } = useCurrency();
   const [initialParams] = useSearchParams();
 
-  const [search, setSearch] = useState<EditSearchValue>(() => {
-    const pickupDateParam = initialParams.get("pickupDate");
-    const dropoffDateParam = initialParams.get("dropoffDate");
-    const typeParam = initialParams.get("type");
-    return {
-      type: bookingTypes.includes(typeParam as BookingType) ? (typeParam as BookingType) : "daily",
-      tripMode: initialParams.get("tripMode") === "return" ? "return" : "one-way",
-      pickup: initialParams.get("pickup") || DEFAULT_PICKUP,
-      dropoff: initialParams.get("dropoff") || DEFAULT_DROPOFF,
-      pickupDate: pickupDateParam ? new Date(pickupDateParam) : new Date(),
-      pickupTime: initialParams.get("pickupTime") || "10:00",
-      dropoffDate: dropoffDateParam ? new Date(dropoffDateParam) : null,
-      dropoffTime: initialParams.get("dropoffTime") || "13:00",
-    };
-  });
+  const [search, setSearch] = useState<EditSearchValue>(() =>
+    parseSearch(initialParams),
+  );
   const [editOpen, setEditOpen] = useState(false);
 
   const [loading, setLoading] = useState(true);
@@ -140,7 +130,10 @@ export default function SearchResults() {
   const [selectedFuels, setSelectedFuels] = useState<string[]>([]);
   const [capacity, setCapacity] = useState<string | null>(null);
   const [minRating, setMinRating] = useState<number | null>(null);
-  const [priceRange, setPriceRange] = useState<[number, number]>([priceBounds.min, priceBounds.max]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    priceBounds.min,
+    priceBounds.max,
+  ]);
 
   // Sticky header block (trip bar) reports its own height so the filter
   // sidebar and sort/filter row below it know how far down to pin themselves.
@@ -158,10 +151,14 @@ export default function SearchResults() {
 
   const results = useMemo(() => {
     const filtered = allVehicles.filter((v) => {
-      if (selectedTypes.length > 0 && !selectedTypes.includes(v.category)) return false;
-      if (selectedBrands.length > 0 && !selectedBrands.includes(v.brand)) return false;
-      if (selectedFuels.length > 0 && !selectedFuels.includes(v.fuel)) return false;
-      if (v.pricePerDay < priceRange[0] || v.pricePerDay > priceRange[1]) return false;
+      if (selectedTypes.length > 0 && !selectedTypes.includes(v.category))
+        return false;
+      if (selectedBrands.length > 0 && !selectedBrands.includes(v.brand))
+        return false;
+      if (selectedFuels.length > 0 && !selectedFuels.includes(v.fuel))
+        return false;
+      if (v.pricePerDay < priceRange[0] || v.pricePerDay > priceRange[1])
+        return false;
       if (minRating !== null && v.rating < minRating) return false;
       if (capacity) {
         const range = capacityRanges.find((r) => r.label === capacity);
@@ -170,7 +167,15 @@ export default function SearchResults() {
       return true;
     });
     return sortVehicles(filtered, sort);
-  }, [sort, selectedTypes, selectedBrands, selectedFuels, capacity, minRating, priceRange]);
+  }, [
+    sort,
+    selectedTypes,
+    selectedBrands,
+    selectedFuels,
+    capacity,
+    minRating,
+    priceRange,
+  ]);
 
   // Infinite scroll: only render a batch of `results` at a time, growing it
   // as the sentinel below the list comes into view.
@@ -202,14 +207,18 @@ export default function SearchResults() {
     // `loading` matters: the sentinel only mounts once the spinner clears.
   }, [results, visibleCount, loadingMore, loading]);
 
-  const tripQuery = new URLSearchParams({
-    pickup: search.pickup,
-    dropoff: search.dropoff,
-    date: formatTripDate(search.pickupDate, search.pickupTime),
-  }).toString();
+  // The whole search travels with the card links, so checkout knows the
+  // type, trip mode and dates — not just where and when to pick up.
+  const tripQuery = bookingToParams(search).toString();
 
-  function toggle(list: string[], value: string, setList: (v: string[]) => void) {
-    setList(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
+  function toggle(
+    list: string[],
+    value: string,
+    setList: (v: string[]) => void,
+  ) {
+    setList(
+      list.includes(value) ? list.filter((v) => v !== value) : [...list, value],
+    );
   }
 
   function reload() {
@@ -234,7 +243,11 @@ export default function SearchResults() {
 
   const filterPanel = (
     <div className="flex flex-col">
-      <FilterSection title="Vehicle type" hasSelection={selectedTypes.length > 0} onClear={() => setSelectedTypes([])}>
+      <FilterSection
+        title="Vehicle type"
+        hasSelection={selectedTypes.length > 0}
+        onClear={() => setSelectedTypes([])}
+      >
         <ExpandableCheckboxList
           options={vehicleTypeOptions}
           selected={selectedTypes}
@@ -242,21 +255,33 @@ export default function SearchResults() {
         />
       </FilterSection>
 
-      <FilterSection title="Brand" hasSelection={selectedBrands.length > 0} onClear={() => setSelectedBrands([])}>
+      <FilterSection
+        title="Brand"
+        hasSelection={selectedBrands.length > 0}
+        onClear={() => setSelectedBrands([])}
+      >
         <ExpandableCheckboxList
           options={brandOptions}
           selected={selectedBrands}
-          onToggle={(option) => toggle(selectedBrands, option, setSelectedBrands)}
+          onToggle={(option) =>
+            toggle(selectedBrands, option, setSelectedBrands)
+          }
         />
       </FilterSection>
 
-      <FilterSection title="Capacity" hasSelection={capacity !== null} onClear={() => setCapacity(null)}>
+      <FilterSection
+        title="Capacity"
+        hasSelection={capacity !== null}
+        onClear={() => setCapacity(null)}
+      >
         <div className="flex flex-wrap gap-2">
           {capacityRanges.map((range) => (
             <button
               key={range.label}
               type="button"
-              onClick={() => setCapacity(capacity === range.label ? null : range.label)}
+              onClick={() =>
+                setCapacity(capacity === range.label ? null : range.label)
+              }
               className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
                 capacity === range.label
                   ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
@@ -269,7 +294,11 @@ export default function SearchResults() {
         </div>
       </FilterSection>
 
-      <FilterSection title="Fuel Type" hasSelection={selectedFuels.length > 0} onClear={() => setSelectedFuels([])}>
+      <FilterSection
+        title="Fuel Type"
+        hasSelection={selectedFuels.length > 0}
+        onClear={() => setSelectedFuels([])}
+      >
         <ExpandableCheckboxList
           options={fuelOptions}
           selected={selectedFuels}
@@ -279,13 +308,26 @@ export default function SearchResults() {
 
       <FilterSection
         title="Price / day"
-        hasSelection={priceRange[0] !== priceBounds.min || priceRange[1] !== priceBounds.max}
+        hasSelection={
+          priceRange[0] !== priceBounds.min || priceRange[1] !== priceBounds.max
+        }
         onClear={() => setPriceRange([priceBounds.min, priceBounds.max])}
       >
-        <PriceRangeSlider min={priceBounds.min} max={priceBounds.max} value={priceRange} onChange={setPriceRange} formatLabel={format} />
+        <PriceRangeSlider
+          min={priceBounds.min}
+          max={priceBounds.max}
+          value={priceRange}
+          onChange={setPriceRange}
+          formatLabel={format}
+        />
       </FilterSection>
 
-      <FilterSection title="Ratings" hasSelection={minRating !== null} onClear={() => setMinRating(null)} divider={false}>
+      <FilterSection
+        title="Ratings"
+        hasSelection={minRating !== null}
+        onClear={() => setMinRating(null)}
+        divider={false}
+      >
         <div className="flex flex-wrap gap-2">
           {ratingOptions.map((r) => (
             <button
@@ -325,7 +367,9 @@ export default function SearchResults() {
         aria-pressed={view === "grid"}
         onClick={() => setView("grid")}
         className={`flex size-8 items-center justify-center rounded-lg transition-colors ${
-          view === "grid" ? "bg-[color:var(--color-ink)] text-white" : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
+          view === "grid"
+            ? "bg-[color:var(--color-ink)] text-white"
+            : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
         }`}
       >
         <Icon name="grid" size={15} />
@@ -336,7 +380,9 @@ export default function SearchResults() {
         aria-pressed={view === "list"}
         onClick={() => setView("list")}
         className={`flex size-8 items-center justify-center rounded-lg transition-colors ${
-          view === "list" ? "bg-[color:var(--color-ink)] text-white" : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
+          view === "list"
+            ? "bg-[color:var(--color-ink)] text-white"
+            : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
         }`}
       >
         <Icon name="list" size={15} />
@@ -350,13 +396,20 @@ export default function SearchResults() {
     selectedFuels.length +
     (capacity ? 1 : 0) +
     (minRating !== null ? 1 : 0) +
-    (priceRange[0] !== priceBounds.min || priceRange[1] !== priceBounds.max ? 1 : 0);
+    (priceRange[0] !== priceBounds.min || priceRange[1] !== priceBounds.max
+      ? 1
+      : 0);
 
   return (
     <PageShell
       header={
         <div ref={headerWrapRef} className="sticky top-0 z-30 bg-white">
-          <SearchSummaryHeader search={search} onSearch={handleEditSearch} onEditMobile={() => setEditOpen(true)} tripQuery={tripQuery} />
+          <SearchSummaryHeader
+            search={search}
+            onSearch={handleEditSearch}
+            onEditMobile={() => setEditOpen(true)}
+            tripQuery={tripQuery}
+          />
         </div>
       }
     >
@@ -365,13 +418,20 @@ export default function SearchResults() {
           {/* Desktop filter sidebar — pinned below the header, scrolls on its own */}
           <aside
             className="hidden w-[292px] shrink-0 self-start overflow-y-auto lg:sticky lg:block"
-            style={{ top: headerHeight + 16, maxHeight: `calc(100svh - ${headerHeight + 32}px)` }}
+            style={{
+              top: headerHeight + 16,
+              maxHeight: `calc(100svh - ${headerHeight + 32}px)`,
+            }}
           >
             <div className="rounded-2xl border border-[color:var(--color-border)] bg-white p-6 shadow-card">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="t-h3 text-[color:var(--color-ink)]">Filters</h2>
                 {activeFilterCount > 0 && (
-                  <button type="button" onClick={clearAllFilters} className="text-xs font-semibold text-[color:var(--color-link)]">
+                  <button
+                    type="button"
+                    onClick={clearAllFilters}
+                    className="text-xs font-semibold text-[color:var(--color-link)]"
+                  >
                     Clear all
                   </button>
                 )}
@@ -389,7 +449,9 @@ export default function SearchResults() {
                   role="status"
                   aria-label="Loading results"
                 />
-                <p className="text-sm text-[color:var(--color-muted)]">Finding the best rides for you&hellip;</p>
+                <p className="text-sm text-[color:var(--color-muted)]">
+                  Finding the best rides for you&hellip;
+                </p>
               </div>
             ) : (
               <>
@@ -403,30 +465,36 @@ export default function SearchResults() {
                   className="sticky z-20 -mx-4 mb-4 flex items-center justify-between gap-3 border-b border-[color:var(--color-border)] bg-white px-4 py-2 lg:hidden"
                   style={{ top: headerHeight }}
                 >
-                    <button type="button" onClick={() => setSortOpen(true)} className="flex h-11 flex-col justify-center text-left">
-                      <span className="text-xs text-[color:var(--color-muted)]">Sorted by</span>
-                      <span className="flex items-center gap-1 text-sm font-bold text-[color:var(--color-ink)]">
-                        {sortOptions.find((o) => o.value === sort)?.label}
-                        <Icon name="chevron-down" size={14} />
-                      </span>
-                    </button>
+                  <button
+                    type="button"
+                    onClick={() => setSortOpen(true)}
+                    className="flex h-11 flex-col justify-center text-left"
+                  >
+                    <span className="text-xs text-[color:var(--color-muted)]">
+                      Sorted by
+                    </span>
+                    <span className="flex items-center gap-1 text-sm font-bold text-[color:var(--color-ink)]">
+                      {sortOptions.find((o) => o.value === sort)?.label}
+                      <Icon name="chevron-down" size={14} />
+                    </span>
+                  </button>
 
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setFilterOpen(true)}
-                        className="flex h-11 items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-4 text-sm font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
-                      >
-                        <Icon name="filter" size={16} />
-                        Filter
-                        {activeFilterCount > 0 && (
-                          <span className="flex size-4 items-center justify-center rounded-full bg-[color:var(--color-ink)] text-[9px] font-bold text-white">
-                            {activeFilterCount}
-                          </span>
-                        )}
-                      </button>
-                      {viewToggle}
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setFilterOpen(true)}
+                      className="flex h-11 items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-4 text-sm font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
+                    >
+                      <Icon name="filter" size={16} />
+                      Filter
+                      {activeFilterCount > 0 && (
+                        <span className="flex size-4 items-center justify-center rounded-full bg-[color:var(--color-ink)] text-[9px] font-bold text-white">
+                          {activeFilterCount}
+                        </span>
+                      )}
+                    </button>
+                    {viewToggle}
+                  </div>
                 </div>
 
                 {/* Desktop: title left, sort inline right, on one row */}
@@ -435,7 +503,8 @@ export default function SearchResults() {
                   style={{ top: headerHeight }}
                 >
                   <h1 className="t-h3 text-[color:var(--color-ink)]">
-                    Found {results.length} cabs from {cityOf(search.pickup)} to {cityOf(search.dropoff)}
+                    Found {results.length} cabs from {cityOf(search.pickup)} to{" "}
+                    {cityOf(search.dropoff)}
                   </h1>
                   <div className="flex items-center gap-4">
                     <div className="relative">
@@ -445,12 +514,18 @@ export default function SearchResults() {
                         className="flex items-center gap-1.5 text-sm text-[color:var(--color-ink-soft)]"
                       >
                         Sorted by
-                        <span className="font-bold text-[color:var(--color-ink)]">{sortOptions.find((o) => o.value === sort)?.label}</span>
+                        <span className="font-bold text-[color:var(--color-ink)]">
+                          {sortOptions.find((o) => o.value === sort)?.label}
+                        </span>
                         <Icon name="chevron-down" size={14} />
                       </button>
                       {sortOpen && (
                         <>
-                          <button aria-label="Close" className="fixed inset-0 z-10 cursor-default" onClick={() => setSortOpen(false)} />
+                          <button
+                            aria-label="Close"
+                            className="fixed inset-0 z-10 cursor-default"
+                            onClick={() => setSortOpen(false)}
+                          />
                           <div className="animate-popover absolute right-0 z-20 mt-2 w-52 rounded-2xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-pop">
                             {sortOptions.map((opt) => (
                               <button
@@ -461,11 +536,15 @@ export default function SearchResults() {
                                   setSortOpen(false);
                                 }}
                                 className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm ${
-                                  sort === opt.value ? "bg-[#f4f4f4] font-semibold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
+                                  sort === opt.value
+                                    ? "bg-[#f4f4f4] font-semibold text-[color:var(--color-ink)]"
+                                    : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
                                 }`}
                               >
                                 {opt.label}
-                                {sort === opt.value && <Icon name="check" size={14} />}
+                                {sort === opt.value && (
+                                  <Icon name="check" size={14} />
+                                )}
                               </button>
                             ))}
                           </div>
@@ -478,28 +557,49 @@ export default function SearchResults() {
 
                 {results.length === 0 ? (
                   <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-[color:var(--color-border)] py-16 text-center">
-                    <Icon name="car" size={32} className="text-[color:var(--color-muted)]" />
-                    <p className="text-sm font-semibold text-[color:var(--color-ink)]">No vehicles match these filters</p>
-                    <button type="button" onClick={clearAllFilters} className="text-sm font-semibold text-[color:var(--color-ink)] underline">
+                    <Icon
+                      name="car"
+                      size={32}
+                      className="text-[color:var(--color-muted)]"
+                    />
+                    <p className="text-sm font-semibold text-[color:var(--color-ink)]">
+                      No vehicles match these filters
+                    </p>
+                    <button
+                      type="button"
+                      onClick={clearAllFilters}
+                      className="text-sm font-semibold text-[color:var(--color-ink)] underline"
+                    >
                       Clear filters
                     </button>
                   </div>
                 ) : view === "grid" ? (
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 xl:grid-cols-3">
                     {visibleResults.map((vehicle) => (
-                      <VehicleCard key={vehicle.id} vehicle={vehicle} tripQuery={tripQuery} />
+                      <VehicleCard
+                        key={vehicle.id}
+                        vehicle={vehicle}
+                        tripQuery={tripQuery}
+                      />
                     ))}
                   </div>
                 ) : (
                   <div className="flex flex-col gap-4">
                     {visibleResults.map((vehicle) => (
-                      <VehicleListCard key={vehicle.id} vehicle={vehicle} tripQuery={tripQuery} />
+                      <VehicleListCard
+                        key={vehicle.id}
+                        vehicle={vehicle}
+                        tripQuery={tripQuery}
+                      />
                     ))}
                   </div>
                 )}
 
                 {visibleCount < results.length && (
-                  <div ref={sentinelRef} className="flex h-16 items-center justify-center">
+                  <div
+                    ref={sentinelRef}
+                    className="flex h-16 items-center justify-center"
+                  >
                     {loadingMore && (
                       <div
                         className="size-7 animate-spin rounded-full border-[3px] border-[color:var(--color-border)] border-t-[color:var(--color-ink)]"
@@ -525,19 +625,33 @@ export default function SearchResults() {
           />
           <div className="animate-sheet-up relative flex h-[88svh] w-full flex-col overflow-hidden rounded-t-2xl bg-white">
             <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
-              <button type="button" onClick={() => setFilterOpen(false)} aria-label="Close filters">
-                <Icon name="close" size={20} className="text-[color:var(--color-ink)]" />
+              <button
+                type="button"
+                onClick={() => setFilterOpen(false)}
+                aria-label="Close filters"
+              >
+                <Icon
+                  name="close"
+                  size={20}
+                  className="text-[color:var(--color-ink)]"
+                />
               </button>
               <h2 className="t-h3 text-[color:var(--color-ink)]">Filters</h2>
               {activeFilterCount > 0 ? (
-                <button type="button" onClick={clearAllFilters} className="text-xs font-semibold text-[color:var(--color-link)]">
+                <button
+                  type="button"
+                  onClick={clearAllFilters}
+                  className="text-xs font-semibold text-[color:var(--color-link)]"
+                >
                   Clear all
                 </button>
               ) : (
                 <span className="w-[52px]" />
               )}
             </div>
-            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">{filterPanel}</div>
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+              {filterPanel}
+            </div>
             <div className="shrink-0 border-t border-[color:var(--color-border)] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
               <button
                 type="button"
@@ -562,8 +676,16 @@ export default function SearchResults() {
           <div className="animate-sheet-up relative w-full rounded-t-2xl bg-white pb-[env(safe-area-inset-bottom)]">
             <div className="flex items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
               <h2 className="t-h3 text-[color:var(--color-ink)]">Sort by</h2>
-              <button type="button" onClick={() => setSortOpen(false)} aria-label="Close sort options">
-                <Icon name="close" size={20} className="text-[color:var(--color-ink)]" />
+              <button
+                type="button"
+                onClick={() => setSortOpen(false)}
+                aria-label="Close sort options"
+              >
+                <Icon
+                  name="close"
+                  size={20}
+                  className="text-[color:var(--color-ink)]"
+                />
               </button>
             </div>
             <div className="flex flex-col p-2">
@@ -579,12 +701,18 @@ export default function SearchResults() {
                 >
                   <span
                     className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${
-                      sort === opt.value ? "border-[color:var(--color-ink)]" : "border-[color:var(--color-border)]"
+                      sort === opt.value
+                        ? "border-[color:var(--color-ink)]"
+                        : "border-[color:var(--color-border)]"
                     }`}
                   >
-                    {sort === opt.value && <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />}
+                    {sort === opt.value && (
+                      <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />
+                    )}
                   </span>
-                  <span className={`text-sm ${sort === opt.value ? "font-bold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)]"}`}>
+                  <span
+                    className={`text-sm ${sort === opt.value ? "font-bold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)]"}`}
+                  >
                     {opt.label}
                   </span>
                 </button>
@@ -595,7 +723,11 @@ export default function SearchResults() {
       )}
 
       {editOpen && (
-        <EditSearchModal initial={search} onClose={() => setEditOpen(false)} onSearch={handleEditSearch} />
+        <EditSearchModal
+          initial={search}
+          onClose={() => setEditOpen(false)}
+          onSearch={handleEditSearch}
+        />
       )}
     </PageShell>
   );

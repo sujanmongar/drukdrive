@@ -5,7 +5,6 @@ import { bookingTypeLabels } from "../lib/routes";
 
 const order: { type: BookingType; icon: IconName }[] = [
   { type: "daily", icon: "car" },
-  { type: "outstation", icon: "location" },
   { type: "rental", icon: "calendar" },
   { type: "self-drive", icon: "gearbox" },
 ];

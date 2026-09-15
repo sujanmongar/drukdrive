@@ -12,7 +12,7 @@ export const staticPages: Record<string, StaticPageContent> = {
   "/about": {
     title: "About DrukDrive",
     intro:
-      "DrukDrive connects travelers with verified local drivers and vehicle owners across Bhutan, making it simple to book a comfortable, reliable ride for a day trip, an outstation journey, or a longer rental.",
+      "DrukDrive connects travelers with verified local drivers and vehicle owners across Bhutan, making it simple to book a comfortable, reliable ride for a daily ride, a multi-day rental, or a self-drive trip.",
     sections: [
       {
         heading: "Our mission",

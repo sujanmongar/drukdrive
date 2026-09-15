@@ -4,9 +4,10 @@ import Button from "../../components/Button";
 import Icon from "../../components/Icon";
 import VehicleImage from "../../components/VehicleImage";
 import StatusBadge from "../../components/StatusBadge";
-import { routes } from "../../lib/routes";
+import { routes, bookingTypeLabels } from "../../lib/routes";
 import { bookings, vehicles } from "../../data/mockData";
-import { computeFare } from "../../lib/pricing";
+import { computeFare, isAddOnId } from "../../lib/pricing";
+import { parseBooking, parseSearch } from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
@@ -21,20 +22,40 @@ export default function Confirmation() {
   // vehicle + trip params. Arriving from My Bookings has no vehicleId, so we
   // fall back to the static historical record for that id.
   const vehicleId = searchParams.get("vehicleId");
-  const liveVehicle = vehicleId ? vehicles.find((v) => v.id === vehicleId) : undefined;
+  const liveVehicle = vehicleId
+    ? vehicles.find((v) => v.id === vehicleId)
+    : undefined;
   const historicalBooking = bookings.find((b) => b.id === id) ?? bookings[0];
-  const historicalVehicle = vehicles.find((v) => v.id === historicalBooking.vehicleId) ?? vehicles[0];
+  const historicalVehicle =
+    vehicles.find((v) => v.id === historicalBooking.vehicleId) ?? vehicles[0];
 
   const vehicle = liveVehicle ?? historicalVehicle;
   const totalParam = searchParams.get("total");
-  const displayTotal = totalParam ? Number(totalParam) : liveVehicle ? computeFare(liveVehicle.pricePerDay).total : historicalBooking.total;
+  const displayTotal = totalParam
+    ? Number(totalParam)
+    : liveVehicle
+      ? computeFare(
+          parseBooking(searchParams, isAddOnId),
+          liveVehicle.pricePerDay,
+        ).total
+      : historicalBooking.total;
 
-  const pickup = liveVehicle ? searchParams.get("pickup") || vehicle.location : historicalBooking.pickup;
-  const dropoff = liveVehicle ? searchParams.get("dropoff") || vehicle.location : historicalBooking.dropoff;
-  const date = liveVehicle ? searchParams.get("date") || "" : historicalBooking.date;
+  const pickup = liveVehicle
+    ? searchParams.get("pickup") || vehicle.location
+    : historicalBooking.pickup;
+  const dropoff = liveVehicle
+    ? searchParams.get("dropoff") || vehicle.location
+    : historicalBooking.dropoff;
+  const date = liveVehicle
+    ? searchParams.get("date") || ""
+    : historicalBooking.date;
   const status = liveVehicle ? "Upcoming" : historicalBooking.status;
-  const bookingType = liveVehicle ? "Daily Rides" : historicalBooking.bookingType;
-  const bookingId = liveVehicle ? id ?? historicalBooking.id : historicalBooking.id;
+  const bookingType = liveVehicle
+    ? bookingTypeLabels[parseSearch(searchParams).type]
+    : historicalBooking.bookingType;
+  const bookingId = liveVehicle
+    ? (id ?? historicalBooking.id)
+    : historicalBooking.id;
 
   const invoiceUrl = totalParam
     ? `${routes.invoice(bookingId)}?${searchParams.toString()}`
@@ -44,8 +65,14 @@ export default function Confirmation() {
     <PageShell noFooter>
       <div className="mx-auto max-w-[720px] px-4 py-12 md:px-10">
         <div className="flex flex-col items-center text-center">
-          <Icon name="check-circle" size={56} className="text-[color:var(--color-success)]" />
-          <h1 className="t-h1 mt-4 text-[color:var(--color-ink)]">Booking confirmed</h1>
+          <Icon
+            name="check-circle"
+            size={56}
+            className="text-[color:var(--color-success)]"
+          />
+          <h1 className="t-h1 mt-4 text-[color:var(--color-ink)]">
+            Booking confirmed
+          </h1>
           <p className="mt-1.5 text-sm text-[color:var(--color-muted)]">
             Your ride is booked. Details have been sent to your email.
           </p>
@@ -54,10 +81,18 @@ export default function Confirmation() {
         <div className="mt-8 rounded-xl border border-[color:var(--color-border)] p-6 shadow-card">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <VehicleImage vehicleId={vehicle.id} category={vehicle.category} className="size-16 rounded-lg" />
+              <VehicleImage
+                vehicleId={vehicle.id}
+                category={vehicle.category}
+                className="size-16 rounded-lg"
+              />
               <div>
-                <p className="text-base font-bold text-[color:var(--color-ink)]">{vehicle.name}</p>
-                <p className="text-xs text-[color:var(--color-muted)]">{bookingType}</p>
+                <p className="text-base font-bold text-[color:var(--color-ink)]">
+                  {vehicle.name}
+                </p>
+                <p className="text-xs text-[color:var(--color-muted)]">
+                  {bookingType}
+                </p>
               </div>
             </div>
             <StatusBadge status={status} />
@@ -67,31 +102,61 @@ export default function Confirmation() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex items-start gap-3">
-              <Icon name="location" size={18} className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]" />
+              <Icon
+                name="location"
+                size={18}
+                className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]"
+              />
               <div>
-                <p className="text-xs font-semibold text-[color:var(--color-muted)]">Pickup</p>
-                <p className="text-sm text-[color:var(--color-ink)]">{pickup}</p>
+                <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+                  Pickup
+                </p>
+                <p className="text-sm text-[color:var(--color-ink)]">
+                  {pickup}
+                </p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <Icon name="location" size={18} className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]" />
+              <Icon
+                name="location"
+                size={18}
+                className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]"
+              />
               <div>
-                <p className="text-xs font-semibold text-[color:var(--color-muted)]">Drop-off</p>
-                <p className="text-sm text-[color:var(--color-ink)]">{dropoff}</p>
+                <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+                  Drop-off
+                </p>
+                <p className="text-sm text-[color:var(--color-ink)]">
+                  {dropoff}
+                </p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <Icon name="calendar" size={18} className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]" />
+              <Icon
+                name="calendar"
+                size={18}
+                className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]"
+              />
               <div>
-                <p className="text-xs font-semibold text-[color:var(--color-muted)]">Date &amp; time</p>
+                <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+                  Date &amp; time
+                </p>
                 <p className="text-sm text-[color:var(--color-ink)]">{date}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <Icon name="credit-card" size={18} className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]" />
+              <Icon
+                name="credit-card"
+                size={18}
+                className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]"
+              />
               <div>
-                <p className="text-xs font-semibold text-[color:var(--color-muted)]">Amount paid</p>
-                <p className="text-sm text-[color:var(--color-ink)]">{format(displayTotal)}</p>
+                <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+                  Amount paid
+                </p>
+                <p className="text-sm text-[color:var(--color-ink)]">
+                  {format(displayTotal)}
+                </p>
               </div>
             </div>
           </div>
@@ -99,8 +164,12 @@ export default function Confirmation() {
           <div className="my-5 h-px bg-[color:var(--color-border)]" />
 
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-[color:var(--color-muted)]">Booking reference</p>
-            <p className="font-mono text-sm font-bold tracking-wide text-[color:var(--color-ink)]">{bookingId}</p>
+            <p className="text-xs font-semibold text-[color:var(--color-muted)]">
+              Booking reference
+            </p>
+            <p className="font-mono text-sm font-bold tracking-wide text-[color:var(--color-ink)]">
+              {bookingId}
+            </p>
           </div>
         </div>
 
@@ -109,7 +178,12 @@ export default function Confirmation() {
             <Icon name="download" size={18} />
             Download invoice
           </Button>
-          <Button variant="primary" size="lg" to={routes.accountBookings} fullWidth>
+          <Button
+            variant="primary"
+            size="lg"
+            to={routes.accountBookings}
+            fullWidth
+          >
             View my bookings
           </Button>
         </div>

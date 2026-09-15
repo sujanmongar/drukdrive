@@ -12,16 +12,18 @@ import { routes } from "../../lib/routes";
 import {
   addOns,
   computeFare,
-  parseAddOnIds,
-  RENTAL_DAYS,
+  isAddOnId,
+  paymentSplit,
 } from "../../lib/pricing";
+import {
+  bookingToParams,
+  formatDropoff,
+  parseBooking,
+} from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
 import { useAuth } from "../../lib/auth";
 import { useCurrentUser } from "../../lib/currentUser";
 import { usePageTitle } from "../../hooks/usePageTitle";
-
-const DEFAULT_PICKUP = "Thimphu, Druk School";
-const DEFAULT_DROPOFF = "Punakha, Taxi Parking";
 
 const PROMO_CODES: Record<string, number> = {
   DRUK10: 0.1,
@@ -36,25 +38,23 @@ export default function ReviewBooking() {
   const { isLoggedIn } = useAuth();
   const { user } = useCurrentUser();
 
-  const vehicleId = searchParams.get("vehicleId");
-  const vehicle = vehicles.find((v) => v.id === vehicleId) ?? vehicles[0];
+  const booking = parseBooking(searchParams, isAddOnId);
+  const vehicle =
+    vehicles.find((v) => v.id === booking.vehicleId) ?? vehicles[0];
+  const { addOnIds, pickup, dropoff } = booking;
+  const date = searchParams.get("date") || "";
   // Add-ons can still be changed here; the URL stays the source of truth so
   // a refresh or back-navigation keeps the choice.
-  const addOnIds = parseAddOnIds(searchParams.get("addons"));
   function toggleAddOn(id: string) {
     const next = addOnIds.includes(id)
       ? addOnIds.filter((x) => x !== id)
       : [...addOnIds, id];
-    const params = new URLSearchParams(searchParams);
-    if (next.length) params.set("addons", next.join(","));
-    else params.delete("addons");
-    setSearchParams(params, { replace: true });
+    setSearchParams(bookingToParams({ ...booking, addOnIds: next }), {
+      replace: true,
+    });
   }
-  const { baseFare, taxes, total } = computeFare(vehicle.pricePerDay, addOnIds);
-
-  const pickup = searchParams.get("pickup") || DEFAULT_PICKUP;
-  const dropoff = searchParams.get("dropoff") || DEFAULT_DROPOFF;
-  const date = searchParams.get("date") || "";
+  const fare = computeFare(booking, vehicle.pricePerDay, format);
+  const { total } = fare;
 
   // Already signed in? Skip retyping — pull the traveler's details straight
   // from their account instead of starting from blank fields.
@@ -79,8 +79,10 @@ export default function ReviewBooking() {
     ? Math.round(total * promoApplied.discount * 100) / 100
     : 0;
   const netPayable = Math.round((total - discount) * 100) / 100;
-  // Standard flow: half now, the other half to the driver at pick-up.
-  const amountDue = Math.round((netPayable / 2) * 100) / 100;
+  // Daily rides are paid in full; rentals and self-drive pay half now and
+  // the other half to the driver at pick-up.
+  const split = paymentSplit(booking, netPayable);
+  const amountDue = split.now;
 
   const isValid =
     fullName.trim() !== "" &&
@@ -106,20 +108,23 @@ export default function ReviewBooking() {
       setTouched(true);
       return;
     }
-    const params = new URLSearchParams({
-      vehicleId: vehicle.id,
-      pickup: pickupAddress,
-      dropoff: dropoffAddress || dropoff,
-      date,
-      total: netPayable.toFixed(2),
-      grandTotal: total.toFixed(2),
-      amountDue: amountDue.toFixed(2),
-      paymentOption: "half",
-      ...(addOnIds.length ? { addons: addOnIds.join(",") } : {}),
-      travelerName: fullName,
-      travelerEmail: email,
-      travelerPhone: phone,
-    });
+    const params = bookingToParams(
+      {
+        ...booking,
+        vehicleId: vehicle.id,
+        pickup: pickupAddress,
+        dropoff: dropoffAddress || dropoff,
+      },
+      {
+        total: netPayable.toFixed(2),
+        grandTotal: total.toFixed(2),
+        amountDue: amountDue.toFixed(2),
+        paymentOption: split.later > 0 ? "half" : "full",
+        travelerName: fullName,
+        travelerEmail: email,
+        travelerPhone: phone,
+      },
+    );
     navigate(`${routes.payment}?${params.toString()}`);
   }
 
@@ -158,6 +163,7 @@ export default function ReviewBooking() {
               pickup={pickup}
               dropoff={dropoff}
               date={date}
+              dropoffWhen={formatDropoff(booking)}
             />
 
             <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
@@ -364,24 +370,17 @@ export default function ReviewBooking() {
                   {format(netPayable)}
                 </p>
                 <p className="t-body-sm text-[color:var(--color-muted)]">
-                  Total for {RENTAL_DAYS} days, taxes and fees included
+                  Total for {fare.unit}, taxes and fees included
                 </p>
               </div>
               <div className="mt-3">
                 <FareSummary
                   total={format(netPayable)}
                   lines={[
-                    {
-                      label: `${format(vehicle.pricePerDay)} × ${RENTAL_DAYS} days`,
-                      value: format(baseFare),
-                    },
-                    ...addOns
-                      .filter((a) => addOnIds.includes(a.id))
-                      .map((a) => ({
-                        label: a.name,
-                        value: format(a.pricePerDay * RENTAL_DAYS),
-                      })),
-                    { label: "Taxes & fees", value: format(taxes) },
+                    ...fare.lines.map((l) => ({
+                      label: l.label,
+                      value: format(l.amount),
+                    })),
                     ...(discount > 0
                       ? [
                           {
@@ -395,7 +394,8 @@ export default function ReviewBooking() {
                 />
               </div>
 
-              {/* One flow: half now, half to the driver at pick-up. */}
+              {/* Rides are paid in full; rentals and self-drive pay half now and
+                  half to the driver at pick-up. */}
               <dl className="mt-4 flex flex-col gap-2 rounded-xl bg-[color:var(--color-surface-subtle)] px-4 py-3.5">
                 <div className="flex items-center justify-between gap-3">
                   <dt>
@@ -403,26 +403,30 @@ export default function ReviewBooking() {
                       Pay now
                     </span>
                     <span className="block t-caption text-[color:var(--color-muted)]">
-                      Half the fare, to confirm your booking
+                      {split.later > 0
+                        ? "Half the fare, to confirm your booking"
+                        : "The full fare, to confirm your booking"}
                     </span>
                   </dt>
                   <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
                     {format(amountDue)}
                   </dd>
                 </div>
-                <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2">
-                  <dt>
-                    <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
-                      Pay at pick-up
-                    </span>
-                    <span className="block t-caption text-[color:var(--color-muted)]">
-                      The other half, to the driver
-                    </span>
-                  </dt>
-                  <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
-                    {format(netPayable - amountDue)}
-                  </dd>
-                </div>
+                {split.later > 0 && (
+                  <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2">
+                    <dt>
+                      <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
+                        Pay at pick-up
+                      </span>
+                      <span className="block t-caption text-[color:var(--color-muted)]">
+                        The other half, to the driver
+                      </span>
+                    </dt>
+                    <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
+                      {format(netPayable - amountDue)}
+                    </dd>
+                  </div>
+                )}
               </dl>
             </div>
 

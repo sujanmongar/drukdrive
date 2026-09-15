@@ -11,17 +11,14 @@ import {
 } from "../../components/BookingRouteCard";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
+import { addOns, computeFare, isAddOnId } from "../../lib/pricing";
 import {
-  addOns,
-  computeFare,
-  parseAddOnIds,
-  RENTAL_DAYS,
-} from "../../lib/pricing";
+  bookingToParams,
+  formatDropoff,
+  parseBooking,
+} from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
-
-const DEFAULT_PICKUP = "Thimphu, Druk School";
-const DEFAULT_DROPOFF = "Punakha, Taxi Parking";
 
 const inclusions = [
   "Professional driver",
@@ -45,16 +42,19 @@ export default function BookingReview() {
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
 
-  const vehicleId = searchParams.get("vehicleId");
-  const vehicle = vehicles.find((v) => v.id === vehicleId) ?? vehicles[0];
-  const pickup = searchParams.get("pickup") || DEFAULT_PICKUP;
-  const dropoff = searchParams.get("dropoff") || DEFAULT_DROPOFF;
+  const booking = parseBooking(searchParams, isAddOnId);
+  const vehicle =
+    vehicles.find((v) => v.id === booking.vehicleId) ?? vehicles[0];
+  const { pickup, dropoff } = booking;
   const date = searchParams.get("date") || "";
 
-  const [selected, setSelected] = useState<string[]>(() =>
-    parseAddOnIds(searchParams.get("addons")),
+  const [selected, setSelected] = useState<string[]>(booking.addOnIds);
+  const fare = computeFare(
+    { ...booking, addOnIds: selected },
+    vehicle.pricePerDay,
+    format,
   );
-  const { total } = computeFare(vehicle.pricePerDay, selected);
+  const { total } = fare;
 
   function toggle(id: string) {
     setSelected((s) =>
@@ -63,10 +63,11 @@ export default function BookingReview() {
   }
 
   function handleContinue() {
-    const params = new URLSearchParams(searchParams);
-    params.set("vehicleId", vehicle.id);
-    if (selected.length) params.set("addons", selected.join(","));
-    else params.delete("addons");
+    const params = bookingToParams({
+      ...booking,
+      vehicleId: vehicle.id,
+      addOnIds: selected,
+    });
     navigate(`${routes.reviewBooking}?${params.toString()}`);
   }
 
@@ -167,11 +168,16 @@ export default function BookingReview() {
 
           {/* Right: the stops and the running total, sticky like the price summary on the next step. */}
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <StopsCard pickup={pickup} dropoff={dropoff} date={date} />
+            <StopsCard
+              pickup={pickup}
+              dropoff={dropoff}
+              date={date}
+              dropoffWhen={formatDropoff(booking)}
+            />
             <div className="mt-6 hidden lg:block">
               <div className="flex items-end justify-between gap-3 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
                 <p className="t-body-sm text-[color:var(--color-muted)]">
-                  Total for {RENTAL_DAYS} days
+                  Total for {fare.unit}
                   <span className="block t-caption">
                     taxes and fees included
                   </span>

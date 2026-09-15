@@ -6,7 +6,8 @@ import DrukDriveLogo from "../../components/DrukDriveLogo";
 import { routes } from "../../lib/routes";
 import { bookings, vehicles } from "../../data/mockData";
 import { useCurrentUser } from "../../lib/currentUser";
-import { TAX_RATE, RENTAL_DAYS } from "../../lib/pricing";
+import { TAX_RATE, computeFare, isAddOnId } from "../../lib/pricing";
+import { parseBooking } from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
@@ -34,6 +35,7 @@ export default function Invoice() {
   const vehicleName = liveVehicle ? liveVehicle.name : (vehicles.find((v) => v.id === historicalBooking.vehicleId) ?? vehicles[0]).name;
   const bookingId = liveVehicle ? id ?? historicalBooking.id : historicalBooking.id;
   const bookingDate = liveVehicle ? searchParams.get("date") || "" : historicalBooking.date;
+  const unit = liveVehicle ? computeFare(parseBooking(searchParams, isAddOnId), liveVehicle.pricePerDay).unit : "1 day";
 
   // Prefer the real total carried over from a live checkout; fall back to
   // the static mock booking's total when reached from My Bookings instead.
@@ -119,7 +121,7 @@ export default function Invoice() {
               <tbody>
                 <tr className="border-b border-[color:var(--color-border)]">
                   <td className="py-3 text-[color:var(--color-ink)]">{vehicleName}</td>
-                  <td className="py-3 text-[color:var(--color-ink)]">{RENTAL_DAYS} Day{RENTAL_DAYS > 1 ? "s" : ""}</td>
+                  <td className="py-3 text-[color:var(--color-ink)]">{unit}</td>
                   <td className="py-3 text-right text-[color:var(--color-ink)]">{format(baseFare)}</td>
                   <td className="py-3 text-right text-[color:var(--color-ink)]">{format(baseFare)}</td>
                 </tr>

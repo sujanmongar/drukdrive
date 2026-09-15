@@ -6,71 +6,50 @@ import VehicleCard from "../../components/VehicleCard";
 import VehicleImage from "../../components/VehicleImage";
 import Icon from "../../components/Icon";
 import SectionHeader from "../../components/SectionHeader";
-import LocationPickerSheet from "../../components/LocationPickerSheet";
-import DatePickerSheet from "../../components/DatePickerSheet";
+import SearchFields from "../../components/SearchFields";
 import { routes } from "../../lib/routes";
 import type { BookingType } from "../../lib/routes";
-import { vehicles, recentSearches, popularCarTypes, faqs } from "../../data/mockData";
-import { useAuth } from "../../lib/auth";
-import { formatTripDate } from "../../lib/formatTripDate";
 import {
-  estimateDurationHours,
-  formatDurationHours,
-  daysBetween,
-  combineDateTime,
-  daysHoursBetween,
-  formatDayHour,
-} from "../../lib/tripDuration";
-
-type TripMode = "one-way" | "return";
-
-const DEFAULT_PICKUP = "Thimphu, Druk School";
-const DEFAULT_DROPOFF = "Punakha, Taxi Parking";
+  vehicles,
+  recentSearches,
+  popularCarTypes,
+  faqs,
+} from "../../data/mockData";
+import { useAuth } from "../../lib/auth";
+import {
+  bookingToParams,
+  defaultDropoffDate,
+  defaultSearch,
+  isDayBased,
+} from "../../lib/booking";
+import type { SearchValue } from "../../lib/booking";
 
 export default function Home() {
   const navigate = useNavigate();
   const { role } = useAuth();
-  const [type, setType] = useState<BookingType>("daily");
-  const [tripMode, setTripMode] = useState<TripMode>("one-way");
+  const [search, setSearch] = useState<SearchValue>(() =>
+    defaultSearch("daily"),
+  );
+  const type = search.type;
   const [openFaqs, setOpenFaqs] = useState<Set<number>>(new Set([0]));
 
-  const [pickup, setPickup] = useState(DEFAULT_PICKUP);
-  const [dropoff, setDropoff] = useState(DEFAULT_DROPOFF);
-  const [pickupDate, setPickupDate] = useState<Date>(new Date());
-  const [pickupTime, setPickupTime] = useState("10:00");
-  const [dropoffDate, setDropoffDate] = useState<Date | null>(null);
-  const [dropoffTime, setDropoffTime] = useState("13:00");
-
-  const pickupAnchorRef = useRef<HTMLDivElement>(null);
-  const dropoffAnchorRef = useRef<HTMLDivElement>(null);
-  const dateAnchorRef = useRef<HTMLDivElement>(null);
   const recentTrackRef = useRef<HTMLDivElement>(null);
   const carsTrackRef = useRef<HTMLDivElement>(null);
   const typesTrackRef = useRef<HTMLDivElement>(null);
 
-  const [activeField, setActiveField] = useState<"pickup" | "dropoff" | "date" | null>(null);
-
-  // Each booking type has a genuinely different field set, matching the
-  // provided design: Daily Rides is the only tab with a One Way/Return
-  // toggle; Rental and Self Drive always show both ends of the date range
-  // (no toggle needed); Outstation and Self Drive only ask for a single
-  // "Location" (no separate pickup/drop-off pair).
-  const showTripModeTabs = type === "daily" || type === "outstation";
-  const isSingleLocation = type === "outstation" || type === "self-drive";
-  const showSecondDateBox = type === "rental" || type === "self-drive" || (showTripModeTabs && tripMode === "return");
-  const dateMode = showSecondDateBox ? "range" : "single";
-
-  const durationHours = estimateDurationHours(pickup, dropoff);
-  const dayCount = dropoffDate ? daysBetween(pickupDate, dropoffDate) : null;
-  const dayHourDuration = dropoffDate
-    ? daysHoursBetween(combineDateTime(pickupDate, pickupTime), combineDateTime(dropoffDate, dropoffTime))
-    : null;
-
-  const firstPointLabel = type === "outstation" ? "Date" : type === "self-drive" ? "Start" : "Pick up date";
-  const secondPointLabel = type === "self-drive" ? "End" : "Drop off date";
-
-  function formatDateLabel(d: Date) {
-    return d.toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  // Switching between a same-day ride and a by-the-day rental moves the
+  // drop-off date to what that type expects, so the fields never contradict
+  // the tab.
+  function setType(next: BookingType) {
+    setSearch((s) => {
+      if (isDayBased(next) === isDayBased(s.type)) return { ...s, type: next };
+      return {
+        ...s,
+        type: next,
+        dropoffDate: defaultDropoffDate(next, s.pickupDate),
+        dropoffTime: next === "daily" ? "16:00" : s.pickupTime,
+      };
+    });
   }
 
   function toggleFaq(i: number) {
@@ -83,36 +62,26 @@ export default function Home() {
   }
 
   function handleSearch() {
-    const params = new URLSearchParams({
-      type,
-      tripMode,
-      pickup,
-      dropoff,
-      pickupDate: pickupDate.toISOString(),
-      pickupTime,
-    });
-    if (dropoffDate) params.set("dropoffDate", dropoffDate.toISOString());
-    params.set("dropoffTime", dropoffTime);
-    navigate(`${routes.search}?${params.toString()}`);
+    navigate(`${routes.search}?${bookingToParams(search).toString()}`);
   }
 
-  function handleRecentSearch(vehicleId: string, recentPickup: string, recentDropoff: string) {
+  function handleRecentSearch(
+    vehicleId: string,
+    recentPickup: string,
+    recentDropoff: string,
+  ) {
     // A recent search already implies pickup, drop-off and the vehicle —
     // jump straight to booking instead of re-running a fresh search.
-    const params = new URLSearchParams({
-      vehicleId,
+    const params = bookingToParams({
+      ...search,
       pickup: recentPickup,
       dropoff: recentDropoff,
-      date: formatTripDate(pickupDate, pickupTime),
+      vehicleId,
     });
     navigate(`${routes.bookingReview}?${params.toString()}`);
   }
 
-  const tripQuery = new URLSearchParams({
-    pickup,
-    dropoff,
-    date: formatTripDate(pickupDate, pickupTime),
-  }).toString();
+  const tripQuery = bookingToParams(search).toString();
 
   // While "driving", the rider homepage/search isn't relevant — send the
   // driver straight to their dashboard, even on a direct nav/refresh of "/".
@@ -128,7 +97,6 @@ export default function Home() {
           viewport; the matching padding keeps the visible content in the
           same place it would otherwise be. */}
       <section className="relative -mt-16 overflow-hidden bg-[color:var(--color-surface-muted)] pt-16 md:-mt-[94px] md:pt-[94px]">
-
         <div className="animate-fade-up relative mx-auto max-w-[1280px] px-4 pb-14 pt-10 md:px-10 md:pb-20 md:pt-16">
           <div>
             <h1 className="t-h1 max-w-[280px] text-[color:var(--color-ink)] sm:max-w-md md:max-w-[520px]">
@@ -141,163 +109,16 @@ export default function Home() {
             <div className="relative mt-8 w-full max-w-[506px] rounded-2xl bg-white p-5 shadow-card md:mt-10 md:p-6 lg:max-w-none lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
               <BookingTypeTabs value={type} onChange={setType} />
 
-              {showTripModeTabs && (
-                <div className="mt-5 flex w-fit gap-6">
-                  {(["one-way", "return"] as TripMode[]).map((m) => {
-                    const active = tripMode === m;
-                    return (
-                      <button
-                        key={m}
-                        type="button"
-                        onClick={() => setTripMode(m)}
-                        className={`flex min-h-11 items-end pb-2 text-base transition-colors ${
-                          active ? "border-b-2 border-[color:var(--color-ink)] font-bold text-[color:var(--color-ink)]" : "text-[color:var(--color-muted)]"
-                        }`}
-                      >
-                        {m === "one-way" ? "One Way" : "Return"}
-                      </button>
-                    );
-                  })}
+              <div className="mt-5 lg:flex lg:items-start lg:gap-3">
+                <div className="min-w-0 flex-1">
+                  <SearchFields
+                    value={search}
+                    onChange={setSearch}
+                    layout="row"
+                    anchored
+                  />
                 </div>
-              )}
-
-              <div className="mt-5 flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-3">
-                {isSingleLocation ? (
-                  <div ref={pickupAnchorRef} className="relative lg:min-w-0 lg:flex-1">
-                    <button
-                      type="button"
-                      onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
-                      className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 text-left transition-colors hover:border-[color:var(--color-ink)] lg:h-[56px]"
-                    >
-                      <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
-                      <span className="flex flex-col gap-1">
-                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">Location</span>
-                        <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{pickup}</span>
-                      </span>
-                    </button>
-                    {activeField === "pickup" && (
-                      <LocationPickerSheet
-                        label="Location"
-                        anchorRef={pickupAnchorRef}
-                        onSelect={(v) => {
-                          setPickup(v);
-                          setActiveField(null);
-                        }}
-                        onClose={() => setActiveField(null)}
-                      />
-                    )}
-                  </div>
-                ) : (
-                  <>
-                    <div ref={pickupAnchorRef} className="relative lg:min-w-0 lg:flex-1">
-                      <button
-                        type="button"
-                        onClick={() => setActiveField(activeField === "pickup" ? null : "pickup")}
-                        className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 text-left transition-colors hover:border-[color:var(--color-ink)] lg:h-[56px]"
-                      >
-                        <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
-                        <span className="flex flex-col gap-1">
-                          <span className="text-[11px] text-[color:var(--color-ink-soft)]">Pick up location</span>
-                          <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{pickup}</span>
-                        </span>
-                      </button>
-                      {activeField === "pickup" && (
-                        <LocationPickerSheet
-                          label="Pick up location"
-                          anchorRef={pickupAnchorRef}
-                          onSelect={(v) => {
-                            setPickup(v);
-                            setActiveField(null);
-                          }}
-                          onClose={() => setActiveField(null)}
-                        />
-                      )}
-                    </div>
-
-                    <div ref={dropoffAnchorRef} className="relative lg:min-w-0 lg:flex-1">
-                      <button
-                        type="button"
-                        onClick={() => setActiveField(activeField === "dropoff" ? null : "dropoff")}
-                        className="flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 text-left transition-colors hover:border-[color:var(--color-ink)] lg:h-[56px]"
-                      >
-                        <Icon name="location" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
-                        <span className="flex flex-col gap-1">
-                          <span className="text-[11px] text-[color:var(--color-ink-soft)]">Drop off location</span>
-                          <span className="text-sm font-bold text-[color:var(--color-ink-87)]">{dropoff}</span>
-                        </span>
-                      </button>
-                      {activeField === "dropoff" && (
-                        <LocationPickerSheet
-                          label="Drop off location"
-                          anchorRef={dropoffAnchorRef}
-                          onSelect={(v) => {
-                            setDropoff(v);
-                            setActiveField(null);
-                          }}
-                          onClose={() => setActiveField(null)}
-                        />
-                      )}
-                    </div>
-                  </>
-                )}
-
-                <div ref={dateAnchorRef} className="relative lg:min-w-0 lg:flex-1">
-                  <div className="flex overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white lg:h-[56px]">
-                    <button
-                      type="button"
-                      onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                      className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-[color:var(--color-surface-soft)] lg:h-full"
-                    >
-                      <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
-                      <span className="flex min-w-0 flex-col gap-1">
-                        <span className="text-[11px] text-[color:var(--color-ink-soft)]">{firstPointLabel}</span>
-                        <span className="truncate text-sm font-bold text-[color:var(--color-ink-87)]">
-                          {formatDateLabel(pickupDate)}, {pickupTime}
-                        </span>
-                      </span>
-                    </button>
-                    {showSecondDateBox && (
-                      <>
-                        <div className="w-px bg-[color:var(--color-border)]" />
-                        <button
-                          type="button"
-                          onClick={() => setActiveField(activeField === "date" ? null : "date")}
-                          className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-[color:var(--color-surface-soft)] lg:h-full"
-                        >
-                          <Icon name="calendar" size={20} className="shrink-0 text-[color:var(--color-ink)]" />
-                          <span className="flex min-w-0 flex-col gap-1">
-                            <span className="text-[11px] text-[color:var(--color-ink-soft)]">{secondPointLabel}</span>
-                            <span className="truncate text-sm font-bold text-[color:var(--color-ink-87)]">
-                              {dropoffDate ? `${formatDateLabel(dropoffDate)}, ${dropoffTime}` : "Select date"}
-                            </span>
-                          </span>
-                        </button>
-                      </>
-                    )}
-                  </div>
-                  {activeField === "date" && (
-                    <DatePickerSheet
-                      mode={dateMode}
-                      anchorRef={dateAnchorRef}
-                      initialPickup={pickupDate}
-                      initialDropoff={dropoffDate ?? undefined}
-                      initialPickupTime={pickupTime}
-                      initialDropoffTime={dropoffTime}
-                      pickupLabel={firstPointLabel}
-                      dropoffLabel={secondPointLabel}
-                      onConfirm={({ pickup: p, pickupTime: pt, dropoff: d, dropoffTime: dt }) => {
-                        setPickupDate(p);
-                        setPickupTime(pt);
-                        if (d) setDropoffDate(d);
-                        if (dt) setDropoffTime(dt);
-                        setActiveField(null);
-                      }}
-                      onClose={() => setActiveField(null)}
-                    />
-                  )}
-                </div>
-
-                {/* Desktop: the search action collapses into the field row. */}
+                {/* Desktop: the search action sits at the end of the field row. */}
                 <button
                   type="button"
                   onClick={handleSearch}
@@ -306,23 +127,6 @@ export default function Home() {
                   Search
                 </button>
               </div>
-
-              {type === "daily" && tripMode === "return" && dayHourDuration !== null && (
-                <p className="t-body mt-4 font-semibold text-[color:var(--color-success)]">Duration: {formatDayHour(dayHourDuration)}</p>
-              )}
-              {type === "daily" && tripMode === "one-way" && (
-                <p className="t-body mt-4 font-semibold text-[color:var(--color-success)]">
-                  Duration: {formatDurationHours(durationHours)}
-                </p>
-              )}
-              {type === "rental" && dayCount !== null && (
-                <p className="t-body mt-4 font-semibold text-[color:var(--color-success)]">
-                  Duration: {dayCount} day{dayCount === 1 ? "" : "s"}
-                </p>
-              )}
-              {type === "self-drive" && dayHourDuration !== null && (
-                <p className="t-body mt-4 font-semibold text-[color:var(--color-success)]">Duration: {formatDayHour(dayHourDuration)}</p>
-              )}
 
               <button
                 type="button"
@@ -340,27 +144,39 @@ export default function Home() {
         {/* Recent searches */}
         <section className="section-y">
           <SectionHeader title="Recent searches" trackRef={recentTrackRef} />
-          <div ref={recentTrackRef} className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:px-6">
+          <div
+            ref={recentTrackRef}
+            className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:px-6"
+          >
             {recentSearches.map((s) => {
               const vehicle = vehicles.find((v) => v.id === s.vehicleId);
               return (
                 <button
                   key={s.id}
                   type="button"
-                  onClick={() => handleRecentSearch(s.vehicleId, s.pickup, s.dropoff)}
+                  onClick={() =>
+                    handleRecentSearch(s.vehicleId, s.pickup, s.dropoff)
+                  }
                   className="flex shrink-0 items-center gap-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-transparent hover:shadow-lift"
                 >
-                  <VehicleImage vehicleId={vehicle?.id} category={vehicle?.category} className="size-16 shrink-0 rounded-xl" />
+                  <VehicleImage
+                    vehicleId={vehicle?.id}
+                    category={vehicle?.category}
+                    className="size-16 shrink-0 rounded-xl"
+                  />
                   <span className="flex flex-col gap-1">
-                    <span className="t-body whitespace-nowrap font-bold text-[color:var(--color-ink)]">{s.title}</span>
-                    <span className="t-caption whitespace-nowrap text-[color:var(--color-muted)]">{s.subtitle}</span>
+                    <span className="t-body whitespace-nowrap font-bold text-[color:var(--color-ink)]">
+                      {s.title}
+                    </span>
+                    <span className="t-caption whitespace-nowrap text-[color:var(--color-muted)]">
+                      {s.subtitle}
+                    </span>
                   </span>
                 </button>
               );
             })}
           </div>
         </section>
-
       </div>
 
       {/* Popular cars — a full-bleed tinted band so the white cards and their
@@ -368,7 +184,10 @@ export default function Home() {
       <section className="section-y bg-[color:var(--color-surface-subtle)]">
         <div className="mx-auto max-w-[1280px] px-4 md:px-10">
           <SectionHeader title="Popular cars" trackRef={carsTrackRef} />
-          <div ref={carsTrackRef} className="carousel-track -mx-4 -mb-8 flex gap-5 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:px-6">
+          <div
+            ref={carsTrackRef}
+            className="carousel-track -mx-4 -mb-8 flex gap-5 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:px-6"
+          >
             {vehicles.map((v) => (
               <VehicleCard
                 key={v.id}
@@ -385,12 +204,19 @@ export default function Home() {
         {/* Popular car types — photo tiles, paged by the header arrows. */}
         <section className="section-y">
           <SectionHeader title="Popular car types" trackRef={typesTrackRef} />
-          <div ref={typesTrackRef} className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:gap-5 md:px-6">
+          <div
+            ref={typesTrackRef}
+            className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:gap-5 md:px-6"
+          >
             {popularCarTypes.map((t) => (
               <button
                 key={t.category}
                 type="button"
-                onClick={() => navigate(`${routes.search}?category=${encodeURIComponent(t.category)}`)}
+                onClick={() =>
+                  navigate(
+                    `${routes.search}?category=${encodeURIComponent(t.category)}`,
+                  )
+                }
                 className="group shrink-0 basis-[86%] cursor-pointer text-left sm:basis-[220px] lg:basis-[calc((100%-3.75rem)/4)]"
               >
                 <div className="flex aspect-[5/4] items-center justify-center overflow-hidden rounded-2xl bg-[color:var(--color-surface-sunken)] transition-colors duration-300 group-hover:bg-[color:var(--color-surface-soft)]">
@@ -401,9 +227,12 @@ export default function Home() {
                     className="size-full p-5 transition-transform duration-500 group-hover:scale-[1.06]"
                   />
                 </div>
-                <p className="t-h4 mt-3 text-[color:var(--color-ink)]">{t.label}</p>
+                <p className="t-h4 mt-3 text-[color:var(--color-ink)]">
+                  {t.label}
+                </p>
                 <p className="t-caption text-[color:var(--color-muted)]">
-                  {vehicles.filter((v) => v.category === t.category).length} available
+                  {vehicles.filter((v) => v.category === t.category).length}{" "}
+                  available
                 </p>
               </button>
             ))}
@@ -412,7 +241,9 @@ export default function Home() {
 
         {/* FAQ — one centred column of full-width accordion cards. */}
         <section className="section-y">
-          <h2 className="t-h2 mb-6 text-center text-[color:var(--color-ink)] md:mb-8">Frequently asked questions</h2>
+          <h2 className="t-h2 mb-6 text-center text-[color:var(--color-ink)] md:mb-8">
+            Frequently asked questions
+          </h2>
           <div className="mx-auto flex max-w-[860px] flex-col gap-3">
             {faqs.map((f, i) => {
               const open = openFaqs.has(i);
@@ -431,10 +262,14 @@ export default function Home() {
                     aria-expanded={open}
                     className="flex w-full items-center justify-between gap-5 p-5 text-left md:p-6"
                   >
-                    <span className="t-h4 text-[color:var(--color-ink)]">{f.q}</span>
+                    <span className="t-h4 text-[color:var(--color-ink)]">
+                      {f.q}
+                    </span>
                     <span
                       className={`flex size-9 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
-                        open ? "rotate-180 bg-[color:var(--color-ink)] text-white" : "bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)]"
+                        open
+                          ? "rotate-180 bg-[color:var(--color-ink)] text-white"
+                          : "bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)]"
                       }`}
                     >
                       <Icon name="chevron-down" size={17} strokeWidth={2.2} />
@@ -442,11 +277,15 @@ export default function Home() {
                   </button>
                   <div
                     className={`grid transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                      open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      open
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0"
                     }`}
                   >
                     <div className="min-h-0 overflow-hidden">
-                      <p className="t-body-lg px-5 pb-6 text-[color:var(--color-muted)] md:px-6">{f.a}</p>
+                      <p className="t-body-lg px-5 pb-6 text-[color:var(--color-muted)] md:px-6">
+                        {f.a}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -459,8 +298,9 @@ export default function Home() {
         <section className="section-y">
           <h2 className="t-h2 mb-4 text-[color:var(--color-ink)]">DrukDrive</h2>
           <p className="t-body-lg max-w-[860px] text-[color:var(--color-muted)]">
-            DrukDrive partners with trusted local operators across Bhutan to make it easy to find, compare and
-            book the right vehicle for your trip — from daily rides around Thimphu to outstation transfers and
+            DrukDrive partners with trusted local operators across Bhutan to
+            make it easy to find, compare and book the right vehicle for your
+            trip — from daily rides around Thimphu to multi-day rentals and
             self-drive rentals for exploring the valleys and dzongkhags beyond.
           </p>
         </section>

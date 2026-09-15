@@ -13,6 +13,8 @@ type Props = {
   pickup: string;
   dropoff: string;
   date?: string;
+  /** Formatted drop-off date and time, when the booking has one. */
+  dropoffWhen?: string;
   /** Formatted trip total; shown in the car card on the review step only. */
   total?: string;
   days?: number;
@@ -101,7 +103,8 @@ export function StopsCard({
   pickup,
   dropoff,
   date,
-}: Pick<Props, "pickup" | "dropoff" | "date">) {
+  dropoffWhen,
+}: Pick<Props, "pickup" | "dropoff" | "date" | "dropoffWhen">) {
   const hours = estimateDurationHours(pickup, dropoff);
   const stops = [
     {
@@ -110,7 +113,12 @@ export function StopsCard({
       place: pickup,
       when: date || "Time to be confirmed",
     },
-    { key: "dropoff", label: "Drop off", place: dropoff, when: "On arrival" },
+    {
+      key: "dropoff",
+      label: "Drop off",
+      place: dropoff,
+      when: dropoffWhen || "On arrival",
+    },
   ];
 
   return (
@@ -179,13 +187,19 @@ export default function BookingRouteCard({
   pickup,
   dropoff,
   date,
+  dropoffWhen,
   total,
   days,
 }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <VehicleSummaryCard vehicle={vehicle} total={total} days={days} />
-      <StopsCard pickup={pickup} dropoff={dropoff} date={date} />
+      <StopsCard
+        pickup={pickup}
+        dropoff={dropoff}
+        date={date}
+        dropoffWhen={dropoffWhen}
+      />
     </div>
   );
 }
