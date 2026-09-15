@@ -48,6 +48,8 @@ export default function BookingReview() {
   const addOns = addOnsFor(booking.type);
   const inclusions = inclusionsFor(booking.type);
   const notes = notesFor(booking.type);
+  const searchHref = `${routes.search}?${bookingToParams(booking).toString()}`;
+  const [notesOpen, setNotesOpen] = useState(false);
   const selfDrive = booking.type === "self-drive";
   // Self drive needs a licence Bhutan accepts; the driver confirms it here.
   const [licenceConfirmed, setLicenceConfirmed] = useState(false);
@@ -94,7 +96,7 @@ export default function BookingReview() {
         </div>
 
         <div className="mb-8">
-          <BookingStepper current={1} />
+          <BookingStepper current={2} hrefs={[searchHref]} />
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px] lg:gap-8">
@@ -158,22 +160,38 @@ export default function BookingReview() {
               ))}
             </div>
 
-            <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
-              Read before you book
-            </h2>
-            <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
-              {notes.map((note, i) => (
-                <div key={note.title} className={i > 0 ? "mt-4" : ""}>
-                  <h4 className="t-body font-bold text-[color:var(--color-ink)]">
-                    {note.title}
-                  </h4>
-                  <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body text-[color:var(--color-ink-soft)]">
-                    {note.items.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
+            <div className="mt-10 rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card">
+              <button
+                type="button"
+                onClick={() => setNotesOpen((v) => !v)}
+                aria-expanded={notesOpen}
+                className="flex min-h-14 w-full items-center justify-between gap-3 px-5 text-left"
+              >
+                <span className="t-h3 text-[color:var(--color-ink)]">
+                  Read before you book
+                </span>
+                <Icon
+                  name="chevron-down"
+                  size={20}
+                  className={`shrink-0 text-[color:var(--color-muted)] transition-transform duration-200 ${notesOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+              {notesOpen && (
+                <div className="animate-popover border-t border-[color:var(--color-border)] px-5 pb-5 pt-4">
+                  {notes.map((note, i) => (
+                    <div key={note.title} className={i > 0 ? "mt-4" : ""}>
+                      <h4 className="t-body font-bold text-[color:var(--color-ink)]">
+                        {note.title}
+                      </h4>
+                      <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body text-[color:var(--color-ink-soft)]">
+                        {note.items.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
 
             <div className="mt-8 hidden justify-end lg:flex">

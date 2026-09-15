@@ -73,6 +73,7 @@ export default function Payment() {
   const balance = Math.round((netPayable - amountDue) * 100) / 100;
 
   const stepHrefs = [
+    `${routes.search}?${bookingToParams(booking).toString()}`,
     `${routes.bookingReview}?${bookingToParams(booking).toString()}`,
     `${routes.reviewBooking}?${searchParams.toString()}`,
   ];
@@ -162,7 +163,7 @@ export default function Payment() {
         </div>
 
         <div className="mb-8">
-          <BookingStepper current={3} hrefs={stepHrefs} />
+          <BookingStepper current={4} hrefs={stepHrefs} />
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px] lg:gap-8">

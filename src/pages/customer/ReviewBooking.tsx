@@ -44,6 +44,7 @@ export default function ReviewBooking() {
   const { addOnIds, pickup, dropoff } = booking;
   const date = formatPickup(booking);
   const reviewHref = `${routes.bookingReview}?${bookingToParams(booking).toString()}`;
+  const searchHref = `${routes.search}?${bookingToParams(booking).toString()}`;
 
   // Add-ons and the promo code live in the URL, so a refresh or a step back
   // keeps them and the payment page sees the same numbers.
@@ -156,12 +157,25 @@ export default function ReviewBooking() {
         </div>
 
         <div className="mb-8">
-          <BookingStepper current={2} hrefs={[reviewHref]} />
+          <BookingStepper current={3} hrefs={[searchHref, reviewHref]} />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px] lg:gap-8">
-          {/* Left: the form */}
-          <div className="min-w-0">
+        {/* Phones read top to bottom in the desktop sidebar's order — trip,
+            then the form, then add-ons, with the price last. Desktop places
+            the form in the left column and the rest down the right. */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px] lg:grid-rows-[auto_auto_1fr] lg:gap-x-8 lg:gap-y-0">
+          <div className="order-1 lg:col-start-2 lg:row-start-1">
+            <BookingRouteCard
+              vehicle={vehicle}
+              pickup={pickup}
+              dropoff={dropoff}
+              date={date}
+              dropoffWhen={formatDropoff(booking)}
+            />
+          </div>
+
+          {/* The form */}
+          <div className="order-2 min-w-0 lg:col-start-1 lg:row-span-3 lg:row-start-1">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="t-h3 text-[color:var(--color-ink)]">
                 Personal information
@@ -366,17 +380,23 @@ export default function ReviewBooking() {
             </div>
           </div>
 
-          {/* Right: trip, price and add-ons */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
-            <BookingRouteCard
-              vehicle={vehicle}
-              pickup={pickup}
-              dropoff={dropoff}
-              date={date}
-              dropoffWhen={formatDropoff(booking)}
-            />
+          <div className="order-3 lg:col-start-2 lg:row-start-2 lg:mt-8">
+            <h2 className="t-h3 text-[color:var(--color-ink)]">Add-ons</h2>
+            <div className="mt-4 flex flex-col gap-4">
+              {addOns.map((addOn) => (
+                <AddOnCard
+                  key={addOn.id}
+                  addOn={addOn}
+                  added={addOnIds.includes(addOn.id)}
+                  price={format(addOn.pricePerDay)}
+                  onToggle={() => toggleAddOn(addOn.id)}
+                />
+              ))}
+            </div>
+          </div>
 
-            <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">
+          <div className="order-4 lg:col-start-2 lg:row-start-3 lg:mt-8">
+            <h2 className="t-h3 text-[color:var(--color-ink)]">
               Price summary
             </h2>
             <div className="mt-4">
@@ -390,19 +410,6 @@ export default function ReviewBooking() {
                 promoCode={promoCode}
                 onPromoChange={(code) => updateParams({ promo: code })}
               />
-            </div>
-
-            <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">Add-ons</h2>
-            <div className="mt-4 flex flex-col gap-4">
-              {addOns.map((addOn) => (
-                <AddOnCard
-                  key={addOn.id}
-                  addOn={addOn}
-                  added={addOnIds.includes(addOn.id)}
-                  price={format(addOn.pricePerDay)}
-                  onToggle={() => toggleAddOn(addOn.id)}
-                />
-              ))}
             </div>
           </div>
         </div>
