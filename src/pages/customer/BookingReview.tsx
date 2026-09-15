@@ -4,7 +4,10 @@ import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import BookingStepper from "../../components/BookingStepper";
-import BookingRouteCard from "../../components/BookingRouteCard";
+import {
+  StopsCard,
+  VehicleSummaryCard,
+} from "../../components/BookingRouteCard";
 import { vehicles } from "../../data/mockData";
 import { routes } from "../../lib/routes";
 import {
@@ -89,11 +92,8 @@ export default function BookingReview() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px] lg:gap-8">
           <div className="min-w-0">
-            <BookingRouteCard
+            <VehicleSummaryCard
               vehicle={vehicle}
-              pickup={pickup}
-              dropoff={dropoff}
-              date={date}
               total={format(total)}
               days={RENTAL_DAYS}
             />
@@ -149,7 +149,8 @@ export default function BookingReview() {
 
           {/* Right: add-ons, sticky beside the trip like the price summary on the next step. */}
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <h2 className="t-h3 text-[color:var(--color-ink)]">Add-ons</h2>
+            <StopsCard pickup={pickup} dropoff={dropoff} date={date} />
+            <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">Add-ons</h2>
             <div className="mt-4 flex flex-col gap-4">
               {addOns.map((addOn) => {
                 const added = selected.includes(addOn.id);
