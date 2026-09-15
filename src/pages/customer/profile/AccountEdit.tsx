@@ -24,13 +24,18 @@ export default function AccountProfileEdit() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-1.5 text-sm text-[color:var(--color-muted)]">
-              <Link to={routes.accountProfile} className="hover:text-[color:var(--color-ink)]">
+              <Link
+                to={routes.accountProfile}
+                className="inline-flex min-h-11 items-center hover:text-[color:var(--color-ink)]"
+              >
                 Account
               </Link>
               <Icon name="chevron-right" size={14} />
               <span>Personal info</span>
             </div>
-            <h2 className="t-h2 mt-1 text-[color:var(--color-ink)]">Personal Info</h2>
+            <h2 className="t-h2 mt-1 text-[color:var(--color-ink)]">
+              Personal Info
+            </h2>
           </div>
           <Button variant="secondary" size="sm" onClick={() => navigate(-1)}>
             Back

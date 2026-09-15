@@ -5,7 +5,13 @@ export type FareLine = { label: string; value: string; success?: boolean };
 
 // Fare breakdown that expands in place under the total — one behaviour on
 // every screen size.
-export default function FareSummary({ lines, total }: { lines: FareLine[]; total: string }) {
+export default function FareSummary({
+  lines,
+  total,
+}: {
+  lines: FareLine[];
+  total: string;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -14,7 +20,7 @@ export default function FareSummary({ lines, total }: { lines: FareLine[]; total
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-3 py-1 t-body-sm font-semibold text-[color:var(--color-ink)]"
+        className="flex min-h-11 w-full items-center justify-between gap-3 t-body-sm font-semibold text-[color:var(--color-ink)]"
       >
         Fare summary
         <Icon
@@ -27,8 +33,18 @@ export default function FareSummary({ lines, total }: { lines: FareLine[]; total
         <dl className="animate-popover mt-2 flex flex-col gap-2">
           {lines.map((l) => (
             <div key={l.label} className="flex justify-between gap-4 t-body-sm">
-              <dt className={l.success ? "text-[color:var(--color-success)]" : "text-[color:var(--color-ink-soft)]"}>{l.label}</dt>
-              <dd className={`tabular font-semibold ${l.success ? "text-[color:var(--color-success)]" : "text-[color:var(--color-ink)]"}`}>
+              <dt
+                className={
+                  l.success
+                    ? "text-[color:var(--color-success)]"
+                    : "text-[color:var(--color-ink-soft)]"
+                }
+              >
+                {l.label}
+              </dt>
+              <dd
+                className={`tabular font-semibold ${l.success ? "text-[color:var(--color-success)]" : "text-[color:var(--color-ink)]"}`}
+              >
                 {l.value}
               </dd>
             </div>

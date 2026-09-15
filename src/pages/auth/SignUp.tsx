@@ -31,8 +31,10 @@ export default function SignUp() {
       <button
         type="button"
         onClick={() => setMethod("email")}
-        className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-          method === "email" ? "bg-[color:var(--color-ink)] text-white" : "text-[color:var(--color-muted)]"
+        className={`min-h-11 flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+          method === "email"
+            ? "bg-[color:var(--color-ink)] text-white"
+            : "text-[color:var(--color-muted)]"
         }`}
       >
         Email
@@ -40,8 +42,10 @@ export default function SignUp() {
       <button
         type="button"
         onClick={() => setMethod("phone")}
-        className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-          method === "phone" ? "bg-[color:var(--color-ink)] text-white" : "text-[color:var(--color-muted)]"
+        className={`min-h-11 flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+          method === "phone"
+            ? "bg-[color:var(--color-ink)] text-white"
+            : "text-[color:var(--color-muted)]"
         }`}
       >
         Phone
@@ -113,7 +117,7 @@ export default function SignUp() {
         <button
           type="button"
           onClick={() => setShowPassword((v) => !v)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-[color:var(--color-muted)]"
+          className="icon-btn absolute right-2 top-1/2 size-10 -translate-y-1/2 text-[color:var(--color-muted)]"
           aria-label={showPassword ? "Hide password" : "Show password"}
         >
           <Icon name={showPassword ? "eye-off" : "eye"} size={18} />
@@ -129,17 +133,30 @@ export default function SignUp() {
     <>
       <p className="mt-6 text-center text-sm text-[color:var(--color-ink)]">
         Already have an account?{" "}
-        <Link to={routes.signIn} className="font-bold text-[color:var(--color-ink)]">
+        <Link
+          to={routes.signIn}
+          className="font-bold text-[color:var(--color-ink)]"
+        >
           Sign in
         </Link>
       </p>
       <p className="mt-6 text-center text-xs leading-relaxed text-[color:var(--color-ink-87)]">
         By continuing, you agree our{" "}
-        <Link to={routes.termsOfService} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
+        <Link
+          to={routes.termsOfService}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-[color:var(--color-link)] underline"
+        >
           Terms of Services
         </Link>{" "}
         and{" "}
-        <Link to={routes.privacyPolicy} target="_blank" rel="noopener noreferrer" className="font-semibold text-[color:var(--color-link)] underline">
+        <Link
+          to={routes.privacyPolicy}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-[color:var(--color-link)] underline"
+        >
           Privacy Policy
         </Link>
         .
@@ -155,11 +172,13 @@ export default function SignUp() {
             type="button"
             onClick={() => navigate(-1)}
             aria-label="Close"
-            className="absolute left-6 top-6 text-[color:var(--color-ink)]"
+            className="icon-btn absolute left-4 top-4 size-10 text-[color:var(--color-ink)]"
           >
             <Icon name="close" size={20} />
           </button>
-          <h1 className="t-h2 mb-6 mt-8 text-[color:var(--color-ink)]">Create an account</h1>
+          <h1 className="t-h2 mb-6 mt-8 text-[color:var(--color-ink)]">
+            Create an account
+          </h1>
           {form}
           {footerLinks}
         </div>

@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type KeyboardEvent,
+} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Icon from "../../components/Icon";
@@ -83,7 +89,9 @@ export default function Otp() {
           inputMode="numeric"
           maxLength={1}
           className={`size-[48px] rounded-xl border text-center text-xl font-bold text-[color:var(--color-ink-87)] outline-none transition-colors sm:size-[56px] ${
-            digit ? "border-[color:var(--color-ink-87)]" : "border-[color:var(--color-border)]"
+            digit
+              ? "border-[color:var(--color-ink-87)]"
+              : "border-[color:var(--color-border)]"
           } focus:border-[color:var(--color-ink-87)]`}
         />
       ))}
@@ -92,7 +100,13 @@ export default function Otp() {
 
   const resendRow = (
     <div className="mt-6 flex items-center justify-between text-sm text-[color:var(--color-ink-87)]">
-      <span>{secondsLeft > 0 ? `Time remaining ${secondsLeft}s` : justResent ? "OTP resent" : ""}</span>
+      <span>
+        {secondsLeft > 0
+          ? `Time remaining ${secondsLeft}s`
+          : justResent
+            ? "OTP resent"
+            : ""}
+      </span>
       <span className="flex items-center gap-2">
         <span className="text-[#929292]">Didn&rsquo;t receive?</span>
         <button
@@ -100,7 +114,9 @@ export default function Otp() {
           onClick={handleResend}
           disabled={secondsLeft > 0}
           className={`font-semibold ${
-            secondsLeft > 0 ? "cursor-not-allowed text-[color:var(--color-muted)]" : "text-[color:var(--color-ink)] underline"
+            secondsLeft > 0
+              ? "cursor-not-allowed text-[color:var(--color-muted)]"
+              : "text-[color:var(--color-ink)] underline"
           }`}
         >
           Resend OTP
@@ -117,13 +133,16 @@ export default function Otp() {
             type="button"
             onClick={() => navigate(-1)}
             aria-label="Back"
-            className="absolute left-6 top-6 text-[color:var(--color-ink)]"
+            className="icon-btn absolute left-4 top-4 size-10 text-[color:var(--color-ink)]"
           >
             <Icon name="chevron-left" size={22} />
           </button>
-          <h1 className="t-h2 mb-1 mt-8 text-[color:var(--color-ink)]">Verify your mobile number</h1>
+          <h1 className="t-h2 mb-1 mt-8 text-[color:var(--color-ink)]">
+            Verify your mobile number
+          </h1>
           <p className="mb-6 text-sm text-[color:var(--color-ink-87)]">
-            OTP has been sent to <span className="text-lg font-bold">{currentUser.phone}</span>
+            OTP has been sent to{" "}
+            <span className="text-lg font-bold">{currentUser.phone}</span>
           </p>
           <form onSubmit={handleSubmit} className="flex flex-col">
             {boxes}

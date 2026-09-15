@@ -23,33 +23,51 @@ export default function RoleSelect() {
         type="button"
         onClick={() => setRole("customer")}
         className={`rounded-xl border p-5 text-left transition-colors ${
-          role === "customer" ? "border-[color:var(--color-ink-87)] bg-[#f9ffff]" : "border-[color:var(--color-border)] bg-white"
+          role === "customer"
+            ? "border-[color:var(--color-ink-87)] bg-[#f9ffff]"
+            : "border-[color:var(--color-border)] bg-white"
         }`}
       >
         <div className="flex items-center justify-between">
-          <span className="text-[22px] font-bold text-[color:var(--color-ink-87)]">Customer</span>
+          <span className="text-[22px] font-bold text-[color:var(--color-ink-87)]">
+            Customer
+          </span>
           <Icon
             name="car"
             size={22}
-            className={role === "customer" ? "text-[color:var(--color-ink)]" : "text-[color:var(--color-muted)]"}
+            className={
+              role === "customer"
+                ? "text-[color:var(--color-ink)]"
+                : "text-[color:var(--color-muted)]"
+            }
           />
         </div>
-        <p className="mt-1 text-sm text-[color:var(--color-ink-87)]">Book a ride and travel around Bhutan.</p>
+        <p className="mt-1 text-sm text-[color:var(--color-ink-87)]">
+          Book a ride and travel around Bhutan.
+        </p>
       </button>
 
       <button
         type="button"
         onClick={() => setRole("driver")}
         className={`rounded-xl border p-5 text-left transition-colors ${
-          role === "driver" ? "border-[color:var(--color-ink-87)] bg-[#f9ffff]" : "border-[color:var(--color-border)] bg-white"
+          role === "driver"
+            ? "border-[color:var(--color-ink-87)] bg-[#f9ffff]"
+            : "border-[color:var(--color-border)] bg-white"
         }`}
       >
         <div className="flex items-center justify-between">
-          <span className="text-[22px] font-bold text-[color:var(--color-ink-87)]">Service provider</span>
+          <span className="text-[22px] font-bold text-[color:var(--color-ink-87)]">
+            Service provider
+          </span>
           <Icon
             name="user"
             size={22}
-            className={role === "driver" ? "text-[color:var(--color-ink)]" : "text-[color:var(--color-muted)]"}
+            className={
+              role === "driver"
+                ? "text-[color:var(--color-ink)]"
+                : "text-[color:var(--color-muted)]"
+            }
           />
         </div>
         <p className="mt-1 text-sm text-[color:var(--color-ink-87)]">
@@ -71,7 +89,9 @@ export default function RoleSelect() {
           >
             <Icon name="chevron-left" size={22} />
           </button>
-          <h1 className="t-h2 mb-6 mt-8 text-[color:var(--color-ink)]">Ride or drive?</h1>
+          <h1 className="t-h2 mb-6 mt-8 text-[color:var(--color-ink)]">
+            Ride or drive?
+          </h1>
           {cards}
           <Button size="lg" fullWidth className="mt-6" onClick={handleContinue}>
             {role === "driver" ? "Create account" : "Continue"}

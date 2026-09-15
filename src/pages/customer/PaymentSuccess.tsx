@@ -159,13 +159,13 @@ export default function PaymentSuccess() {
           ))}
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-6">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1">
           {actions.map((a) =>
             a.href ? (
               <a
                 key={a.label}
                 href={a.href}
-                className="flex items-center gap-1.5 text-sm font-medium text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
+                className="flex min-h-11 items-center gap-1.5 px-1 text-sm font-medium text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
               >
                 <Icon name={a.icon} size={16} />
                 {a.label}
@@ -175,7 +175,7 @@ export default function PaymentSuccess() {
                 key={a.label}
                 type="button"
                 onClick={a.onClick}
-                className="flex items-center gap-1.5 text-sm font-medium text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
+                className="flex min-h-11 items-center gap-1.5 px-1 text-sm font-medium text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
               >
                 <Icon name={a.icon} size={16} />
                 {a.label}

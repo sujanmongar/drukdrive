@@ -23,7 +23,8 @@ export default function ForgotPassword() {
   const form = (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <p className="text-center text-sm text-[color:var(--color-ink-87)]">
-        We will send you a reset OTP on your registered e-mail ID or mobile number.
+        We will send you a reset OTP on your registered e-mail ID or mobile
+        number.
       </p>
       <div className="relative">
         <input
@@ -42,7 +43,10 @@ export default function ForgotPassword() {
       <Button type="submit" size="lg" fullWidth className="mt-2">
         Send reset code
       </Button>
-      <Link to={routes.signIn} className="mt-2 text-center text-sm font-medium text-[color:var(--color-ink)]">
+      <Link
+        to={routes.signIn}
+        className="mt-1 flex min-h-11 items-center justify-center text-center text-sm font-medium text-[color:var(--color-ink)]"
+      >
         Back to sign in
       </Link>
     </form>
@@ -51,8 +55,14 @@ export default function ForgotPassword() {
   const footer = (
     <p className="mt-6 text-center text-xs leading-relaxed text-[color:var(--color-ink-87)]">
       By continuing, you agree our{" "}
-      <span className="font-semibold text-[color:var(--color-link)] underline">Terms of Services</span> and{" "}
-      <span className="font-semibold text-[color:var(--color-link)] underline">Privacy Policy</span>.
+      <span className="font-semibold text-[color:var(--color-link)] underline">
+        Terms of Services
+      </span>{" "}
+      and{" "}
+      <span className="font-semibold text-[color:var(--color-link)] underline">
+        Privacy Policy
+      </span>
+      .
     </p>
   );
 
@@ -64,11 +74,13 @@ export default function ForgotPassword() {
             type="button"
             onClick={() => navigate(-1)}
             aria-label="Back"
-            className="absolute left-6 top-6 text-[color:var(--color-ink)]"
+            className="icon-btn absolute left-4 top-4 size-10 text-[color:var(--color-ink)]"
           >
             <Icon name="chevron-left" size={22} />
           </button>
-          <h1 className="t-h2 mb-6 mt-8 text-[color:var(--color-ink)]">Reset your password</h1>
+          <h1 className="t-h2 mb-6 mt-8 text-[color:var(--color-ink)]">
+            Reset your password
+          </h1>
           {form}
           {footer}
         </div>

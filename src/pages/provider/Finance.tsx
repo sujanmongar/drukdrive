@@ -10,7 +10,10 @@ export default function ProviderFinance() {
   usePageTitle("Driver Finance");
   return (
     <PageShell>
-      <ProfileHero editHref={routes.providerAccountEdit} reviewHref={routes.providerReviews} />
+      <ProfileHero
+        editHref={routes.providerAccountEdit}
+        reviewHref={routes.providerReviews}
+      />
       <div className="mt-6 md:mt-8">
         <SecondaryTabs tabs={providerTabs} />
       </div>

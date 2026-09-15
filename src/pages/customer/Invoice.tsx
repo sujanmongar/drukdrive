@@ -85,7 +85,7 @@ export default function Invoice() {
           <button
             type="button"
             onClick={() => window.history.back()}
-            className="inline-flex cursor-pointer items-center gap-2 text-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
+            className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
           >
             <Icon name="arrow-left" size={18} />
             Back

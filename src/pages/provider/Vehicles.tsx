@@ -26,7 +26,10 @@ export default function ProviderVehicles() {
 
   return (
     <PageShell>
-      <ProfileHero editHref={routes.providerAccountEdit} reviewHref={routes.providerReviews} />
+      <ProfileHero
+        editHref={routes.providerAccountEdit}
+        reviewHref={routes.providerReviews}
+      />
       <div className="mt-6 md:mt-8">
         <SecondaryTabs tabs={providerTabs} />
       </div>
@@ -41,9 +44,20 @@ export default function ProviderVehicles() {
 
         {driverVehicles.length === 0 ? (
           <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-[color:var(--color-border)] py-16 text-center">
-            <Icon name="car" size={32} className="text-[color:var(--color-muted)]" />
-            <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">No vehicles added yet</p>
-            <Button to={routes.providerVehicleAdd} variant="primary" size="sm" className="mt-4">
+            <Icon
+              name="car"
+              size={32}
+              className="text-[color:var(--color-muted)]"
+            />
+            <p className="mt-3 text-sm font-semibold text-[color:var(--color-ink)]">
+              No vehicles added yet
+            </p>
+            <Button
+              to={routes.providerVehicleAdd}
+              variant="primary"
+              size="sm"
+              className="mt-4"
+            >
               Add your first vehicle
             </Button>
           </div>
@@ -54,21 +68,35 @@ export default function ProviderVehicles() {
                 key={v.id}
                 className="relative flex w-full items-center gap-4 rounded-2xl border border-[color:var(--color-border)] p-5 sm:w-[380px]"
               >
-                <VehicleImage vehicleId={v.id} category={v.category} className="size-14 shrink-0 rounded-lg" />
+                <VehicleImage
+                  vehicleId={v.id}
+                  category={v.category}
+                  className="size-14 shrink-0 rounded-lg"
+                />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-bold text-[color:var(--color-ink)]">{v.name}</p>
-                  <p className="mt-0.5 text-xs text-[color:var(--color-muted)]">{v.plate}</p>
+                  <p className="truncate text-sm font-bold text-[color:var(--color-ink)]">
+                    {v.name}
+                  </p>
+                  <p className="mt-0.5 text-xs text-[color:var(--color-muted)]">
+                    {v.plate}
+                  </p>
                   <div className="mt-1.5">
                     <StatusBadge status={v.status} />
                   </div>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setOpenMenu((cur) => (cur === v.id ? null : v.id))}
+                  onClick={() =>
+                    setOpenMenu((cur) => (cur === v.id ? null : v.id))
+                  }
                   aria-label="Vehicle options"
-                  className="shrink-0 rounded-full p-1.5 hover:bg-[color:var(--color-surface-soft)]"
+                  className="icon-btn size-10 shrink-0"
                 >
-                  <Icon name="more" size={18} className="text-[color:var(--color-muted)]" />
+                  <Icon
+                    name="more"
+                    size={18}
+                    className="text-[color:var(--color-muted)]"
+                  />
                 </button>
 
                 {openMenu === v.id && (

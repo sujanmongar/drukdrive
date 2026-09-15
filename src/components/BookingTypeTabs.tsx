@@ -34,7 +34,7 @@ export default function BookingTypeTabs({
             role="tab"
             aria-selected={active}
             onClick={() => onChange(type)}
-            className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-2.5 t-caption transition-all duration-200 sm:gap-2 sm:px-5 sm:t-body-sm ${
+            className={`inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-2 t-caption transition-all duration-200 sm:gap-2 sm:px-5 sm:t-body-sm ${
               active
                 ? "bg-[color:var(--color-ink)] font-bold text-white shadow-card"
                 : "font-semibold text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)] hover:text-[color:var(--color-ink)]"

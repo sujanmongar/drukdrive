@@ -40,7 +40,7 @@ export default function SignIn() {
       <button
         type="button"
         onClick={() => setMethod("email")}
-        className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+        className={`min-h-11 flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
           method === "email"
             ? "bg-[color:var(--color-ink)] text-white"
             : "text-[color:var(--color-muted)]"
@@ -51,7 +51,7 @@ export default function SignIn() {
       <button
         type="button"
         onClick={() => setMethod("phone")}
-        className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+        className={`min-h-11 flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
           method === "phone"
             ? "bg-[color:var(--color-ink)] text-white"
             : "text-[color:var(--color-muted)]"
@@ -96,7 +96,7 @@ export default function SignIn() {
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[color:var(--color-muted)]"
+              className="icon-btn absolute right-2 top-1/2 size-10 -translate-y-1/2 text-[color:var(--color-muted)]"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               <Icon name={showPassword ? "eye-off" : "eye"} size={18} />
@@ -140,7 +140,7 @@ export default function SignIn() {
   );
 
   const rememberAndForgot = (
-    <div className="mt-4 flex items-center justify-between">
+    <div className="mt-2 flex items-center justify-between">
       <Checkbox
         inline
         checked={remember}
@@ -149,7 +149,7 @@ export default function SignIn() {
       />
       <Link
         to={routes.forgotPassword}
-        className="flex items-center gap-1.5 text-sm font-semibold text-[color:var(--color-ink)]"
+        className="min-h-11 inline-flex items-center flex items-center gap-1.5 text-sm font-semibold text-[color:var(--color-ink)]"
       >
         <Icon name="lock" size={16} />
         Forgot password?
@@ -200,7 +200,7 @@ export default function SignIn() {
             type="button"
             onClick={() => navigate(-1)}
             aria-label="Close"
-            className="absolute left-6 top-6 text-[color:var(--color-ink)]"
+            className="icon-btn absolute left-4 top-4 size-10 text-[color:var(--color-ink)]"
           >
             <Icon name="close" size={20} />
           </button>

@@ -49,7 +49,7 @@ export default function StaticPage() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="mb-6 flex items-center gap-1.5 text-sm font-medium text-[color:var(--color-ink)] hover:underline"
+          className="mb-4 flex min-h-11 items-center gap-1.5 text-sm font-medium text-[color:var(--color-ink)] hover:underline"
         >
           <Icon name="arrow-left" size={16} />
           Back
@@ -57,11 +57,19 @@ export default function StaticPage() {
 
         <div className="flex items-start gap-4">
           <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[color:var(--color-info-bg)]">
-            <Icon name={icon} size={22} className="text-[color:var(--color-info-text)]" />
+            <Icon
+              name={icon}
+              size={22}
+              className="text-[color:var(--color-info-text)]"
+            />
           </span>
           <div>
-            <h1 className="t-h2 text-[color:var(--color-ink)]">{content.title}</h1>
-            <p className="mt-2 text-sm leading-relaxed text-[color:var(--color-ink-soft)]">{content.intro}</p>
+            <h1 className="t-h2 text-[color:var(--color-ink)]">
+              {content.title}
+            </h1>
+            <p className="mt-2 text-sm leading-relaxed text-[color:var(--color-ink-soft)]">
+              {content.intro}
+            </p>
           </div>
         </div>
 
@@ -71,17 +79,24 @@ export default function StaticPage() {
               key={section.heading}
               className="rounded-2xl border border-[color:var(--color-border)] p-5 shadow-[var(--shadow-card)]"
             >
-              <h2 className="mb-1.5 text-base font-bold text-[color:var(--color-ink)]">{section.heading}</h2>
-              <p className="text-sm leading-relaxed text-[color:var(--color-ink-soft)]">{section.body}</p>
+              <h2 className="mb-1.5 text-base font-bold text-[color:var(--color-ink)]">
+                {section.heading}
+              </h2>
+              <p className="text-sm leading-relaxed text-[color:var(--color-ink-soft)]">
+                {section.body}
+              </p>
             </div>
           ))}
         </div>
 
         <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl bg-[color:var(--color-surface-subtle)] p-6 text-center sm:flex-row sm:justify-between sm:text-left">
           <div>
-            <p className="text-sm font-bold text-[color:var(--color-ink)]">Still have questions?</p>
+            <p className="text-sm font-bold text-[color:var(--color-ink)]">
+              Still have questions?
+            </p>
             <p className="mt-0.5 text-xs text-[color:var(--color-muted)]">
-              Visit the Help & FAQ page, or head back and keep exploring DrukDrive.
+              Visit the Help & FAQ page, or head back and keep exploring
+              DrukDrive.
             </p>
           </div>
           <div className="flex shrink-0 gap-2">

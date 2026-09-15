@@ -49,7 +49,7 @@ export default function ResetPassword() {
         <button
           type="button"
           onClick={() => setShowPassword((v) => !v)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-[color:var(--color-muted)]"
+          className="icon-btn absolute right-2 top-1/2 size-10 -translate-y-1/2 text-[color:var(--color-muted)]"
           aria-label={showPassword ? "Hide password" : "Show password"}
         >
           <Icon name={showPassword ? "eye-off" : "eye"} size={18} />
@@ -71,17 +71,24 @@ export default function ResetPassword() {
         <button
           type="button"
           onClick={() => setShowConfirm((v) => !v)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-[color:var(--color-muted)]"
+          className="icon-btn absolute right-2 top-1/2 size-10 -translate-y-1/2 text-[color:var(--color-muted)]"
           aria-label={showConfirm ? "Hide password" : "Show password"}
         >
           <Icon name={showConfirm ? "eye-off" : "eye"} size={18} />
         </button>
       </div>
-      {error && <p className="text-sm font-medium text-[color:var(--color-danger)]">{error}</p>}
+      {error && (
+        <p className="text-sm font-medium text-[color:var(--color-danger)]">
+          {error}
+        </p>
+      )}
       <Button type="submit" size="lg" fullWidth className="mt-2">
         Reset password
       </Button>
-      <Link to={routes.signIn} className="mt-2 text-center text-sm font-medium text-[color:var(--color-ink)]">
+      <Link
+        to={routes.signIn}
+        className="mt-1 flex min-h-11 items-center justify-center text-center text-sm font-medium text-[color:var(--color-ink)]"
+      >
         Back to sign in
       </Link>
     </form>
@@ -90,8 +97,14 @@ export default function ResetPassword() {
   const footer = (
     <p className="mt-6 text-center text-xs leading-relaxed text-[color:var(--color-ink-87)]">
       By continuing, you agree our{" "}
-      <span className="font-semibold text-[color:var(--color-link)] underline">Terms of Services</span> and{" "}
-      <span className="font-semibold text-[color:var(--color-link)] underline">Privacy Policy</span>.
+      <span className="font-semibold text-[color:var(--color-link)] underline">
+        Terms of Services
+      </span>{" "}
+      and{" "}
+      <span className="font-semibold text-[color:var(--color-link)] underline">
+        Privacy Policy
+      </span>
+      .
     </p>
   );
 
@@ -103,11 +116,13 @@ export default function ResetPassword() {
             type="button"
             onClick={() => navigate(-1)}
             aria-label="Back"
-            className="absolute left-6 top-6 text-[color:var(--color-ink)]"
+            className="icon-btn absolute left-4 top-4 size-10 text-[color:var(--color-ink)]"
           >
             <Icon name="chevron-left" size={22} />
           </button>
-          <h1 className="t-h2 mb-6 mt-8 text-[color:var(--color-ink)]">Create new password</h1>
+          <h1 className="t-h2 mb-6 mt-8 text-[color:var(--color-ink)]">
+            Create new password
+          </h1>
           {form}
           {footer}
         </div>

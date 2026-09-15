@@ -91,7 +91,7 @@ export default function Payment() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="mb-6 inline-flex cursor-pointer items-center gap-2 t-body-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
+          className="mb-4 inline-flex min-h-11 cursor-pointer items-center gap-2 t-body-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
         >
           <Icon name="arrow-left" size={18} />
           Back
@@ -117,7 +117,7 @@ export default function Payment() {
                   <button
                     type="button"
                     onClick={() => setMethod("mbob")}
-                    className="flex w-full items-center justify-between gap-3"
+                    className="flex min-h-11 w-full items-center justify-between gap-3"
                   >
                     <span className="flex items-center gap-3">
                       <span
@@ -181,7 +181,7 @@ export default function Payment() {
                   <button
                     type="button"
                     onClick={() => setMethod("netbanking")}
-                    className="flex w-full items-center justify-between gap-3"
+                    className="flex min-h-11 w-full items-center justify-between gap-3"
                   >
                     <span className="flex items-center gap-3">
                       <span
@@ -256,7 +256,7 @@ export default function Payment() {
                 <button
                   type="button"
                   onClick={() => setMethod("card")}
-                  className="flex w-full items-center justify-between gap-3"
+                  className="flex min-h-11 w-full items-center justify-between gap-3"
                 >
                   <span className="flex items-center gap-3">
                     <span
