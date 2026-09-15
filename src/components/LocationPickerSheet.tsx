@@ -27,40 +27,67 @@ export default function LocationPickerSheet({
     const q = query.trim().toLowerCase();
     if (!q) return bhutanLocations;
     return bhutanLocations.filter(
-      (l) => l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q),
+      (l) =>
+        l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q),
     );
   }, [query]);
 
   const content = (
     <>
-      <div className="flex items-center gap-3 border-b border-[color:var(--color-border)] p-4 md:p-3">
-        <button type="button" onClick={onClose} aria-label="Close" className="md:hidden">
-          <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />
+      <div className="flex items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3">
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="icon-btn icon-btn-filled -ml-1 size-10 shrink-0 md:hidden"
+        >
+          <Icon
+            name="close"
+            size={20}
+            className="text-[color:var(--color-ink)]"
+          />
         </button>
+        <Icon
+          name="search"
+          size={18}
+          className="hidden shrink-0 text-[color:var(--color-muted)] md:block"
+        />
         <input
           autoFocus
           type="text"
           placeholder={label}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="peer w-full bg-transparent text-base text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] md:text-sm"
+          className="peer h-11 w-full bg-transparent t-body text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)]"
         />
       </div>
       <div className="flex-1 overflow-y-auto">
         {results.length === 0 ? (
-          <p className="p-6 text-center text-sm text-[color:var(--color-muted)]">No locations found.</p>
+          <p className="p-6 text-center t-body-sm text-[color:var(--color-muted)]">
+            No locations found.
+          </p>
         ) : (
           results.map((loc) => (
             <button
               key={`${loc.name}-${loc.city}`}
               type="button"
               onClick={() => onSelect(`${loc.city}, ${loc.name}`)}
-              className="flex w-full items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3.5 text-left transition-colors duration-150 hover:bg-[color:var(--color-surface-soft)] md:px-3 md:py-2.5"
+              className="flex min-h-14 w-full items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-2.5 text-left transition-colors duration-150 hover:bg-[color:var(--color-surface-soft)]"
             >
-              <Icon name="location" size={18} className="shrink-0 -rotate-45 text-[color:var(--color-ink)]" />
-              <span>
-                <span className="block text-sm font-bold text-[color:var(--color-ink)]">{loc.name}</span>
-                <span className="block text-xs text-[color:var(--color-muted)]">{loc.city}</span>
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-surface-soft)]">
+                <Icon
+                  name="location"
+                  size={17}
+                  className="text-[color:var(--color-ink)]"
+                />
+              </span>
+              <span className="min-w-0">
+                <span className="block truncate t-body font-semibold text-[color:var(--color-ink)]">
+                  {loc.name}
+                </span>
+                <span className="block t-caption text-[color:var(--color-muted)]">
+                  {loc.city}
+                </span>
               </span>
             </button>
           ))
@@ -72,7 +99,11 @@ export default function LocationPickerSheet({
   if (isDesktop && anchorRef) {
     return (
       <>
-        <button aria-label="Close" onClick={onClose} className="fixed inset-0 z-[59] cursor-default" />
+        <button
+          aria-label="Close"
+          onClick={onClose}
+          className="fixed inset-0 z-[59] cursor-default"
+        />
         <AnchoredPopover anchorRef={anchorRef} width={380} maxHeight={420}>
           {content}
         </AnchoredPopover>
@@ -82,8 +113,14 @@ export default function LocationPickerSheet({
 
   return createPortal(
     <>
-      <button aria-label="Close" onClick={onClose} className="animate-scrim-in fixed inset-0 z-[59] cursor-default bg-black/40" />
-      <div className="animate-sheet-up fixed inset-0 z-[60] flex flex-col bg-white">{content}</div>
+      <button
+        aria-label="Close"
+        onClick={onClose}
+        className="animate-scrim-in fixed inset-0 z-[59] cursor-default bg-black/40"
+      />
+      <div className="animate-sheet-up fixed inset-0 z-[60] flex flex-col bg-white">
+        {content}
+      </div>
     </>,
     document.body,
   );

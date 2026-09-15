@@ -7,8 +7,18 @@ import { TIME_OPTIONS } from "../lib/timeOptions";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 function daysInMonth(year: number, month: number) {
@@ -43,15 +53,20 @@ function MonthGrid({
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const cells: (number | null)[] = [...Array(firstOffset).fill(null), ...Array.from({ length: total }, (_, i) => i + 1)];
+  const cells: (number | null)[] = [
+    ...Array(firstOffset).fill(null),
+    ...Array.from({ length: total }, (_, i) => i + 1),
+  ];
 
   function isSameDay(a: Date | null, y: number, m: number, d: number) {
-    return !!a && a.getFullYear() === y && a.getMonth() === m && a.getDate() === d;
+    return (
+      !!a && a.getFullYear() === y && a.getMonth() === m && a.getDate() === d
+    );
   }
 
   return (
     <div>
-      <p className="mb-3 text-base font-bold text-[color:var(--color-ink)]">
+      <p className="mb-3 t-body font-bold text-[color:var(--color-ink)]">
         {MONTH_NAMES[month]} {year}
       </p>
       <div className="grid grid-cols-7 gap-y-2 text-center">
@@ -62,14 +77,17 @@ function MonthGrid({
           const isPickup = isSameDay(pickupDate, year, month, d);
           const isDropoff = isSameDay(dropoffDate, year, month, d);
           const inRange =
-            pickupDate && dropoffDate && date > pickupDate && date < dropoffDate;
+            pickupDate &&
+            dropoffDate &&
+            date > pickupDate &&
+            date < dropoffDate;
           return (
             <button
               key={d}
               type="button"
               disabled={past}
               onClick={() => onPick(date)}
-              className={`mx-auto flex size-9 items-center justify-center rounded-full text-sm transition-all duration-150 active:scale-90 ${
+              className={`mx-auto flex size-10 items-center justify-center rounded-full t-body-sm transition-all duration-150 active:scale-90 ${
                 past
                   ? "text-[color:var(--color-placeholder)]"
                   : isPickup || isDropoff
@@ -112,12 +130,21 @@ export default function DatePickerSheet({
   /** Footer label for the second date/time column (range mode only) —
    * e.g. "Dropoff", "End". Defaults to "Drop off". */
   dropoffLabel?: string;
-  onConfirm: (result: { pickup: Date; pickupTime: string; dropoff?: Date; dropoffTime?: string }) => void;
+  onConfirm: (result: {
+    pickup: Date;
+    pickupTime: string;
+    dropoff?: Date;
+    dropoffTime?: string;
+  }) => void;
   onClose: () => void;
 }) {
   const isDesktop = useMediaQuery("(min-width: 768px)") && !!anchorRef;
-  const [pickupDate, setPickupDate] = useState<Date | null>(initialPickup ?? null);
-  const [dropoffDate, setDropoffDate] = useState<Date | null>(mode === "range" ? initialDropoff ?? null : null);
+  const [pickupDate, setPickupDate] = useState<Date | null>(
+    initialPickup ?? null,
+  );
+  const [dropoffDate, setDropoffDate] = useState<Date | null>(
+    mode === "range" ? (initialDropoff ?? null) : null,
+  );
   const [pickupTime, setPickupTime] = useState(initialPickupTime);
   const [dropoffTime, setDropoffTime] = useState(initialDropoffTime);
 
@@ -152,15 +179,19 @@ export default function DatePickerSheet({
     onConfirm({
       pickup: pickupDate,
       pickupTime,
-      dropoff: mode === "range" ? dropoffDate ?? undefined : undefined,
+      dropoff: mode === "range" ? (dropoffDate ?? undefined) : undefined,
       dropoffTime: mode === "range" ? dropoffTime : undefined,
     });
   }
 
-  const title = <p className="text-sm font-semibold text-[color:var(--color-ink)]">Select {mode === "range" ? "dates" : "a date"}</p>;
+  const title = (
+    <p className="t-body font-bold text-[color:var(--color-ink)]">
+      Select {mode === "range" ? "dates" : "a date"}
+    </p>
+  );
 
   const weekdayRow = (
-    <div className="grid shrink-0 grid-cols-7 gap-y-2 border-b border-[color:var(--color-border)] px-4 py-3 text-center text-xs font-semibold text-[color:var(--color-muted)]">
+    <div className="grid shrink-0 grid-cols-7 gap-y-2 border-b border-[color:var(--color-border)] px-4 py-3 text-center t-label uppercase text-[color:var(--color-muted)]">
       {WEEKDAYS.map((w) => (
         <span key={w}>{w}</span>
       ))}
@@ -182,23 +213,38 @@ export default function DatePickerSheet({
     </div>
   );
 
-  function summaryBlock(label: string, date: Date | null, time: string, setTime: (v: string) => void) {
+  function summaryBlock(
+    label: string,
+    date: Date | null,
+    time: string,
+    setTime: (v: string) => void,
+  ) {
     return (
       <div>
         <p className="t-caption text-[color:var(--color-muted)]">{label}</p>
-        <p className="mt-0.5 text-base font-bold text-[color:var(--color-ink)]">{date ? formatShort(date) : "Select date"}</p>
-        <label className="mt-2 inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-[color:var(--color-success-bg)] px-2.5 py-1.5">
-          <Icon name="clock" size={14} className="shrink-0 text-[color:var(--color-success)]" />
+        <p className="mt-0.5 t-body font-bold text-[color:var(--color-ink)]">
+          {date ? formatShort(date) : "Select date"}
+        </p>
+        <label className="mt-2 inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-lg bg-[color:var(--color-success-bg)] px-3">
+          <Icon
+            name="clock"
+            size={14}
+            className="shrink-0 text-[color:var(--color-success)]"
+          />
           <select
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            className="appearance-none bg-transparent text-base font-bold text-[color:var(--color-success)] outline-none"
+            className="appearance-none bg-transparent t-body font-bold text-[color:var(--color-success)] outline-none"
           >
             {TIME_OPTIONS.map((t) => (
               <option key={t}>{t}</option>
             ))}
           </select>
-          <Icon name="chevron-down" size={13} className="shrink-0 text-[color:var(--color-success)]" />
+          <Icon
+            name="chevron-down"
+            size={13}
+            className="shrink-0 text-[color:var(--color-success)]"
+          />
         </label>
       </div>
     );
@@ -209,7 +255,7 @@ export default function DatePickerSheet({
       type="button"
       onClick={handleConfirm}
       disabled={!pickupDate || (mode === "range" && !dropoffDate)}
-      className="w-full rounded-xl bg-[color:var(--color-ink)] py-3.5 text-base font-bold text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-40"
+      className="h-12 w-full rounded-xl bg-[color:var(--color-ink)] t-body font-bold text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-40"
     >
       Select
     </button>
@@ -220,18 +266,36 @@ export default function DatePickerSheet({
   if (isDesktop && anchorRef) {
     return (
       <>
-        <button aria-label="Close" onClick={onClose} className="fixed inset-0 z-[59] cursor-default" />
-        <AnchoredPopover anchorRef={anchorRef} width={mode === "range" ? 640 : 560} maxHeight={470}>
+        <button
+          aria-label="Close"
+          onClick={onClose}
+          className="fixed inset-0 z-[59] cursor-default"
+        />
+        <AnchoredPopover
+          anchorRef={anchorRef}
+          width={mode === "range" ? 640 : 560}
+          maxHeight={470}
+        >
           <div className="flex min-h-0 flex-1">
             <div className="flex min-h-0 flex-1 flex-col">
-              <div className="shrink-0 border-b border-[color:var(--color-border)] px-4 py-3">{title}</div>
+              <div className="shrink-0 border-b border-[color:var(--color-border)] px-4 py-3">
+                {title}
+              </div>
               {weekdayRow}
-              <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">{monthList}</div>
+              <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+                {monthList}
+              </div>
             </div>
 
             <div className="flex w-[220px] shrink-0 flex-col gap-5 border-l border-[color:var(--color-border)] p-4">
               {summaryBlock(pickupLabel, pickupDate, pickupTime, setPickupTime)}
-              {mode === "range" && summaryBlock(dropoffLabel, dropoffDate, dropoffTime, setDropoffTime)}
+              {mode === "range" &&
+                summaryBlock(
+                  dropoffLabel,
+                  dropoffDate,
+                  dropoffTime,
+                  setDropoffTime,
+                )}
               <div className="mt-auto">{confirmButton}</div>
             </div>
           </div>
@@ -248,20 +312,42 @@ export default function DatePickerSheet({
         className="animate-scrim-in fixed inset-0 z-[59] cursor-default bg-black/40"
       />
       <div className="animate-sheet-up fixed inset-0 z-[60] flex flex-col bg-white">
-        <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] p-4">
-          <button type="button" onClick={onClose} aria-label="Close">
-            <Icon name="close" size={22} className="text-[color:var(--color-ink)]" />
+        <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] px-4 py-3">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="icon-btn icon-btn-filled -ml-1 size-10"
+          >
+            <Icon
+              name="close"
+              size={20}
+              className="text-[color:var(--color-ink)]"
+            />
           </button>
           {title}
-          <span className="w-[22px]" />
+          <span className="w-10" />
         </div>
         {weekdayRow}
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">{monthList}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+          {monthList}
+        </div>
         <div className="shrink-0 border-t border-[color:var(--color-border)] p-4">
-          <div className={`mb-4 flex gap-6 ${mode === "range" ? "divide-x divide-[color:var(--color-border)]" : ""}`}>
-            <div className="flex-1">{summaryBlock(pickupLabel, pickupDate, pickupTime, setPickupTime)}</div>
+          <div
+            className={`mb-4 flex gap-6 ${mode === "range" ? "divide-x divide-[color:var(--color-border)]" : ""}`}
+          >
+            <div className="flex-1">
+              {summaryBlock(pickupLabel, pickupDate, pickupTime, setPickupTime)}
+            </div>
             {mode === "range" && (
-              <div className="flex-1 pl-6">{summaryBlock(dropoffLabel, dropoffDate, dropoffTime, setDropoffTime)}</div>
+              <div className="flex-1 pl-6">
+                {summaryBlock(
+                  dropoffLabel,
+                  dropoffDate,
+                  dropoffTime,
+                  setDropoffTime,
+                )}
+              </div>
             )}
           </div>
           {confirmButton}
