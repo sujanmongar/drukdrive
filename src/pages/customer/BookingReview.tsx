@@ -142,17 +142,9 @@ export default function BookingReview() {
               </div>
             </div>
 
-            <div className="mt-8 hidden justify-end lg:flex">
-              <Button variant="primary" size="lg" onClick={handleContinue}>
-                Continue to details
-              </Button>
-            </div>
-          </div>
-
-          {/* Right: add-ons, sticky beside the trip like the price summary on the next step. */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
-            <StopsCard pickup={pickup} dropoff={dropoff} date={date} />
-            <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">Add-ons</h2>
+            <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
+              Add-ons
+            </h2>
             <div className="mt-4 flex flex-col gap-4">
               {addOns.map((addOn) => {
                 const added = selected.includes(addOn.id);
@@ -206,6 +198,16 @@ export default function BookingReview() {
               })}
             </div>
 
+            <div className="mt-8 hidden justify-end lg:flex">
+              <Button variant="primary" size="lg" onClick={handleContinue}>
+                Continue to details
+              </Button>
+            </div>
+          </div>
+
+          {/* Right: the stops and the running total, sticky like the price summary on the next step. */}
+          <div className="lg:sticky lg:top-24 lg:self-start">
+            <StopsCard pickup={pickup} dropoff={dropoff} date={date} />
             <div className="mt-6 hidden lg:block">
               <div className="flex items-end justify-between gap-3 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
                 <p className="t-body-sm text-[color:var(--color-muted)]">
