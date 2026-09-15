@@ -6,10 +6,8 @@ import Button from "../../components/Button";
 import AddOnCard from "../../components/AddOnCard";
 import { Checkbox } from "../../components/CheckboxRow";
 import BookingStepper from "../../components/BookingStepper";
-import {
-  StopsCard,
-  VehicleSummaryCard,
-} from "../../components/BookingRouteCard";
+import BookingRouteCard from "../../components/BookingRouteCard";
+import CheckoutLayout from "../../components/CheckoutLayout";
 import PriceSummaryCard from "../../components/PriceSummaryCard";
 import ContactCard from "../../components/ContactCard";
 import { vehicles } from "../../data/mockData";
@@ -96,151 +94,146 @@ export default function BookingReview() {
         </div>
 
         <div className="mb-8">
-          <BookingStepper current={2} hrefs={[searchHref]} />
+          <BookingStepper
+            current={2}
+            hrefs={[searchHref]}
+            detailsLabel={selfDrive ? "Driver details" : "Your details"}
+          />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px] lg:gap-8">
-          <div className="min-w-0">
-            <VehicleSummaryCard vehicle={vehicle} />
-
-            {selfDrive && (
-              <div className="mt-6 rounded-2xl border border-[color:var(--color-warning)]/40 bg-[color:var(--color-warning-bg)] p-5">
-                <p className="t-body font-bold text-[color:var(--color-warning)]">
-                  Licence check
-                </p>
-                <p className="mt-1 t-body-sm text-[color:var(--color-ink-soft)]">
-                  Bhutan accepts Bhutanese and Indian driving licences only, not
-                  international driving permits.
-                </p>
-                <div className="mt-2">
-                  <Checkbox
-                    align="start"
-                    checked={licenceConfirmed}
-                    onChange={setLicenceConfirmed}
-                    label="I hold a valid Bhutanese or Indian driving licence and am 21 or over."
-                  />
-                </div>
-              </div>
-            )}
-
-            <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
-              What&rsquo;s included
-            </h2>
-            <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
-              <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                {inclusions.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-2 t-body text-[color:var(--color-ink-soft)]"
-                  >
-                    <Icon
-                      name="check"
-                      size={18}
-                      strokeWidth={2.5}
-                      className="mt-0.5 shrink-0 text-[color:var(--color-success)]"
-                    />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
-              Add-ons
-            </h2>
-            <div className="mt-4 flex flex-col gap-4">
-              {addOns.map((addOn) => (
-                <AddOnCard
-                  key={addOn.id}
-                  addOn={addOn}
-                  added={selected.includes(addOn.id)}
-                  price={format(addOn.pricePerDay)}
-                  onToggle={() => toggle(addOn.id)}
-                />
-              ))}
-            </div>
-
-            <div className="mt-10 rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card">
-              <button
-                type="button"
-                onClick={() => setNotesOpen((v) => !v)}
-                aria-expanded={notesOpen}
-                className="flex min-h-14 w-full items-center justify-between gap-3 px-5 text-left"
-              >
-                <span className="t-h3 text-[color:var(--color-ink)]">
-                  Read before you book
-                </span>
-                <Icon
-                  name="chevron-down"
-                  size={20}
-                  className={`shrink-0 text-[color:var(--color-muted)] transition-transform duration-200 ${notesOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-              {notesOpen && (
-                <div className="animate-popover border-t border-[color:var(--color-border)] px-5 pb-5 pt-4">
-                  {notes.map((note, i) => (
-                    <div key={note.title} className={i > 0 ? "mt-4" : ""}>
-                      <h4 className="t-body font-bold text-[color:var(--color-ink)]">
-                        {note.title}
-                      </h4>
-                      <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body text-[color:var(--color-ink-soft)]">
-                        {note.items.map((item) => (
-                          <li key={item}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="mt-8 hidden justify-end lg:flex">
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={handleContinue}
-                disabled={licenceGate}
-              >
-                Continue to details
-              </Button>
-            </div>
-          </div>
-
-          {/* Right: stops, price and a way to reach us. */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
-            <StopsCard
+        <CheckoutLayout
+          trip={
+            <BookingRouteCard
+              vehicle={vehicle}
               pickup={pickup}
               dropoff={dropoff}
               date={date}
               dropoffWhen={formatDropoff(booking)}
             />
-
-            <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">
-              Price summary
-            </h2>
-            <div className="mt-4">
+          }
+          price={
+            <>
               <PriceSummaryCard
                 fare={fare}
                 netPayable={total}
                 payNow={split.now}
                 payLater={split.later}
               />
-            </div>
-            {booking.type === "rental" && (
-              <p className="mt-2 px-1 t-caption text-[color:var(--color-muted)]">
-                Bhutan&rsquo;s Sustainable Development Fee is not included;
-                visitors pay it with their visa.
-              </p>
-            )}
+              {booking.type === "rental" && (
+                <p className="mt-2 px-1 t-caption text-[color:var(--color-muted)]">
+                  Bhutan&rsquo;s Sustainable Development Fee is not included;
+                  visitors pay it with their visa.
+                </p>
+              )}
+            </>
+          }
+          help={<ContactCard />}
+          main={
+            <>
+              {selfDrive && (
+                <div className="rounded-2xl border border-[color:var(--color-warning)]/40 bg-[color:var(--color-warning-bg)] p-5">
+                  <p className="t-body font-bold text-[color:var(--color-warning)]">
+                    Licence check
+                  </p>
+                  <p className="mt-1 t-body-sm text-[color:var(--color-ink-soft)]">
+                    Bhutan accepts Bhutanese and Indian driving licences only,
+                    not international driving permits.
+                  </p>
+                  <div className="mt-2">
+                    <Checkbox
+                      align="start"
+                      checked={licenceConfirmed}
+                      onChange={setLicenceConfirmed}
+                      label="I hold a valid Bhutanese or Indian driving licence and am 21 or over."
+                    />
+                  </div>
+                </div>
+              )}
 
-            <h2 className="mt-8 t-h3 text-[color:var(--color-ink)]">
-              Need a hand?
-            </h2>
-            <div className="mt-4">
-              <ContactCard />
-            </div>
-          </div>
-        </div>
+              <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
+                What&rsquo;s included
+              </h2>
+              <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+                <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                  {inclusions.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-2 t-body text-[color:var(--color-ink-soft)]"
+                    >
+                      <Icon
+                        name="check"
+                        size={18}
+                        strokeWidth={2.5}
+                        className="mt-0.5 shrink-0 text-[color:var(--color-success)]"
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
+                Add-ons
+              </h2>
+              <div className="mt-4 flex flex-col gap-4">
+                {addOns.map((addOn) => (
+                  <AddOnCard
+                    key={addOn.id}
+                    addOn={addOn}
+                    added={selected.includes(addOn.id)}
+                    price={format(addOn.pricePerDay)}
+                    onToggle={() => toggle(addOn.id)}
+                  />
+                ))}
+              </div>
+
+              <div className="mt-10 rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card">
+                <button
+                  type="button"
+                  onClick={() => setNotesOpen((v) => !v)}
+                  aria-expanded={notesOpen}
+                  className="flex min-h-14 w-full items-center justify-between gap-3 px-5 text-left"
+                >
+                  <span className="t-h3 text-[color:var(--color-ink)]">
+                    Read before you book
+                  </span>
+                  <Icon
+                    name="chevron-down"
+                    size={20}
+                    className={`shrink-0 text-[color:var(--color-muted)] transition-transform duration-200 ${notesOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {notesOpen && (
+                  <div className="animate-popover border-t border-[color:var(--color-border)] px-5 pb-5 pt-4">
+                    {notes.map((note, i) => (
+                      <div key={note.title} className={i > 0 ? "mt-4" : ""}>
+                        <h4 className="t-body font-bold text-[color:var(--color-ink)]">
+                          {note.title}
+                        </h4>
+                        <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body text-[color:var(--color-ink-soft)]">
+                          {note.items.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-8 hidden justify-end lg:flex">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  onClick={handleContinue}
+                  disabled={licenceGate}
+                >
+                  Continue to details
+                </Button>
+              </div>
+            </>
+          }
+        />
       </div>
 
       {/* Mobile sticky bottom bar */}

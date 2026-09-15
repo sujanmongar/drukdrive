@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Icon from "./Icon";
 
-const steps = ["Search", "Review", "Details", "Payment", "Confirmation"];
+const baseSteps = ["Search", "Review", "Details", "Payment", "Confirmation"];
 
 // Numbered discs with the label beside each and a short rule between —
 // centred on every width. A completed step is a link back to that page
@@ -12,21 +12,40 @@ export default function BookingStepper({
   current,
   allDone = false,
   hrefs = [],
+  detailsLabel = "Your details",
 }: {
   current: 1 | 2 | 3 | 4 | 5;
   allDone?: boolean;
   /** Link for each step by index; only completed steps become clickable. */
   hrefs?: (string | undefined)[];
+  /** The details step is named for who is being described: the booker, or the driver on self drive. */
+  detailsLabel?: string;
 }) {
+  const steps = baseSteps.map((l) => (l === "Details" ? detailsLabel : l));
   const wrapRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLLIElement>(null);
   // When the strip is wider than the screen, start with the current step in
   // view (centred) rather than at the first step.
   useEffect(() => {
-    const wrap = wrapRef.current;
-    const li = activeRef.current;
-    if (!wrap || !li || wrap.scrollWidth <= wrap.clientWidth) return;
-    wrap.scrollLeft = li.offsetLeft - wrap.clientWidth / 2 + li.offsetWidth / 2;
+    // Centre the current step's disc-and-label (not its trailing rule).
+    // Runs after paint and again shortly after, in case fonts or the page
+    // entrance shift the layout.
+    const centre = () => {
+      const wrap = wrapRef.current;
+      const li = activeRef.current;
+      if (!wrap || !li || wrap.scrollWidth <= wrap.clientWidth) return;
+      const target = li.firstElementChild ?? li;
+      const w = wrap.getBoundingClientRect();
+      const r = target.getBoundingClientRect();
+      const delta = r.left + r.width / 2 - (w.left + w.width / 2);
+      wrap.scrollLeft += delta;
+    };
+    const raf = requestAnimationFrame(centre);
+    const t = window.setTimeout(centre, 400);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(t);
+    };
   }, [current]);
 
   return (
@@ -35,9 +54,10 @@ export default function BookingStepper({
       className="scrollbar-hide -mx-4 overflow-x-auto px-4 md:mx-0 md:px-0"
     >
       <ol
-        className="mx-auto flex w-max items-center gap-1.5 sm:gap-3"
+        className="mx-auto flex w-max items-center gap-2 sm:gap-4"
         aria-label="Booking progress"
       >
+        <li aria-hidden className="w-[calc(50vw-4rem)] shrink-0 md:hidden" />
         {steps.map((label, i) => {
           const stepNum = i + 1;
           const done = stepNum < current || allDone;
@@ -72,8 +92,9 @@ export default function BookingStepper({
           return (
             <li
               key={label}
+              ref={active ? activeRef : undefined}
               aria-current={active ? "step" : undefined}
-              className="flex shrink-0 items-center gap-1.5 sm:gap-3"
+              className="flex shrink-0 items-center gap-2 sm:gap-4"
             >
               {href ? (
                 <Link
@@ -93,12 +114,13 @@ export default function BookingStepper({
               {stepNum < steps.length && (
                 <span
                   aria-hidden
-                  className={`h-px w-3 sm:w-8 ${done ? "bg-[color:var(--color-link)]" : "bg-[color:var(--color-border)]"}`}
+                  className="h-px w-8 bg-[color:var(--color-border)] sm:w-14"
                 />
               )}
             </li>
           );
         })}
+        <li aria-hidden className="w-[calc(50vw-4rem)] shrink-0 md:hidden" />
       </ol>
     </div>
   );
