@@ -13,7 +13,7 @@ export default function PriceSummaryCard({
   payLater,
   discount = 0,
   promoCode = null,
-  laterLabel = "The other half, to the driver by mBoB, card or cash",
+  laterLabel,
   id,
 }: {
   fare: Fare;
@@ -23,9 +23,15 @@ export default function PriceSummaryCard({
   discount?: number;
   promoCode?: string | null;
   /** How the balance is paid: to the driver, or at the desk on self drive. */
+  /** Overrides the balance line; by default self drive (deposit) pays at the desk, everyone else pays the driver. */
   laterLabel?: string;
   id?: string;
 }) {
+  const balanceLabel =
+    laterLabel ??
+    (fare.deposit > 0
+      ? "The other half, at the desk when you collect the car"
+      : "The other half, to the driver by mBoB, card or cash");
   const { format, currency } = useCurrency();
   const nu = currencies.find((c) => c.code === "BTN")!;
   const inNu = (usd: number) =>
@@ -87,7 +93,7 @@ export default function PriceSummaryCard({
                 Pay at pick-up
               </span>
               <span className="block t-caption text-[color:var(--color-muted)]">
-                {laterLabel}
+                {balanceLabel}
                 {showNu && ` · ≈ ${inNu(payLater)}`}
               </span>
             </dt>

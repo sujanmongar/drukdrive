@@ -65,6 +65,10 @@ export default function Confirmation() {
   const bookingId = id ?? record.id;
   const method = searchParams.get("method");
   const travelerName = searchParams.get("travelerName");
+  // Exact addresses typed on the details step; the trip stops above are
+  // the places the fare was priced from.
+  const pickupAddress = searchParams.get("pickupAddress");
+  const dropoffAddress = searchParams.get("dropoffAddress");
 
   const invoiceUrl = fromCheckout
     ? `${routes.invoice(bookingId)}?${searchParams.toString()}`
@@ -73,7 +77,7 @@ export default function Confirmation() {
 
   const nextSteps = selfDrive
     ? [
-        `Collect the car at ${pickup} on ${date}. Bring your licence, passport or CID and a card for the deposit.`,
+        `Collect the car at ${pickupAddress || pickup} on ${date}. Bring your licence, passport or CID and a card for the deposit.`,
         ...(split.later > 0
           ? [
               `Pay the remaining ${format(split.later)} at the desk when you collect the car.`,
@@ -115,6 +119,22 @@ export default function Confirmation() {
       : []),
     ...(travelerName
       ? [{ label: selfDrive ? "Driver" : "Traveller", value: travelerName }]
+      : []),
+    ...(pickupAddress
+      ? [
+          {
+            label: selfDrive ? "Collection address" : "Pickup address",
+            value: pickupAddress,
+          },
+        ]
+      : []),
+    ...(dropoffAddress
+      ? [
+          {
+            label: selfDrive ? "Return address" : "Drop-off address",
+            value: dropoffAddress,
+          },
+        ]
       : []),
   ];
 

@@ -51,7 +51,12 @@ export default function ReviewBooking() {
   const date = formatPickup(booking);
   const searchHref = `${routes.search}?${bookingToParams(booking).toString()}`;
   const promoCode = searchParams.get("promo");
-  const reviewHref = `${routes.bookingReview}?${bookingToParams(booking, promoCode ? { promo: promoCode } : {}).toString()}`;
+  // Back to Review with everything the URL already holds (typed details,
+  // addresses, promo), so a round trip loses nothing.
+  const reviewParams = new URLSearchParams(searchParams);
+  reviewParams.delete("addons");
+  bookingToParams(booking).forEach((v, k) => reviewParams.set(k, v));
+  const reviewHref = `${routes.bookingReview}?${reviewParams.toString()}`;
 
   // Add-ons and the promo code live in the URL, so a refresh or a step back
   // keeps them and the payment page sees the same numbers.
@@ -59,8 +64,11 @@ export default function ReviewBooking() {
     next: Partial<typeof booking>,
     extra: Record<string, string | null> = {},
   ) {
-    const params = bookingToParams({ ...booking, ...next });
-    if (promoCode && !("promo" in extra)) params.set("promo", promoCode);
+    const params = new URLSearchParams(searchParams);
+    params.delete("addons");
+    bookingToParams({ ...booking, ...next }).forEach((v, k) =>
+      params.set(k, v),
+    );
     for (const [k, v] of Object.entries(extra)) {
       if (v === null) params.delete(k);
       else params.set(k, v);

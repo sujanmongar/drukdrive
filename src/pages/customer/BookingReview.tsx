@@ -20,6 +20,7 @@ import {
   computeFare,
   isAddOnId,
   paymentSplit,
+  promoDiscount,
 } from "../../lib/pricing";
 import { inclusionsFor, notesFor } from "../../lib/bookingContent";
 import {
@@ -62,7 +63,10 @@ export default function BookingReview() {
     format,
   );
   const { total } = fare;
-  const split = paymentSplit(booking, total);
+  const promoCode = searchParams.get("promo");
+  const discount = promoDiscount(promoCode, total);
+  const netPayable = Math.round((total - discount) * 100) / 100;
+  const split = paymentSplit(booking, netPayable);
 
   function toggle(id: string) {
     setSelected((s) =>
@@ -71,14 +75,15 @@ export default function BookingReview() {
   }
 
   function handleContinue() {
-    const params = bookingToParams({
+    // Start from what the URL already holds — a promo or details typed on a
+    // later step survive a trip back to Review — and overlay the trip.
+    const params = new URLSearchParams(searchParams);
+    params.delete("addons");
+    bookingToParams({
       ...booking,
       vehicleId: vehicle.id,
       addOnIds: selected,
-    });
-    // A promo applied on a later step survives a trip back to Review.
-    const promo = searchParams.get("promo");
-    if (promo) params.set("promo", promo);
+    }).forEach((v, k) => params.set(k, v));
     navigate(`${routes.reviewBooking}?${params.toString()}`);
   }
 
@@ -121,9 +126,11 @@ export default function BookingReview() {
             <>
               <PriceSummaryCard
                 fare={fare}
-                netPayable={total}
+                netPayable={netPayable}
                 payNow={split.now}
                 payLater={split.later}
+                discount={discount}
+                promoCode={promoCode}
               />
               {booking.type === "rental" && (
                 <p className="mt-2 px-1 t-caption text-[color:var(--color-muted)]">
@@ -248,7 +255,7 @@ export default function BookingReview() {
       {/* Mobile sticky bottom bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
         <div className="flex flex-col items-start">
-          <span className="t-h3 t-amount">{format(total)}</span>
+          <span className="t-h3 t-amount">{format(netPayable)}</span>
           <span className="t-caption text-[color:var(--color-muted)]">
             {fare.deposit > 0
               ? `+ ${format(fare.deposit)} deposit`

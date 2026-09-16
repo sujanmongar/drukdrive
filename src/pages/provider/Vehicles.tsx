@@ -69,7 +69,7 @@ export default function ProviderVehicles() {
             {driverVehicles.map((v) => (
               <div
                 key={v.id}
-                className="relative flex flex-col overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lift"
+                className="relative flex flex-col overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card transition-shadow duration-300 hover:shadow-lift"
               >
                 <div className="flex items-center justify-between gap-3 px-5 pt-4">
                   <StatusBadge status={v.status} />
@@ -117,7 +117,7 @@ export default function ProviderVehicles() {
                       </p>
                     </div>
                     <Link
-                      to={routes.providerVehicleAdd}
+                      to={`${routes.providerVehicleAdd}?edit=${v.id}`}
                       className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 t-body-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:border-[color:var(--color-ink)]"
                     >
                       <Icon name="edit" size={15} />

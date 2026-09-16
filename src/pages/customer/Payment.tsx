@@ -63,6 +63,20 @@ const assignedDriver = {
 
 const OTP_LENGTH = 6;
 
+// The details step stores the date of birth as the <input type="date">
+// value; show it the way every other date in checkout reads.
+function formatDob(iso: string) {
+  if (!iso) return "";
+  const d = new Date(`${iso}T00:00:00`);
+  return Number.isNaN(d.getTime())
+    ? iso
+    : d.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+}
+
 export default function Payment() {
   usePageTitle("Payment");
   const navigate = useNavigate();
@@ -108,7 +122,7 @@ export default function Payment() {
 
   const stepHrefs = [
     `${routes.search}?${bookingToParams(booking).toString()}`,
-    `${routes.bookingReview}?${bookingToParams(booking, promoCode ? { promo: promoCode } : {}).toString()}`,
+    `${routes.bookingReview}?${searchParams.toString()}`,
     `${routes.reviewBooking}?${searchParams.toString()}`,
   ];
   const detailsHref = stepHrefs[2];
@@ -135,7 +149,6 @@ export default function Payment() {
     const params = new URLSearchParams(searchParams);
     params.set("vehicleId", vehicle.id);
     params.set("method", methodLabel);
-    params.set("total", netPayable.toFixed(2));
     params.set("amountDue", amountDue.toFixed(2));
     params.set("paymentOption", balance > 0 ? "half" : "full");
     navigate(`${routes.confirmation(`GI${Date.now()}`)}?${params.toString()}`);
@@ -275,7 +288,7 @@ export default function Payment() {
       ["Passport or CID", q("travelerId")],
       ["Flight", q("flight")],
       ["Driving licence", q("licence")],
-      ["Date of birth", q("dob")],
+      ["Date of birth", formatDob(q("dob"))],
       [selfDrive ? "Collection address" : "Pickup address", q("pickupAddress")],
       [selfDrive ? "Return address" : "Drop-off address", q("dropoffAddress")],
     ] as [string, string][]
@@ -352,11 +365,11 @@ export default function Payment() {
                 value={m.value}
                 checked={active}
                 onChange={() => setMethod(m.value)}
-                className="sr-only"
+                className="peer sr-only"
               />
               <span
                 aria-hidden
-                className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
+                className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[color:var(--color-ink)] peer-focus-visible:ring-offset-2 ${
                   active
                     ? "border-[color:var(--color-ink)]"
                     : "border-[color:var(--color-border)]"
@@ -369,24 +382,24 @@ export default function Payment() {
               <span className="min-w-0 flex-1 t-body font-bold text-[color:var(--color-ink)]">
                 {m.title}
               </span>
-              <span className="flex shrink-0 items-center gap-2">
+              <span aria-hidden className="flex shrink-0 items-center gap-2">
                 {m.value === "card" && (
                   <>
                     <BrandLogo
                       name="visa"
-                      alt="Visa"
+                      alt=""
                       fallback={<VisaMark />}
                       className="h-4"
                     />
                     <BrandLogo
                       name="mastercard"
-                      alt="Mastercard"
+                      alt=""
                       fallback={<MastercardMark />}
                       className="h-5"
                     />
                     <BrandLogo
                       name="amex"
-                      alt="American Express"
+                      alt=""
                       fallback={<AmexMark />}
                       className="h-6"
                     />
@@ -398,9 +411,10 @@ export default function Payment() {
                       <BrandLogo
                         key={b.short}
                         name={b.logo}
-                        alt={b.name}
+                        alt=""
                         fallback={<BankMark short={b.short} />}
-                        className={`h-5 ${i > 1 ? "hidden sm:block" : ""}`}
+                        className="h-5"
+                        wrapperClassName={i > 1 ? "hidden sm:inline-flex" : ""}
                         dark={b.dark}
                       />
                     ))}
@@ -412,7 +426,7 @@ export default function Payment() {
                 {m.value === "paypal" && (
                   <BrandLogo
                     name="paypal"
-                    alt="PayPal"
+                    alt=""
                     fallback={<PayPalMark />}
                     className="h-5"
                   />
@@ -481,7 +495,7 @@ export default function Payment() {
                     <select
                       value={bank}
                       onChange={(e) => setBank(e.target.value)}
-                      className={`${inputClass} appearance-none pr-28`}
+                      className={`${inputClass} appearance-none pr-32`}
                     >
                       {banks.map((b) => (
                         <option key={b.name}>{b.name}</option>
@@ -514,10 +528,10 @@ export default function Payment() {
                     <input
                       type="text"
                       inputMode="numeric"
-                      placeholder="Enter your account number"
+                      placeholder="Account number"
                       value={accountNumber}
                       onChange={(e) => setAccountNumber(e.target.value)}
-                      className={`${inputClass} pr-20`}
+                      className={`${inputClass} pr-28`}
                     />
                     <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
                       <BrandLogo
@@ -617,11 +631,6 @@ export default function Payment() {
               payLater={balance}
               discount={discount}
               promoCode={promoCode}
-              laterLabel={
-                selfDrive
-                  ? "The other half, at the desk when you collect the car"
-                  : undefined
-              }
             />
           }
           promo={
@@ -657,7 +666,7 @@ export default function Payment() {
                     {detailRows.map(([k, v]) => (
                       <div key={k} className="min-w-0">
                         <dt className="t-caption">{k}</dt>
-                        <dd className="truncate t-body font-semibold text-[color:var(--color-ink)]">
+                        <dd className="break-words t-body font-semibold text-[color:var(--color-ink)]">
                           {v}
                         </dd>
                       </div>

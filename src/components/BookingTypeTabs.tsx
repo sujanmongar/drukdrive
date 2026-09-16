@@ -21,6 +21,7 @@ export default function BookingTypeTabs({
 }) {
   return (
     <div
+      role="group"
       aria-label="Booking type"
       className="scrollbar-hide inline-flex max-w-full gap-0.5 overflow-x-auto rounded-full bg-white p-1 shadow-pop sm:gap-1 sm:p-1.5"
     >

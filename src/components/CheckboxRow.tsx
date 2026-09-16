@@ -13,7 +13,7 @@ export function CheckboxBox({
   return (
     <span
       aria-hidden
-      className={`flex size-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-colors lg:size-[18px] ${
+      className={`flex size-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[color:var(--color-ink)] peer-focus-visible:ring-offset-2 lg:size-[18px] ${
         checked
           ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)]"
           : "border-[color:var(--color-border)] bg-white"
@@ -57,7 +57,7 @@ export function Checkbox({
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="sr-only"
+        className="peer sr-only"
       />
       <CheckboxBox
         checked={checked}
