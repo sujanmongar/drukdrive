@@ -22,26 +22,28 @@ export default function FilterSection({
     <>
       <div>
         <div className="-mx-2 flex items-center">
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            className="flex min-h-11 flex-1 items-center justify-between gap-3 rounded-lg px-2 text-left transition-colors hover:bg-[color:var(--color-surface-soft)] lg:min-h-9"
-          >
-            <h4 className="t-body font-bold text-[color:var(--color-ink)] lg:t-body-sm">
-              {title}
-            </h4>
-            <Icon
-              name="chevron-down"
-              size={18}
-              className={`shrink-0 text-[color:var(--color-muted)] transition-transform ${open ? "" : "-rotate-90"}`}
-            />
-          </button>
+          <h4 className="min-w-0 flex-1">
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg px-2 text-left transition-colors hover:bg-[color:var(--color-surface-soft)] lg:min-h-9"
+            >
+              <span className="t-body font-bold text-[color:var(--color-ink)] lg:text-sm">
+                {title}
+              </span>
+              <Icon
+                name="chevron-down"
+                size={18}
+                className={`shrink-0 text-[color:var(--color-muted)] transition-transform ${open ? "" : "-rotate-90"}`}
+              />
+            </button>
+          </h4>
           {hasSelection && (
             <button
               type="button"
               onClick={onClear}
-              className="min-h-11 shrink-0 rounded-lg px-2 t-body-sm font-semibold text-[color:var(--color-link)] hover:bg-[color:var(--color-surface-soft)] lg:min-h-9 lg:t-caption"
+              className="min-h-11 shrink-0 rounded-lg px-2 t-body-sm font-semibold text-[color:var(--color-link)] hover:bg-[color:var(--color-surface-soft)] lg:min-h-9 lg:text-xs"
             >
               Clear
             </button>

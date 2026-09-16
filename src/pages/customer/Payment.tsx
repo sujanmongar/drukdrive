@@ -10,9 +10,10 @@ import {
   VehicleSummaryCard,
 } from "../../components/BookingRouteCard";
 import PriceSummaryCard from "../../components/PriceSummaryCard";
+import PromoCard from "../../components/PromoCard";
 import ContactCard from "../../components/ContactCard";
 import CheckoutLayout from "../../components/CheckoutLayout";
-import PromoCard from "../../components/PromoCard";
+import BrandLogo from "../../components/BrandLogo";
 import {
   AmexMark,
   BankMark,
@@ -40,12 +41,13 @@ import {
 
 type PaymentMethod = "card" | "netbanking" | "paypal";
 
-// RMA payment gateway banks.
+// RMA payment gateway banks. Logos live in /public/logos; a drawn mark is
+// the fallback if a file is missing.
 const banks = [
-  { name: "Bank of Bhutan", short: "BoB" },
-  { name: "Bhutan National Bank", short: "BNB" },
-  { name: "Druk PNB Bank", short: "DPNB" },
-  { name: "T Bank", short: "TB" },
+  { name: "Bank of Bhutan", short: "BoB", logo: "bob", dark: false },
+  { name: "Bhutan National Bank", short: "BNB", logo: "bnb", dark: false },
+  { name: "Druk PNB Bank", short: "DPNB", logo: "dpnb", dark: true },
+  { name: "T Bank", short: "TB", logo: "tbank", dark: false },
 ];
 
 // The driver assigned once the booking is confirmed. A prototype value;
@@ -74,9 +76,8 @@ export default function Payment() {
 
   const { pickup, dropoff } = booking;
   const date = formatPickup(booking);
-  const travelerName = searchParams.get("travelerName") || "";
-  const travelerEmail = searchParams.get("travelerEmail") || "";
-  const travelerPhone = searchParams.get("travelerPhone") || "";
+  const q = (k: string) => searchParams.get(k) || "";
+  const travelerName = q("travelerName");
   const promoCode = searchParams.get("promo");
 
   // Amounts come from the booking itself, so add-ons or a promo changed on
@@ -107,9 +108,10 @@ export default function Payment() {
 
   const stepHrefs = [
     `${routes.search}?${bookingToParams(booking).toString()}`,
-    `${routes.bookingReview}?${bookingToParams(booking).toString()}`,
+    `${routes.bookingReview}?${bookingToParams(booking, promoCode ? { promo: promoCode } : {}).toString()}`,
     `${routes.reviewBooking}?${searchParams.toString()}`,
   ];
+  const detailsHref = stepHrefs[2];
 
   const [method, setMethod] = useState<PaymentMethod>("card");
   const [bank, setBank] = useState(banks[0].name);
@@ -156,7 +158,7 @@ export default function Payment() {
   ];
 
   const terms = (
-    <p className="mt-3 text-center t-caption text-[color:var(--color-muted)]">
+    <p className="mt-3 text-center t-caption">
       By paying you accept DrukDrive&rsquo;s{" "}
       <Link
         to={routes.termsOfService}
@@ -180,7 +182,7 @@ export default function Payment() {
   );
 
   const driverCard = selfDrive ? (
-    <div className="flex flex-col gap-2 t-body text-[color:var(--color-ink-soft)]">
+    <div className="flex flex-col gap-2 t-body">
       <p>
         Collect{" "}
         <span className="font-semibold text-[color:var(--color-ink)]">
@@ -201,14 +203,14 @@ export default function Payment() {
   ) : (
     <div>
       <div className="flex items-center gap-4">
-        <span className="flex size-16 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-surface-soft)] t-h3 text-[color:var(--color-ink)]">
+        <span className="flex size-16 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-surface-soft)] t-h3">
           {assignedDriver.name
             .split(" ")
             .map((n) => n[0])
             .join("")}
         </span>
         <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-1.5 t-h4 text-[color:var(--color-ink)]">
+          <p className="flex items-center gap-1.5 t-h4">
             {assignedDriver.name}
             <Icon
               name="check-circle"
@@ -228,35 +230,31 @@ export default function Payment() {
       </div>
       <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-[color:var(--color-border)] pt-4 t-body-sm sm:grid-cols-3">
         <div>
-          <dt className="t-caption text-[color:var(--color-muted)]">Vehicle</dt>
+          <dt className="t-caption">Vehicle</dt>
           <dd className="font-semibold text-[color:var(--color-ink)]">
             {vehicle.name}
           </dd>
         </div>
         <div>
-          <dt className="t-caption text-[color:var(--color-muted)]">
-            Number plate
-          </dt>
+          <dt className="t-caption">Number plate</dt>
           <dd className="font-semibold tabular text-[color:var(--color-ink)]">
             {assignedDriver.plate}
           </dd>
         </div>
         <div>
-          <dt className="t-caption text-[color:var(--color-muted)]">
-            Driving since
-          </dt>
+          <dt className="t-caption">Driving since</dt>
           <dd className="font-semibold text-[color:var(--color-ink)]">
             {assignedDriver.since}
           </dd>
         </div>
         <div className="col-span-2 sm:col-span-3">
-          <dt className="t-caption text-[color:var(--color-muted)]">Speaks</dt>
+          <dt className="t-caption">Speaks</dt>
           <dd className="font-semibold text-[color:var(--color-ink)]">
             {assignedDriver.languages}
           </dd>
         </div>
       </dl>
-      <p className="mt-4 flex items-start gap-2 rounded-xl bg-[color:var(--color-surface-subtle)] px-3.5 py-3 t-caption text-[color:var(--color-ink-soft)]">
+      <p className="mt-4 flex items-start gap-2 rounded-xl bg-[color:var(--color-surface-subtle)] px-3.5 py-3 t-caption">
         <Icon
           name="phone"
           size={15}
@@ -268,12 +266,27 @@ export default function Payment() {
     </div>
   );
 
+  // What was entered on the previous step, with a way back to change it.
+  const detailRows: [string, string][] = (
+    [
+      ["Name", `${q("travelerTitle")} ${travelerName}`.trim()],
+      ["Phone", q("travelerPhone")],
+      ["Email", q("travelerEmail")],
+      ["Passport or CID", q("travelerId")],
+      ["Flight", q("flight")],
+      ["Driving licence", q("licence")],
+      ["Date of birth", q("dob")],
+      [selfDrive ? "Collection address" : "Pickup address", q("pickupAddress")],
+      [selfDrive ? "Return address" : "Drop-off address", q("dropoffAddress")],
+    ] as [string, string][]
+  ).filter(([, v]) => v);
+
   const otpPanel = (
     <div className="p-4 sm:p-5">
       <p className="t-body font-bold text-[color:var(--color-ink)]">
         Request sent to {bank}
       </p>
-      <p className="mt-1 t-body-sm text-[color:var(--color-ink-soft)]">
+      <p className="mt-1 t-body-sm">
         Approve the payment in your banking app, then enter the one-time code
         your bank sent you.
       </p>
@@ -294,7 +307,7 @@ export default function Payment() {
                 otpRefs.current[i - 1]?.focus();
             }}
             aria-label={`Digit ${i + 1}`}
-            className="h-12 w-11 rounded-xl border border-[color:var(--color-border)] text-center t-h4 text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)] sm:w-12"
+            className="h-12 w-11 rounded-xl border border-[color:var(--color-border)] text-center t-h4 outline-none focus:border-[color:var(--color-ink)] sm:w-12"
           />
         ))}
       </div>
@@ -323,11 +336,8 @@ export default function Payment() {
   );
 
   const methodList = (
-    <div
-      className="flex flex-col"
-      role="radiogroup"
-      aria-label="Payment method"
-    >
+    <fieldset className="flex flex-col">
+      <legend className="sr-only">Payment method</legend>
       {methods.map((m) => {
         const active = method === m.value;
         return (
@@ -335,15 +345,18 @@ export default function Payment() {
             key={m.value}
             className="border-t border-[color:var(--color-border)] first:border-t-0"
           >
-            <button
-              type="button"
-              role="radio"
-              aria-checked={active}
-              onClick={() => setMethod(m.value)}
-              className="flex min-h-[60px] w-full items-center gap-3 px-4 text-left transition-colors hover:bg-[color:var(--color-surface-subtle)] sm:px-5"
-            >
+            <label className="flex min-h-[60px] w-full cursor-pointer items-center gap-3 px-4 text-left transition-colors hover:bg-[color:var(--color-surface-subtle)] sm:px-5">
+              <input
+                type="radio"
+                name="payment-method"
+                value={m.value}
+                checked={active}
+                onChange={() => setMethod(m.value)}
+                className="sr-only"
+              />
               <span
-                className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                aria-hidden
+                className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
                   active
                     ? "border-[color:var(--color-ink)]"
                     : "border-[color:var(--color-border)]"
@@ -356,19 +369,56 @@ export default function Payment() {
               <span className="min-w-0 flex-1 t-body font-bold text-[color:var(--color-ink)]">
                 {m.title}
               </span>
-              <span className="flex shrink-0 items-center gap-1.5">
+              <span className="flex shrink-0 items-center gap-2">
                 {m.value === "card" && (
                   <>
-                    <VisaMark />
-                    <MastercardMark />
-                    <AmexMark />
+                    <BrandLogo
+                      name="visa"
+                      alt="Visa"
+                      fallback={<VisaMark />}
+                      className="h-4"
+                    />
+                    <BrandLogo
+                      name="mastercard"
+                      alt="Mastercard"
+                      fallback={<MastercardMark />}
+                      className="h-5"
+                    />
+                    <BrandLogo
+                      name="amex"
+                      alt="American Express"
+                      fallback={<AmexMark />}
+                      className="h-6"
+                    />
                   </>
                 )}
-                {m.value === "netbanking" &&
-                  banks.map((b) => <BankMark key={b.short} short={b.short} />)}
-                {m.value === "paypal" && <PayPalMark />}
+                {m.value === "netbanking" && (
+                  <>
+                    {banks.map((b, i) => (
+                      <BrandLogo
+                        key={b.short}
+                        name={b.logo}
+                        alt={b.name}
+                        fallback={<BankMark short={b.short} />}
+                        className={`h-5 ${i > 1 ? "hidden sm:block" : ""}`}
+                        dark={b.dark}
+                      />
+                    ))}
+                    <span className="t-caption font-semibold sm:hidden">
+                      +{banks.length - 2}
+                    </span>
+                  </>
+                )}
+                {m.value === "paypal" && (
+                  <BrandLogo
+                    name="paypal"
+                    alt="PayPal"
+                    fallback={<PayPalMark />}
+                    className="h-5"
+                  />
+                )}
               </span>
-            </button>
+            </label>
 
             {active && m.value === "card" && (
               <div className="grid grid-cols-1 gap-4 border-t border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] p-4 sm:grid-cols-2 sm:p-5">
@@ -380,6 +430,7 @@ export default function Payment() {
                     onChange={(e) => setCardName(e.target.value)}
                     placeholder="As printed on the card"
                     className={inputClass}
+                    autoComplete="cc-name"
                   />
                 </label>
                 <label className="sm:col-span-2">
@@ -391,6 +442,7 @@ export default function Payment() {
                     onChange={(e) => setCardNumber(e.target.value)}
                     placeholder="1234 5678 9012 3456"
                     className={inputClass}
+                    autoComplete="cc-number"
                   />
                 </label>
                 <label>
@@ -402,6 +454,7 @@ export default function Payment() {
                     onChange={(e) => setExpiry(e.target.value)}
                     placeholder="MM / YY"
                     className={inputClass}
+                    autoComplete="cc-exp"
                   />
                 </label>
                 <label>
@@ -414,6 +467,7 @@ export default function Payment() {
                     onChange={(e) => setCardCvv(e.target.value)}
                     placeholder="•••"
                     className={inputClass}
+                    autoComplete="cc-csc"
                   />
                 </label>
               </div>
@@ -427,14 +481,20 @@ export default function Payment() {
                     <select
                       value={bank}
                       onChange={(e) => setBank(e.target.value)}
-                      className={`${inputClass} appearance-none pr-24`}
+                      className={`${inputClass} appearance-none pr-28`}
                     >
                       {banks.map((b) => (
                         <option key={b.name}>{b.name}</option>
                       ))}
                     </select>
                     <span className="pointer-events-none absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-2">
-                      <BankMark short={selectedBank.short} />
+                      <BrandLogo
+                        name={selectedBank.logo}
+                        alt={selectedBank.name}
+                        fallback={<BankMark short={selectedBank.short} />}
+                        className="h-5"
+                        dark={selectedBank.dark}
+                      />
                       <Icon
                         name="chevron-down"
                         size={18}
@@ -457,14 +517,20 @@ export default function Payment() {
                       placeholder="Enter your account number"
                       value={accountNumber}
                       onChange={(e) => setAccountNumber(e.target.value)}
-                      className={`${inputClass} pr-14`}
+                      className={`${inputClass} pr-20`}
                     />
                     <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
-                      <BankMark short={selectedBank.short} />
+                      <BrandLogo
+                        name={selectedBank.logo}
+                        alt=""
+                        fallback={<BankMark short={selectedBank.short} />}
+                        className="h-5"
+                        dark={selectedBank.dark}
+                      />
                     </span>
                   </span>
                 </label>
-                <p className="t-caption text-[color:var(--color-muted)]">
+                <p className="t-caption">
                   A payment request is sent to your bank. Approve it in mBoB,
                   mPay or your bank&rsquo;s app and enter the one-time code it
                   sends you.
@@ -483,7 +549,7 @@ export default function Payment() {
 
             {active && m.value === "paypal" && (
               <div className="border-t border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] p-4 sm:p-5">
-                <p className="t-body-sm text-[color:var(--color-ink-soft)]">
+                <p className="t-body-sm">
                   You&rsquo;ll be taken to PayPal to approve {format(amountDue)}
                   , then brought back here.
                 </p>
@@ -494,7 +560,12 @@ export default function Payment() {
                   onClick={() => finish("PayPal")}
                   className="mt-4 flex h-12 w-full items-center justify-center rounded-full bg-[#ffc439] transition-colors hover:bg-[#f2b92c]"
                 >
-                  <PayPalMark size="lg" />
+                  <BrandLogo
+                    name="paypal"
+                    alt="PayPal"
+                    fallback={<PayPalMark size="lg" />}
+                    className="h-6"
+                  />
                 </a>
                 {terms}
               </div>
@@ -502,12 +573,12 @@ export default function Payment() {
           </div>
         );
       })}
-    </div>
+    </fieldset>
   );
 
   return (
     <PageShell noFooter stickyHeader>
-      <div className="mx-auto max-w-[1100px] px-4 py-6 pb-28 md:px-10 md:py-10 lg:pb-10">
+      <div className="mx-auto max-w-[1100px] px-4 pb-28 pt-6 md:px-10 md:pt-10 lg:pb-10">
         <div className="mb-5 flex items-center gap-2">
           <button
             type="button"
@@ -517,7 +588,7 @@ export default function Payment() {
           >
             <Icon name="chevron-left" size={22} />
           </button>
-          <h1 className="t-h2 text-[color:var(--color-ink)]">Payment</h1>
+          <h1 className="t-h2">Payment</h1>
         </div>
 
         <div className="mb-8">
@@ -546,6 +617,11 @@ export default function Payment() {
               payLater={balance}
               discount={discount}
               promoCode={promoCode}
+              laterLabel={
+                selfDrive
+                  ? "The other half, at the desk when you collect the car"
+                  : undefined
+              }
             />
           }
           promo={
@@ -558,7 +634,7 @@ export default function Payment() {
           help={<ContactCard />}
           main={
             <>
-              <h2 className="t-h3 text-[color:var(--color-ink)]">
+              <h2 className="t-h3">
                 {selfDrive ? "Collecting the car" : "Your driver"}
               </h2>
               <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
@@ -567,24 +643,30 @@ export default function Payment() {
 
               {travelerName && (
                 <>
-                  <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
-                    {selfDrive ? "Driver" : "Traveller"}
-                  </h2>
-                  <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
-                    <p className="t-body font-semibold text-[color:var(--color-ink)]">
-                      {travelerName}
-                    </p>
-                    <p className="t-body-sm text-[color:var(--color-muted)]">
-                      {travelerEmail}
-                      {travelerPhone && ` · ${travelerPhone}`}
-                    </p>
+                  <div className="mt-10 flex items-center justify-between gap-3">
+                    <h2 className="t-h3">{detailsLabel}</h2>
+                    <Link
+                      to={detailsHref}
+                      aria-label={`Edit ${detailsLabel.toLowerCase()}`}
+                      className="icon-btn icon-btn-filled size-10"
+                    >
+                      <Icon name="edit" size={16} />
+                    </Link>
                   </div>
+                  <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card sm:grid-cols-2">
+                    {detailRows.map(([k, v]) => (
+                      <div key={k} className="min-w-0">
+                        <dt className="t-caption">{k}</dt>
+                        <dd className="truncate t-body font-semibold text-[color:var(--color-ink)]">
+                          {v}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
                 </>
               )}
 
-              <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
-                Add-ons
-              </h2>
+              <h2 className="mt-10 t-h3">Add-ons</h2>
               <div className="mt-4 flex flex-col gap-4">
                 {addOns.map((addOn) => (
                   <AddOnCard
@@ -603,9 +685,7 @@ export default function Payment() {
                 ))}
               </div>
 
-              <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
-                Payment method
-              </h2>
+              <h2 className="mt-10 t-h3">Payment method</h2>
               <div className="mt-4 overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card">
                 {otpStage ? otpPanel : methodList}
               </div>
@@ -632,7 +712,7 @@ export default function Payment() {
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
           <div className="flex flex-col items-start">
             <span className="t-h3 t-amount">{format(amountDue)}</span>
-            <span className="t-caption text-[color:var(--color-muted)]">
+            <span className="t-caption">
               {balance > 0
                 ? `of ${format(netPayable)} total`
                 : "incl. taxes & fees"}

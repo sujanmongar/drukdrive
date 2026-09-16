@@ -42,6 +42,9 @@ export default function PromoCard({
           <input
             type="text"
             placeholder="Enter promo code"
+            aria-label="Promo code"
+            aria-invalid={!!error}
+            aria-describedby="promo-feedback"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
@@ -58,22 +61,24 @@ export default function PromoCard({
           Apply
         </button>
       </div>
-      {promoCode && discount > 0 && (
-        <p className="mt-3 flex items-center gap-1.5 t-body-sm font-semibold text-[color:var(--color-success)]">
-          <Icon name="check-circle" size={16} />
-          {promoCode} applied — {format(discount)} off
-        </p>
-      )}
-      {error && (
-        <p className="mt-3 t-body-sm text-[color:var(--color-danger)]">
-          {error}
-        </p>
-      )}
-      {!promoCode && !error && (
-        <p className="mt-3 t-caption">
-          Try DRUK10 for 10% off your first booking.
-        </p>
-      )}
+      <div id="promo-feedback" role="status">
+        {promoCode && discount > 0 && (
+          <p className="mt-3 flex items-center gap-1.5 t-body-sm font-semibold text-[color:var(--color-success-deep)]">
+            <Icon name="check-circle" size={16} />
+            {promoCode} applied — {format(discount)} off
+          </p>
+        )}
+        {error && (
+          <p className="mt-3 t-body-sm text-[color:var(--color-danger)]">
+            {error}
+          </p>
+        )}
+        {!promoCode && !error && (
+          <p className="mt-3 t-caption">
+            Try DRUK10 for 10% off your first booking.
+          </p>
+        )}
+      </div>
     </div>
   );
 }

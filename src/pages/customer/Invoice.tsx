@@ -6,7 +6,12 @@ import DrukDriveLogo from "../../components/DrukDriveLogo";
 import { routes } from "../../lib/routes";
 import { bookings, vehicles } from "../../data/mockData";
 import { useCurrentUser } from "../../lib/currentUser";
-import { TAX_RATE, computeFare, isAddOnId } from "../../lib/pricing";
+import {
+  TAX_RATE,
+  computeFare,
+  isAddOnId,
+  promoDiscount,
+} from "../../lib/pricing";
 import { formatDropoff, formatPickup, parseBooking } from "../../lib/booking";
 import { bookingTypeLabels } from "../../lib/routes";
 import { useCurrency } from "../../lib/currency";
@@ -58,7 +63,9 @@ export default function Invoice() {
 
   // Prefer the real total carried over from a live checkout; fall back to
   // the static mock booking's total when reached from My Bookings instead.
-  const total = Number(searchParams.get("total")) || historicalBooking.total;
+  const gross = fare ? fare.total : historicalBooking.total;
+  const promoCode = searchParams.get("promo");
+  const total = gross;
 
   // Live bookings itemise from the real fare; a historical record only has
   // a total, so back out a plausible base fare / tax split for display.
@@ -73,8 +80,8 @@ export default function Invoice() {
       ];
   const baseFare = lines.reduce((sum, l) => sum + l.amount, 0);
   const taxes = fare ? fare.taxes : Math.round((total - baseFare) * 100) / 100;
-  const discount = 0;
-  const netPayable = total - discount;
+  const discount = fare ? promoDiscount(promoCode, gross) : 0;
+  const netPayable = Math.round((total - discount) * 100) / 100;
   const amountPaid = Number(searchParams.get("amountDue")) || netPayable;
   const balance = Math.round((netPayable - amountPaid) * 100) / 100;
 
@@ -224,8 +231,8 @@ export default function Invoice() {
                   <span>{format(total)}</span>
                 </div>
                 {discount > 0 && (
-                  <div className="flex justify-between t-body-sm font-semibold text-[color:var(--color-success)]">
-                    <span>Discount</span>
+                  <div className="flex justify-between t-body-sm font-semibold text-[color:var(--color-success-deep)]">
+                    <span>Discount{promoCode ? ` (${promoCode})` : ""}</span>
                     <span>-{format(discount)}</span>
                   </div>
                 )}

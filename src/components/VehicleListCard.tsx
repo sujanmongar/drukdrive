@@ -125,7 +125,7 @@ export default function VehicleListCard({
 
           <VehicleSpecs
             vehicle={vehicle}
-            className="mt-3 !t-body-sm sm:!text-[15px]"
+            className="mt-3 !text-sm sm:!text-[15px]"
           />
           <div className="mt-3 flex items-center gap-2.5">
             <span className="rounded-md bg-[color:var(--color-success)] px-2 py-0.5 t-caption font-bold tabular text-white">

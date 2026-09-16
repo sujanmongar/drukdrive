@@ -8,13 +8,16 @@ import Button from "../../components/Button";
 import StatusBadge from "../../components/StatusBadge";
 import VehicleImage from "../../components/VehicleImage";
 import { useDriverVehicles } from "../../lib/driverVehicles";
+import { vehicleClassOf } from "../../data/mockData";
 import { routes } from "../../lib/routes";
+import { useCurrency } from "../../lib/currency";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 export default function ProviderVehicles() {
   usePageTitle("My Vehicle");
   const { vehicles: driverVehicles, removeVehicle } = useDriverVehicles();
+  const { format } = useCurrency();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
   function handleRemove(id: string, name: string) {
@@ -62,42 +65,66 @@ export default function ProviderVehicles() {
             </Button>
           </div>
         ) : (
-          <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:flex-wrap">
+          <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {driverVehicles.map((v) => (
               <div
                 key={v.id}
-                className="relative flex w-full items-center gap-4 rounded-2xl border border-[color:var(--color-border)] p-5 sm:w-[380px]"
+                className="relative flex flex-col overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lift"
               >
-                <VehicleImage
-                  vehicleId={v.id}
-                  category={v.category}
-                  className="size-14 shrink-0 rounded-lg"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate t-body-sm font-bold text-[color:var(--color-ink)]">
-                    {v.name}
+                <div className="flex items-center justify-between gap-3 px-5 pt-4">
+                  <StatusBadge status={v.status} />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setOpenMenu((cur) => (cur === v.id ? null : v.id))
+                    }
+                    aria-label="Vehicle options"
+                    className="icon-btn icon-btn-filled size-10 shrink-0"
+                  >
+                    <Icon name="more" size={18} />
+                  </button>
+                </div>
+                <div className="flex h-36 items-center justify-center px-6">
+                  <VehicleImage
+                    vehicleId={v.id}
+                    category={v.category}
+                    transparent
+                    className="h-full w-full"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col px-5 pb-5">
+                  <p className="t-h4 truncate">{v.name}</p>
+                  <p className="mt-0.5 t-body-sm">
+                    {vehicleClassOf[v.category]} ·{" "}
+                    <span className="tabular">{v.plate}</span>
                   </p>
-                  <p className="mt-0.5 t-caption text-[color:var(--color-muted)]">
-                    {v.plate}
-                  </p>
-                  <div className="mt-1.5">
-                    <StatusBadge status={v.status} />
+                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 t-body-sm text-[color:var(--color-ink)]">
+                    <span className="flex items-center gap-1.5">
+                      <Icon name="seat" size={15} strokeWidth={2.2} />
+                      {v.seats} seats
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Icon name="fuel" size={15} strokeWidth={2.2} />
+                      {v.fuel}
+                    </span>
+                  </div>
+                  <div className="mt-4 flex items-end justify-between border-t border-[color:var(--color-border)] pt-4">
+                    <div>
+                      <p className="t-caption">Your rate</p>
+                      <p className="t-h4 t-amount">
+                        {format(v.pricePerDay)}{" "}
+                        <span className="t-caption font-medium">/day</span>
+                      </p>
+                    </div>
+                    <Link
+                      to={routes.providerVehicleAdd}
+                      className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 t-body-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:border-[color:var(--color-ink)]"
+                    >
+                      <Icon name="edit" size={15} />
+                      Edit
+                    </Link>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setOpenMenu((cur) => (cur === v.id ? null : v.id))
-                  }
-                  aria-label="Vehicle options"
-                  className="icon-btn size-10 shrink-0"
-                >
-                  <Icon
-                    name="more"
-                    size={18}
-                    className="text-[color:var(--color-muted)]"
-                  />
-                </button>
 
                 {openMenu === v.id && (
                   <>

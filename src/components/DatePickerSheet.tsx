@@ -185,9 +185,7 @@ export default function DatePickerSheet({
   }
 
   const title = (
-    <p className="t-body font-bold text-[color:var(--color-ink)]">
-      Select {mode === "range" ? "dates" : "a date"}
-    </p>
+    <p className="t-h4">Select {mode === "range" ? "dates" : "a date"}</p>
   );
 
   const weekdayRow = (
@@ -313,11 +311,12 @@ export default function DatePickerSheet({
       />
       <div className="animate-sheet-up fixed inset-0 z-[60] flex flex-col bg-white">
         <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] px-4 py-3">
+          {title}
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="icon-btn icon-btn-filled -ml-1 size-10"
+            className="icon-btn icon-btn-filled -mr-1 size-10"
           >
             <Icon
               name="close"
@@ -325,8 +324,6 @@ export default function DatePickerSheet({
               className="text-[color:var(--color-ink)]"
             />
           </button>
-          {title}
-          <span className="w-10" />
         </div>
         {weekdayRow}
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">

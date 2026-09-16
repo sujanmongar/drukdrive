@@ -21,7 +21,6 @@ export default function BookingTypeTabs({
 }) {
   return (
     <div
-      role="tablist"
       aria-label="Booking type"
       className="scrollbar-hide inline-flex max-w-full gap-0.5 overflow-x-auto rounded-full bg-white p-1 shadow-pop sm:gap-1 sm:p-1.5"
     >
@@ -31,8 +30,7 @@ export default function BookingTypeTabs({
           <button
             key={type}
             type="button"
-            role="tab"
-            aria-selected={active}
+            aria-pressed={active}
             onClick={() => onChange(type)}
             className={`inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-2 t-caption transition-all duration-200 sm:gap-2 sm:px-5  ${
               active

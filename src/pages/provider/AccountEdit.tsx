@@ -1,17 +1,21 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import SecondaryTabs from "../../components/SecondaryTabs";
 import ProfileHero from "../../components/ProfileHero";
 import Icon from "../../components/Icon";
 import Button from "../../components/Button";
 import PersonalInfoEditor from "../../components/PersonalInfoEditor";
+import LoginSecurityEditor from "../../components/LoginSecurityEditor";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 export default function ProviderAccountEdit() {
-  usePageTitle("Edit Driver Account");
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const security = searchParams.get("section") === "security";
+  const title = security ? "Login & security" : "Personal info";
+  usePageTitle(title);
 
   return (
     <PageShell>
@@ -34,18 +38,16 @@ export default function ProviderAccountEdit() {
                 Account
               </Link>
               <Icon name="chevron-right" size={14} />
-              <span>Personal info</span>
+              <span>{title}</span>
             </div>
-            <h2 className="t-h2 mt-1 text-[color:var(--color-ink)]">
-              Personal Info
-            </h2>
+            <h2 className="t-h2 mt-1 text-[color:var(--color-ink)]">{title}</h2>
           </div>
           <Button variant="secondary" size="sm" onClick={() => navigate(-1)}>
             Back
           </Button>
         </div>
 
-        <PersonalInfoEditor />
+        {security ? <LoginSecurityEditor /> : <PersonalInfoEditor />}
       </div>
     </PageShell>
   );

@@ -49,7 +49,7 @@ export function Checkbox({
 }) {
   return (
     <label
-      className={`flex min-h-11 cursor-pointer gap-3 rounded-lg t-body text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)] lg:min-h-9 lg:gap-2.5 lg:t-body-sm ${
+      className={`flex min-h-11 cursor-pointer gap-3 rounded-lg t-body text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)] lg:min-h-9 lg:gap-2.5 lg:text-sm ${
         inline ? "w-fit -mx-2 px-2" : "-mx-2 px-2"
       } ${align === "start" ? "items-start py-2.5" : "items-center"}`}
     >

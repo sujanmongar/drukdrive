@@ -247,7 +247,7 @@ export default function Header({
     <header
       className={`z-30 ${transparent ? "bg-transparent" : "bg-white"} ${
         sticky
-          ? "sticky top-0 border-b border-[color:var(--color-border)] bg-white/95 backdrop-blur"
+          ? "sticky top-0 border-b border-[color:var(--color-border)] bg-white"
           : "relative"
       }`}
     >

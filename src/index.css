@@ -8,7 +8,7 @@
   --color-ink: #14181d;
   --color-ink-87: #3f4852;
   --color-ink-soft: #4b5461;
-  --color-muted: #7a838d;
+  --color-muted: #687280;
   --color-border: #e5ebf0;
   /* Soft control surface: a barely-there hairline over a light fill, for
      icon buttons and pills that should sit quietly in a header. */
@@ -19,8 +19,8 @@
   --color-surface-muted: #f6f7f8;
   --color-surface-sunken: #f2f4f6;
 
-  --color-success: #0f8a3c;
-  --color-success-deep: #0a6b2f;
+  --color-success: #0f7d37;
+  --color-success-deep: #0a5f2a;
   --color-success-bg: #e4f4ea;
   --color-danger: #e84b3c;
   --color-danger-bg: #fde8e6;
@@ -55,9 +55,8 @@ html {
   text-rendering: optimizeLegibility;
 }
 
-/* Two families, one rule: Plus Jakarta Sans for page and section titles
-   (h1–h3 / t-h1–t-h3), Inter for everything else including card titles
-   (t-h4), so a bold card name and the body beside it share a face. */
+/* One family, Manrope, site-wide: --font-display is kept as an alias so the
+   title roles can be re-pointed later without touching every page. */
 h1,
 h2,
 h3 {
@@ -649,6 +648,11 @@ button:not(:disabled):active,
 }
 .dual-range::-moz-range-track {
   background: transparent;
+}
+/* The two overlapping range tracks are invisible; the global focus ring
+   would otherwise paint a full-width box whenever a thumb is dragged. */
+.dual-range:focus {
+  box-shadow: none;
 }
 .dual-range::-webkit-slider-thumb {
   -webkit-appearance: none;

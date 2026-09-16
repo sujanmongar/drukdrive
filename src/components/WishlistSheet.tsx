@@ -28,11 +28,14 @@ export default function WishlistSheet({
       />
       <div className="animate-sheet-up relative flex max-h-[80svh] w-full flex-col overflow-hidden rounded-t-2xl bg-white">
         <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
+          <h2 className="t-h3 text-[color:var(--color-ink)]">
+            Wishlist{saved.length > 0 ? ` (${saved.length})` : ""}
+          </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close wishlist"
-            className="icon-btn size-10 -ml-2"
+            className="icon-btn icon-btn-filled -mr-1 size-10"
           >
             <Icon
               name="close"
@@ -40,10 +43,6 @@ export default function WishlistSheet({
               className="text-[color:var(--color-ink)]"
             />
           </button>
-          <h2 className="t-h3 text-[color:var(--color-ink)]">
-            Wishlist{saved.length > 0 ? ` (${saved.length})` : ""}
-          </h2>
-          <span className="w-5" />
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto">

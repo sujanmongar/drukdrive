@@ -18,7 +18,7 @@ export default function AccountCardsGrid({ cards }: { cards: AccountCard[] }) {
         <Link
           key={c.title}
           to={c.to}
-          className="flex flex-col gap-4 rounded-xl border border-[color:var(--color-border)] p-6 hover:border-[color:var(--color-ink)]"
+          className="flex flex-col gap-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-6 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--color-ink)] hover:shadow-lift"
         >
           <Icon
             name={c.icon}
@@ -26,12 +26,8 @@ export default function AccountCardsGrid({ cards }: { cards: AccountCard[] }) {
             className="text-[color:var(--color-ink)]"
           />
           <div>
-            <p className="t-body font-bold text-[color:var(--color-ink)]">
-              {c.title}
-            </p>
-            <p className="mt-1 t-body-sm text-[color:var(--color-muted)]">
-              {c.description}
-            </p>
+            <p className="t-h4">{c.title}</p>
+            <p className="mt-1.5 t-body-sm">{c.description}</p>
           </div>
         </Link>
       ))}

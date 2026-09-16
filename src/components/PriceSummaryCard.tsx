@@ -2,9 +2,9 @@ import FareSummary from "./FareSummary";
 import type { Fare } from "../lib/pricing";
 import { currencies, useCurrency } from "../lib/currency";
 
-// The one price card used on Review, Details and Payment: total, the fare
-// breakdown behind a chevron, how the payment splits, and (where allowed)
-// a promo code. The ngultrum equivalent shows whenever the display currency
+// The one price card used on Review, Details, Payment and Confirmation:
+// total, the fare breakdown behind a chevron, and how the payment splits.
+// Promo entry lives in PromoCard; only an applied discount is listed here. The ngultrum equivalent shows whenever the display currency
 // is not Nu, since the balance is settled locally.
 export default function PriceSummaryCard({
   fare,
@@ -13,6 +13,7 @@ export default function PriceSummaryCard({
   payLater,
   discount = 0,
   promoCode = null,
+  laterLabel = "The other half, to the driver by mBoB, card or cash",
   id,
 }: {
   fare: Fare;
@@ -21,6 +22,8 @@ export default function PriceSummaryCard({
   payLater: number;
   discount?: number;
   promoCode?: string | null;
+  /** How the balance is paid: to the driver, or at the desk on self drive. */
+  laterLabel?: string;
   id?: string;
 }) {
   const { format, currency } = useCurrency();
@@ -84,7 +87,7 @@ export default function PriceSummaryCard({
                 Pay at pick-up
               </span>
               <span className="block t-caption text-[color:var(--color-muted)]">
-                The other half, to the driver by mBoB, card or cash
+                {laterLabel}
                 {showNu && ` · ≈ ${inNu(payLater)}`}
               </span>
             </dt>

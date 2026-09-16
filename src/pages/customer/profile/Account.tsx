@@ -10,7 +10,7 @@ import { usePageTitle } from "../../../hooks/usePageTitle";
 const cards: AccountCard[] = [
   {
     icon: "user",
-    title: "Personal Info",
+    title: "Personal info",
     description: "Provide personal details and how we can reach you",
     to: routes.accountProfileEdit,
   },
@@ -18,7 +18,7 @@ const cards: AccountCard[] = [
     icon: "lock",
     title: "Login & security",
     description: "Update your password and secure your account",
-    to: routes.accountProfileEdit,
+    to: `${routes.accountProfileEdit}?section=security`,
   },
   {
     icon: "wallet",

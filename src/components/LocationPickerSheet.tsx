@@ -35,22 +35,10 @@ export default function LocationPickerSheet({
   const content = (
     <>
       <div className="flex items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3">
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close"
-          className="icon-btn icon-btn-filled -ml-1 size-10 shrink-0 md:hidden"
-        >
-          <Icon
-            name="close"
-            size={20}
-            className="text-[color:var(--color-ink)]"
-          />
-        </button>
         <Icon
           name="search"
           size={18}
-          className="hidden shrink-0 text-[color:var(--color-muted)] md:block"
+          className="shrink-0 text-[color:var(--color-muted)]"
         />
         <input
           autoFocus
@@ -60,6 +48,18 @@ export default function LocationPickerSheet({
           onChange={(e) => setQuery(e.target.value)}
           className="peer h-11 w-full bg-transparent t-body text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)]"
         />
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="icon-btn icon-btn-filled -mr-1 size-10 shrink-0 md:hidden"
+        >
+          <Icon
+            name="close"
+            size={20}
+            className="text-[color:var(--color-ink)]"
+          />
+        </button>
       </div>
       <div className="flex-1 overflow-y-auto">
         {results.length === 0 ? (

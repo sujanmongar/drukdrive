@@ -21,22 +21,20 @@ export default function EditSearchModal({
   return (
     <div className="fixed inset-0 z-[55] flex items-start justify-center bg-black/40 p-0 sm:items-center sm:p-4">
       <div className="flex h-full w-full flex-col bg-white sm:h-auto sm:max-w-[440px] sm:rounded-2xl">
-        <div className="flex items-center gap-4 border-b border-[color:var(--color-border)] p-4">
+        <div className="flex items-center justify-between gap-4 border-b border-[color:var(--color-border)] px-4 py-3">
+          <h2 className="t-h3">Edit your search</h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="icon-btn size-10 -ml-2"
+            className="icon-btn icon-btn-filled -mr-1 size-10"
           >
             <Icon
               name="close"
-              size={22}
+              size={20}
               className="text-[color:var(--color-ink)]"
             />
           </button>
-          <h2 className="t-h3 text-[color:var(--color-ink)]">
-            Edit your search
-          </h2>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">

@@ -50,8 +50,8 @@ export default function ReviewBooking() {
   const { addOnIds, pickup, dropoff } = booking;
   const date = formatPickup(booking);
   const searchHref = `${routes.search}?${bookingToParams(booking).toString()}`;
-  const reviewHref = `${routes.bookingReview}?${bookingToParams(booking).toString()}`;
   const promoCode = searchParams.get("promo");
+  const reviewHref = `${routes.bookingReview}?${bookingToParams(booking, promoCode ? { promo: promoCode } : {}).toString()}`;
 
   // Add-ons and the promo code live in the URL, so a refresh or a step back
   // keeps them and the payment page sees the same numbers.
@@ -79,19 +79,30 @@ export default function ReviewBooking() {
   const split = paymentSplit(booking, netPayable);
   const amountDue = split.now;
 
-  // Already signed in? Pull the traveller's details from their account.
+  // Coming back from Payment, the URL already holds what was typed; otherwise
+  // a signed-in traveller's details are pulled from their account.
+  const q = (k: string) => searchParams.get(k) ?? "";
   const [title, setTitle] = useState(
-    isLoggedIn && user.gender === "Female" ? "Ms" : "Mr",
+    q("travelerTitle") ||
+      (isLoggedIn && user.gender === "Female" ? "Ms" : "Mr"),
   );
-  const [fullName, setFullName] = useState(isLoggedIn ? user.name : "");
-  const [phone, setPhone] = useState(isLoggedIn ? user.phone : "");
-  const [email, setEmail] = useState(isLoggedIn ? user.email : "");
-  const [pickupAddress, setPickupAddress] = useState(pickup);
-  const [dropoffAddress, setDropoffAddress] = useState("");
-  const [identity, setIdentity] = useState("");
-  const [flight, setFlight] = useState("");
-  const [licence, setLicence] = useState("");
-  const [dob, setDob] = useState("");
+  const [fullName, setFullName] = useState(
+    q("travelerName") || (isLoggedIn ? user.name : ""),
+  );
+  const [phone, setPhone] = useState(
+    q("travelerPhone") || (isLoggedIn ? user.phone : ""),
+  );
+  const [email, setEmail] = useState(
+    q("travelerEmail") || (isLoggedIn ? user.email : ""),
+  );
+  const [pickupAddress, setPickupAddress] = useState(
+    q("pickupAddress") || pickup,
+  );
+  const [dropoffAddress, setDropoffAddress] = useState(q("dropoffAddress"));
+  const [identity, setIdentity] = useState(q("travelerId"));
+  const [flight, setFlight] = useState(q("flight"));
+  const [licence, setLicence] = useState(q("licence"));
+  const [dob, setDob] = useState(q("dob"));
   const [touched, setTouched] = useState(false);
 
   const isValid =
@@ -107,14 +118,18 @@ export default function ReviewBooking() {
       setTouched(true);
       return;
     }
+    // The trip's pick-up/drop-off stay as searched (they drive the fare and
+    // driving time); the exact addresses travel alongside.
     const params = bookingToParams(
+      { ...booking, vehicleId: vehicle.id },
       {
-        ...booking,
-        vehicleId: vehicle.id,
-        pickup: pickupAddress,
-        dropoff: dropoffAddress || dropoff,
-      },
-      {
+        ...(pickupAddress.trim() && pickupAddress.trim() !== pickup
+          ? { pickupAddress: pickupAddress.trim() }
+          : {}),
+        ...(dropoffAddress.trim()
+          ? { dropoffAddress: dropoffAddress.trim() }
+          : {}),
+        travelerTitle: title,
         travelerName: fullName,
         travelerEmail: email,
         travelerPhone: phone,
@@ -335,7 +350,7 @@ export default function ReviewBooking() {
 
   return (
     <PageShell noFooter stickyHeader>
-      <div className="mx-auto max-w-[1100px] px-4 py-6 pb-28 md:px-10 md:py-10 md:pb-10">
+      <div className="mx-auto max-w-[1100px] px-4 pb-28 pt-6 md:px-10 md:pt-10 lg:pb-10">
         <div className="mb-5 flex items-center gap-2">
           <button
             type="button"

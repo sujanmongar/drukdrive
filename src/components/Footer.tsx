@@ -2,6 +2,14 @@ import { Link } from "react-router-dom";
 import DrukDriveLogo from "./DrukDriveLogo";
 import Icon from "./Icon";
 import SocialIcon, { type SocialName } from "./SocialIcon";
+import BrandLogo from "./BrandLogo";
+import {
+  AmexMark,
+  BankMark,
+  MastercardMark,
+  PayPalMark,
+  VisaMark,
+} from "./PayLogos";
 import { currencies, useCurrency } from "../lib/currency";
 import { languages, useLanguage } from "../lib/language";
 import { routes } from "../lib/routes";
@@ -139,7 +147,7 @@ export default function Footer() {
                       value={l.code}
                       className="text-[color:var(--color-ink)]"
                     >
-                      {l.native}
+                      {l.flag} {l.native}
                     </option>
                   ))}
                 </select>
@@ -180,14 +188,72 @@ export default function Footer() {
               We accept
             </p>
             <div className="flex flex-wrap gap-2">
-              {["VISA", "MC", "PayPal", "GPay"].map((p) => (
+              {(
+                [
+                  {
+                    name: "visa",
+                    alt: "Visa",
+                    fallback: <VisaMark />,
+                    h: "h-4",
+                  },
+                  {
+                    name: "mastercard",
+                    alt: "Mastercard",
+                    fallback: <MastercardMark />,
+                    h: "h-5",
+                  },
+                  {
+                    name: "amex",
+                    alt: "American Express",
+                    fallback: <AmexMark />,
+                    h: "h-5",
+                  },
+                  {
+                    name: "paypal",
+                    alt: "PayPal",
+                    fallback: <PayPalMark />,
+                    h: "h-5",
+                  },
+                  {
+                    name: "bob",
+                    alt: "Bank of Bhutan",
+                    fallback: <BankMark short="BoB" />,
+                    h: "h-6",
+                  },
+                  {
+                    name: "bnb",
+                    alt: "Bhutan National Bank",
+                    fallback: <BankMark short="BNB" />,
+                    h: "h-5",
+                  },
+                  {
+                    name: "tbank",
+                    alt: "T Bank",
+                    fallback: <BankMark short="TB" />,
+                    h: "h-4",
+                  },
+                ] as const
+              ).map((p) => (
                 <span
-                  key={p}
-                  className="flex h-8 items-center rounded-lg bg-white px-2.5 t-label font-bold text-[color:var(--color-ink)]"
+                  key={p.name}
+                  className="flex h-9 items-center rounded-lg bg-white px-2.5"
                 >
-                  {p}
+                  <BrandLogo
+                    name={p.name}
+                    alt={p.alt}
+                    fallback={p.fallback}
+                    className={p.h}
+                  />
                 </span>
               ))}
+              <span className="flex h-9 items-center rounded-lg bg-[#1f3f7a] px-2.5">
+                <BrandLogo
+                  name="dpnb"
+                  alt="Druk PNB Bank"
+                  fallback={<BankMark short="DPNB" />}
+                  className="h-4"
+                />
+              </span>
             </div>
           </div>
         </div>

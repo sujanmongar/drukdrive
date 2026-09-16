@@ -74,6 +74,11 @@ export default function Confirmation() {
   const nextSteps = selfDrive
     ? [
         `Collect the car at ${pickup} on ${date}. Bring your licence, passport or CID and a card for the deposit.`,
+        ...(split.later > 0
+          ? [
+              `Pay the remaining ${format(split.later)} at the desk when you collect the car.`,
+            ]
+          : []),
         "Return with a full tank; the deposit is released within 3 days.",
       ]
     : [
@@ -204,7 +209,7 @@ export default function Confirmation() {
             </Button>
             <a
               href={`mailto:?subject=${encodeURIComponent(`DrukDrive booking ${bookingId}`)}`}
-              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 t-caption font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)] md:min-h-0 md:py-2"
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 t-caption font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)] lg:min-h-0 lg:py-2"
             >
               <Icon name="mail" size={15} />
               Email
@@ -266,7 +271,17 @@ export default function Confirmation() {
               onClick={() => setCancelOpen(false)}
             />
             <div className="animate-sheet-up relative w-full rounded-t-3xl bg-white p-6 shadow-modal sm:max-w-[440px] sm:rounded-3xl">
-              <h2 className="t-h3">Cancel this booking?</h2>
+              <div className="flex items-start justify-between gap-3">
+                <h2 className="t-h3">Cancel this booking?</h2>
+                <button
+                  type="button"
+                  onClick={() => setCancelOpen(false)}
+                  aria-label="Close"
+                  className="icon-btn icon-btn-filled -mr-1 -mt-1 size-10 shrink-0"
+                >
+                  <Icon name="close" size={20} />
+                </button>
+              </div>
               <p className="mt-2 t-body">
                 {`You'll get ${format(split.now)} back to the way you paid, usually within 3 to 5 working days.`}
               </p>

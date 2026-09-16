@@ -15,17 +15,10 @@ type Props = {
   date?: string;
   /** Formatted drop-off date and time, when the booking has one. */
   dropoffWhen?: string;
-  /** Formatted trip total; shown in the car card on the review step only. */
-  total?: string;
-  days?: number;
 };
 
 // The car, laid out like a search-results list card.
-export function VehicleSummaryCard({
-  vehicle,
-  total,
-  days,
-}: Pick<Props, "vehicle" | "total" | "days">) {
+export function VehicleSummaryCard({ vehicle }: Pick<Props, "vehicle">) {
   return (
     <>
       {/* Vehicle — the search results list card, with the trip total where
@@ -75,22 +68,6 @@ export function VehicleSummaryCard({
 
             <VehicleSpecs vehicle={vehicle} className="mt-3.5" />
           </div>
-
-          {total && (
-            <div className="flex items-end justify-between gap-3 border-t border-[color:var(--color-border)] pt-3 sm:pt-4 lg:w-[168px] lg:shrink-0 lg:flex-col lg:items-end lg:justify-center lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-              <p className="whitespace-nowrap t-caption text-[color:var(--color-muted)] lg:text-right">
-                Total for {days} days
-              </p>
-              <div className="lg:text-right">
-                <span className="block t-h3 font-bold tabular text-[color:var(--color-ink)] ">
-                  {total}
-                </span>
-                <p className="t-label mt-0.5 whitespace-nowrap text-[color:var(--color-muted)]">
-                  incl. taxes &amp; fees
-                </p>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </>
@@ -183,12 +160,10 @@ export default function BookingRouteCard({
   dropoff,
   date,
   dropoffWhen,
-  total,
-  days,
 }: Props) {
   return (
     <div>
-      <VehicleSummaryCard vehicle={vehicle} total={total} days={days} />
+      <VehicleSummaryCard vehicle={vehicle} />
       <div className="mt-8">
         <StopsCard
           pickup={pickup}

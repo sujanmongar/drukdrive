@@ -99,7 +99,7 @@ function ExpandableCheckboxList({
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="-mx-2 min-h-11 rounded-lg px-2 text-left t-body-sm font-semibold text-[color:var(--color-link)] hover:bg-[color:var(--color-surface-soft)] lg:min-h-9 lg:t-caption"
+          className="-mx-2 min-h-11 rounded-lg px-2 text-left t-body-sm font-semibold text-[color:var(--color-link)] hover:bg-[color:var(--color-surface-soft)] lg:min-h-9 lg:text-xs"
         >
           {expanded ? "View less" : "View more"}
         </button>
@@ -332,7 +332,7 @@ export default function SearchResults() {
               onClick={() =>
                 setCapacity(capacity === range.label ? null : range.label)
               }
-              className={`min-h-11 rounded-full border px-4 t-body-sm font-semibold transition-colors lg:min-h-9 lg:px-3.5 lg:t-caption ${
+              className={`min-h-11 rounded-full border px-4 t-body-sm font-semibold transition-colors lg:min-h-9 lg:px-3.5 lg:text-xs ${
                 capacity === range.label
                   ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
                   : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
@@ -402,7 +402,7 @@ export default function SearchResults() {
               key={r}
               type="button"
               onClick={() => setMinRating(minRating === r ? null : r)}
-              className={`flex min-h-11 items-center gap-1 rounded-full border px-4 t-body-sm font-semibold transition-colors lg:min-h-9 lg:px-3.5 lg:t-caption ${
+              className={`flex min-h-11 items-center gap-1 rounded-full border px-4 t-body-sm font-semibold transition-colors lg:min-h-9 lg:px-3.5 lg:text-xs ${
                 minRating === r
                   ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
                   : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
@@ -654,30 +654,30 @@ export default function SearchResults() {
           />
           <div className="animate-sheet-up relative flex h-[88svh] w-full flex-col overflow-hidden rounded-t-2xl bg-white">
             <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
-              <button
-                type="button"
-                onClick={() => setFilterOpen(false)}
-                aria-label="Close filters"
-                className="icon-btn icon-btn-filled size-10"
-              >
-                <Icon
-                  name="close"
-                  size={20}
-                  className="text-[color:var(--color-ink)]"
-                />
-              </button>
               <h2 className="t-h3 text-[color:var(--color-ink)]">Filters</h2>
-              {activeFilterCount > 0 ? (
+              <div className="flex items-center gap-1">
+                {activeFilterCount > 0 ? (
+                  <button
+                    type="button"
+                    onClick={clearAllFilters}
+                    className="min-h-10 rounded-lg px-2 t-body-sm font-semibold text-[color:var(--color-link)]"
+                  >
+                    Clear all
+                  </button>
+                ) : null}
                 <button
                   type="button"
-                  onClick={clearAllFilters}
-                  className="min-h-10 rounded-lg px-2 t-body-sm font-semibold text-[color:var(--color-link)]"
+                  onClick={() => setFilterOpen(false)}
+                  aria-label="Close filters"
+                  className="icon-btn icon-btn-filled -mr-1 size-10"
                 >
-                  Clear all
+                  <Icon
+                    name="close"
+                    size={20}
+                    className="text-[color:var(--color-ink)]"
+                  />
                 </button>
-              ) : (
-                <span className="w-10" />
-              )}
+              </div>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
               {filterPanel}
@@ -710,6 +710,7 @@ export default function SearchResults() {
                 type="button"
                 onClick={() => setSortOpen(false)}
                 aria-label="Close sort options"
+                className="icon-btn icon-btn-filled -mr-1 size-10"
               >
                 <Icon
                   name="close"

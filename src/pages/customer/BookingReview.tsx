@@ -76,12 +76,15 @@ export default function BookingReview() {
       vehicleId: vehicle.id,
       addOnIds: selected,
     });
+    // A promo applied on a later step survives a trip back to Review.
+    const promo = searchParams.get("promo");
+    if (promo) params.set("promo", promo);
     navigate(`${routes.reviewBooking}?${params.toString()}`);
   }
 
   return (
     <PageShell noFooter stickyHeader>
-      <div className="mx-auto max-w-[1100px] px-4 py-6 pb-28 md:px-10 md:py-10">
+      <div className="mx-auto max-w-[1100px] px-4 pb-28 pt-6 md:px-10 md:pt-10 lg:pb-10">
         <div className="mb-5 flex items-center gap-2">
           <button
             type="button"
