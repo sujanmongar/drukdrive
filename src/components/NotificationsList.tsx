@@ -1,29 +1,18 @@
-import { useState } from "react";
+import { Link } from "react-router-dom";
 import Icon from "./Icon";
 import Button from "./Button";
 import EmptyState from "./EmptyState";
-import type { Notification } from "../data/mockData";
+import { useNotifications } from "../lib/notifications";
 import { iconTile, rowHover } from "../lib/ui";
 
-// The notifications page body for both roles. Tapping a row toggles it
-// read; unread rows sit on a tinted card with a red dot.
+// The notifications page body for both roles. Each row opens the page it
+// is about and is marked read; unread rows sit on a tint with a red dot.
 export default function NotificationsList({
-  initial,
+  role,
 }: {
-  initial: Notification[];
+  role: "customer" | "driver";
 }) {
-  const [notifications, setNotifications] = useState(initial);
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
-  function toggleRead(id: string) {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: !n.read } : n)),
-    );
-  }
-
-  function markAllRead() {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  }
+  const { items, unreadCount, markRead, markAllRead } = useNotifications(role);
 
   return (
     <>
@@ -43,7 +32,7 @@ export default function NotificationsList({
         )}
       </div>
 
-      {notifications.length === 0 ? (
+      {items.length === 0 ? (
         <EmptyState
           icon="bell"
           title="No notifications yet"
@@ -51,12 +40,12 @@ export default function NotificationsList({
         />
       ) : (
         <div className="mt-6 flex flex-col gap-3">
-          {notifications.map((n) => (
+          {items.map((n) => (
             // Not `card`: its bg-white would outrank the unread tint.
-            <button
+            <Link
               key={n.id}
-              type="button"
-              onClick={() => toggleRead(n.id)}
+              to={n.href}
+              onClick={() => markRead(n.id)}
               className={`flex w-full items-start gap-3 rounded-2xl border border-[color:var(--color-border)] p-4 text-left shadow-card ${rowHover} ${
                 n.read ? "bg-white" : "bg-[color:var(--color-surface-subtle)]"
               }`}
@@ -75,7 +64,10 @@ export default function NotificationsList({
                     {n.title}
                   </p>
                   {!n.read && (
-                    <span className="size-2 shrink-0 rounded-full bg-[color:var(--color-danger)]" />
+                    <span
+                      aria-label="Unread"
+                      className="size-2 shrink-0 rounded-full bg-[color:var(--color-danger)]"
+                    />
                   )}
                 </div>
                 <p className="mt-0.5 t-body-sm text-[color:var(--color-muted)]">
@@ -84,7 +76,7 @@ export default function NotificationsList({
               </div>
 
               <span className="shrink-0 t-caption">{n.time}</span>
-            </button>
+            </Link>
           ))}
         </div>
       )}

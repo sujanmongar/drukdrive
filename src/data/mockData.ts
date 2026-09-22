@@ -14,7 +14,7 @@ export const vehicleClassOf: Record<VehicleCategory, string> = {
   "Two Wheels": "Motorbike",
 };
 
-import type { BookingType } from "../lib/routes";
+import { routes, type BookingType } from "../lib/routes";
 
 /** Which vehicles make sense for a booking type: no self-driving a bus, no
  *  bike taxis on chauffeured trips. */
@@ -341,6 +341,8 @@ export type Notification = {
   body: string;
   time: string;
   read: boolean;
+  /** Where tapping it goes. */
+  href: string;
 };
 
 export const notifications: Notification[] = [
@@ -350,6 +352,7 @@ export const notifications: Notification[] = [
     body: "Your ride with Toyota Prado GX is confirmed for 24 Sep.",
     time: "2h ago",
     read: false,
+    href: routes.confirmation("GI1671177263"),
   },
   {
     id: "n2",
@@ -357,6 +360,7 @@ export const notifications: Notification[] = [
     body: "We received your payment of $58.00 for booking GI1671177263.",
     time: "2h ago",
     read: false,
+    href: routes.invoice("GI1671177263"),
   },
   {
     id: "n3",
@@ -364,6 +368,7 @@ export const notifications: Notification[] = [
     body: "Karma Dorji has been assigned as your driver.",
     time: "1d ago",
     read: true,
+    href: routes.confirmation("GI1671177263"),
   },
   {
     id: "n4",
@@ -371,6 +376,7 @@ export const notifications: Notification[] = [
     body: "Hope you enjoyed your trip! Rate your experience.",
     time: "3d ago",
     read: true,
+    href: `${routes.accountReviews}?write=1`,
   },
 ];
 
@@ -545,6 +551,8 @@ export type DriverNotification = {
   body: string;
   time: string;
   read: boolean;
+  /** Where tapping it goes. */
+  href: string;
 };
 
 export const driverNotifications: DriverNotification[] = [
@@ -554,6 +562,7 @@ export const driverNotifications: DriverNotification[] = [
     body: "Sonam Wangmo booked your Toyota Prado GX for Paro → Phuentsholing, Sat 12 Dec.",
     time: "2h ago",
     read: false,
+    href: routes.providerBookingDetail("HBTTB5984458"),
   },
   {
     id: "dn2",
@@ -561,6 +570,7 @@ export const driverNotifications: DriverNotification[] = [
     body: "Trip from Paro to Thimphu, Wed 24 Jan to Sun 28 Jan, is awaiting rider confirmation.",
     time: "1d ago",
     read: false,
+    href: routes.providerBookings,
   },
   {
     id: "dn3",
@@ -568,6 +578,7 @@ export const driverNotifications: DriverNotification[] = [
     body: "Your Toyota Hiace Bus listing is being reviewed and will go live shortly.",
     time: "2d ago",
     read: true,
+    href: routes.providerVehicles,
   },
   {
     id: "dn4",
@@ -575,6 +586,7 @@ export const driverNotifications: DriverNotification[] = [
     body: "Your trip with Tenzin Namgay is complete. Payment has been credited to your ledger.",
     time: "4d ago",
     read: true,
+    href: routes.providerFinance,
   },
 ];
 

@@ -3,44 +3,41 @@ import { Link } from "react-router-dom";
 import Icon from "./Icon";
 import EmptyState from "./EmptyState";
 import { menu, menuItem } from "../lib/ui";
-import {
-  notifications as customerNotifications,
-  driverNotifications,
-} from "../data/mockData";
+import { useNotifications } from "../lib/notifications";
 
+// Header bell: the three latest notifications, each opening the page it is
+// about, and "View all" for the full list.
 export default function NotificationsDropdown({
   role,
   viewAllHref,
+  compact = false,
 }: {
   role: "customer" | "driver";
   viewAllHref: string;
+  compact?: boolean;
 }) {
   const [open, setOpen] = useState(false);
-
-  const items =
-    role === "driver"
-      ? driverNotifications
-          .slice(0, 3)
-          .map((n) => ({ id: n.id, title: n.title, body: n.body }))
-      : customerNotifications
-          .slice(0, 3)
-          .map((n) => ({ id: n.id, title: n.title, body: n.body }));
-
-  const unreadCount = (
-    role === "customer" ? customerNotifications : driverNotifications
-  ).filter((n) => !n.read).length;
+  const { items, unreadCount, markRead } = useNotifications(role);
+  const latest = items.slice(0, 3);
 
   return (
     <div className="relative">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label="Notifications"
-        className="icon-btn relative size-[42px]"
+        aria-label={
+          unreadCount > 0
+            ? `Notifications, ${unreadCount} unread`
+            : "Notifications"
+        }
+        aria-expanded={open}
+        className={`icon-btn relative ${compact ? "size-10" : "size-[42px]"}`}
       >
         <Icon name="bell" size={20} />
         {unreadCount > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex size-[17px] items-center justify-center rounded-full bg-[color:var(--color-danger)] t-label text-white ring-2 ring-white">
+          <span
+            className={`absolute -right-0.5 -top-0.5 flex ${compact ? "size-[15px]" : "size-[17px]"} items-center justify-center rounded-full bg-[color:var(--color-danger)] t-label text-white ring-2 ring-white`}
+          >
             {unreadCount}
           </span>
         )}
@@ -53,13 +50,15 @@ export default function NotificationsDropdown({
             className="fixed inset-0 z-40 cursor-default"
             onClick={() => setOpen(false)}
           />
-          <div className={`${menu} absolute right-0 top-full z-50 mt-2 w-72`}>
+          <div
+            className={`${menu} absolute right-0 top-full z-50 mt-2 w-72 max-w-[calc(100vw-2rem)]`}
+          >
             <div className="border-b border-[color:var(--color-border)] px-4 py-3">
               <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
                 Notifications
               </p>
             </div>
-            {items.length === 0 ? (
+            {latest.length === 0 ? (
               <EmptyState
                 icon="bell"
                 title="No notifications yet"
@@ -67,19 +66,37 @@ export default function NotificationsDropdown({
                 className="m-2"
               />
             ) : (
-              <div>
-                {items.map((n) => (
-                  <div
-                    key={n.id}
-                    className="border-b border-[color:var(--color-border)] px-4 py-3 last:border-b-0"
-                  >
-                    <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
-                      {n.title}
-                    </p>
-                    <p className="mt-0.5 line-clamp-2 t-caption">{n.body}</p>
-                  </div>
-                ))}
-              </div>
+              latest.map((n) => (
+                <Link
+                  key={n.id}
+                  to={n.href}
+                  onClick={() => {
+                    markRead(n.id);
+                    setOpen(false);
+                  }}
+                  className={`${menuItem} items-start border-b border-[color:var(--color-border)] py-3 ${
+                    n.read ? "" : "bg-[color:var(--color-surface-subtle)]"
+                  }`}
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center gap-2">
+                      <span className="t-body-sm font-semibold text-[color:var(--color-ink)]">
+                        {n.title}
+                      </span>
+                      {!n.read && (
+                        <span
+                          aria-label="Unread"
+                          className="size-2 shrink-0 rounded-full bg-[color:var(--color-danger)]"
+                        />
+                      )}
+                    </span>
+                    <span className="mt-0.5 line-clamp-2 block t-caption">
+                      {n.body}
+                    </span>
+                  </span>
+                  <span className="shrink-0 t-caption">{n.time}</span>
+                </Link>
+              ))
             )}
             <Link
               to={viewAllHref}

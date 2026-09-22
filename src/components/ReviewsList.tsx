@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Icon from "./Icon";
 import Button from "./Button";
 import EmptyState from "./EmptyState";
@@ -29,7 +30,9 @@ function Stars({ rating }: { rating: number }) {
 // button, then one card per review.
 export default function ReviewsList() {
   const { reviews } = useReviews();
-  const [writing, setWriting] = useState(false);
+  // "Rate your experience" notifications land here with ?write=1.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [writing, setWriting] = useState(searchParams.get("write") === "1");
   const avgRating = reviews.length
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(
         1,
@@ -92,7 +95,17 @@ export default function ReviewsList() {
         </div>
       )}
 
-      {writing && <WriteReviewModal onClose={() => setWriting(false)} />}
+      {writing && (
+        <WriteReviewModal
+          onClose={() => {
+            setWriting(false);
+            if (searchParams.has("write")) {
+              searchParams.delete("write");
+              setSearchParams(searchParams, { replace: true });
+            }
+          }}
+        />
+      )}
     </>
   );
 }

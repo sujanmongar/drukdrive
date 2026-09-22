@@ -16,7 +16,6 @@ import { menu, menuItem } from "../lib/ui";
 const customerLinks: { to: string; label: string; icon: IconName }[] = [
   { to: routes.accountBookings, label: "Bookings", icon: "car" },
   { to: routes.accountWishlist, label: "Wishlist", icon: "heart" },
-  { to: routes.accountNotifications, label: "Notifications", icon: "bell" },
   { to: routes.accountReviews, label: "Reviews", icon: "star" },
   { to: routes.accountFinance, label: "Finance", icon: "wallet" },
   { to: routes.accountProfile, label: "Account", icon: "user" },
@@ -24,7 +23,6 @@ const customerLinks: { to: string; label: string; icon: IconName }[] = [
 
 const driverLinks: { to: string; label: string; icon: IconName }[] = [
   { to: routes.providerBookings, label: "Bookings", icon: "car" },
-  { to: routes.providerNotifications, label: "Notifications", icon: "bell" },
   { to: routes.providerReviews, label: "Reviews", icon: "star" },
   { to: routes.providerVehicles, label: "My Vehicle", icon: "car" },
   { to: routes.providerFinance, label: "Finance", icon: "wallet" },
@@ -283,6 +281,17 @@ export default function Header({
         </Link>
         <div className="flex items-center gap-3">
           <WishlistButton compact />
+          {isLoggedIn && (
+            <NotificationsDropdown
+              compact
+              role={role}
+              viewAllHref={
+                role === "driver"
+                  ? routes.providerNotifications
+                  : routes.accountNotifications
+              }
+            />
+          )}
           <AccountMenu onSignOut={handleSignOut} compact />
         </div>
       </div>
