@@ -45,8 +45,9 @@ export default function PriceSummaryCard({
         Total for {fare.unit}, taxes and fees included
         {showNu && (
           <>
-            {" "}
-            · ≈ <span className="t-amount">{inNu(netPayable)}</span>
+            <span className="block">
+              ≈ <span className="t-amount">{inNu(netPayable)}</span>
+            </span>
           </>
         )}
       </p>
@@ -84,8 +85,9 @@ export default function PriceSummaryCard({
                 : "The full fare, to confirm your booking"}
               {showNu && (
                 <>
-                  {" "}
-                  · ≈ <span className="t-amount">{inNu(payNow)}</span>
+                  <span className="block">
+                    ≈ <span className="t-amount">{inNu(payNow)}</span>
+                  </span>
                 </>
               )}
             </span>
@@ -102,8 +104,9 @@ export default function PriceSummaryCard({
                 {balanceLabel}
                 {showNu && (
                   <>
-                    {" "}
-                    · ≈ <span className="t-amount">{inNu(payLater)}</span>
+                    <span className="block">
+                      ≈ <span className="t-amount">{inNu(payLater)}</span>
+                    </span>
                   </>
                 )}
               </span>

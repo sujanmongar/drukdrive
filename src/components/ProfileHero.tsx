@@ -35,12 +35,21 @@ export default function ProfileHero({
               {currentUser.email}
             </span>
           </div>
+          {/* Phones: under the details, on the same column. */}
+          <div className="mt-2 sm:hidden">
+            <Button variant="link" to={reviewHref}>
+              <Icon name="edit" size={16} />
+              Write review
+            </Button>
+          </div>
         </div>
       </div>
-      <Button variant="link" to={reviewHref} className="self-start">
-        <Icon name="edit" size={16} />
-        Write review
-      </Button>
+      <div className="hidden sm:block">
+        <Button variant="link" to={reviewHref}>
+          <Icon name="edit" size={16} />
+          Write review
+        </Button>
+      </div>
     </div>
   );
 }

@@ -154,7 +154,7 @@ export default function Home() {
             <SectionHeader title="Recent searches" trackRef={recentTrackRef} />
             <div
               ref={recentTrackRef}
-              className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:px-6"
+              className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-8 pt-3 md:-mx-6 md:px-6"
             >
               {recentSearches.map((s) => {
                 const vehicle = vehicles.find((v) => v.id === s.vehicleId);
@@ -194,7 +194,7 @@ export default function Home() {
             <SectionHeader title="Popular cars" trackRef={carsTrackRef} />
             <div
               ref={carsTrackRef}
-              className="carousel-track -mx-4 -mb-8 flex gap-5 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:px-6"
+              className="carousel-track -mx-4 -mb-8 flex gap-5 overflow-x-auto px-4 pb-8 pt-3 md:-mx-6 md:px-6"
             >
               {vehicles.map((v) => (
                 <VehicleCard
@@ -216,7 +216,7 @@ export default function Home() {
             <SectionHeader title="Popular car types" trackRef={typesTrackRef} />
             <div
               ref={typesTrackRef}
-              className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-12 pt-3 md:-mx-6 md:gap-5 md:px-6"
+              className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-8 pt-3 md:-mx-6 md:gap-5 md:px-6"
             >
               {popularCarTypes.map((t) => (
                 <button

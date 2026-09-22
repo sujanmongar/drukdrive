@@ -22,7 +22,7 @@ export default function VehicleListCard({
   tripQuery?: string;
 }) {
   const { format } = useCurrency();
-  const { isSaved, toggle } = useWishlist();
+  const { enabled: canSave, isSaved, toggle } = useWishlist();
   const navigate = useNavigate();
   const saved = isSaved(vehicle.id);
   const bookingParams = new URLSearchParams(tripQuery);
@@ -83,23 +83,25 @@ export default function VehicleListCard({
             transparent
             className="w-full"
           />
-          <button
-            type="button"
-            aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
-            aria-pressed={saved}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              toggle(vehicle.id);
-            }}
-            className="icon-btn icon-btn-filled absolute -right-1 -top-1 size-9 shadow-card"
-          >
-            <Icon
-              name="heart"
-              size={16}
-              className={`transition-colors ${saved ? "fill-current text-[color:var(--color-danger)]" : "text-[color:var(--color-ink)]"}`}
-            />
-          </button>
+          {canSave && (
+            <button
+              type="button"
+              aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
+              aria-pressed={saved}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggle(vehicle.id);
+              }}
+              className="icon-btn icon-btn-filled absolute -right-1 -top-1 size-9 shadow-card"
+            >
+              <Icon
+                name="heart"
+                size={16}
+                className={`transition-colors ${saved ? "fill-current text-[color:var(--color-danger)]" : "text-[color:var(--color-ink)]"}`}
+              />
+            </button>
+          )}
         </div>
         <div className="min-w-0 flex-1">
           <p className="t-h4 truncate">{vehicle.name}</p>

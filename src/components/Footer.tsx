@@ -73,7 +73,7 @@ export default function Footer() {
 
   return (
     <footer className="mt-auto bg-[color:var(--color-ink)] text-white">
-      <div className="mx-auto max-w-[1280px] px-6 py-12 md:px-10 md:py-14">
+      <div className="mx-auto max-w-[1280px] px-4 py-12 md:px-10 md:py-14">
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-6">
           <div className="col-span-2 md:col-span-2">
             <Link
@@ -257,7 +257,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-[1280px] flex-col gap-3 border-t border-white/15 px-6 py-5 t-caption text-white/50 md:flex-row md:items-center md:justify-between md:px-10">
+      <div className="mx-auto flex max-w-[1280px] flex-col gap-3 border-t border-white/15 px-4 py-5 t-caption text-white/50 md:flex-row md:items-center md:justify-between md:px-10">
         <div className="flex flex-wrap gap-x-2">
           {bottomLinks.map((l) => (
             <Link

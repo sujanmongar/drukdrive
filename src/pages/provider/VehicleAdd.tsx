@@ -243,7 +243,7 @@ export default function ProviderVehicleAdd() {
             <p className="mb-2 t-body-sm">
               Or pick a common model to prefill the name.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
               {vehicleTemplates.map((v) => (
                 <button
                   key={v.id}
@@ -256,7 +256,7 @@ export default function ProviderVehicleAdd() {
                       )?.[0] as VehicleType) ?? "SUV";
                     setType(matchedType);
                   }}
-                  className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors duration-150 ${
+                  className={`flex min-h-14 items-center justify-between gap-3 rounded-xl border px-3 py-2 text-left transition-colors duration-150 ${
                     vehicleName === v.name
                       ? "border-[color:var(--color-ink)] ring-1 ring-[color:var(--color-ink)]"
                       : "border-[color:var(--color-border)] hover:border-[color:var(--color-ink)]"

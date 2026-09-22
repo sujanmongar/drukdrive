@@ -326,6 +326,11 @@ h3 {
 .section-y {
   padding-block: 3.5rem; /* 56px */
 }
+/* Two plain sections in a row share one gap instead of stacking both
+   paddings; a tinted band keeps its own. */
+.section-y:not([class*="bg-"]) + .section-y:not([class*="bg-"]) {
+  padding-top: 0;
+}
 .section-y-sm {
   padding-block: 1.75rem; /* 28px */
 }

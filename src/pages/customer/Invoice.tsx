@@ -32,8 +32,10 @@ export default function Invoice() {
   // bought. Arriving from My Bookings has no vehicleId, so it falls back to
   // the static historical record for that id.
   const vehicleId = searchParams.get("vehicleId");
+  // Same fallback as checkout and confirmation: an unknown id still shows
+  // the booking that was paid for, priced on the first car.
   const liveVehicle = vehicleId
-    ? vehicles.find((v) => v.id === vehicleId)
+    ? (vehicles.find((v) => v.id === vehicleId) ?? vehicles[0])
     : undefined;
   const historicalBooking = bookings.find((b) => b.id === id) ?? bookings[0];
   const travelerName = searchParams.get("travelerName") || currentUser.name;
@@ -105,7 +107,7 @@ export default function Invoice() {
         </div>
 
         <div
-          className={`${card} p-8 print:border-0 print:p-0 print:shadow-none`}
+          className={`${card} p-5 sm:p-8 print:border-0 print:p-0 print:shadow-none`}
         >
           <div
             className={`${inset} flex flex-wrap items-center justify-between gap-4 px-5 py-4`}
@@ -199,24 +201,24 @@ export default function Invoice() {
             </table>
 
             <div className="mt-4 flex justify-end">
-              <div className="w-full max-w-[260px] space-y-2">
-                <div className="flex justify-between t-body-sm">
+              <div className="w-full space-y-2 sm:max-w-[280px]">
+                <div className="flex justify-between px-3 t-body-sm">
                   <span>Sub Total</span>
                   <span className="t-amount">{format(baseFare)}</span>
                 </div>
-                <div className="flex justify-between t-body-sm">
+                <div className="flex justify-between px-3 t-body-sm">
                   <span>Taxes &amp; Fees</span>
                   <span className="t-amount">{format(taxes)}</span>
                 </div>
                 <div className="h-px bg-[color:var(--color-border)]" />
                 <div
-                  className={`${inset} flex justify-between px-3 py-2 t-body-sm font-semibold text-[color:var(--color-ink)]`}
+                  className={`${inset} flex justify-between px-3 py-2.5 t-body-sm font-semibold text-[color:var(--color-ink)]`}
                 >
                   <span>Total</span>
                   <span className="t-amount">{format(total)}</span>
                 </div>
                 {discount > 0 && (
-                  <div className="flex justify-between t-body-sm font-semibold text-[color:var(--color-success-deep)]">
+                  <div className="flex justify-between px-3 t-body-sm font-semibold text-[color:var(--color-success-deep)]">
                     <span>Discount{promoCode ? ` (${promoCode})` : ""}</span>
                     <span className="t-amount text-[color:var(--color-success-deep)]">
                       -{format(discount)}
@@ -231,18 +233,18 @@ export default function Invoice() {
                 </div>
                 {balance > 0 && (
                   <>
-                    <div className="flex justify-between t-body-sm">
+                    <div className="flex justify-between px-3 t-body-sm">
                       <span>Paid now</span>
                       <span className="t-amount">{format(amountPaid)}</span>
                     </div>
-                    <div className="flex justify-between t-body-sm font-semibold text-[color:var(--color-ink)]">
+                    <div className="flex justify-between px-3 t-body-sm font-semibold text-[color:var(--color-ink)]">
                       <span>Balance due at pick-up</span>
                       <span className="t-amount">{format(balance)}</span>
                     </div>
                   </>
                 )}
                 {fare && fare.deposit > 0 && (
-                  <p className="t-caption">
+                  <p className="px-3 t-caption">
                     A refundable deposit of{" "}
                     <span className="t-amount">{format(fare.deposit)}</span> is
                     held at collection and is not part of this invoice.
@@ -253,25 +255,25 @@ export default function Invoice() {
           </div>
 
           <div className="grid grid-cols-1 gap-2 border-t border-[color:var(--color-border)] py-6 sm:grid-cols-2">
-            <div className="flex items-baseline justify-between sm:block">
-              <span className={metaLabel}>Transaction Date</span>
-              <span className={`${metaValue} ml-2 sm:ml-0 sm:block`}>
+            <div className="flex items-baseline justify-between gap-4 sm:block">
+              <span className={`${metaLabel} shrink-0`}>Transaction Date</span>
+              <span className={`${metaValue} text-right sm:block sm:text-left`}>
                 {bookingDate}
               </span>
             </div>
-            <div className="flex items-baseline justify-between sm:block">
+            <div className="flex items-baseline justify-between gap-4 sm:block">
               <span className={metaLabel}>Method</span>
-              <span className={`${metaValue} ml-2 sm:ml-0 sm:block`}>
+              <span className={`${metaValue} text-right sm:block sm:text-left`}>
                 {method}
               </span>
             </div>
-            <div className="flex items-baseline justify-between sm:block">
+            <div className="flex items-baseline justify-between gap-4 sm:block">
               <span className={metaLabel}>Transaction ID</span>
               <span className={`${reference} ml-2 sm:ml-0 sm:block`}>
                 HBTTB{bookingId.slice(-7)}
               </span>
             </div>
-            <div className="flex items-baseline justify-between sm:block">
+            <div className="flex items-baseline justify-between gap-4 sm:block">
               <span className={metaLabel}>Status</span>
               <span className="ml-2 t-body-sm font-semibold text-[color:var(--color-success-deep)] sm:ml-0 sm:block">
                 Paid
@@ -285,7 +287,7 @@ export default function Invoice() {
           </div>
         </div>
 
-        <div className="mt-8 flex gap-3 print:hidden">
+        <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row print:hidden">
           <Button
             variant="ghost"
             size="lg"

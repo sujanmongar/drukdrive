@@ -35,7 +35,7 @@ export default function SearchSummaryHeader({
   tripQuery?: string;
 }) {
   const navigate = useNavigate();
-  const { ids: wishlistIds } = useWishlist();
+  const { enabled: wishlistEnabled, ids: wishlistIds } = useWishlist();
   const [draft, setDraft] = useState<EditSearchValue>(search);
   const [wishlistOpen, setWishlistOpen] = useState(false);
   const dateLabel = formatDate(search.pickupDate);
@@ -90,27 +90,29 @@ export default function SearchSummaryHeader({
             <Icon name="edit" size={15} />
           </button>
 
-          <button
-            type="button"
-            onClick={() => setWishlistOpen(true)}
-            aria-label="Wishlist"
-            className="icon-btn icon-btn-filled relative size-9 shrink-0"
-          >
-            <Icon
-              name="heart"
-              size={18}
-              className="text-[color:var(--color-ink)]"
-            />
-            {wishlistIds.length > 0 && (
-              <span className="absolute right-0 top-0 flex size-[15px] items-center justify-center rounded-full bg-[color:var(--color-danger)] t-label text-white">
-                {wishlistIds.length}
-              </span>
-            )}
-          </button>
+          {wishlistEnabled && (
+            <button
+              type="button"
+              onClick={() => setWishlistOpen(true)}
+              aria-label="Wishlist"
+              className="icon-btn icon-btn-filled relative size-9 shrink-0"
+            >
+              <Icon
+                name="heart"
+                size={18}
+                className="text-[color:var(--color-ink)]"
+              />
+              {wishlistIds.length > 0 && (
+                <span className="absolute right-0 top-0 flex size-[15px] items-center justify-center rounded-full bg-[color:var(--color-danger)] t-label text-white">
+                  {wishlistIds.length}
+                </span>
+              )}
+            </button>
+          )}
         </div>
       </header>
 
-      {wishlistOpen && (
+      {wishlistEnabled && wishlistOpen && (
         <WishlistSheet
           onClose={() => setWishlistOpen(false)}
           tripQuery={tripQuery}

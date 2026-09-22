@@ -55,7 +55,8 @@ const switchTarget: Record<
 export const headerControl = "icon-btn";
 
 function WishlistButton({ compact = false }: { compact?: boolean }) {
-  const { ids } = useWishlist();
+  const { enabled, ids } = useWishlist();
+  if (!enabled) return null;
   return (
     <Link
       to={routes.accountWishlist}
@@ -256,7 +257,7 @@ export default function Header({
       <div className="hidden items-center justify-between px-6 py-[23px] md:flex lg:px-10">
         <Logo />
         <div className="flex items-center gap-2.5">
-          {role === "customer" && <WishlistButton />}
+          <WishlistButton />
           {isLoggedIn && (
             <NotificationsDropdown
               role={role}
@@ -281,7 +282,7 @@ export default function Header({
           <DrukDriveLogo className="h-5 w-auto text-[color:var(--color-ink)]" />
         </Link>
         <div className="flex items-center gap-3">
-          {role === "customer" && <WishlistButton compact />}
+          <WishlistButton compact />
           <AccountMenu onSignOut={handleSignOut} compact />
         </div>
       </div>

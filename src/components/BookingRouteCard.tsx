@@ -31,6 +31,7 @@ export function VehicleSummaryCard({ vehicle }: Pick<Props, "vehicle">) {
           <VehicleImage
             vehicleId={vehicle.id}
             category={vehicle.category}
+            transparent
             className="size-full p-2 lg:p-3"
           />
         </div>

@@ -164,19 +164,18 @@ export default function ReviewBooking() {
 
   const form = (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="t-h3">
-          {selfDrive ? "Driver information" : "Personal information"}
-        </h2>
-        {!isLoggedIn && (
-          <Link
-            to={routes.signIn}
-            className="inline-flex min-h-11 items-center rounded-xl bg-[color:var(--color-info-bg)] px-3 t-body-sm font-semibold text-[color:var(--color-info-text)] transition-opacity duration-150 hover:opacity-90"
-          >
-            Sign in to speed this up ↗
-          </Link>
-        )}
-      </div>
+      <h2 className="t-h3">
+        {selfDrive ? "Driver information" : "Personal information"}
+      </h2>
+      {!isLoggedIn && (
+        <p className="mt-1 t-body-sm">
+          Have an account?{" "}
+          <Link to={routes.signIn} className={inlineLink}>
+            Sign in
+          </Link>{" "}
+          to fill this in for you.
+        </p>
+      )}
 
       <div className={`${card} mt-4 p-4 sm:p-5`}>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-[110px_1fr]">

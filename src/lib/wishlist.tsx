@@ -6,10 +6,13 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useAuth } from "./auth";
 
 const STORAGE_KEY = "drukdrive:wishlist";
 
 type WishlistContextValue = {
+  /** Saving is for signed-in customers; the page behind it needs an account. */
+  enabled: boolean;
   ids: string[];
   isSaved: (id: string) => boolean;
   toggle: (id: string) => void;
@@ -35,8 +38,12 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     }
   }, [ids]);
 
+  const { isLoggedIn, role } = useAuth();
+  const enabled = isLoggedIn && role === "customer";
+
   const value = useMemo(
     () => ({
+      enabled,
       ids,
       isSaved: (id: string) => ids.includes(id),
       toggle: (id: string) =>
@@ -44,7 +51,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
           prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
         ),
     }),
-    [ids],
+    [enabled, ids],
   );
 
   return (

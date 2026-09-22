@@ -92,7 +92,11 @@ export default function BookingStepper({
           return (
             <li
               key={label}
-              ref={active ? activeRef : undefined}
+              ref={
+                active || (allDone && stepNum === steps.length)
+                  ? activeRef
+                  : undefined
+              }
               aria-current={active ? "step" : undefined}
               className="flex shrink-0 items-center gap-2 sm:gap-4"
             >
