@@ -24,7 +24,7 @@ const styles: Record<string, string> = {
 export default function StatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`rounded-full px-2.5 py-1 t-label font-semibold ${styles[status] ?? "bg-[color:var(--color-surface-soft)] text-[color:var(--color-muted)]"}`}
+      className={`rounded-full px-2.5 py-1 t-label ${styles[status] ?? "bg-[color:var(--color-surface-soft)] text-[color:var(--color-muted)]"}`}
     >
       {status}
     </span>

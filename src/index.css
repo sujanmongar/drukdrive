@@ -29,7 +29,6 @@
   --color-info-bg: #cff4fc;
   --color-info-text: #055160;
   --color-link: #2276e3;
-  --color-placeholder: #bfc7cd;
 
   --color-cream: #f8e8c8;
   --color-star: #f5b301;
@@ -570,7 +569,6 @@ button:not(:disabled):active,
 :focus-visible {
   outline: 2px solid var(--color-ink);
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
 /* Horizontal carousels driven by prev/next buttons rather than a visible

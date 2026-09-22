@@ -1,6 +1,7 @@
 import Icon from "./Icon";
 import VehicleImage from "./VehicleImage";
 import VehicleSpecs from "./VehicleSpecs";
+import { card, metaLabel } from "../lib/ui";
 import { vehicleClassOf } from "../data/mockData";
 import type { Vehicle } from "../data/mockData";
 import {
@@ -23,7 +24,9 @@ export function VehicleSummaryCard({ vehicle }: Pick<Props, "vehicle">) {
     <>
       {/* Vehicle — the search results list card, with the trip total where
           the per-day price and Book Now would be. */}
-      <div className="@container flex w-full items-stretch overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card">
+      <div
+        className={`${card} @container flex w-full items-stretch overflow-hidden`}
+      >
         <div className="relative w-[112px] shrink-0 self-stretch overflow-hidden @md:w-[180px] @2xl:w-[200px]">
           <VehicleImage
             vehicleId={vehicle.id}
@@ -34,10 +37,8 @@ export function VehicleSummaryCard({ vehicle }: Pick<Props, "vehicle">) {
 
         <div className="flex min-w-0 flex-1 flex-col gap-4 p-4 @md:gap-5 @md:p-6 @2xl:flex-row @2xl:items-stretch @2xl:gap-8">
           <div className="min-w-0 flex-1">
-            <h3 className="t-h4 truncate text-[color:var(--color-ink)]">
-              {vehicle.name}
-            </h3>
-            <p className="t-caption text-[color:var(--color-muted)]">
+            <h3 className="t-h4 truncate">{vehicle.name}</h3>
+            <p className="t-caption">
               or similar {vehicleClassOf[vehicle.category]}
             </p>
 
@@ -101,10 +102,8 @@ export function StopsCard({
   return (
     <>
       {/* Pick-up and drop-off: title outside the card, like every other section. */}
-      <h2 className="t-h3 text-[color:var(--color-ink)]">
-        Pick-up and drop-off
-      </h2>
-      <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-4 shadow-card sm:p-5">
+      <h2 className="t-h3">Pick-up and drop-off</h2>
+      <div className={`${card} mt-4 p-4 sm:p-5`}>
         <ol>
           {stops.map((stop, i) => (
             <li key={stop.key}>
@@ -116,12 +115,8 @@ export function StopsCard({
                   <Icon name="location" size={15} strokeWidth={2.2} />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="t-caption text-[color:var(--color-muted)]">
-                    {stop.label}
-                  </p>
-                  <p className="mt-0.5 t-body-lg font-bold text-[color:var(--color-ink)]">
-                    {stop.place}
-                  </p>
+                  <p className={metaLabel}>{stop.label}</p>
+                  <p className="mt-0.5 t-h4">{stop.place}</p>
                   <p className="mt-0.5 t-body-sm text-[color:var(--color-ink)]">
                     {stop.when}
                   </p>

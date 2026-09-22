@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Icon from "./Icon";
+import Button from "./Button";
+import { card, fieldError, input as inputClass } from "../lib/ui";
 import { PROMO_CODES } from "../lib/pricing";
 import { useCurrency } from "../lib/currency";
 
@@ -31,7 +33,7 @@ export default function PromoCard({
   }
 
   return (
-    <div className="rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+    <div className={`${card} p-5`}>
       <div className="flex gap-2">
         <span className="relative min-w-0 flex-1">
           <Icon
@@ -50,29 +52,27 @@ export default function PromoCard({
             onKeyDown={(e) => {
               if (e.key === "Enter") apply();
             }}
-            className="h-12 w-full rounded-xl border border-[color:var(--color-border)] pl-10 pr-3 t-body text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-ink)]"
+            className={`${inputClass} pl-10`}
           />
         </span>
-        <button
-          type="button"
-          onClick={apply}
-          className="h-12 shrink-0 rounded-xl bg-[color:var(--color-ink)] px-5 t-body-sm font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.98]"
-        >
+        <Button type="button" onClick={apply} className="h-12 shrink-0 px-5">
           Apply
-        </button>
+        </Button>
       </div>
       <div id="promo-feedback" role="status">
         {promoCode && discount > 0 && (
           <p className="mt-3 flex items-center gap-1.5 t-body-sm font-semibold text-[color:var(--color-success-deep)]">
             <Icon name="check-circle" size={16} />
-            {promoCode} applied — {format(discount)} off
+            <span>
+              {promoCode} applied —{" "}
+              <span className="t-amount text-[color:var(--color-success-deep)]">
+                {format(discount)}
+              </span>{" "}
+              off
+            </span>
           </p>
         )}
-        {error && (
-          <p className="mt-3 t-body-sm text-[color:var(--color-danger)]">
-            {error}
-          </p>
-        )}
+        {error && <p className={`${fieldError} mt-3`}>{error}</p>}
         {!promoCode && !error && (
           <p className="mt-3 t-caption">
             Try DRUK10 for 10% off your first booking.

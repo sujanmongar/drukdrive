@@ -12,12 +12,14 @@ import { currencies } from "../../lib/currency";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
-
-const selectClass =
-  "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 t-body-sm text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)]";
-const inputClass = selectClass;
-const labelClass =
-  "mb-1.5 block t-caption font-medium text-[color:var(--color-muted)]";
+import {
+  card,
+  fieldError,
+  inset,
+  input,
+  label as labelClass,
+  rowHover,
+} from "../../lib/ui";
 
 const vehicleTypes = [
   "SUV",
@@ -63,7 +65,7 @@ function YesNo({
       {[true, false].map((v) => (
         <label
           key={String(v)}
-          className="-mx-2 flex min-h-11 cursor-pointer items-center gap-2.5 rounded-lg px-2 t-body-sm text-[color:var(--color-ink)] hover:bg-[color:var(--color-surface-soft)]"
+          className={`-mx-2 flex min-h-11 cursor-pointer items-center gap-2.5 rounded-xl px-2 t-body-sm text-[color:var(--color-ink)] ${rowHover}`}
         >
           <input
             type="radio"
@@ -89,7 +91,7 @@ function Dropzone({ label }: { label: string }) {
       <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
         Drag your photo here
       </p>
-      <p className="t-caption text-[color:var(--color-muted)]">{label}</p>
+      <p className="t-caption">{label}</p>
     </div>
   );
 }
@@ -181,14 +183,14 @@ export default function ProviderVehicleAdd() {
 
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <div className="flex items-center justify-between">
-          <h2 className="t-h2 text-[color:var(--color-ink)]">My Vehicle</h2>
-          <Button variant="secondary" size="sm" to={routes.providerVehicles}>
+          <h2 className="t-h2">My Vehicle</h2>
+          <Button variant="ghost" size="md" to={routes.providerVehicles}>
             Cancel
           </Button>
         </div>
 
-        <div className="mt-6 max-w-2xl rounded-xl border border-[color:var(--color-border)] p-6">
-          <h3 className="t-h4 text-[color:var(--color-ink)]">
+        <div className={`mt-6 max-w-2xl ${card} p-6`}>
+          <h3 className="t-h4">
             {editingVehicle ? "Edit vehicle" : "Add vehicle"}
           </h3>
 
@@ -199,7 +201,7 @@ export default function ProviderVehicleAdd() {
               placeholder="e.g. Toyota Prado GX"
               value={vehicleName}
               onChange={(e) => setVehicleName(e.target.value)}
-              className={`${inputClass} ${touched && !vehicleName.trim() ? "border-[color:var(--color-danger)]" : ""}`}
+              className={`${input} ${touched && !vehicleName.trim() ? "border-[color:var(--color-danger)]" : ""}`}
             />
           </label>
 
@@ -209,7 +211,7 @@ export default function ProviderVehicleAdd() {
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as VehicleType)}
-                className={selectClass}
+                className={input}
               >
                 {vehicleTypes.map((t) => (
                   <option key={t}>{t}</option>
@@ -221,7 +223,7 @@ export default function ProviderVehicleAdd() {
               <select
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                className={selectClass}
+                className={input}
               >
                 {[
                   "Toyota",
@@ -238,7 +240,7 @@ export default function ProviderVehicleAdd() {
           </div>
 
           <div className="mt-5">
-            <p className="mb-2 t-body-sm text-[color:var(--color-ink-soft)]">
+            <p className="mb-2 t-body-sm">
               Or pick a common model to prefill the name.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -254,10 +256,10 @@ export default function ProviderVehicleAdd() {
                       )?.[0] as VehicleType) ?? "SUV";
                     setType(matchedType);
                   }}
-                  className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors ${
+                  className={`flex items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors duration-150 ${
                     vehicleName === v.name
                       ? "border-[color:var(--color-ink)] ring-1 ring-[color:var(--color-ink)]"
-                      : "border-[color:var(--color-border)]"
+                      : "border-[color:var(--color-border)] hover:border-[color:var(--color-ink)]"
                   }`}
                 >
                   <span className="t-body-sm font-semibold text-[color:var(--color-ink)]">
@@ -266,7 +268,7 @@ export default function ProviderVehicleAdd() {
                   <VehicleImage
                     vehicleId={v.id}
                     category={v.category}
-                    className="size-10 rounded-md"
+                    className="size-10 rounded-xl"
                   />
                 </button>
               ))}
@@ -280,7 +282,7 @@ export default function ProviderVehicleAdd() {
                 type="text"
                 value={modelYear}
                 onChange={(e) => setModelYear(e.target.value)}
-                className={inputClass}
+                className={input}
               />
             </label>
             <label>
@@ -288,7 +290,7 @@ export default function ProviderVehicleAdd() {
               <select
                 value={transmission}
                 onChange={(e) => setTransmission(e.target.value)}
-                className={selectClass}
+                className={input}
               >
                 {["Automatic", "Manual"].map((t) => (
                   <option key={t}>{t}</option>
@@ -303,7 +305,7 @@ export default function ProviderVehicleAdd() {
               <select
                 value={fuelType}
                 onChange={(e) => setFuelType(e.target.value)}
-                className={selectClass}
+                className={input}
               >
                 {["Petrol", "Diesel", "Electric"].map((f) => (
                   <option key={f}>{f}</option>
@@ -318,7 +320,7 @@ export default function ProviderVehicleAdd() {
                 max={40}
                 value={seats}
                 onChange={(e) => setSeats(e.target.value)}
-                className={inputClass}
+                className={input}
               />
             </label>
           </div>
@@ -335,7 +337,7 @@ export default function ProviderVehicleAdd() {
               placeholder="BP-1-F0987"
               value={vehicleNumber}
               onChange={(e) => setVehicleNumber(e.target.value)}
-              className={`${inputClass} ${touched && !vehicleNumber.trim() ? "border-[color:var(--color-danger)]" : ""}`}
+              className={`${input} ${touched && !vehicleNumber.trim() ? "border-[color:var(--color-danger)]" : ""}`}
             />
           </label>
 
@@ -360,39 +362,33 @@ export default function ProviderVehicleAdd() {
           </div>
 
           <div className="mt-6">
-            <h3 className="t-h4 text-[color:var(--color-ink)]">
-              Set your price
-            </h3>
-            <p className="t-body-sm text-[color:var(--color-muted)]">
-              You can change it anytime
-            </p>
-            <div className="mt-3 flex flex-col items-center gap-1 rounded-xl bg-[color:var(--color-info-bg)] py-6">
-              <div className="flex items-center gap-1 t-h2 font-bold text-[color:var(--color-ink)]">
+            <h3 className="t-h4">Set your price</h3>
+            <p className="t-caption">You can change it anytime</p>
+            <div
+              className={`mt-3 flex flex-col items-center gap-1 ${inset} py-6`}
+            >
+              <div className="flex items-center gap-1 t-h2 t-amount">
                 <span>Nu.</span>
                 <input
                   type="text"
                   inputMode="numeric"
                   value={price}
                   onChange={(e) => setPrice(e.target.value.replace(/\D/g, ""))}
-                  className="h-11 w-28 bg-transparent text-center outline-none"
+                  className="h-12 w-28 rounded-xl border border-transparent bg-transparent text-center outline-none transition-colors duration-150 hover:border-[color:var(--color-border)] focus:border-[color:var(--color-ink)]"
                 />
               </div>
-              <span className="t-body-sm text-[color:var(--color-muted)]">
-                per day
-              </span>
+              <span className="t-caption">per day</span>
             </div>
             {touched && !(Number(price) > 0) && (
-              <p className="mt-2 t-caption text-[color:var(--color-danger)]">
-                Enter a price greater than 0.
-              </p>
+              <p className={fieldError}>Enter a price greater than 0.</p>
             )}
           </div>
 
           <div className="mt-6 flex gap-3">
-            <Button variant="primary" size="sm" onClick={handleSave}>
+            <Button variant="primary" size="lg" onClick={handleSave}>
               Save
             </Button>
-            <Button variant="ghost" size="sm" to={routes.providerVehicles}>
+            <Button variant="ghost" size="lg" to={routes.providerVehicles}>
               Cancel
             </Button>
           </div>

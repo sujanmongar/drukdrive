@@ -65,12 +65,12 @@ export default function BookingStepper({
           const href = done && !allDone ? hrefs[i] : undefined;
           const disc = (
             <span
-              className={`flex size-7 shrink-0 items-center justify-center rounded-full border-2 t-caption font-bold tabular ${
+              className={`flex size-7 shrink-0 items-center justify-center rounded-full border-2 t-caption font-semibold tabular ${
                 done
                   ? "border-[color:var(--color-success)] bg-[color:var(--color-success)] text-white"
                   : active
                     ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
-                    : "border-[color:var(--color-ink-soft)]/40 bg-white text-[color:var(--color-ink)]"
+                    : "border-[color:var(--color-border)] bg-white text-[color:var(--color-ink)]"
               }`}
             >
               {done ? <Icon name="check" size={14} strokeWidth={3} /> : stepNum}
@@ -80,10 +80,10 @@ export default function BookingStepper({
             <span
               className={`whitespace-nowrap t-body-sm ${
                 done
-                  ? "font-semibold text-[color:var(--color-success)]"
+                  ? "font-semibold text-[color:var(--color-success-deep)]"
                   : active
-                    ? "font-bold text-[color:var(--color-ink)]"
-                    : "font-medium text-[color:var(--color-ink-soft)]"
+                    ? "font-semibold text-[color:var(--color-ink)]"
+                    : ""
               }`}
             >
               {label}
@@ -99,7 +99,7 @@ export default function BookingStepper({
               {href ? (
                 <Link
                   to={href}
-                  className="flex min-h-11 items-center gap-2 rounded-lg hover:opacity-80"
+                  className="flex min-h-11 items-center gap-2 rounded-lg transition-opacity duration-150 hover:opacity-80"
                   aria-label={`Back to ${label}`}
                 >
                   {disc}

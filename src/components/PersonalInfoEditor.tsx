@@ -5,6 +5,7 @@ import Button from "./Button";
 import { useCurrentUser } from "../lib/currentUser";
 import { useAuth } from "../lib/auth";
 import { routes } from "../lib/routes";
+import { input, label, textarea, dangerAction } from "../lib/ui";
 
 function maskEmail(email: string) {
   const [user, domain] = email.split("@");
@@ -15,10 +16,8 @@ function maskEmail(email: string) {
 type FieldKey = "gender" | "email" | "phone" | "address" | "bio";
 type FieldType = "text" | "email" | "tel" | "select" | "textarea";
 
-const editButtonClass =
-  "min-h-11 shrink-0 rounded-lg px-3 t-body-sm font-medium text-[color:var(--color-ink)] underline hover:bg-[color:var(--color-surface-soft)]";
-const inputClass =
-  "w-full rounded-xl border border-[color:var(--color-border)] px-3.5 py-2.5 t-body-sm font-semibold text-[color:var(--color-ink)] outline-none focus:border-[color:var(--color-ink)]";
+// Every row, Legal name included: label over value, Edit on the right.
+const rowLabel = "t-body-sm font-semibold text-[color:var(--color-ink)]";
 
 // The inline "click Edit, the row becomes a form in place, Save collapses
 // it back to a read-only row" pattern used across the customer and driver
@@ -91,68 +90,52 @@ export default function PersonalInfoEditor() {
       <div className="border-b border-[color:var(--color-border)] pb-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
-              Legal name
-            </p>
+            <p className={rowLabel}>Legal name</p>
             {editingName ? (
-              <p className="mt-0.5 t-caption text-[color:var(--color-muted)]">
+              <p className="mt-0.5 t-caption">
                 This is the name on your travel document, which could be a
                 license or a passport.
               </p>
             ) : (
-              <p className="mt-0.5 t-body-sm text-[color:var(--color-ink-soft)]">
-                {user.name}
-              </p>
+              <p className="mt-0.5 t-body-sm">{user.name}</p>
             )}
           </div>
           {!editingName && (
-            <button
-              type="button"
-              onClick={startEditName}
-              className={editButtonClass}
-            >
+            <Button variant="link" onClick={startEditName} className="shrink-0">
               Edit
-            </button>
+            </Button>
           )}
         </div>
 
         {editingName && (
           <div className="mt-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <label className="flex flex-col gap-1.5">
-                <span className="t-caption font-medium text-[color:var(--color-muted)]">
-                  First name
-                </span>
+              <label>
+                <span className={label}>First name</span>
                 <input
                   type="text"
                   value={first}
                   onChange={(e) => setFirst(e.target.value)}
-                  className={inputClass}
+                  className={input}
                 />
               </label>
-              <label className="flex flex-col gap-1.5">
-                <span className="t-caption font-medium text-[color:var(--color-muted)]">
-                  Last name
-                </span>
+              <label>
+                <span className={label}>Last name</span>
                 <input
                   type="text"
                   value={last}
                   onChange={(e) => setLast(e.target.value)}
-                  className={inputClass}
+                  className={input}
                 />
               </label>
             </div>
             <div className="mt-4 flex items-center gap-4">
-              <Button variant="primary" size="sm" onClick={saveName}>
+              <Button variant="primary" size="md" onClick={saveName}>
                 Save
               </Button>
-              <button
-                type="button"
-                onClick={() => setEditingName(false)}
-                className="t-body-sm font-medium text-[color:var(--color-ink)] underline"
-              >
+              <Button variant="link" onClick={() => setEditingName(false)}>
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -165,23 +148,21 @@ export default function PersonalInfoEditor() {
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <p className="t-caption font-medium text-[color:var(--color-muted)]">
-                {row.label}
-              </p>
+              <p className={rowLabel}>{row.label}</p>
               {editingField !== row.key && (
-                <p className="mt-0.5 whitespace-pre-wrap t-body-sm font-semibold text-[color:var(--color-ink)]">
+                <p className="mt-0.5 whitespace-pre-wrap t-body-sm">
                   {row.display}
                 </p>
               )}
             </div>
             {editingField !== row.key && (
-              <button
-                type="button"
+              <Button
+                variant="link"
                 onClick={() => startEditField(row.key)}
-                className={editButtonClass}
+                className="shrink-0"
               >
                 Edit
-              </button>
+              </Button>
             )}
           </div>
 
@@ -191,7 +172,7 @@ export default function PersonalInfoEditor() {
                 <select
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
-                  className={inputClass}
+                  className={input}
                 >
                   {["Male", "Female", "Other", "Prefer not to say"].map((g) => (
                     <option key={g}>{g}</option>
@@ -202,27 +183,23 @@ export default function PersonalInfoEditor() {
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   rows={3}
-                  className={`${inputClass} resize-none`}
+                  className={`${textarea} resize-none`}
                 />
               ) : (
                 <input
                   type={row.type}
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
-                  className={inputClass}
+                  className={input}
                 />
               )}
               <div className="mt-3 flex items-center gap-4">
-                <Button variant="primary" size="sm" onClick={saveField}>
+                <Button variant="primary" size="md" onClick={saveField}>
                   Save
                 </Button>
-                <button
-                  type="button"
-                  onClick={() => setEditingField(null)}
-                  className="t-body-sm font-medium text-[color:var(--color-ink)] underline"
-                >
+                <Button variant="link" onClick={() => setEditingField(null)}>
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -232,7 +209,7 @@ export default function PersonalInfoEditor() {
       <button
         type="button"
         onClick={handleDelete}
-        className="mt-8 flex items-center gap-2 rounded-xl border border-[color:var(--color-danger)] px-4 py-2.5 t-body-sm font-semibold text-[color:var(--color-danger)] hover:bg-[color:var(--color-danger-bg)]"
+        className={`-mx-4 mt-8 ${dangerAction}`}
       >
         <Icon name="trash" size={15} />
         Delete account

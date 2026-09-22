@@ -10,6 +10,8 @@ import type { Role } from "../lib/auth";
 import PreferenceLists from "./PreferenceLists";
 import NotificationsDropdown from "./NotificationsDropdown";
 import { useWishlist } from "../lib/wishlist";
+import Button from "./Button";
+import { menu, menuItem } from "../lib/ui";
 
 const customerLinks: { to: string; label: string; icon: IconName }[] = [
   { to: routes.accountBookings, label: "Bookings", icon: "car" },
@@ -69,9 +71,7 @@ function WishlistButton({ compact = false }: { compact?: boolean }) {
       />
       {ids.length > 0 && (
         <span
-          className={`absolute -right-0.5 -top-0.5 flex items-center justify-center rounded-full bg-[color:var(--color-danger)] font-semibold text-white ring-2 ring-white ${
-            compact ? "size-[15px] t-label" : "size-[17px] t-label"
-          }`}
+          className={`absolute -right-0.5 -top-0.5 flex ${compact ? "size-[15px]" : "size-[17px]"} items-center justify-center rounded-full bg-[color:var(--color-danger)] t-label text-white ring-2 ring-white`}
         >
           {ids.length}
         </span>
@@ -148,7 +148,9 @@ function AccountMenu({
             className="fixed inset-0 z-40 cursor-default"
             onClick={() => setOpen(false)}
           />
-          <div className="animate-popover absolute right-0 top-full z-50 mt-2 max-h-[80svh] w-64 overflow-y-auto rounded-2xl border border-[color:var(--color-border)] bg-white py-1.5 shadow-pop">
+          <div
+            className={`absolute right-0 top-full z-50 mt-2 max-h-[80svh] w-64 overflow-y-auto ${menu}`}
+          >
             {isLoggedIn ? (
               <>
                 <div className="flex items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3">
@@ -161,16 +163,14 @@ function AccountMenu({
                     <p className="truncate t-body-sm font-semibold text-[color:var(--color-ink)]">
                       {currentUser.name}
                     </p>
-                    <p className="truncate t-caption text-[color:var(--color-muted)]">
-                      {currentUser.email}
-                    </p>
+                    <p className="truncate t-caption">{currentUser.email}</p>
                   </div>
                 </div>
 
                 <button
                   type="button"
                   onClick={handleSwitch}
-                  className="flex w-full items-center gap-2.5 border-b border-[color:var(--color-border)] px-4 py-3 text-left t-body-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
+                  className={`${menuItem} border-b border-[color:var(--color-border)] font-semibold`}
                 >
                   <Icon name={target.icon} size={17} />
                   {target.label}
@@ -182,7 +182,7 @@ function AccountMenu({
                       key={l.to}
                       to={l.to}
                       onClick={() => setOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 t-body-sm text-[color:var(--color-ink-soft)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
+                      className={menuItem}
                     >
                       <Icon name={l.icon} size={17} />
                       {l.label}
@@ -191,15 +191,16 @@ function AccountMenu({
                 </div>
               </>
             ) : (
-              <div className="border-b border-[color:var(--color-border)] p-3">
-                <Link
-                  to={routes.signIn}
-                  onClick={() => setOpen(false)}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-4 py-2.5 t-body-sm font-bold text-white transition-colors hover:bg-black"
-                >
+              // The click bubbles up from the link, so the menu closes even
+              // when the sign-in page is the one already open.
+              <div
+                className="border-b border-[color:var(--color-border)] p-3"
+                onClick={() => setOpen(false)}
+              >
+                <Button to={routes.signIn} fullWidth>
                   <Icon name="user" size={16} />
                   Login / Signup
-                </Link>
+                </Button>
               </div>
             )}
 
@@ -214,7 +215,7 @@ function AccountMenu({
                   setOpen(false);
                   onSignOut();
                 }}
-                className="flex w-full items-center gap-2.5 border-t border-[color:var(--color-border)] px-4 py-2.5 text-left t-body-sm font-semibold text-[color:var(--color-danger)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
+                className={`${menuItem} border-t border-[color:var(--color-border)] font-semibold text-[color:var(--color-danger)]!`}
               >
                 <Icon name="logout" size={17} />
                 Sign out

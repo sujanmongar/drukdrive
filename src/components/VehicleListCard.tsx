@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Icon from "./Icon";
 import VehicleImage from "./VehicleImage";
 import VehicleSpecs from "./VehicleSpecs";
@@ -8,6 +8,8 @@ import { useCurrency } from "../lib/currency";
 import { parseSearch } from "../lib/booking";
 import { displayPrice } from "../lib/pricing";
 import { useWishlist } from "../lib/wishlist";
+import { cardLink } from "../lib/ui";
+import Button from "./Button";
 
 // The one search-result card. Image left, details beside it (heart above
 // the name), then the price and Book Now: below a divider on phones, in
@@ -39,31 +41,27 @@ export default function VehicleListCard({
           <span className="t-caption font-semibold text-[color:var(--color-danger)]">
             {discountPct}% off
           </span>
-          <span className="t-caption text-[color:var(--color-muted)] line-through">
+          <span className="t-caption t-amount font-normal text-[color:var(--color-muted)] line-through">
             {format(vehicle.strikePrice)}
           </span>
         </div>
       )}
       <div className="flex items-baseline gap-x-1.5 whitespace-nowrap">
-        <span className="t-h2 t-amount">{format(price.amount)}</span>
-        <span className="t-caption text-[color:var(--color-muted)]">
-          {price.unit}
-        </span>
+        <span className="t-h3 t-amount">{format(price.amount)}</span>
+        <span className="t-caption">{price.unit}</span>
       </div>
-      <p className="t-caption whitespace-nowrap text-[color:var(--color-muted)]">
-        {price.note}
-      </p>
+      <p className="t-caption whitespace-nowrap">{price.note}</p>
     </div>
   );
 
   const bookButton = (
-    <Link
-      to={detailsHref}
-      onClick={(e) => e.stopPropagation()}
-      className="inline-flex h-12 shrink-0 items-center justify-center whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-7 t-body-sm font-bold text-white transition-all duration-200 hover:bg-black"
-    >
-      Book Now
-    </Link>
+    // `contents` keeps the button a direct flex child; the handler stops the
+    // click reaching the card, which would navigate twice.
+    <span className="contents" onClick={(e) => e.stopPropagation()}>
+      <Button to={detailsHref} className="h-12 shrink-0 px-7">
+        Book Now
+      </Button>
+    </span>
   );
 
   return (
@@ -74,7 +72,7 @@ export default function VehicleListCard({
       onKeyDown={(e) => {
         if (e.key === "Enter") navigate(detailsHref);
       }}
-      className="flex w-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-lift lg:flex-row lg:items-stretch"
+      className={`${cardLink} flex w-full cursor-pointer flex-col overflow-hidden lg:flex-row lg:items-stretch`}
     >
       {/* Image + details — the same content as before, only the layout moved. */}
       <div className="flex min-w-0 flex-1 gap-3 p-3 sm:gap-5 sm:p-5">
@@ -104,14 +102,12 @@ export default function VehicleListCard({
           </button>
         </div>
         <div className="min-w-0 flex-1">
-          <p className="t-h3 truncate text-[color:var(--color-ink)]">
-            {vehicle.name}
-          </p>
-          <p className="t-body-sm text-[color:var(--color-muted)]">
+          <p className="t-h4 truncate">{vehicle.name}</p>
+          <p className="t-caption">
             or similar {vehicleClassOf[vehicle.category]}
           </p>
 
-          <div className="t-body-sm mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[color:var(--color-ink)]">
+          <div className="t-caption mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[color:var(--color-ink)]">
             <span className="flex min-w-0 items-center gap-1.5">
               <Icon
                 name="location"
@@ -123,15 +119,12 @@ export default function VehicleListCard({
             </span>
           </div>
 
-          <VehicleSpecs
-            vehicle={vehicle}
-            className="mt-3 !text-sm sm:!text-[15px]"
-          />
+          <VehicleSpecs vehicle={vehicle} className="mt-3" />
           <div className="mt-3 flex items-center gap-2.5">
-            <span className="rounded-md bg-[color:var(--color-success)] px-2 py-0.5 t-caption font-bold tabular text-white">
+            <span className="rounded-full bg-[color:var(--color-success)] px-2 py-0.5 t-caption font-semibold tabular text-white">
               {vehicle.rating.toFixed(1)}/5
             </span>
-            <span className="border-l border-[color:var(--color-border)] pl-2.5 t-body-sm text-[color:var(--color-ink)]">
+            <span className="border-l border-[color:var(--color-border)] pl-2.5 t-caption text-[color:var(--color-ink)]">
               {vehicle.reviewCount} ratings
             </span>
           </div>

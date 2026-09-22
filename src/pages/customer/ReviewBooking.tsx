@@ -33,6 +33,15 @@ import { useCurrency } from "../../lib/currency";
 import { useAuth } from "../../lib/auth";
 import { useCurrentUser } from "../../lib/currentUser";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import {
+  card,
+  fieldError,
+  fieldHint,
+  inlineLink,
+  input as inputClass,
+  label as labelClass,
+  labelNote,
+} from "../../lib/ui";
 
 // Step 3 of checkout: who is travelling (or who is driving, on self drive).
 // The trip itself was settled on the review step and travels in the URL.
@@ -150,32 +159,26 @@ export default function ReviewBooking() {
     navigate(`${routes.payment}?${params.toString()}`);
   }
 
-  const inputClass =
-    "h-12 w-full rounded-xl border border-[color:var(--color-border)] px-3.5 t-body text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)] focus:border-[color:var(--color-ink)]";
-  const labelClass =
-    "mb-1.5 block t-body-sm font-semibold text-[color:var(--color-ink)]";
   const errorClass = "border-[color:var(--color-danger)]";
-  const err = (msg: string) => (
-    <p className="mt-1 t-caption text-[color:var(--color-danger)]">{msg}</p>
-  );
+  const err = (msg: string) => <p className={fieldError}>{msg}</p>;
 
   const form = (
     <>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="t-h3 text-[color:var(--color-ink)]">
+        <h2 className="t-h3">
           {selfDrive ? "Driver information" : "Personal information"}
         </h2>
         {!isLoggedIn && (
           <Link
             to={routes.signIn}
-            className="inline-flex min-h-11 items-center rounded-lg bg-[color:var(--color-info-bg)] px-3 t-body-sm font-semibold text-[color:var(--color-info-text)] hover:opacity-90"
+            className="inline-flex min-h-11 items-center rounded-xl bg-[color:var(--color-info-bg)] px-3 t-body-sm font-semibold text-[color:var(--color-info-text)] transition-opacity duration-150 hover:opacity-90"
           >
             Sign in to speed this up ↗
           </Link>
         )}
       </div>
 
-      <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-4 shadow-card sm:p-5">
+      <div className={`${card} mt-4 p-4 sm:p-5`}>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-[110px_1fr]">
           <label>
             <span className={labelClass}>Title</span>
@@ -204,7 +207,9 @@ export default function ReviewBooking() {
 
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label>
-            <span className={labelClass}>Phone * (WhatsApp preferred)</span>
+            <span className={labelClass}>
+              Phone * <span className={labelNote}>(WhatsApp preferred)</span>
+            </span>
             <input
               type="tel"
               placeholder="+975 17 000 000"
@@ -216,7 +221,8 @@ export default function ReviewBooking() {
           </label>
           <label>
             <span className={labelClass}>
-              Email * (your e-ticket goes here)
+              Email *{" "}
+              <span className={labelNote}>(your e-ticket goes here)</span>
             </span>
             <input
               type="email"
@@ -244,9 +250,8 @@ export default function ReviewBooking() {
           </label>
           <label>
             <span className={labelClass}>
-              {selfDrive
-                ? "Return address (optional)"
-                : "Drop-off address (optional)"}
+              {selfDrive ? "Return address" : "Drop-off address"}{" "}
+              <span className={labelNote}>(optional)</span>
             </span>
             <input
               type="text"
@@ -274,7 +279,9 @@ export default function ReviewBooking() {
           </label>
           {askFlight && (
             <label>
-              <span className={labelClass}>Flight number (optional)</span>
+              <span className={labelClass}>
+                Flight number <span className={labelNote}>(optional)</span>
+              </span>
               <input
                 type="text"
                 placeholder="e.g. KB 205"
@@ -282,7 +289,7 @@ export default function ReviewBooking() {
                 onChange={(e) => setFlight(e.target.value)}
                 className={inputClass}
               />
-              <p className="mt-1 t-caption text-[color:var(--color-muted)]">
+              <p className={fieldHint}>
                 So your driver can track a delayed flight.
               </p>
             </label>
@@ -307,9 +314,7 @@ export default function ReviewBooking() {
                   onChange={(e) => setDob(e.target.value)}
                   className={`${inputClass} ${touched && !dob.trim() ? errorClass : ""}`}
                 />
-                <p className="mt-1 t-caption text-[color:var(--color-muted)]">
-                  Drivers must be 21 or over.
-                </p>
+                <p className={fieldHint}>Drivers must be 21 or over.</p>
               </label>
             </>
           )}
@@ -328,7 +333,7 @@ export default function ReviewBooking() {
             to={routes.privacyPolicy}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-[color:var(--color-link)] underline"
+            className={inlineLink}
           >
             Privacy Policy
           </Link>
@@ -337,7 +342,7 @@ export default function ReviewBooking() {
             to={routes.userAgreement}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-[color:var(--color-link)] underline"
+            className={inlineLink}
           >
             User Agreement
           </Link>{" "}
@@ -346,7 +351,7 @@ export default function ReviewBooking() {
             to={routes.termsOfService}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-[color:var(--color-link)] underline"
+            className={inlineLink}
           >
             Terms of Service
           </Link>
@@ -368,7 +373,7 @@ export default function ReviewBooking() {
           >
             <Icon name="chevron-left" size={22} />
           </button>
-          <h1 className="t-h2 text-[color:var(--color-ink)]">{detailsLabel}</h1>
+          <h1 className="t-h2">{detailsLabel}</h1>
         </div>
 
         <div className="mb-8">
@@ -412,9 +417,7 @@ export default function ReviewBooking() {
             <>
               {form}
 
-              <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
-                Add-ons
-              </h2>
+              <h2 className="mt-10 t-h3">Add-ons</h2>
               <div className="mt-4 flex flex-col gap-4">
                 {addOns.map((addOn) => (
                   <AddOnCard
@@ -444,13 +447,18 @@ export default function ReviewBooking() {
       </div>
 
       {/* Mobile sticky bottom bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0_-2px_14px_var(--color-border-soft)] lg:hidden">
         <a href="#price-summary" className="flex flex-col items-start">
           <span className="t-h3 t-amount">{format(amountDue)}</span>
-          <span className="whitespace-nowrap t-caption text-[color:var(--color-muted)]">
-            {split.later > 0
-              ? `Pay now · of ${format(netPayable)}`
-              : "incl. taxes & fees"}
+          <span className="whitespace-nowrap t-caption">
+            {split.later > 0 ? (
+              <>
+                Pay now · of{" "}
+                <span className="t-amount">{format(netPayable)}</span>
+              </>
+            ) : (
+              "incl. taxes & fees"
+            )}
           </span>
         </a>
         <Button variant="primary" size="lg" onClick={handleProceed}>

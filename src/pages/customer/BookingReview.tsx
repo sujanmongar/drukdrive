@@ -31,6 +31,7 @@ import {
 } from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { card } from "../../lib/ui";
 
 // Step 1 of checkout: everything about the trip, before any personal
 // details are asked for. Add-ons chosen here travel to the next steps as
@@ -99,9 +100,7 @@ export default function BookingReview() {
           >
             <Icon name="chevron-left" size={22} />
           </button>
-          <h1 className="t-h2 text-[color:var(--color-ink)]">
-            Review your booking
-          </h1>
+          <h1 className="t-h2">Review your booking</h1>
         </div>
 
         <div className="mb-8">
@@ -133,7 +132,7 @@ export default function BookingReview() {
                 promoCode={promoCode}
               />
               {booking.type === "rental" && (
-                <p className="mt-2 px-1 t-caption text-[color:var(--color-muted)]">
+                <p className="mt-2 px-1 t-caption">
                   Bhutan&rsquo;s Sustainable Development Fee is not included;
                   visitors pay it with their visa.
                 </p>
@@ -166,16 +165,11 @@ export default function BookingReview() {
                 </div>
               )}
 
-              <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
-                What&rsquo;s included
-              </h2>
-              <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+              <h2 className="mt-10 t-h3">What&rsquo;s included</h2>
+              <div className={`${card} mt-4 p-5`}>
                 <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                   {inclusions.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-start gap-2 t-body text-[color:var(--color-ink-soft)]"
-                    >
+                    <li key={item} className="flex items-start gap-2 t-body">
                       <Icon
                         name="check"
                         size={18}
@@ -188,9 +182,7 @@ export default function BookingReview() {
                 </ul>
               </div>
 
-              <h2 className="mt-10 t-h3 text-[color:var(--color-ink)]">
-                Add-ons
-              </h2>
+              <h2 className="mt-10 t-h3">Add-ons</h2>
               <div className="mt-4 flex flex-col gap-4">
                 {addOns.map((addOn) => (
                   <AddOnCard
@@ -203,16 +195,14 @@ export default function BookingReview() {
                 ))}
               </div>
 
-              <div className="mt-10 rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card">
+              <div className={`${card} mt-10`}>
                 <button
                   type="button"
                   onClick={() => setNotesOpen((v) => !v)}
                   aria-expanded={notesOpen}
                   className="flex min-h-14 w-full items-center justify-between gap-3 px-5 text-left"
                 >
-                  <span className="t-h3 text-[color:var(--color-ink)]">
-                    Read before you book
-                  </span>
+                  <span className="t-h3">Read before you book</span>
                   <Icon
                     name="chevron-down"
                     size={20}
@@ -223,10 +213,10 @@ export default function BookingReview() {
                   <div className="animate-popover border-t border-[color:var(--color-border)] px-5 pb-5 pt-4">
                     {notes.map((note, i) => (
                       <div key={note.title} className={i > 0 ? "mt-4" : ""}>
-                        <h4 className="t-body font-bold text-[color:var(--color-ink)]">
+                        <h4 className="t-body font-semibold text-[color:var(--color-ink)]">
                           {note.title}
                         </h4>
-                        <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body text-[color:var(--color-ink-soft)]">
+                        <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body">
                           {note.items.map((item) => (
                             <li key={item}>{item}</li>
                           ))}
@@ -253,13 +243,18 @@ export default function BookingReview() {
       </div>
 
       {/* Mobile sticky bottom bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0_-2px_14px_var(--color-border-soft)] lg:hidden">
         <div className="flex flex-col items-start">
           <span className="t-h3 t-amount">{format(netPayable)}</span>
-          <span className="t-caption text-[color:var(--color-muted)]">
-            {fare.deposit > 0
-              ? `+ ${format(fare.deposit)} deposit`
-              : "incl. taxes & fees"}
+          <span className="t-caption">
+            {fare.deposit > 0 ? (
+              <>
+                + <span className="t-amount">{format(fare.deposit)}</span>{" "}
+                deposit
+              </>
+            ) : (
+              "incl. taxes & fees"
+            )}
           </span>
         </div>
         <Button

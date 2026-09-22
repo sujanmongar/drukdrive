@@ -69,10 +69,10 @@ export default function Footer() {
   const { language, setLanguage } = useLanguage();
 
   const selectClass =
-    "w-full cursor-pointer appearance-none rounded-xl border border-white/25 bg-transparent px-4 py-3 t-body-sm font-semibold text-white outline-none transition-colors hover:border-white/60 focus-visible:border-white";
+    "h-12 w-full cursor-pointer appearance-none rounded-xl border border-white/15 bg-transparent pl-3.5 pr-9 t-body text-white outline-none transition-colors duration-150 hover:border-white focus:border-white";
 
   return (
-    <footer className="mt-auto bg-[#161616] text-white">
+    <footer className="mt-auto bg-[color:var(--color-ink)] text-white">
       <div className="mx-auto max-w-[1280px] px-6 py-12 md:px-10 md:py-14">
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-6">
           <div className="col-span-2 md:col-span-2">
@@ -83,12 +83,12 @@ export default function Footer() {
             >
               <DrukDriveLogo className="h-7 w-auto text-white" />
             </Link>
-            <p className="t-body-sm mt-4 max-w-[280px] text-white/60">
+            <p className="t-body-sm mt-4 max-w-[280px] text-white/70">
               Compare and book vehicles from trusted local operators across
               Bhutan.
             </p>
 
-            <p className="t-caption mb-3 mt-7 font-semibold uppercase tracking-wide text-white/50">
+            <p className="t-label mb-3 mt-7 uppercase text-white/50">
               Follow us
             </p>
             <div className="flex gap-3">
@@ -99,7 +99,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="flex size-11 items-center justify-center rounded-full border border-white/20 text-white/80 transition-colors hover:border-white hover:bg-white hover:text-[color:var(--color-ink)]"
+                  className="flex size-11 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors duration-150 hover:border-white hover:bg-white hover:text-[color:var(--color-ink)]"
                 >
                   <SocialIcon name={s.name} />
                 </a>
@@ -109,7 +109,7 @@ export default function Footer() {
 
           {columns.map((col) => (
             <nav key={col.title} aria-label={col.title}>
-              <p className="t-caption mb-3 font-semibold uppercase tracking-wide text-white/50">
+              <p className="t-label mb-3 uppercase text-white/50">
                 {col.title}
               </p>
               <ul className="flex flex-col">
@@ -117,7 +117,7 @@ export default function Footer() {
                   <li key={l.label}>
                     <Link
                       to={l.to}
-                      className="t-body-sm -ml-1 inline-flex min-h-11 items-center rounded-lg px-1 text-white/75 transition-colors hover:text-white"
+                      className="t-body-sm -ml-1 inline-flex min-h-11 items-center rounded-lg px-1 text-white/70 transition-colors duration-150 hover:text-white"
                     >
                       {l.label}
                     </Link>
@@ -128,9 +128,7 @@ export default function Footer() {
           ))}
 
           <div className="col-span-2 md:col-span-1">
-            <p className="t-caption mb-3 font-semibold uppercase tracking-wide text-white/50">
-              Preferences
-            </p>
+            <p className="t-label mb-3 uppercase text-white/50">Preferences</p>
             <div className="flex flex-col gap-2.5">
               <div className="relative">
                 <select
@@ -154,7 +152,7 @@ export default function Footer() {
                 <Icon
                   name="chevron-down"
                   size={15}
-                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/60"
+                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/70"
                 />
               </div>
               <div className="relative">
@@ -179,12 +177,12 @@ export default function Footer() {
                 <Icon
                   name="chevron-down"
                   size={15}
-                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/60"
+                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/70"
                 />
               </div>
             </div>
 
-            <p className="t-caption mb-3 mt-7 font-semibold uppercase tracking-wide text-white/50">
+            <p className="t-label mb-3 mt-7 uppercase text-white/50">
               We accept
             </p>
             <div className="flex flex-wrap gap-2">
@@ -236,7 +234,7 @@ export default function Footer() {
               ).map((p) => (
                 <span
                   key={p.name}
-                  className="flex h-9 items-center rounded-lg bg-white px-2.5"
+                  className="flex h-9 items-center rounded-xl bg-white px-2.5"
                 >
                   <BrandLogo
                     name={p.name}
@@ -246,7 +244,7 @@ export default function Footer() {
                   />
                 </span>
               ))}
-              <span className="flex h-9 items-center rounded-lg bg-[#1f3f7a] px-2.5">
+              <span className="flex h-9 items-center rounded-xl bg-[#1f3f7a] px-2.5">
                 <BrandLogo
                   name="dpnb"
                   alt="Druk PNB Bank"
@@ -259,13 +257,13 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-[1280px] flex-col gap-3 border-t border-white/10 px-6 py-5 t-label text-white/55 md:flex-row md:items-center md:justify-between md:px-10">
+      <div className="mx-auto flex max-w-[1280px] flex-col gap-3 border-t border-white/15 px-6 py-5 t-caption text-white/50 md:flex-row md:items-center md:justify-between md:px-10">
         <div className="flex flex-wrap gap-x-2">
           {bottomLinks.map((l) => (
             <Link
               key={l.label}
               to={l.to}
-              className="-ml-2 inline-flex min-h-11 items-center px-2 transition-colors hover:text-white"
+              className="-ml-2 inline-flex min-h-11 items-center px-2 transition-colors duration-150 hover:text-white"
             >
               {l.label}
             </Link>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Icon from "./Icon";
 import SearchFields from "./SearchFields";
+import Button from "./Button";
 import type { SearchValue } from "../lib/booking";
 
 export type EditSearchValue = SearchValue;
@@ -19,8 +20,13 @@ export default function EditSearchModal({
   const [value, setValue] = useState<SearchValue>(initial);
 
   return (
-    <div className="fixed inset-0 z-[55] flex items-start justify-center bg-black/40 p-0 sm:items-center sm:p-4">
-      <div className="flex h-full w-full flex-col bg-white sm:h-auto sm:max-w-[440px] sm:rounded-2xl">
+    <div className="fixed inset-0 z-[55] flex items-start justify-center p-0 sm:items-center sm:p-4">
+      <button
+        aria-label="Close"
+        className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
+        onClick={onClose}
+      />
+      <div className="animate-popover relative flex h-full w-full flex-col bg-white shadow-modal sm:h-auto sm:max-w-[440px] sm:rounded-3xl">
         <div className="flex items-center justify-between gap-4 border-b border-[color:var(--color-border)] px-4 py-3">
           <h2 className="t-h3">Edit your search</h2>
           <button
@@ -42,13 +48,14 @@ export default function EditSearchModal({
         </div>
 
         <div className="border-t border-[color:var(--color-border)] p-4">
-          <button
-            type="button"
+          <Button
+            size="lg"
+            fullWidth
             onClick={() => onSearch(value)}
-            className="w-full rounded-xl bg-[color:var(--color-ink)] py-4 t-body font-bold text-white transition-colors hover:bg-black"
+            className="h-14"
           >
             Search
-          </button>
+          </Button>
         </div>
       </div>
     </div>

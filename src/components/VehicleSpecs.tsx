@@ -34,7 +34,7 @@ export default function VehicleSpecs({
     // Single line, always: the strip is a scannable at-a-glance row, so it
     // tightens rather than wrapping a stray spec onto its own line.
     <div
-      className={`flex flex-nowrap items-center gap-3 t-caption leading-none text-[color:var(--color-ink)] sm:gap-3.5 sm:text-[13px] ${className}`}
+      className={`flex flex-nowrap items-center gap-3 t-caption text-[color:var(--color-ink)] sm:gap-3.5 ${className}`}
     >
       {items.map((item) => (
         <span

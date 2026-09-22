@@ -8,6 +8,8 @@ import Icon from "../../components/Icon";
 import SectionHeader from "../../components/SectionHeader";
 import Reveal from "../../components/Reveal";
 import SearchFields from "../../components/SearchFields";
+import Button from "../../components/Button";
+import { cardLink } from "../../lib/ui";
 import { routes } from "../../lib/routes";
 import type { BookingType } from "../../lib/routes";
 import {
@@ -100,7 +102,7 @@ export default function Home() {
       <section className="relative -mt-16 overflow-hidden bg-[color:var(--color-surface-muted)] pt-16 md:-mt-[94px] md:pt-[94px]">
         <div className="animate-fade-up relative mx-auto max-w-[1280px] px-4 pb-14 pt-10 md:px-10 md:pb-20 md:pt-16">
           <div>
-            <h1 className="t-h1 max-w-[280px] text-[color:var(--color-ink)] sm:max-w-md md:max-w-[560px]">
+            <h1 className="t-h1 max-w-[280px] sm:max-w-md md:max-w-[560px]">
               Go anywhere in Bhutan.
             </h1>
 
@@ -110,7 +112,7 @@ export default function Home() {
               <BookingTypeTabs value={type} onChange={setType} />
             </div>
 
-            <div className="relative -mt-6 w-full rounded-3xl bg-white p-5 pt-11 shadow-modal md:p-6 md:pt-12">
+            <div className="relative -mt-6 w-full rounded-2xl bg-white p-5 pt-11 shadow-modal md:p-6 md:pt-12">
               <div>
                 <SearchFields
                   value={search}
@@ -119,24 +121,27 @@ export default function Home() {
                   anchored
                   action={
                     /* Desktop: the search action sits at the end of the field row. */
-                    <button
-                      type="button"
-                      onClick={handleSearch}
-                      className="hidden h-[56px] shrink-0 items-center justify-center rounded-xl bg-[color:var(--color-ink)] px-8 t-body font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.98] lg:flex"
-                    >
-                      Search
-                    </button>
+                    <div className="hidden lg:flex">
+                      <Button
+                        size="lg"
+                        onClick={handleSearch}
+                        className="h-14 px-8"
+                      >
+                        Search
+                      </Button>
+                    </div>
                   }
                 />
               </div>
 
-              <button
-                type="button"
+              <Button
+                size="lg"
+                fullWidth
                 onClick={handleSearch}
-                className="mt-5 w-full rounded-xl bg-[color:var(--color-ink)] py-4 t-body font-bold text-white transition-all duration-200 hover:bg-black active:scale-[0.99] lg:hidden"
+                className="mt-5 h-14 lg:hidden"
               >
                 Search
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -160,7 +165,7 @@ export default function Home() {
                     onClick={() =>
                       handleRecentSearch(s.vehicleId, s.pickup, s.dropoff)
                     }
-                    className="flex shrink-0 items-center gap-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-transparent hover:shadow-lift"
+                    className={`${cardLink} flex shrink-0 items-center gap-4 p-4 text-left`}
                   >
                     <VehicleImage
                       vehicleId={vehicle?.id}
@@ -168,10 +173,8 @@ export default function Home() {
                       className="size-16 shrink-0 rounded-xl"
                     />
                     <span className="flex flex-col gap-1">
-                      <span className="t-body whitespace-nowrap font-bold text-[color:var(--color-ink)]">
-                        {s.title}
-                      </span>
-                      <span className="t-caption whitespace-nowrap text-[color:var(--color-muted)]">
+                      <span className="t-h4 whitespace-nowrap">{s.title}</span>
+                      <span className="t-caption whitespace-nowrap">
                         {s.subtitle}
                       </span>
                     </span>
@@ -226,18 +229,16 @@ export default function Home() {
                   }
                   className="group shrink-0 basis-[86%] cursor-pointer text-left sm:basis-[220px] lg:basis-[calc((100%-3.75rem)/4)]"
                 >
-                  <div className="flex aspect-[5/4] items-center justify-center overflow-hidden rounded-2xl bg-[color:var(--color-surface-sunken)] transition-colors duration-300 group-hover:bg-[color:var(--color-surface-soft)]">
+                  <div className="flex aspect-[5/4] items-center justify-center overflow-hidden rounded-2xl bg-[color:var(--color-surface-sunken)] transition-colors duration-150 group-hover:bg-[color:var(--color-surface-soft)]">
                     <VehicleImage
                       vehicleId={t.vehicleId}
                       category={t.category}
                       transparent
-                      className="size-full p-5 transition-transform duration-500 group-hover:scale-[1.06]"
+                      className="size-full p-5 transition-transform duration-200 group-hover:scale-[1.06]"
                     />
                   </div>
-                  <p className="t-h4 mt-3 text-[color:var(--color-ink)]">
-                    {t.label}
-                  </p>
-                  <p className="t-caption text-[color:var(--color-muted)]">
+                  <p className="t-h4 mt-3">{t.label}</p>
+                  <p className="t-caption">
                     {vehicles.filter((v) => v.category === t.category).length}{" "}
                     available
                   </p>
@@ -250,19 +251,21 @@ export default function Home() {
         {/* FAQ — one centred column of full-width accordion cards. */}
         <section className="section-y">
           <Reveal>
-            <h2 className="t-h2 mb-6 text-center text-[color:var(--color-ink)] md:mb-8">
+            <h2 className="t-h3 mb-6 text-center md:mb-8">
               Frequently asked questions
             </h2>
             <div className="mx-auto flex max-w-[860px] flex-col gap-3">
               {faqs.map((f, i) => {
                 const open = openFaqs.has(i);
+                // Closed, the whole card is the toggle, so it hovers like any
+                // clickable card; open, it holds the answer and rests.
                 return (
                   <div
                     key={f.q}
-                    className={`overflow-hidden rounded-2xl border transition-all duration-300 ${
+                    className={`overflow-hidden ${
                       open
-                        ? "border-[color:var(--color-ink)] bg-white shadow-pop"
-                        : "border-[color:var(--color-border)] bg-white hover:border-[color:var(--color-ink)]"
+                        ? "rounded-2xl border border-[color:var(--color-ink)] bg-white shadow-pop transition-all duration-200"
+                        : cardLink
                     }`}
                   >
                     <button
@@ -271,11 +274,9 @@ export default function Home() {
                       aria-expanded={open}
                       className="flex w-full items-center justify-between gap-5 p-5 text-left md:p-6"
                     >
-                      <span className="t-h4 text-[color:var(--color-ink)]">
-                        {f.q}
-                      </span>
+                      <span className="t-h4">{f.q}</span>
                       <span
-                        className={`flex size-9 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
+                        className={`flex size-9 shrink-0 items-center justify-center rounded-full transition-all duration-200 ${
                           open
                             ? "rotate-180 bg-[color:var(--color-ink)] text-white"
                             : "bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)]"
@@ -307,9 +308,7 @@ export default function Home() {
         {/* Company blurb */}
         <section className="section-y">
           <Reveal>
-            <h2 className="t-h2 mb-4 text-[color:var(--color-ink)]">
-              DrukDrive
-            </h2>
+            <h2 className="t-h3 mb-4">DrukDrive</h2>
             <p className="t-body-lg max-w-[860px] text-[color:var(--color-muted)]">
               DrukDrive partners with trusted local operators across Bhutan to
               make it easy to find, compare and book the right vehicle for your

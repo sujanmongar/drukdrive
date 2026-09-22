@@ -9,6 +9,18 @@ import SearchSummaryHeader from "../../components/SearchSummaryHeader";
 import FilterSection from "../../components/FilterSection";
 import CheckboxRow from "../../components/CheckboxRow";
 import PriceRangeSlider from "../../components/PriceRangeSlider";
+import Button from "../../components/Button";
+import EmptyState from "../../components/EmptyState";
+import {
+  card,
+  chip,
+  menu,
+  menuItem,
+  metaLabel,
+  metaValue,
+  rowHover,
+  sheet,
+} from "../../lib/ui";
 import {
   vehicles as allVehicles,
   vehiclesForType,
@@ -96,13 +108,13 @@ function ExpandableCheckboxList({
         />
       ))}
       {hasMore && (
-        <button
-          type="button"
+        <Button
+          variant="link"
           onClick={() => setExpanded((v) => !v)}
-          className="-mx-2 min-h-11 rounded-lg px-2 text-left t-body-sm font-semibold text-[color:var(--color-link)] hover:bg-[color:var(--color-surface-soft)] lg:min-h-9 lg:text-xs"
+          className="lg:min-h-9"
         >
           {expanded ? "View less" : "View more"}
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -332,11 +344,7 @@ export default function SearchResults() {
               onClick={() =>
                 setCapacity(capacity === range.label ? null : range.label)
               }
-              className={`min-h-11 rounded-full border px-4 t-body-sm font-semibold transition-colors lg:min-h-9 lg:px-3.5 lg:text-xs ${
-                capacity === range.label
-                  ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
-                  : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
-              }`}
+              className={chip(capacity === range.label)}
             >
               {range.label}
             </button>
@@ -402,11 +410,7 @@ export default function SearchResults() {
               key={r}
               type="button"
               onClick={() => setMinRating(minRating === r ? null : r)}
-              className={`flex min-h-11 items-center gap-1 rounded-full border px-4 t-body-sm font-semibold transition-colors lg:min-h-9 lg:px-3.5 lg:text-xs ${
-                minRating === r
-                  ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
-                  : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
-              }`}
+              className={chip(minRating === r)}
             >
               {r}+
             </button>
@@ -414,11 +418,7 @@ export default function SearchResults() {
           <button
             type="button"
             onClick={() => setMinRating(null)}
-            className={`rounded-full border px-3.5 py-1.5 t-caption font-semibold transition-colors ${
-              minRating === null
-                ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
-                : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
-            }`}
+            className={chip(minRating === null)}
           >
             All
           </button>
@@ -458,17 +458,17 @@ export default function SearchResults() {
               maxHeight: `calc(100svh - ${headerHeight + 32}px)`,
             }}
           >
-            <div className="rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="t-h3 text-[color:var(--color-ink)]">Filters</h2>
+            <div className={`${card} p-5`}>
+              <div className="mb-3 flex min-h-9 items-center justify-between">
+                <h2 className="t-h3">Filters</h2>
                 {activeFilterCount > 0 && (
-                  <button
-                    type="button"
+                  <Button
+                    variant="link"
                     onClick={clearAllFilters}
-                    className="t-caption font-semibold text-[color:var(--color-link)]"
+                    className="lg:min-h-9"
                   >
                     Clear all
-                  </button>
+                  </Button>
                 )}
               </div>
               <div className="-mx-5 mb-4 border-b border-[color:var(--color-border)]" />
@@ -493,7 +493,7 @@ export default function SearchResults() {
                 {/* Mobile: title on its own row, then the sticky Sort + Filter
                     row. Both sit directly in the (tall) results column — a
                     short wrapper would cap how far the sticky row can travel. */}
-                <h1 className="t-h3 mb-3 text-[color:var(--color-ink)] lg:hidden">
+                <h1 className="t-h2 mb-3 lg:hidden">
                   Found {results.length} cars
                 </h1>
                 <div
@@ -503,31 +503,25 @@ export default function SearchResults() {
                   <button
                     type="button"
                     onClick={() => setSortOpen(true)}
-                    className="flex h-11 flex-col justify-center text-left"
+                    className={`-mx-2 flex h-11 flex-col justify-center rounded-xl px-2 text-left ${rowHover}`}
                   >
-                    <span className="t-caption text-[color:var(--color-muted)]">
-                      Sorted by
-                    </span>
-                    <span className="flex items-center gap-1 t-body-sm font-bold text-[color:var(--color-ink)]">
+                    <span className={metaLabel}>Sorted by</span>
+                    <span className={`flex items-center gap-1 ${metaValue}`}>
                       {sortOptions.find((o) => o.value === sort)?.label}
                       <Icon name="chevron-down" size={14} />
                     </span>
                   </button>
 
                   <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setFilterOpen(true)}
-                      className="flex h-11 items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-4 t-body-sm font-semibold text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
-                    >
+                    <Button variant="ghost" onClick={() => setFilterOpen(true)}>
                       <Icon name="filter" size={16} />
                       Filter
                       {activeFilterCount > 0 && (
-                        <span className="flex size-4 items-center justify-center rounded-full bg-[color:var(--color-ink)] t-label font-bold text-white">
+                        <span className="flex size-4 items-center justify-center rounded-full bg-[color:var(--color-ink)] t-label text-white">
                           {activeFilterCount}
                         </span>
                       )}
-                    </button>
+                    </Button>
                   </div>
                 </div>
 
@@ -536,18 +530,16 @@ export default function SearchResults() {
                   className="sticky z-20 mb-4 hidden items-center justify-between gap-3 border-b border-[color:var(--color-border)] bg-white py-3 lg:flex"
                   style={{ top: headerHeight }}
                 >
-                  <h1 className="t-h3 text-[color:var(--color-ink)]">
-                    {heading}
-                  </h1>
+                  <h1 className="t-h2">{heading}</h1>
                   <div className="flex items-center gap-4">
                     <div className="relative">
                       <button
                         type="button"
                         onClick={() => setSortOpen((v) => !v)}
-                        className="flex items-center gap-1.5 t-body-sm text-[color:var(--color-ink-soft)]"
+                        className={`-mr-2 flex min-h-9 items-center gap-1.5 rounded-xl px-2 t-body-sm ${rowHover}`}
                       >
                         Sorted by
-                        <span className="font-bold text-[color:var(--color-ink)]">
+                        <span className="font-semibold text-[color:var(--color-ink)]">
                           {sortOptions.find((o) => o.value === sort)?.label}
                         </span>
                         <Icon name="chevron-down" size={14} />
@@ -559,7 +551,9 @@ export default function SearchResults() {
                             className="fixed inset-0 z-10 cursor-default"
                             onClick={() => setSortOpen(false)}
                           />
-                          <div className="animate-popover absolute right-0 z-20 mt-2 w-52 rounded-2xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-pop">
+                          <div
+                            className={`${menu} absolute right-0 z-20 mt-2 w-52`}
+                          >
                             {sortOptions.map((opt) => (
                               <button
                                 key={opt.value}
@@ -568,10 +562,10 @@ export default function SearchResults() {
                                   setSort(opt.value);
                                   setSortOpen(false);
                                 }}
-                                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left t-body-sm ${
+                                className={`${menuItem} justify-between ${
                                   sort === opt.value
-                                    ? "bg-[#f4f4f4] font-semibold text-[color:var(--color-ink)]"
-                                    : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
+                                    ? "bg-[color:var(--color-surface-soft)] font-semibold"
+                                    : ""
                                 }`}
                               >
                                 {opt.label}
@@ -588,23 +582,17 @@ export default function SearchResults() {
                 </div>
 
                 {results.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-[color:var(--color-border)] py-16 text-center">
-                    <Icon
-                      name="car"
-                      size={32}
-                      className="text-[color:var(--color-muted)]"
-                    />
-                    <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
-                      No vehicles match these filters
-                    </p>
-                    <button
-                      type="button"
-                      onClick={clearAllFilters}
-                      className="t-body-sm font-semibold text-[color:var(--color-ink)] underline"
-                    >
-                      Clear filters
-                    </button>
-                  </div>
+                  <EmptyState
+                    icon="car"
+                    title="No vehicles match these filters"
+                    description="Try removing a filter or widening the price range."
+                    action={
+                      <Button variant="link" onClick={clearAllFilters}>
+                        Clear filters
+                      </Button>
+                    }
+                    className=""
+                  />
                 ) : (
                   <div className="flex flex-col gap-4">
                     {visibleResults.map((vehicle, i) => (
@@ -652,18 +640,20 @@ export default function SearchResults() {
             className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
             onClick={() => setFilterOpen(false)}
           />
-          <div className="animate-sheet-up relative flex h-[88svh] w-full flex-col overflow-hidden rounded-t-2xl bg-white">
+          <div
+            className={`${sheet} relative flex h-[88svh] w-full flex-col overflow-hidden`}
+          >
             <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
-              <h2 className="t-h3 text-[color:var(--color-ink)]">Filters</h2>
+              <h2 className="t-h3">Filters</h2>
               <div className="flex items-center gap-1">
                 {activeFilterCount > 0 ? (
-                  <button
-                    type="button"
+                  <Button
+                    variant="link"
                     onClick={clearAllFilters}
-                    className="min-h-10 rounded-lg px-2 t-body-sm font-semibold text-[color:var(--color-link)]"
+                    className="mx-0"
                   >
                     Clear all
-                  </button>
+                  </Button>
                 ) : null}
                 <button
                   type="button"
@@ -683,13 +673,14 @@ export default function SearchResults() {
               {filterPanel}
             </div>
             <div className="shrink-0 border-t border-[color:var(--color-border)] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-              <button
-                type="button"
+              <Button
+                size="lg"
+                fullWidth
                 onClick={() => setFilterOpen(false)}
-                className="h-12 w-full rounded-xl bg-[color:var(--color-ink)] t-body font-bold text-white transition-all duration-200 hover:bg-black"
+                className="h-12"
               >
                 See {results.length} cars
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -703,9 +694,11 @@ export default function SearchResults() {
             className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
             onClick={() => setSortOpen(false)}
           />
-          <div className="animate-sheet-up relative w-full rounded-t-2xl bg-white pb-[env(safe-area-inset-bottom)]">
+          <div
+            className={`${sheet} relative w-full pb-[env(safe-area-inset-bottom)]`}
+          >
             <div className="flex items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
-              <h2 className="t-h3 text-[color:var(--color-ink)]">Sort by</h2>
+              <h2 className="t-h3">Sort by</h2>
               <button
                 type="button"
                 onClick={() => setSortOpen(false)}
@@ -728,7 +721,7 @@ export default function SearchResults() {
                     setSort(opt.value);
                     setSortOpen(false);
                   }}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left hover:bg-[color:var(--color-surface-soft)]"
+                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-left ${rowHover}`}
                 >
                   <span
                     className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 ${
@@ -742,7 +735,7 @@ export default function SearchResults() {
                     )}
                   </span>
                   <span
-                    className={`t-body-sm ${sort === opt.value ? "font-bold text-[color:var(--color-ink)]" : "text-[color:var(--color-ink-soft)]"}`}
+                    className={`t-body-sm ${sort === opt.value ? "font-semibold text-[color:var(--color-ink)]" : ""}`}
                   >
                     {opt.label}
                   </span>

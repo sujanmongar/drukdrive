@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Icon from "./Icon";
 import VehicleImage from "./VehicleImage";
 import VehicleSpecs from "./VehicleSpecs";
@@ -8,6 +8,8 @@ import { useCurrency } from "../lib/currency";
 import { parseSearch } from "../lib/booking";
 import { displayPrice } from "../lib/pricing";
 import { useWishlist } from "../lib/wishlist";
+import { cardLink } from "../lib/ui";
+import Button from "./Button";
 
 export default function VehicleCard({
   vehicle,
@@ -39,7 +41,7 @@ export default function VehicleCard({
       onKeyDown={(e) => {
         if (e.key === "Enter") navigate(detailsHref);
       }}
-      className={`w-full shrink-0 cursor-pointer overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-lift ${className}`}
+      className={`${cardLink} w-full shrink-0 cursor-pointer overflow-hidden ${className}`}
     >
       <div className="relative h-[178px] w-full">
         <VehicleImage
@@ -66,10 +68,8 @@ export default function VehicleCard({
         </button>
       </div>
       <div className="p-4">
-        <p className="t-h4 truncate text-[color:var(--color-ink)]">
-          {vehicle.name}
-        </p>
-        <p className="t-caption mb-2 text-[color:var(--color-muted)]">
+        <p className="t-h4 truncate">{vehicle.name}</p>
+        <p className="t-caption mb-2">
           or similar {vehicleClassOf[vehicle.category]}
         </p>
         <div className="t-caption mb-2 flex items-center gap-x-2 gap-y-1 text-[color:var(--color-ink)]">
@@ -99,30 +99,26 @@ export default function VehicleCard({
                 <span className="t-caption font-semibold text-[color:var(--color-danger)]">
                   {discountPct}% off
                 </span>
-                <span className="t-caption text-[color:var(--color-muted)] line-through">
+                <span className="t-caption t-amount font-normal text-[color:var(--color-muted)] line-through">
                   {format(vehicle.strikePrice)}
                 </span>
               </div>
             )}
             <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-              <span className="t-h3 font-bold text-[color:var(--color-ink)]">
-                {format(price.amount)}
-              </span>
-              <span className="t-caption text-[color:var(--color-ink)]">
-                {price.unit}
-              </span>
+              <span className="t-h3 t-amount">{format(price.amount)}</span>
+              <span className="t-caption">{price.unit}</span>
             </div>
-            <p className="t-label text-[color:var(--color-muted)]">
-              {price.note}
-            </p>
+            <p className="t-caption">{price.note}</p>
           </div>
-          <Link
-            to={detailsHref}
+          {/* Stops the click reaching the card, which would navigate twice. */}
+          <div
+            className="hidden shrink-0 lg:flex"
             onClick={(e) => e.stopPropagation()}
-            className="hidden shrink-0 whitespace-nowrap rounded-xl bg-[color:var(--color-ink)] px-5 py-2.5 t-caption font-bold text-white transition-all duration-200 hover:bg-black lg:inline-flex"
           >
-            Book Now
-          </Link>
+            <Button to={detailsHref} className="px-5">
+              Book Now
+            </Button>
+          </div>
         </div>
       </div>
     </div>

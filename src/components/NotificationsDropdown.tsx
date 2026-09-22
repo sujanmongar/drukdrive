@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Icon from "./Icon";
+import EmptyState from "./EmptyState";
+import { menu, menuItem } from "../lib/ui";
 import {
   notifications as customerNotifications,
   driverNotifications,
@@ -38,7 +40,7 @@ export default function NotificationsDropdown({
       >
         <Icon name="bell" size={20} />
         {unreadCount > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex size-[17px] items-center justify-center rounded-full bg-[color:var(--color-danger)] t-label font-semibold text-white ring-2 ring-white">
+          <span className="absolute -right-0.5 -top-0.5 flex size-[17px] items-center justify-center rounded-full bg-[color:var(--color-danger)] t-label text-white ring-2 ring-white">
             {unreadCount}
           </span>
         )}
@@ -51,16 +53,19 @@ export default function NotificationsDropdown({
             className="fixed inset-0 z-40 cursor-default"
             onClick={() => setOpen(false)}
           />
-          <div className="animate-popover absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white shadow-pop">
+          <div className={`${menu} absolute right-0 top-full z-50 mt-2 w-72`}>
             <div className="border-b border-[color:var(--color-border)] px-4 py-3">
-              <p className="t-body-sm font-bold text-[color:var(--color-ink)]">
+              <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
                 Notifications
               </p>
             </div>
             {items.length === 0 ? (
-              <p className="px-4 py-6 text-center t-body-sm text-[color:var(--color-muted)]">
-                No notifications yet
-              </p>
+              <EmptyState
+                icon="bell"
+                title="No notifications yet"
+                description="Booking updates and messages show up here."
+                className="m-2"
+              />
             ) : (
               <div>
                 {items.map((n) => (
@@ -71,9 +76,7 @@ export default function NotificationsDropdown({
                     <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
                       {n.title}
                     </p>
-                    <p className="mt-0.5 line-clamp-2 t-caption text-[color:var(--color-muted)]">
-                      {n.body}
-                    </p>
+                    <p className="mt-0.5 line-clamp-2 t-caption">{n.body}</p>
                   </div>
                 ))}
               </div>
@@ -81,7 +84,7 @@ export default function NotificationsDropdown({
             <Link
               to={viewAllHref}
               onClick={() => setOpen(false)}
-              className="block px-4 py-3 text-center t-body-sm font-semibold text-[color:var(--color-ink)] hover:bg-[color:var(--color-surface-soft)]"
+              className={`${menuItem} justify-center font-semibold`}
             >
               View all
             </Link>

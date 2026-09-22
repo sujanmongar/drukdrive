@@ -1,5 +1,7 @@
 import { useState, type ReactNode } from "react";
 import Icon from "./Icon";
+import Button from "./Button";
+import { rowHover } from "../lib/ui";
 
 // One collapsible group in the Filters sidebar/sheet. The whole header row
 // is the toggle — a 44px-tall target — with Clear as its own button beside
@@ -27,26 +29,26 @@ export default function FilterSection({
               type="button"
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
-              className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg px-2 text-left transition-colors hover:bg-[color:var(--color-surface-soft)] lg:min-h-9"
+              className={`flex min-h-11 w-full items-center justify-between gap-3 rounded-xl px-2 text-left ${rowHover} lg:min-h-9`}
             >
-              <span className="t-body font-bold text-[color:var(--color-ink)] lg:text-sm">
+              <span className="t-body font-semibold text-[color:var(--color-ink)] lg:text-sm">
                 {title}
               </span>
               <Icon
                 name="chevron-down"
                 size={18}
-                className={`shrink-0 text-[color:var(--color-muted)] transition-transform ${open ? "" : "-rotate-90"}`}
+                className={`shrink-0 text-[color:var(--color-muted)] transition-transform duration-200 ${open ? "" : "-rotate-90"}`}
               />
             </button>
           </h4>
           {hasSelection && (
-            <button
-              type="button"
+            <Button
+              variant="link"
               onClick={onClear}
-              className="min-h-11 shrink-0 rounded-lg px-2 t-body-sm font-semibold text-[color:var(--color-link)] hover:bg-[color:var(--color-surface-soft)] lg:min-h-9 lg:text-xs"
+              className="mx-0 shrink-0 lg:min-h-9"
             >
               Clear
-            </button>
+            </Button>
           )}
         </div>
         {open && <div className="mt-2 lg:mt-1">{children}</div>}

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import Button from "../../components/Button";
 import Icon from "../../components/Icon";
@@ -8,6 +8,7 @@ import { driverBookings } from "../../data/mockData";
 import { useDriverVehicles } from "../../lib/driverVehicles";
 import { routes } from "../../lib/routes";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { card, metaLabel, metaValue, reference } from "../../lib/ui";
 
 export default function ProviderBookingDetail() {
   usePageTitle("Booking Details");
@@ -19,32 +20,29 @@ export default function ProviderBookingDetail() {
 
   return (
     <PageShell noFooter>
-      <div className="mx-auto max-w-[720px] px-4 py-8 md:px-10 md:py-10">
-        <Button
-          variant="ghost"
-          size="sm"
-          to={routes.providerBookings}
-          className="mb-4"
-        >
-          <Icon name="arrow-left" size={16} />
-          Back to bookings
-        </Button>
+      <div className="mx-auto max-w-[720px] px-4 py-6 md:px-10 md:py-10">
+        <div className="mb-5 flex items-center gap-2">
+          <Link
+            to={routes.providerBookings}
+            aria-label="Back to bookings"
+            className="icon-btn -ml-2 size-10"
+          >
+            <Icon name="chevron-left" size={22} />
+          </Link>
+          <h1 className="t-h2">Booking details</h1>
+        </div>
 
-        <div className="rounded-xl border border-[color:var(--color-border)] p-6 shadow-card">
+        <div className={`${card} p-6`}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <VehicleImage
                 vehicleId={vehicle.id}
                 category={vehicle.category}
-                className="size-16 rounded-lg"
+                className="size-16 rounded-xl"
               />
               <div>
-                <p className="t-body font-bold text-[color:var(--color-ink)]">
-                  {vehicle.name}
-                </p>
-                <p className="t-caption text-[color:var(--color-muted)]">
-                  {vehicle.plate}
-                </p>
+                <p className="t-h4">{vehicle.name}</p>
+                <p className="t-caption">{vehicle.plate}</p>
               </div>
             </div>
             <StatusBadge
@@ -63,12 +61,8 @@ export default function ProviderBookingDetail() {
               className="text-[color:var(--color-ink-soft)]"
             />
             <div>
-              <p className="t-caption font-semibold text-[color:var(--color-muted)]">
-                Rider
-              </p>
-              <p className="t-body-sm text-[color:var(--color-ink)]">
-                {booking.riderName}
-              </p>
+              <p className={metaLabel}>Rider</p>
+              <p className={metaValue}>{booking.riderName}</p>
             </div>
           </div>
 
@@ -80,12 +74,8 @@ export default function ProviderBookingDetail() {
                 className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]"
               />
               <div>
-                <p className="t-caption font-semibold text-[color:var(--color-muted)]">
-                  Pickup
-                </p>
-                <p className="t-body-sm text-[color:var(--color-ink)]">
-                  {booking.pickup}
-                </p>
+                <p className={metaLabel}>Pickup</p>
+                <p className={metaValue}>{booking.pickup}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -95,12 +85,8 @@ export default function ProviderBookingDetail() {
                 className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]"
               />
               <div>
-                <p className="t-caption font-semibold text-[color:var(--color-muted)]">
-                  Drop-off
-                </p>
-                <p className="t-body-sm text-[color:var(--color-ink)]">
-                  {booking.dropoff}
-                </p>
+                <p className={metaLabel}>Drop-off</p>
+                <p className={metaValue}>{booking.dropoff}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -110,12 +96,8 @@ export default function ProviderBookingDetail() {
                 className="mt-0.5 shrink-0 text-[color:var(--color-ink-soft)]"
               />
               <div>
-                <p className="t-caption font-semibold text-[color:var(--color-muted)]">
-                  Date &amp; time
-                </p>
-                <p className="t-body-sm text-[color:var(--color-ink)]">
-                  {booking.date}
-                </p>
+                <p className={metaLabel}>Date &amp; time</p>
+                <p className={metaValue}>{booking.date}</p>
               </div>
             </div>
           </div>
@@ -123,12 +105,8 @@ export default function ProviderBookingDetail() {
           <div className="my-5 h-px bg-[color:var(--color-border)]" />
 
           <div className="flex items-center justify-between">
-            <p className="t-caption font-semibold text-[color:var(--color-muted)]">
-              Booking reference
-            </p>
-            <p className="font-mono t-body-sm font-bold tracking-wide text-[color:var(--color-ink)]">
-              {booking.id}
-            </p>
+            <p className={metaLabel}>Booking reference</p>
+            <p className={reference}>{booking.id}</p>
           </div>
         </div>
 

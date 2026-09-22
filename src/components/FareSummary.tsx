@@ -35,23 +35,21 @@ export default function FareSummary({
             <div key={l.label} className="flex justify-between gap-4 t-body-sm">
               <dt
                 className={
-                  l.success
-                    ? "text-[color:var(--color-success)]"
-                    : "text-[color:var(--color-ink-soft)]"
+                  l.success ? "text-[color:var(--color-success-deep)]" : ""
                 }
               >
                 {l.label}
               </dt>
               <dd
-                className={`tabular font-semibold ${l.success ? "text-[color:var(--color-success)]" : "text-[color:var(--color-ink)]"}`}
+                className={`t-amount ${l.success ? "text-[color:var(--color-success-deep)]" : ""}`}
               >
                 {l.value}
               </dd>
             </div>
           ))}
-          <div className="flex justify-between gap-4 border-t border-[color:var(--color-border)] pt-2 t-body-sm font-bold text-[color:var(--color-ink)]">
+          <div className="flex justify-between gap-4 border-t border-[color:var(--color-border)] pt-2 t-body-sm font-semibold text-[color:var(--color-ink)]">
             <dt>Total</dt>
-            <dd className="tabular">{total}</dd>
+            <dd className="t-amount">{total}</dd>
           </div>
         </dl>
       )}

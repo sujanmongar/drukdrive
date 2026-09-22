@@ -6,13 +6,13 @@ import {
   type KeyboardEvent,
 } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import PageShell from "../../components/PageShell";
-import Icon from "../../components/Icon";
+import AuthShell from "../../components/AuthShell";
 import Button from "../../components/Button";
 import { routes } from "../../lib/routes";
 import { useCurrentUser } from "../../lib/currentUser";
 import { useAuth } from "../../lib/auth";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { otpDigit } from "../../lib/ui";
 
 const OTP_LENGTH = 6;
 
@@ -88,18 +88,18 @@ export default function Otp() {
           onKeyDown={(e) => handleKeyDown(i, e)}
           inputMode="numeric"
           maxLength={1}
-          className={`size-[48px] rounded-xl border text-center t-h3 font-bold text-[color:var(--color-ink-87)] outline-none transition-colors sm:size-[56px] ${
+          className={`${otpDigit} ${
             digit
-              ? "border-[color:var(--color-ink-87)]"
+              ? "border-[color:var(--color-ink)]"
               : "border-[color:var(--color-border)]"
-          } focus:border-[color:var(--color-ink-87)]`}
+          }`}
         />
       ))}
     </div>
   );
 
   const resendRow = (
-    <div className="mt-6 flex items-center justify-between t-body-sm text-[color:var(--color-ink-87)]">
+    <div className="mt-6 flex items-center justify-between t-body-sm">
       <span>
         {secondsLeft > 0
           ? `Time remaining ${secondsLeft}s`
@@ -108,51 +108,41 @@ export default function Otp() {
             : ""}
       </span>
       <span className="flex items-center gap-2">
-        <span className="text-[#929292]">Didn&rsquo;t receive?</span>
-        <button
+        <span className="text-[color:var(--color-muted)]">
+          Didn&rsquo;t receive?
+        </span>
+        <Button
+          variant="link"
           type="button"
           onClick={handleResend}
           disabled={secondsLeft > 0}
-          className={`font-semibold ${
-            secondsLeft > 0
-              ? "cursor-not-allowed text-[color:var(--color-muted)]"
-              : "text-[color:var(--color-ink)] underline"
-          }`}
         >
           Resend OTP
-        </button>
+        </Button>
       </span>
     </div>
   );
 
   return (
-    <PageShell noFooter>
-      <div className="mx-auto flex min-h-[75vh] w-full max-w-[1280px] items-center justify-center px-4 py-12 md:px-10">
-        <div className="relative flex w-full max-w-[440px] flex-col rounded-3xl bg-white p-6 shadow-modal sm:p-9">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            aria-label="Back"
-            className="icon-btn absolute left-4 top-4 size-10 text-[color:var(--color-ink)]"
-          >
-            <Icon name="chevron-left" size={22} />
-          </button>
-          <h1 className="t-h2 mb-1 mt-8 text-[color:var(--color-ink)]">
-            Verify your mobile number
-          </h1>
-          <p className="mb-6 t-body-sm text-[color:var(--color-ink-87)]">
-            OTP has been sent to{" "}
-            <span className="t-h4 font-bold">{currentUser.phone}</span>
-          </p>
-          <form onSubmit={handleSubmit} className="flex flex-col">
-            {boxes}
-            {resendRow}
-            <Button type="submit" size="lg" fullWidth className="mt-6">
-              Verify
-            </Button>
-          </form>
-        </div>
-      </div>
-    </PageShell>
+    <AuthShell
+      title="Verify your mobile number"
+      back
+      subtitle={
+        <>
+          OTP has been sent to{" "}
+          <span className="font-semibold text-[color:var(--color-ink)]">
+            {currentUser.phone}
+          </span>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="flex flex-col">
+        {boxes}
+        {resendRow}
+        <Button type="submit" size="lg" fullWidth className="mt-6">
+          Verify
+        </Button>
+      </form>
+    </AuthShell>
   );
 }

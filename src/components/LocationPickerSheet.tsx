@@ -4,6 +4,8 @@ import Icon from "./Icon";
 import { bhutanLocations } from "../data/mockData";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import AnchoredPopover from "./AnchoredPopover";
+import EmptyState from "./EmptyState";
+import { iconTile, input, rowHover } from "../lib/ui";
 
 // Mobile (or no anchor given): full-screen sheet. Desktop with an anchorRef:
 // portaled dropdown anchored to the trigger's live position — never clipped
@@ -35,19 +37,21 @@ export default function LocationPickerSheet({
   const content = (
     <>
       <div className="flex items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-3">
-        <Icon
-          name="search"
-          size={18}
-          className="shrink-0 text-[color:var(--color-muted)]"
-        />
-        <input
-          autoFocus
-          type="text"
-          placeholder={label}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="peer h-11 w-full bg-transparent t-body text-[color:var(--color-ink)] outline-none placeholder:text-[color:var(--color-muted)]"
-        />
+        <div className="relative min-w-0 flex-1">
+          <Icon
+            name="search"
+            size={18}
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[color:var(--color-muted)]"
+          />
+          <input
+            autoFocus
+            type="text"
+            placeholder={label}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className={`${input} pl-10`}
+          />
+        </div>
         <button
           type="button"
           onClick={onClose}
@@ -63,18 +67,21 @@ export default function LocationPickerSheet({
       </div>
       <div className="flex-1 overflow-y-auto">
         {results.length === 0 ? (
-          <p className="p-6 text-center t-body-sm text-[color:var(--color-muted)]">
-            No locations found.
-          </p>
+          <EmptyState
+            icon="location"
+            title="No locations found"
+            description="Try another town or landmark name."
+            className="m-4"
+          />
         ) : (
           results.map((loc) => (
             <button
               key={`${loc.name}-${loc.city}`}
               type="button"
               onClick={() => onSelect(`${loc.city}, ${loc.name}`)}
-              className="flex min-h-14 w-full items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-2.5 text-left transition-colors duration-150 hover:bg-[color:var(--color-surface-soft)]"
+              className={`flex min-h-14 w-full items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-2.5 text-left ${rowHover}`}
             >
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-surface-soft)]">
+              <span className={iconTile}>
                 <Icon
                   name="location"
                   size={17}
@@ -85,9 +92,7 @@ export default function LocationPickerSheet({
                 <span className="block truncate t-body font-semibold text-[color:var(--color-ink)]">
                   {loc.name}
                 </span>
-                <span className="block t-caption text-[color:var(--color-muted)]">
-                  {loc.city}
-                </span>
+                <span className="block t-caption">{loc.city}</span>
               </span>
             </button>
           ))

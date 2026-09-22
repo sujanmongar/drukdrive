@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Icon from "./Icon";
+import EmptyState from "./EmptyState";
 import { financeSummary } from "../data/mockData";
+import { card, chip, menu, menuItem, reference } from "../lib/ui";
 
 type LedgerTab = "Ledger" | "Report" | "Credit Notes" | "Debit Notes";
 const ledgerTabs: LedgerTab[] = [
@@ -9,6 +11,12 @@ const ledgerTabs: LedgerTab[] = [
   "Credit Notes",
   "Debit Notes",
 ];
+
+const emptyHelp: Record<Exclude<LedgerTab, "Ledger">, string> = {
+  Report: "Reports will appear here once your account has activity.",
+  "Credit Notes": "Credit notes issued to you will appear here.",
+  "Debit Notes": "Debit notes issued to you will appear here.",
+};
 
 // Same wallet, same ledger, whichever hat the account is wearing — shared by
 // the customer Finance page and the driver Finance page.
@@ -71,18 +79,14 @@ export default function FinanceLedger() {
 
   return (
     <>
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
         <div className="scrollbar-hide flex gap-2 overflow-x-auto">
           {ledgerTabs.map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => setTab(t)}
-              className={`shrink-0 rounded-full border px-4 py-2 t-body-sm font-medium transition-colors ${
-                tab === t
-                  ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
-                  : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
-              }`}
+              className={`${chip(tab === t)} shrink-0`}
             >
               {t}
             </button>
@@ -92,11 +96,7 @@ export default function FinanceLedger() {
           <button
             type="button"
             onClick={() => setFilterOpen((v) => !v)}
-            className={`flex items-center gap-2 rounded-xl border px-4 py-2 t-body-sm font-medium transition-colors ${
-              statusFilter !== "All"
-                ? "border-[color:var(--color-ink)] bg-[color:var(--color-ink)] text-white"
-                : "border-[color:var(--color-border)] text-[color:var(--color-ink)] hover:border-[color:var(--color-ink)]"
-            }`}
+            className={chip(statusFilter !== "All")}
           >
             <Icon name="filter" size={16} />
             {statusFilter === "All" ? "Filter" : statusFilter}
@@ -108,7 +108,7 @@ export default function FinanceLedger() {
                 className="fixed inset-0 z-10 cursor-default"
                 onClick={() => setFilterOpen(false)}
               />
-              <div className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white p-1.5 shadow-pop">
+              <div className={`${menu} absolute right-0 z-20 mt-2 w-44`}>
                 {statusFilters.map((s) => (
                   <button
                     key={s}
@@ -117,10 +117,10 @@ export default function FinanceLedger() {
                       setStatusFilter(s);
                       setFilterOpen(false);
                     }}
-                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left t-body-sm ${
+                    className={`${menuItem} justify-between ${
                       statusFilter === s
-                        ? "bg-[color:var(--color-surface-soft)] font-semibold text-[color:var(--color-ink)]"
-                        : "text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
+                        ? "bg-[color:var(--color-surface-soft)] font-semibold"
+                        : ""
                     }`}
                   >
                     {s}
@@ -135,25 +135,17 @@ export default function FinanceLedger() {
 
       {tab === "Ledger" ? (
         rows.length === 0 ? (
-          <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
-            <Icon
-              name="wallet"
-              size={32}
-              className="text-[color:var(--color-muted)]"
-            />
-            <p className="mt-3 t-body-sm font-semibold text-[color:var(--color-ink)]">
-              No {statusFilter.toLowerCase()} transactions
-            </p>
-          </div>
+          <EmptyState
+            icon="wallet"
+            title={`No ${statusFilter.toLowerCase()} transactions`}
+            description="Pick another status to see the rest of your ledger."
+          />
         ) : (
-          <div className="relative mt-6 rounded-xl border border-[color:var(--color-border)]">
-            <div
-              ref={tableWrapRef}
-              className="scrollbar-hide overflow-x-auto rounded-xl"
-            >
+          <div className={`${card} relative mt-6 overflow-hidden`}>
+            <div ref={tableWrapRef} className="scrollbar-hide overflow-x-auto">
               <table className="w-full min-w-[720px] t-body-sm">
                 <thead>
-                  <tr className="border-b border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] text-left t-caption font-semibold text-[color:var(--color-muted)]">
+                  <tr className="border-b border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] text-left t-caption font-semibold">
                     <th className="px-4 py-3 font-semibold">Date</th>
                     <th className="px-4 py-3 font-semibold">
                       Reference Number
@@ -176,22 +168,22 @@ export default function FinanceLedger() {
                       key={r.id}
                       className="border-b border-[color:var(--color-border)] last:border-b-0"
                     >
-                      <td className="whitespace-nowrap px-4 py-3 text-[color:var(--color-ink-soft)]">
-                        {r.date}
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3 font-medium text-[color:var(--color-link)]">
+                      <td className="whitespace-nowrap px-4 py-3">{r.date}</td>
+                      <td
+                        className={`${reference} whitespace-nowrap px-4 py-3`}
+                      >
                         {r.id.toUpperCase()}
                       </td>
                       <td className="px-4 py-3 text-[color:var(--color-ink)]">
                         {r.label}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-right text-[color:var(--color-ink)]">
+                      <td className="whitespace-nowrap px-4 py-3 text-right t-amount">
                         {r.debit ? r.debit.toFixed(2) : "0"}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-right text-[color:var(--color-ink)]">
+                      <td className="whitespace-nowrap px-4 py-3 text-right t-amount">
                         {r.credit ? r.credit.toFixed(2) : "0"}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-right font-medium text-[color:var(--color-ink)]">
+                      <td className="whitespace-nowrap px-4 py-3 text-right t-amount">
                         {r.balance.toFixed(2)} {r.balance >= 0 ? "Cr" : "Dr"}
                       </td>
                     </tr>
@@ -200,15 +192,15 @@ export default function FinanceLedger() {
                 <tfoot>
                   <tr className="bg-[color:var(--color-surface-subtle)]">
                     <td
-                      className="px-4 py-3 text-center font-bold text-[color:var(--color-ink)]"
+                      className="px-4 py-3 text-center font-semibold text-[color:var(--color-ink)]"
                       colSpan={3}
                     >
                       Total
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-[color:var(--color-ink)]">
+                    <td className="whitespace-nowrap px-4 py-3 text-right t-amount">
                       {totalDebit.toFixed(2)}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-[color:var(--color-ink)]">
+                    <td className="whitespace-nowrap px-4 py-3 text-right t-amount">
                       {totalCredit.toFixed(2)}
                     </td>
                     <td />
@@ -219,22 +211,17 @@ export default function FinanceLedger() {
             {moreToRight && (
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-y-0 right-0 w-12 rounded-r-xl bg-gradient-to-l from-white to-transparent"
+                className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-white to-transparent"
               />
             )}
           </div>
         )
       ) : (
-        <div className="mt-6 flex flex-col items-center justify-center rounded-xl border border-[color:var(--color-border)] py-16 text-center">
-          <Icon
-            name="wallet"
-            size={32}
-            className="text-[color:var(--color-muted)]"
-          />
-          <p className="mt-3 t-body-sm font-semibold text-[color:var(--color-ink)]">
-            No {tab.toLowerCase()} yet
-          </p>
-        </div>
+        <EmptyState
+          icon="wallet"
+          title={`No ${tab.toLowerCase()} yet`}
+          description={emptyHelp[tab]}
+        />
       )}
     </>
   );

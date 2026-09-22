@@ -6,6 +6,7 @@ import Icon from "../../../components/Icon";
 import Button from "../../../components/Button";
 import GlobalPreferences from "../../../components/GlobalPreferences";
 import { routes } from "../../../lib/routes";
+import { quietLink } from "../../../lib/ui";
 import { accountTabs } from "./_tabs";
 import { usePageTitle } from "../../../hooks/usePageTitle";
 
@@ -26,16 +27,14 @@ export default function AccountPreferences() {
             <div className="flex items-center gap-1.5 t-body-sm text-[color:var(--color-muted)]">
               <Link
                 to={routes.accountProfile}
-                className="inline-flex min-h-11 items-center hover:text-[color:var(--color-ink)]"
+                className={`inline-flex min-h-11 items-center ${quietLink}`}
               >
                 Account
               </Link>
               <Icon name="chevron-right" size={14} />
               <span>Global preferences</span>
             </div>
-            <h2 className="t-h2 mt-1 text-[color:var(--color-ink)]">
-              Global preferences
-            </h2>
+            <h2 className="mt-1 t-h2">Global preferences</h2>
           </div>
           <Button variant="secondary" size="sm" onClick={() => navigate(-1)}>
             Back

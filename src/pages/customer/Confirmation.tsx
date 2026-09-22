@@ -19,6 +19,14 @@ import {
 import { formatDropoff, formatPickup, parseBooking } from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import {
+  card,
+  inlineLink,
+  metaValue,
+  reference,
+  sheet,
+  dangerAction,
+} from "../../lib/ui";
 
 // The booking's own page. Reached from checkout (step 5, with the booking in
 // the URL) and from My Bookings (a stored record). One column, its own
@@ -80,32 +88,44 @@ export default function Confirmation() {
         `Collect the car at ${pickupAddress || pickup} on ${date}. Bring your licence, passport or CID and a card for the deposit.`,
         ...(split.later > 0
           ? [
-              `Pay the remaining ${format(split.later)} at the desk when you collect the car.`,
+              <>
+                Pay the remaining{" "}
+                <span className="t-amount">{format(split.later)}</span> at the
+                desk when you collect the car.
+              </>,
             ]
           : []),
         "Return with a full tank; the deposit is released within 3 days.",
       ]
     : [
         "The driver's name and number are shared 2 hours before pick-up by SMS and WhatsApp.",
-        split.later > 0
-          ? `Pay the remaining ${format(split.later)} to the driver at pick-up.`
-          : "Nothing more to pay on the day.",
+        split.later > 0 ? (
+          <>
+            Pay the remaining{" "}
+            <span className="t-amount">{format(split.later)}</span> to the
+            driver at pick-up.
+          </>
+        ) : (
+          "Nothing more to pay on the day."
+        ),
       ];
 
-  const receipt = [
+  const receipt: { label: string; value: string; amount?: boolean }[] = [
     ...(method ? [{ label: "Paid by", value: method }] : []),
     {
       label: status === "Cancelled" ? "Refund" : "Paid now",
       value: format(split.now),
+      amount: true,
     },
     ...(split.later > 0 && status !== "Cancelled"
-      ? [{ label: "Due at pick-up", value: format(split.later) }]
+      ? [{ label: "Due at pick-up", value: format(split.later), amount: true }]
       : []),
     ...(fare.deposit > 0 && fromCheckout
       ? [
           {
             label: "Deposit at collection",
             value: `${format(fare.deposit)} · refundable`,
+            amount: true,
           },
         ]
       : []),
@@ -165,7 +185,7 @@ export default function Confirmation() {
               strokeWidth={2.5}
             />
           </span>
-          <h1 className="t-h1 mt-5">
+          <h1 className="t-h2 mt-5">
             {status === "Cancelled"
               ? "Booking cancelled"
               : status === "Completed"
@@ -181,9 +201,7 @@ export default function Confirmation() {
           </p>
           <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-[color:var(--color-surface-soft)] px-3.5 py-1.5 t-caption">
             Reference
-            <span className="font-mono font-bold tracking-wide text-[color:var(--color-ink)]">
-              {bookingId}
-            </span>
+            <span className={reference}>{bookingId}</span>
           </p>
         </div>
 
@@ -202,51 +220,52 @@ export default function Confirmation() {
         </div>
 
         <h2 className="mt-10 t-h3">Payment</h2>
-        <dl className="mt-4 overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card">
+        <dl className={`${card} mt-4 overflow-hidden`}>
           {receipt.map((row, i) => (
             <div
               key={row.label}
               className={`flex items-center justify-between gap-4 px-5 py-3.5 ${i ? "border-t border-[color:var(--color-border)]" : ""}`}
             >
               <dt className="t-body-sm">{row.label}</dt>
-              <dd className="text-right t-body-sm font-bold tabular text-[color:var(--color-ink)]">
+              <dd
+                className={`text-right ${row.amount ? "t-body-sm t-amount" : metaValue}`}
+              >
                 {row.value}
               </dd>
             </div>
           ))}
           <div className="flex flex-wrap gap-2 border-t border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] px-4 py-3">
-            <Button variant="secondary" size="sm" to={invoiceUrl}>
+            <Button variant="ghost" size="sm" to={invoiceUrl}>
               <Icon name="download" size={15} />
               Invoice
             </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => window.print()}
-            >
+            <Button variant="ghost" size="sm" onClick={() => window.print()}>
               <Icon name="download" size={15} />
               Print
             </Button>
-            <a
-              href={`mailto:?subject=${encodeURIComponent(`DrukDrive booking ${bookingId}`)}`}
-              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 t-caption font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)] lg:min-h-0 lg:py-2"
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                window.location.href = `mailto:?subject=${encodeURIComponent(`DrukDrive booking ${bookingId}`)}`;
+              }}
             >
               <Icon name="mail" size={15} />
               Email
-            </a>
+            </Button>
           </div>
         </dl>
 
         {status === "Upcoming" && (
           <>
             <h2 className="mt-10 t-h3">What happens next</h2>
-            <ol className="mt-4 flex flex-col gap-3 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
+            <ol className={`${card} mt-4 flex flex-col gap-3 p-5`}>
               {nextSteps.map((step, i) => (
-                <li key={step} className="flex items-start gap-3 t-body">
-                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-ink)] t-caption font-bold tabular text-white">
+                <li key={i} className="flex items-start gap-3 t-body">
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[color:var(--color-ink)] t-caption font-semibold tabular text-white">
                     {i + 1}
                   </span>
-                  {step}
+                  <span>{step}</span>
                 </li>
               ))}
             </ol>
@@ -257,14 +276,14 @@ export default function Confirmation() {
           <Button variant="primary" size="lg" to={routes.accountBookings}>
             My bookings
           </Button>
-          <Button variant="secondary" size="lg" to={routes.home}>
+          <Button variant="ghost" size="lg" to={routes.home}>
             Book another
           </Button>
           {status === "Upcoming" && (
             <button
               type="button"
               onClick={() => setCancelOpen(true)}
-              className="inline-flex min-h-11 items-center justify-center rounded-xl px-4 t-body-sm font-semibold text-[color:var(--color-danger)] hover:bg-[color:var(--color-danger-bg)] sm:ml-auto"
+              className={`${dangerAction} sm:ml-auto`}
             >
               Cancel booking
             </button>
@@ -272,10 +291,7 @@ export default function Confirmation() {
         </div>
         <p className="mt-4 t-caption">
           Free cancellation up to 24 hours before pick-up. See the{" "}
-          <Link
-            to={routes.refundPolicy}
-            className="font-semibold text-[color:var(--color-link)] underline"
-          >
+          <Link to={routes.refundPolicy} className={inlineLink}>
             refund policy
           </Link>
           .
@@ -290,7 +306,9 @@ export default function Confirmation() {
               className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
               onClick={() => setCancelOpen(false)}
             />
-            <div className="animate-sheet-up relative w-full rounded-t-3xl bg-white p-6 shadow-modal sm:max-w-[440px] sm:rounded-3xl">
+            <div
+              className={`${sheet} relative w-full p-6 sm:max-w-[440px] sm:rounded-3xl`}
+            >
               <div className="flex items-start justify-between gap-3">
                 <h2 className="t-h3">Cancel this booking?</h2>
                 <button
@@ -303,7 +321,9 @@ export default function Confirmation() {
                 </button>
               </div>
               <p className="mt-2 t-body">
-                {`You'll get ${format(split.now)} back to the way you paid, usually within 3 to 5 working days.`}
+                You&rsquo;ll get{" "}
+                <span className="t-amount">{format(split.now)}</span> back to
+                the way you paid, usually within 3 to 5 working days.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row-reverse">
                 <Button

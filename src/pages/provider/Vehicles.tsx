@@ -4,6 +4,7 @@ import PageShell from "../../components/PageShell";
 import SecondaryTabs from "../../components/SecondaryTabs";
 import ProfileHero from "../../components/ProfileHero";
 import Icon from "../../components/Icon";
+import EmptyState from "../../components/EmptyState";
 import Button from "../../components/Button";
 import StatusBadge from "../../components/StatusBadge";
 import VehicleImage from "../../components/VehicleImage";
@@ -13,6 +14,7 @@ import { routes } from "../../lib/routes";
 import { useCurrency } from "../../lib/currency";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { card, menu, menuItem, metaLabel } from "../../lib/ui";
 
 export default function ProviderVehicles() {
   usePageTitle("My Vehicle");
@@ -39,37 +41,29 @@ export default function ProviderVehicles() {
 
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <div className="flex items-center justify-between">
-          <h2 className="t-h2 text-[color:var(--color-ink)]">My Vehicle</h2>
-          <Button to={routes.providerVehicleAdd} variant="primary" size="sm">
+          <h2 className="t-h2">My Vehicle</h2>
+          <Button to={routes.providerVehicleAdd} variant="primary" size="md">
             Add new
           </Button>
         </div>
 
         {driverVehicles.length === 0 ? (
-          <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-[color:var(--color-border)] py-16 text-center">
-            <Icon
-              name="car"
-              size={32}
-              className="text-[color:var(--color-muted)]"
-            />
-            <p className="mt-3 t-body-sm font-semibold text-[color:var(--color-ink)]">
-              No vehicles added yet
-            </p>
-            <Button
-              to={routes.providerVehicleAdd}
-              variant="primary"
-              size="sm"
-              className="mt-4"
-            >
-              Add your first vehicle
-            </Button>
-          </div>
+          <EmptyState
+            icon="car"
+            title="No vehicles yet"
+            description="Add a vehicle to start receiving bookings."
+            action={
+              <Button to={routes.providerVehicleAdd} variant="primary">
+                Add your first vehicle
+              </Button>
+            }
+          />
         ) : (
-          <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {driverVehicles.map((v) => (
               <div
                 key={v.id}
-                className="relative flex flex-col overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card transition-shadow duration-300 hover:shadow-lift"
+                className={`relative flex flex-col overflow-hidden ${card}`}
               >
                 <div className="flex items-center justify-between gap-3 px-5 pt-4">
                   <StatusBadge status={v.status} />
@@ -94,7 +88,7 @@ export default function ProviderVehicles() {
                 </div>
                 <div className="flex flex-1 flex-col px-5 pb-5">
                   <p className="t-h4 truncate">{v.name}</p>
-                  <p className="mt-0.5 t-body-sm">
+                  <p className="mt-0.5 t-caption">
                     {vehicleClassOf[v.category]} ·{" "}
                     <span className="tabular">{v.plate}</span>
                   </p>
@@ -110,19 +104,22 @@ export default function ProviderVehicles() {
                   </div>
                   <div className="mt-4 flex items-end justify-between border-t border-[color:var(--color-border)] pt-4">
                     <div>
-                      <p className="t-caption">Your rate</p>
-                      <p className="t-h4 t-amount">
-                        {format(v.pricePerDay)}{" "}
-                        <span className="t-caption font-medium">/day</span>
+                      <p className={metaLabel}>Your rate</p>
+                      <p>
+                        <span className="t-h4 t-amount">
+                          {format(v.pricePerDay)}
+                        </span>{" "}
+                        <span className="t-caption">/day</span>
                       </p>
                     </div>
-                    <Link
+                    <Button
+                      variant="ghost"
+                      size="md"
                       to={`${routes.providerVehicleAdd}?edit=${v.id}`}
-                      className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-[color:var(--color-border)] px-3.5 t-body-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:border-[color:var(--color-ink)]"
                     >
                       <Icon name="edit" size={15} />
                       Edit
-                    </Link>
+                    </Button>
                   </div>
                 </div>
 
@@ -133,18 +130,20 @@ export default function ProviderVehicles() {
                       className="fixed inset-0 z-30 cursor-default"
                       onClick={() => setOpenMenu(null)}
                     />
-                    <div className="absolute right-4 top-14 z-40 w-40 overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white py-1 shadow-pop">
+                    <div
+                      className={`absolute right-4 top-14 z-40 w-40 ${menu}`}
+                    >
                       <Link
                         to={`${routes.providerVehicleAdd}?edit=${v.id}`}
                         onClick={() => setOpenMenu(null)}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-left t-body-sm text-[color:var(--color-ink-soft)] hover:bg-[color:var(--color-surface-soft)]"
+                        className={menuItem}
                       >
                         <Icon name="edit" size={15} />
                         Edit
                       </Link>
                       <button
                         type="button"
-                        className="flex w-full items-center gap-2 px-3 py-2 text-left t-body-sm text-[color:var(--color-danger)] hover:bg-[color:var(--color-surface-soft)]"
+                        className={`${menuItem} text-[color:var(--color-danger)]!`}
                         onClick={() => handleRemove(v.id, v.name)}
                       >
                         <Icon name="trash" size={15} />

@@ -1,6 +1,7 @@
 import FareSummary from "./FareSummary";
 import type { Fare } from "../lib/pricing";
 import { currencies, useCurrency } from "../lib/currency";
+import { card, inset } from "../lib/ui";
 
 // The one price card used on Review, Details, Payment and Confirmation:
 // total, the fare breakdown behind a chevron, and how the payment splits.
@@ -38,14 +39,16 @@ export default function PriceSummaryCard({
     `${nu.symbol} ${Math.round(usd * nu.rateFromUsd).toLocaleString()}`;
   const showNu = currency !== "BTN";
   return (
-    <div
-      id={id}
-      className="scroll-mt-24 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card"
-    >
+    <div id={id} className={`${card} scroll-mt-24 p-5`}>
       <p className="t-h2 t-amount">{format(netPayable)}</p>
       <p className="t-body-sm text-[color:var(--color-muted)]">
         Total for {fare.unit}, taxes and fees included
-        {showNu && ` · ≈ ${inNu(netPayable)}`}
+        {showNu && (
+          <>
+            {" "}
+            · ≈ <span className="t-amount">{inNu(netPayable)}</span>
+          </>
+        )}
       </p>
 
       <div className="mt-3">
@@ -69,52 +72,56 @@ export default function PriceSummaryCard({
         />
       </div>
 
-      <dl className="mt-4 flex flex-col gap-2 rounded-xl bg-[color:var(--color-surface-subtle)] px-4 py-3.5">
+      <dl className={`${inset} mt-4 flex flex-col gap-2 px-4 py-3.5`}>
         <div className="flex items-center justify-between gap-3">
           <dt>
-            <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
+            <span className="block t-body-sm font-semibold text-[color:var(--color-ink)]">
               Pay now
             </span>
-            <span className="block t-caption text-[color:var(--color-muted)]">
+            <span className="block t-caption">
               {payLater > 0
                 ? "Half the fare, to confirm your booking"
                 : "The full fare, to confirm your booking"}
-              {showNu && ` · ≈ ${inNu(payNow)}`}
+              {showNu && (
+                <>
+                  {" "}
+                  · ≈ <span className="t-amount">{inNu(payNow)}</span>
+                </>
+              )}
             </span>
           </dt>
-          <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
-            {format(payNow)}
-          </dd>
+          <dd className="shrink-0 t-body t-amount">{format(payNow)}</dd>
         </div>
         {payLater > 0 && (
           <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2">
             <dt>
-              <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
+              <span className="block t-body-sm font-semibold text-[color:var(--color-ink)]">
                 Pay at pick-up
               </span>
-              <span className="block t-caption text-[color:var(--color-muted)]">
+              <span className="block t-caption">
                 {balanceLabel}
-                {showNu && ` · ≈ ${inNu(payLater)}`}
+                {showNu && (
+                  <>
+                    {" "}
+                    · ≈ <span className="t-amount">{inNu(payLater)}</span>
+                  </>
+                )}
               </span>
             </dt>
-            <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
-              {format(payLater)}
-            </dd>
+            <dd className="shrink-0 t-body t-amount">{format(payLater)}</dd>
           </div>
         )}
         {fare.deposit > 0 && (
           <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2">
             <dt>
-              <span className="block t-body-sm font-bold text-[color:var(--color-ink)]">
+              <span className="block t-body-sm font-semibold text-[color:var(--color-ink)]">
                 Deposit at collection
               </span>
-              <span className="block t-caption text-[color:var(--color-muted)]">
+              <span className="block t-caption">
                 Refundable, released within 3 days of return
               </span>
             </dt>
-            <dd className="shrink-0 t-body font-bold tabular text-[color:var(--color-ink)]">
-              {format(fare.deposit)}
-            </dd>
+            <dd className="shrink-0 t-body t-amount">{format(fare.deposit)}</dd>
           </div>
         )}
       </dl>

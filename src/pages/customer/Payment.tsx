@@ -38,6 +38,18 @@ import {
   paymentSplit,
   promoDiscount,
 } from "../../lib/pricing";
+import {
+  card,
+  inlineLink,
+  input as inputClass,
+  inset,
+  label as labelClass,
+  labelNote,
+  metaLabel,
+  metaValue,
+  rowHover,
+  otpDigit,
+} from "../../lib/ui";
 
 type PaymentMethod = "card" | "netbanking" | "paypal";
 
@@ -140,11 +152,6 @@ export default function Payment() {
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const inputClass =
-    "h-12 w-full rounded-xl border border-[color:var(--color-border)] bg-white px-3.5 t-body text-[color:var(--color-ink)] placeholder:text-[color:var(--color-muted)] outline-none focus:border-[color:var(--color-ink)]";
-  const labelClass =
-    "mb-1.5 block t-body-sm font-semibold text-[color:var(--color-ink)]";
-
   function finish(methodLabel: string) {
     const params = new URLSearchParams(searchParams);
     params.set("vehicleId", vehicle.id);
@@ -177,7 +184,7 @@ export default function Payment() {
         to={routes.termsOfService}
         target="_blank"
         rel="noopener noreferrer"
-        className="font-semibold text-[color:var(--color-link)] underline"
+        className={inlineLink}
       >
         Terms of Service
       </Link>{" "}
@@ -186,7 +193,7 @@ export default function Payment() {
         to={routes.refundPolicy}
         target="_blank"
         rel="noopener noreferrer"
-        className="font-semibold text-[color:var(--color-link)] underline"
+        className={inlineLink}
       >
         Refund Policy
       </Link>
@@ -232,7 +239,7 @@ export default function Payment() {
             />
           </p>
           <div className="mt-1.5 flex items-center gap-2">
-            <span className="rounded-md bg-[color:var(--color-success)] px-2 py-0.5 t-caption font-bold tabular text-white">
+            <span className="rounded-full bg-[color:var(--color-success)] px-2 py-0.5 t-caption font-semibold tabular text-white">
               {assignedDriver.rating.toFixed(1)}/5
             </span>
             <span className="border-l border-[color:var(--color-border)] pl-2 t-body-sm text-[color:var(--color-ink)]">
@@ -241,33 +248,27 @@ export default function Payment() {
           </div>
         </div>
       </div>
-      <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-[color:var(--color-border)] pt-4 t-body-sm sm:grid-cols-3">
+      <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-[color:var(--color-border)] pt-4 sm:grid-cols-3">
         <div>
-          <dt className="t-caption">Vehicle</dt>
-          <dd className="font-semibold text-[color:var(--color-ink)]">
-            {vehicle.name}
-          </dd>
+          <dt className={metaLabel}>Vehicle</dt>
+          <dd className={metaValue}>{vehicle.name}</dd>
         </div>
         <div>
-          <dt className="t-caption">Number plate</dt>
-          <dd className="font-semibold tabular text-[color:var(--color-ink)]">
-            {assignedDriver.plate}
-          </dd>
+          <dt className={metaLabel}>Number plate</dt>
+          <dd className={`${metaValue} tabular`}>{assignedDriver.plate}</dd>
         </div>
         <div>
-          <dt className="t-caption">Driving since</dt>
-          <dd className="font-semibold text-[color:var(--color-ink)]">
-            {assignedDriver.since}
-          </dd>
+          <dt className={metaLabel}>Driving since</dt>
+          <dd className={metaValue}>{assignedDriver.since}</dd>
         </div>
         <div className="col-span-2 sm:col-span-3">
-          <dt className="t-caption">Speaks</dt>
-          <dd className="font-semibold text-[color:var(--color-ink)]">
-            {assignedDriver.languages}
-          </dd>
+          <dt className={metaLabel}>Speaks</dt>
+          <dd className={metaValue}>{assignedDriver.languages}</dd>
         </div>
       </dl>
-      <p className="mt-4 flex items-start gap-2 rounded-xl bg-[color:var(--color-surface-subtle)] px-3.5 py-3 t-caption">
+      <p
+        className={`${inset} mt-4 flex items-start gap-2 px-3.5 py-3 t-caption`}
+      >
         <Icon
           name="phone"
           size={15}
@@ -296,9 +297,7 @@ export default function Payment() {
 
   const otpPanel = (
     <div className="p-4 sm:p-5">
-      <p className="t-body font-bold text-[color:var(--color-ink)]">
-        Request sent to {bank}
-      </p>
+      <p className="t-h4">Request sent to {bank}</p>
       <p className="mt-1 t-body-sm">
         Approve the payment in your banking app, then enter the one-time code
         your bank sent you.
@@ -320,21 +319,22 @@ export default function Payment() {
                 otpRefs.current[i - 1]?.focus();
             }}
             aria-label={`Digit ${i + 1}`}
-            className="h-12 w-11 rounded-xl border border-[color:var(--color-border)] text-center t-h4 outline-none focus:border-[color:var(--color-ink)] sm:w-12"
+            className={`${otpDigit} border-[color:var(--color-border)]`}
           />
         ))}
       </div>
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <button
+        <Button
+          variant="link"
           type="button"
           onClick={() => {
             setOtpStage(false);
             setDigits(Array(OTP_LENGTH).fill(""));
           }}
-          className="inline-flex min-h-11 items-center t-body-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
+          className="self-start sm:self-auto"
         >
           Use a different method
-        </button>
+        </Button>
         <Button
           variant="primary"
           size="lg"
@@ -358,7 +358,9 @@ export default function Payment() {
             key={m.value}
             className="border-t border-[color:var(--color-border)] first:border-t-0"
           >
-            <label className="flex min-h-[60px] w-full cursor-pointer items-center gap-3 px-4 text-left transition-colors hover:bg-[color:var(--color-surface-subtle)] sm:px-5">
+            <label
+              className={`flex min-h-[60px] w-full cursor-pointer items-center gap-3 px-4 text-left sm:px-5 ${rowHover}`}
+            >
               <input
                 type="radio"
                 name="payment-method"
@@ -379,7 +381,7 @@ export default function Payment() {
                   <span className="size-2.5 rounded-full bg-[color:var(--color-ink)]" />
                 )}
               </span>
-              <span className="min-w-0 flex-1 t-body font-bold text-[color:var(--color-ink)]">
+              <span className="min-w-0 flex-1 t-body font-semibold text-[color:var(--color-ink)]">
                 {m.title}
               </span>
               <span aria-hidden className="flex shrink-0 items-center gap-2">
@@ -520,7 +522,7 @@ export default function Payment() {
                 <label>
                   <span className={labelClass}>
                     Bank account number{" "}
-                    <span className="font-normal text-[color:var(--color-muted)]">
+                    <span className={labelNote}>
                       (savings, current or overdraft)
                     </span>
                   </span>
@@ -564,15 +566,16 @@ export default function Payment() {
             {active && m.value === "paypal" && (
               <div className="border-t border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] p-4 sm:p-5">
                 <p className="t-body-sm">
-                  You&rsquo;ll be taken to PayPal to approve {format(amountDue)}
-                  , then brought back here.
+                  You&rsquo;ll be taken to PayPal to approve{" "}
+                  <span className="t-amount">{format(amountDue)}</span>, then
+                  brought back here.
                 </p>
                 <a
                   href="https://www.paypal.com/checkoutnow"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => finish("PayPal")}
-                  className="mt-4 flex h-12 w-full items-center justify-center rounded-full bg-[#ffc439] transition-colors hover:bg-[#f2b92c]"
+                  className="mt-4 flex h-12 w-full items-center justify-center rounded-xl bg-[#ffc439] transition-colors duration-150 hover:bg-[#f2b92c]"
                 >
                   <BrandLogo
                     name="paypal"
@@ -646,9 +649,7 @@ export default function Payment() {
               <h2 className="t-h3">
                 {selfDrive ? "Collecting the car" : "Your driver"}
               </h2>
-              <div className="mt-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card">
-                {driverCard}
-              </div>
+              <div className={`${card} mt-4 p-5`}>{driverCard}</div>
 
               {travelerName && (
                 <>
@@ -662,13 +663,13 @@ export default function Payment() {
                       <Icon name="edit" size={16} />
                     </Link>
                   </div>
-                  <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-card sm:grid-cols-2">
+                  <dl
+                    className={`${card} mt-4 grid grid-cols-1 gap-x-8 gap-y-3 p-5 sm:grid-cols-2`}
+                  >
                     {detailRows.map(([k, v]) => (
                       <div key={k} className="min-w-0">
-                        <dt className="t-caption">{k}</dt>
-                        <dd className="break-words t-body font-semibold text-[color:var(--color-ink)]">
-                          {v}
-                        </dd>
+                        <dt className={metaLabel}>{k}</dt>
+                        <dd className={`${metaValue} break-words`}>{v}</dd>
                       </div>
                     ))}
                   </dl>
@@ -695,7 +696,7 @@ export default function Payment() {
               </div>
 
               <h2 className="mt-10 t-h3">Payment method</h2>
-              <div className="mt-4 overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-white shadow-card">
+              <div className={`${card} mt-4 overflow-hidden`}>
                 {otpStage ? otpPanel : methodList}
               </div>
 
@@ -718,13 +719,18 @@ export default function Payment() {
 
       {/* Mobile: card payments confirm from the bottom bar, like Continue on the other steps. */}
       {method === "card" && !otpStage && (
-        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0px_-2px_14px_rgba(0,0,0,0.08)] lg:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-4 border-t border-[color:var(--color-border)] bg-white p-4 shadow-[0_-2px_14px_var(--color-border-soft)] lg:hidden">
           <div className="flex flex-col items-start">
             <span className="t-h3 t-amount">{format(amountDue)}</span>
             <span className="t-caption">
-              {balance > 0
-                ? `of ${format(netPayable)} total`
-                : "incl. taxes & fees"}
+              {balance > 0 ? (
+                <>
+                  of <span className="t-amount">{format(netPayable)}</span>{" "}
+                  total
+                </>
+              ) : (
+                "incl. taxes & fees"
+              )}
             </span>
           </div>
           <Button

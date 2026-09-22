@@ -24,7 +24,7 @@ export default function SectionHeader({
   return (
     <div className="mb-6 flex items-end justify-between gap-4 md:mb-8">
       <div>
-        <h2 className="t-h2 text-[color:var(--color-ink)]">{title}</h2>
+        <h2 className="t-h3">{title}</h2>
         {subtitle && (
           <p className="t-body mt-1.5 text-[color:var(--color-muted)]">
             {subtitle}

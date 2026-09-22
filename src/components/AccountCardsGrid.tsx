@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Icon from "./Icon";
 import type { IconName } from "./Icon";
+import { cardLink } from "../lib/ui";
 
 export type AccountCard = {
   icon: IconName;
@@ -18,7 +19,7 @@ export default function AccountCardsGrid({ cards }: { cards: AccountCard[] }) {
         <Link
           key={c.title}
           to={c.to}
-          className="flex flex-col gap-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-6 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--color-ink)] hover:shadow-lift"
+          className={`${cardLink} flex flex-col gap-4 p-6`}
         >
           <Icon
             name={c.icon}

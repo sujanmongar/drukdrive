@@ -16,6 +16,7 @@ import { formatDropoff, formatPickup, parseBooking } from "../../lib/booking";
 import { bookingTypeLabels } from "../../lib/routes";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { card, inset, metaLabel, metaValue, reference } from "../../lib/ui";
 
 export default function Invoice() {
   usePageTitle("Invoice");
@@ -89,39 +90,37 @@ export default function Invoice() {
     <PageShell noFooter>
       <div className="mx-auto max-w-[820px] px-4 py-12 md:px-10 print:py-0">
         <div className="mb-6 flex items-center justify-between print:hidden">
-          <button
+          <Button
+            variant="link"
             type="button"
             onClick={() => window.history.back()}
-            className="inline-flex min-h-11 cursor-pointer items-center gap-2 t-body-sm font-semibold text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)]"
           >
             <Icon name="arrow-left" size={18} />
             Back
-          </button>
-          <Button variant="secondary" size="sm" onClick={() => window.print()}>
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => window.print()}>
             <Icon name="download" size={16} />
             Download PDF
           </Button>
         </div>
 
-        <div className="rounded-xl border border-[color:var(--color-border)] p-8 shadow-card print:border-0 print:p-0 print:shadow-none">
-          <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-[color:var(--color-surface-subtle)] px-5 py-4">
+        <div
+          className={`${card} p-8 print:border-0 print:p-0 print:shadow-none`}
+        >
+          <div
+            className={`${inset} flex flex-wrap items-center justify-between gap-4 px-5 py-4`}
+          >
             <DrukDriveLogo className="h-6 w-auto text-[color:var(--color-ink)]" />
-            <p className="t-h3 text-[color:var(--color-ink)]">Invoice</p>
+            <p className="t-h3">Invoice</p>
           </div>
 
           <div className="mt-5 flex flex-wrap items-start justify-between gap-4 border-b border-[color:var(--color-border)] pb-6 t-body-sm">
             <div>
               <p className="text-[color:var(--color-muted)]">
-                Invoice No:{" "}
-                <span className="font-semibold text-[color:var(--color-ink)]">
-                  DD-{bookingId}
-                </span>
+                Invoice No: <span className={reference}>DD-{bookingId}</span>
               </p>
               <p className="text-[color:var(--color-muted)]">
-                Booking ID:{" "}
-                <span className="font-semibold text-[color:var(--color-ink)]">
-                  {bookingId}
-                </span>
+                Booking ID: <span className={reference}>{bookingId}</span>
               </p>
               <p className="text-[color:var(--color-muted)]">
                 Date:{" "}
@@ -134,12 +133,8 @@ export default function Invoice() {
 
           <div className="grid grid-cols-1 gap-4 border-b border-[color:var(--color-border)] py-6 sm:grid-cols-2">
             <div>
-              <p className="t-caption font-semibold text-[color:var(--color-muted)]">
-                Invoiced To
-              </p>
-              <p className="mt-1 t-body-sm font-semibold text-[color:var(--color-ink)]">
-                {travelerName}
-              </p>
+              <p className={metaLabel}>Invoiced To</p>
+              <p className={`${metaValue} mt-1`}>{travelerName}</p>
               <p className="t-body-sm text-[color:var(--color-muted)]">
                 {currentUser.address}
               </p>
@@ -151,12 +146,8 @@ export default function Invoice() {
               </p>
             </div>
             <div className="sm:text-right">
-              <p className="t-caption font-semibold text-[color:var(--color-muted)]">
-                Pay To
-              </p>
-              <p className="mt-1 t-body-sm font-semibold text-[color:var(--color-ink)]">
-                DrukDrive
-              </p>
+              <p className={metaLabel}>Pay To</p>
+              <p className={`${metaValue} mt-1`}>DrukDrive</p>
               <p className="t-body-sm text-[color:var(--color-muted)]">
                 Norzin Lam, Thimphu 11001
               </p>
@@ -170,21 +161,15 @@ export default function Invoice() {
           </div>
 
           <div className="border-b border-[color:var(--color-border)] py-6">
-            <p className="mb-1 t-caption font-semibold text-[color:var(--color-muted)]">
-              Payment Method
-            </p>
-            <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
-              {method}
-            </p>
+            <p className={`${metaLabel} mb-1`}>Payment Method</p>
+            <p className={metaValue}>{method}</p>
           </div>
 
           <div className="py-6">
-            <h2 className="t-h4 mb-3 text-[color:var(--color-ink)]">
-              Booking Summary
-            </h2>
+            <h2 className="mb-3 t-h3">Booking Summary</h2>
             <table className="w-full t-body-sm">
               <thead>
-                <tr className="border-b border-[color:var(--color-border)] text-left t-caption font-semibold text-[color:var(--color-muted)]">
+                <tr className="border-b border-[color:var(--color-border)] text-left t-caption font-semibold">
                   <th className="pb-2 font-semibold">Description</th>
                   <th className="pb-2 font-semibold">Booked for</th>
                   <th className="pb-2 text-right font-semibold">Amount</th>
@@ -199,15 +184,13 @@ export default function Invoice() {
                     <td className="py-3 text-[color:var(--color-ink)]">
                       {i === 0 ? `${vehicleName} · ${typeLabel}` : l.label}
                       {i === 0 && fare && (
-                        <span className="block t-caption text-[color:var(--color-muted)]">
-                          {l.label}
-                        </span>
+                        <span className="block t-caption">{l.label}</span>
                       )}
                     </td>
                     <td className="py-3 text-[color:var(--color-ink)]">
                       {i === 0 ? unit : ""}
                     </td>
-                    <td className="py-3 text-right tabular text-[color:var(--color-ink)]">
+                    <td className="py-3 text-right t-amount">
                       {format(l.amount)}
                     </td>
                   </tr>
@@ -217,83 +200,86 @@ export default function Invoice() {
 
             <div className="mt-4 flex justify-end">
               <div className="w-full max-w-[260px] space-y-2">
-                <div className="flex justify-between t-body-sm text-[color:var(--color-ink-soft)]">
+                <div className="flex justify-between t-body-sm">
                   <span>Sub Total</span>
-                  <span>{format(baseFare)}</span>
+                  <span className="t-amount">{format(baseFare)}</span>
                 </div>
-                <div className="flex justify-between t-body-sm text-[color:var(--color-ink-soft)]">
+                <div className="flex justify-between t-body-sm">
                   <span>Taxes &amp; Fees</span>
-                  <span>{format(taxes)}</span>
+                  <span className="t-amount">{format(taxes)}</span>
                 </div>
                 <div className="h-px bg-[color:var(--color-border)]" />
-                <div className="flex justify-between rounded-lg bg-[color:var(--color-surface-subtle)] px-3 py-2 t-body-sm font-bold text-[color:var(--color-ink)]">
+                <div
+                  className={`${inset} flex justify-between px-3 py-2 t-body-sm font-semibold text-[color:var(--color-ink)]`}
+                >
                   <span>Total</span>
-                  <span>{format(total)}</span>
+                  <span className="t-amount">{format(total)}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between t-body-sm font-semibold text-[color:var(--color-success-deep)]">
                     <span>Discount{promoCode ? ` (${promoCode})` : ""}</span>
-                    <span>-{format(discount)}</span>
+                    <span className="t-amount text-[color:var(--color-success-deep)]">
+                      -{format(discount)}
+                    </span>
                   </div>
                 )}
-                <div className="flex justify-between rounded-lg bg-[color:var(--color-info-bg)] px-3 py-2.5 t-body-sm font-bold text-[color:var(--color-ink)]">
+                <div
+                  className={`${inset} flex justify-between px-3 py-2.5 t-body-sm font-semibold text-[color:var(--color-ink)]`}
+                >
                   <span>Net Payable</span>
-                  <span>{format(netPayable)}</span>
+                  <span className="t-amount">{format(netPayable)}</span>
                 </div>
                 {balance > 0 && (
                   <>
-                    <div className="flex justify-between t-body-sm text-[color:var(--color-ink-soft)]">
+                    <div className="flex justify-between t-body-sm">
                       <span>Paid now</span>
-                      <span>{format(amountPaid)}</span>
+                      <span className="t-amount">{format(amountPaid)}</span>
                     </div>
                     <div className="flex justify-between t-body-sm font-semibold text-[color:var(--color-ink)]">
                       <span>Balance due at pick-up</span>
-                      <span>{format(balance)}</span>
+                      <span className="t-amount">{format(balance)}</span>
                     </div>
                   </>
                 )}
                 {fare && fare.deposit > 0 && (
-                  <p className="t-caption text-[color:var(--color-muted)]">
-                    A refundable deposit of {format(fare.deposit)} is held at
-                    collection and is not part of this invoice.
+                  <p className="t-caption">
+                    A refundable deposit of{" "}
+                    <span className="t-amount">{format(fare.deposit)}</span> is
+                    held at collection and is not part of this invoice.
                   </p>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-2 border-t border-[color:var(--color-border)] py-6 t-body-sm sm:grid-cols-2">
-            <div className="flex justify-between sm:block">
-              <span className="text-[color:var(--color-muted)]">
-                Transaction Date
-              </span>
-              <span className="ml-2 font-semibold text-[color:var(--color-ink)] sm:ml-0 sm:block">
+          <div className="grid grid-cols-1 gap-2 border-t border-[color:var(--color-border)] py-6 sm:grid-cols-2">
+            <div className="flex items-baseline justify-between sm:block">
+              <span className={metaLabel}>Transaction Date</span>
+              <span className={`${metaValue} ml-2 sm:ml-0 sm:block`}>
                 {bookingDate}
               </span>
             </div>
-            <div className="flex justify-between sm:block">
-              <span className="text-[color:var(--color-muted)]">Method</span>
-              <span className="ml-2 font-semibold text-[color:var(--color-ink)] sm:ml-0 sm:block">
+            <div className="flex items-baseline justify-between sm:block">
+              <span className={metaLabel}>Method</span>
+              <span className={`${metaValue} ml-2 sm:ml-0 sm:block`}>
                 {method}
               </span>
             </div>
-            <div className="flex justify-between sm:block">
-              <span className="text-[color:var(--color-muted)]">
-                Transaction ID
-              </span>
-              <span className="ml-2 font-semibold text-[color:var(--color-ink)] sm:ml-0 sm:block">
+            <div className="flex items-baseline justify-between sm:block">
+              <span className={metaLabel}>Transaction ID</span>
+              <span className={`${reference} ml-2 sm:ml-0 sm:block`}>
                 HBTTB{bookingId.slice(-7)}
               </span>
             </div>
-            <div className="flex justify-between sm:block">
-              <span className="text-[color:var(--color-muted)]">Status</span>
-              <span className="ml-2 font-semibold text-[color:var(--color-success)] sm:ml-0 sm:block">
+            <div className="flex items-baseline justify-between sm:block">
+              <span className={metaLabel}>Status</span>
+              <span className="ml-2 t-body-sm font-semibold text-[color:var(--color-success-deep)] sm:ml-0 sm:block">
                 Paid
               </span>
             </div>
           </div>
 
-          <div className="border-t border-[color:var(--color-border)] pt-6 text-center t-caption text-[color:var(--color-muted)]">
+          <div className="border-t border-[color:var(--color-border)] pt-6 text-center t-caption">
             Thank you for booking with DrukDrive. This is a computer-generated
             invoice.
           </div>
@@ -301,7 +287,7 @@ export default function Invoice() {
 
         <div className="mt-8 flex gap-3 print:hidden">
           <Button
-            variant="secondary"
+            variant="ghost"
             size="lg"
             onClick={() => window.print()}
             fullWidth

@@ -4,6 +4,8 @@ import Icon from "./Icon";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import AnchoredPopover from "./AnchoredPopover";
 import { TIME_OPTIONS } from "../lib/timeOptions";
+import { input, metaLabel, metaValue } from "../lib/ui";
+import Button from "./Button";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTH_NAMES = [
@@ -66,7 +68,7 @@ function MonthGrid({
 
   return (
     <div>
-      <p className="mb-3 t-body font-bold text-[color:var(--color-ink)]">
+      <p className="mb-3 t-body font-semibold text-[color:var(--color-ink)]">
         {MONTH_NAMES[month]} {year}
       </p>
       <div className="grid grid-cols-7 gap-y-2 text-center">
@@ -87,11 +89,11 @@ function MonthGrid({
               type="button"
               disabled={past}
               onClick={() => onPick(date)}
-              className={`mx-auto flex size-10 items-center justify-center rounded-full t-body-sm transition-all duration-150 active:scale-90 ${
+              className={`mx-auto flex size-10 items-center justify-center rounded-full t-body-sm transition-all duration-150 active:scale-[0.98] ${
                 past
-                  ? "text-[color:var(--color-placeholder)]"
+                  ? "text-[color:var(--color-muted)] opacity-50"
                   : isPickup || isDropoff
-                    ? "bg-[color:var(--color-ink)] font-bold text-white"
+                    ? "bg-[color:var(--color-ink)] font-semibold text-white"
                     : inRange
                       ? "bg-[color:var(--color-surface-soft)] text-[color:var(--color-ink)]"
                       : "text-[color:var(--color-ink)] hover:bg-[color:var(--color-surface-soft)]"
@@ -185,7 +187,7 @@ export default function DatePickerSheet({
   }
 
   const title = (
-    <p className="t-h4">Select {mode === "range" ? "dates" : "a date"}</p>
+    <h2 className="t-h3">Select {mode === "range" ? "dates" : "a date"}</h2>
   );
 
   const weekdayRow = (
@@ -219,20 +221,21 @@ export default function DatePickerSheet({
   ) {
     return (
       <div>
-        <p className="t-caption text-[color:var(--color-muted)]">{label}</p>
-        <p className="mt-0.5 t-body font-bold text-[color:var(--color-ink)]">
+        <p className={metaLabel}>{label}</p>
+        <p className={`mt-0.5 ${metaValue}`}>
           {date ? formatShort(date) : "Select date"}
         </p>
-        <label className="mt-2 inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-lg bg-[color:var(--color-success-bg)] px-3">
+        <div className="relative mt-2">
           <Icon
             name="clock"
-            size={14}
-            className="shrink-0 text-[color:var(--color-success)]"
+            size={16}
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[color:var(--color-muted)]"
           />
           <select
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            className="appearance-none bg-transparent t-body font-bold text-[color:var(--color-success)] outline-none"
+            aria-label={`${label} time`}
+            className={`${input} cursor-pointer appearance-none pl-10 pr-9`}
           >
             {TIME_OPTIONS.map((t) => (
               <option key={t}>{t}</option>
@@ -240,23 +243,24 @@ export default function DatePickerSheet({
           </select>
           <Icon
             name="chevron-down"
-            size={13}
-            className="shrink-0 text-[color:var(--color-success)]"
+            size={16}
+            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[color:var(--color-muted)]"
           />
-        </label>
+        </div>
       </div>
     );
   }
 
   const confirmButton = (
-    <button
-      type="button"
+    <Button
+      size="lg"
+      fullWidth
       onClick={handleConfirm}
       disabled={!pickupDate || (mode === "range" && !dropoffDate)}
-      className="h-12 w-full rounded-xl bg-[color:var(--color-ink)] t-body font-bold text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-40"
+      className="h-12"
     >
       Select
-    </button>
+    </Button>
   );
 
   // Desktop: calendar gets the full left column, with the pickup/drop-off

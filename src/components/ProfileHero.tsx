@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import Icon from "./Icon";
+import Button from "./Button";
 import { useCurrentUser } from "../lib/currentUser";
 import { routes } from "../lib/routes";
 
@@ -20,19 +20,12 @@ export default function ProfileHero({
           className="size-20 shrink-0 rounded-full bg-[color:var(--color-surface-soft)] object-cover md:size-24"
         />
         <div>
-          <h1 className="t-h1 text-[color:var(--color-ink)]">
-            Welcome, {currentUser.name.split(" ")[0]}
-          </h1>
-          <p className="mt-1 t-body-sm text-[color:var(--color-muted)]">
-            Joined in {currentUser.joinedYear}
-          </p>
-          <Link
-            to={editHref}
-            className="mt-1 inline-flex min-h-11 items-center t-body-sm font-semibold text-[color:var(--color-ink)] underline"
-          >
+          <h1 className="t-h1">Welcome, {currentUser.name.split(" ")[0]}</h1>
+          <p className="mt-1 t-caption">Joined in {currentUser.joinedYear}</p>
+          <Button variant="link" to={editHref} className="mt-1">
             Edit profile
-          </Link>
-          <div className="mt-3 flex flex-col gap-1.5 t-body-sm text-[color:var(--color-ink-soft)] sm:flex-row sm:items-center sm:gap-4">
+          </Button>
+          <div className="mt-3 flex flex-col gap-1.5 t-body-sm sm:flex-row sm:items-center sm:gap-4">
             <span className="flex items-center gap-1.5">
               <Icon name="location" size={16} />
               {currentUser.location}
@@ -44,13 +37,10 @@ export default function ProfileHero({
           </div>
         </div>
       </div>
-      <Link
-        to={reviewHref}
-        className="flex min-h-11 items-center gap-1.5 t-body-sm font-semibold text-[color:var(--color-ink)] underline"
-      >
+      <Button variant="link" to={reviewHref} className="self-start">
         <Icon name="edit" size={16} />
         Write review
-      </Link>
+      </Button>
     </div>
   );
 }

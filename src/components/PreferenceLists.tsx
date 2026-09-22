@@ -2,6 +2,7 @@ import { useState } from "react";
 import Icon from "./Icon";
 import { currencies, useCurrency } from "../lib/currency";
 import { languages, useLanguage } from "../lib/language";
+import { menuItem } from "../lib/ui";
 
 type View = "root" | "language" | "currency";
 
@@ -14,9 +15,6 @@ export default function PreferenceLists() {
 
   const activeCurrency = currencies.find((c) => c.code === currency)!;
   const activeLanguage = languages.find((l) => l.code === language)!;
-
-  const rowClass =
-    "flex w-full items-center gap-3 px-4 py-2.5 text-left t-body-sm text-[color:var(--color-ink-soft)] transition-colors hover:bg-[color:var(--color-surface-soft)]";
 
   if (view !== "root") {
     const isLanguage = view === "language";
@@ -39,7 +37,7 @@ export default function PreferenceLists() {
         <button
           type="button"
           onClick={() => setView("root")}
-          className="flex w-full items-center gap-2 px-4 py-2.5 text-left t-body-sm font-semibold text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)]"
+          className={`${menuItem} font-semibold`}
         >
           <Icon name="chevron-left" size={16} />
           {isLanguage ? "Language" : "Currency"}
@@ -54,9 +52,9 @@ export default function PreferenceLists() {
                 else setCurrency(o.key as never);
                 setView("root");
               }}
-              className={`${rowClass} ${o.selected ? "font-semibold text-[color:var(--color-ink)]" : ""}`}
+              className={`${menuItem} ${o.selected ? "bg-[color:var(--color-surface-soft)] font-semibold" : ""}`}
             >
-              <span className="t-body leading-none">{o.lead}</span>
+              <span className="t-body">{o.lead}</span>
               {o.label}
               {o.selected && (
                 <Icon
@@ -77,9 +75,9 @@ export default function PreferenceLists() {
       <button
         type="button"
         onClick={() => setView("language")}
-        className={rowClass}
+        className={menuItem}
       >
-        <span className="t-body leading-none">{activeLanguage.flag}</span>
+        <span className="t-body">{activeLanguage.flag}</span>
         {activeLanguage.native}
         <Icon
           name="chevron-right"
@@ -90,7 +88,7 @@ export default function PreferenceLists() {
       <button
         type="button"
         onClick={() => setView("currency")}
-        className={rowClass}
+        className={menuItem}
       >
         <span className="w-[1.05rem] text-center t-body-sm font-semibold text-[color:var(--color-muted)]">
           {activeCurrency.symbol.replace(".", "")}

@@ -4,6 +4,7 @@ import Icon from "./Icon";
 import Header from "./Header";
 import WishlistSheet from "./WishlistSheet";
 import SearchFields from "./SearchFields";
+import Button from "./Button";
 import type { EditSearchValue } from "./EditSearchModal";
 import { useWishlist } from "../lib/wishlist";
 import { bookingTypeLabels } from "../lib/routes";
@@ -62,7 +63,7 @@ export default function SearchSummaryHeader({
           </button>
 
           <div className="min-w-0 flex-1">
-            <p className="truncate t-body-sm font-bold text-[color:var(--color-ink)]">
+            <p className="truncate t-body-sm font-semibold text-[color:var(--color-ink)]">
               {search.pickup}
               {search.dropoff !== search.pickup && (
                 <>
@@ -74,7 +75,7 @@ export default function SearchSummaryHeader({
                 </>
               )}
             </p>
-            <p className="truncate t-caption text-[color:var(--color-muted)]">
+            <p className="truncate t-caption">
               {bookingTypeLabels[search.type]} &middot; {dateLabel},{" "}
               {search.pickupTime}
             </p>
@@ -101,7 +102,7 @@ export default function SearchSummaryHeader({
               className="text-[color:var(--color-ink)]"
             />
             {wishlistIds.length > 0 && (
-              <span className="absolute right-0 top-0 flex size-[15px] items-center justify-center rounded-full bg-[color:var(--color-danger)] t-label font-medium text-white">
+              <span className="absolute right-0 top-0 flex size-[15px] items-center justify-center rounded-full bg-[color:var(--color-danger)] t-label text-white">
                 {wishlistIds.length}
               </span>
             )}
@@ -129,14 +130,14 @@ export default function SearchSummaryHeader({
               layout="row"
               anchored
               action={
-                <button
-                  type="button"
+                <Button
+                  size="lg"
                   onClick={handleUpdate}
-                  className="flex h-[56px] shrink-0 items-center gap-2 rounded-xl bg-[color:var(--color-ink)] px-6 t-body-sm font-bold text-white transition-all duration-200 hover:bg-black"
+                  className="h-14 shrink-0"
                 >
                   <Icon name="search" size={16} />
                   Update
-                </button>
+                </Button>
               }
             />
           </div>

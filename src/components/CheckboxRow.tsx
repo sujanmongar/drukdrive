@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Icon from "./Icon";
+import { rowHover } from "../lib/ui";
 
 // The one checkbox glyph used everywhere: a 20px rounded box that fills
 // ink when checked. Wrap it in a label with the text beside it.
@@ -49,7 +50,7 @@ export function Checkbox({
 }) {
   return (
     <label
-      className={`flex min-h-11 cursor-pointer gap-3 rounded-lg t-body text-[color:var(--color-ink)] transition-colors hover:bg-[color:var(--color-surface-soft)] lg:min-h-9 lg:gap-2.5 lg:text-sm ${
+      className={`flex min-h-11 cursor-pointer gap-3 rounded-xl t-body text-[color:var(--color-ink)] ${rowHover} lg:min-h-9 lg:gap-2.5 lg:text-sm ${
         inline ? "w-fit -mx-2 px-2" : "-mx-2 px-2"
       } ${align === "start" ? "items-start py-2.5" : "items-center"}`}
     >

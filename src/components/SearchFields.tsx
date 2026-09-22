@@ -89,11 +89,11 @@ export default function SearchFields({
   }
 
   const fieldClass =
-    "flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 text-left transition-colors hover:border-[color:var(--color-ink)] lg:h-[56px]";
+    "flex h-[58px] w-full items-center gap-2 rounded-xl border border-[color:var(--color-border)] bg-white px-3 text-left transition-colors duration-150 hover:border-[color:var(--color-ink)] lg:h-[56px]";
   const labelClass =
     "whitespace-nowrap t-label text-[color:var(--color-ink-soft)]";
   const valueClass =
-    "truncate t-body-sm font-bold text-[color:var(--color-ink-87)]";
+    "truncate t-body-sm font-semibold text-[color:var(--color-ink)]";
   const row = layout === "row";
   const selfDrive = value.type === "self-drive";
 
@@ -142,7 +142,7 @@ export default function SearchFields({
             <Icon
               name="location"
               size={20}
-              className="shrink-0 text-[color:var(--color-ink)]"
+              className="shrink-0 text-[color:var(--color-muted)]"
             />
             <span className="flex min-w-0 flex-col gap-1">
               <span className={labelClass}>
@@ -216,7 +216,7 @@ export default function SearchFields({
               <Icon
                 name="location"
                 size={20}
-                className="shrink-0 text-[color:var(--color-ink)]"
+                className="shrink-0 text-[color:var(--color-muted)]"
               />
               <span className="flex min-w-0 flex-col gap-1">
                 <span className={labelClass}>
@@ -252,16 +252,16 @@ export default function SearchFields({
           ref={dateRef}
           className={`relative ${row ? "lg:min-w-0 lg:flex-[1.4]" : ""}`}
         >
-          <div className="flex overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white lg:h-[56px]">
+          <div className="flex overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white transition-colors duration-150 hover:border-[color:var(--color-ink)] lg:h-[56px]">
             <button
               type="button"
               onClick={() => setActive(active === "date" ? null : "date")}
-              className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-[color:var(--color-surface-soft)] lg:h-full"
+              className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left lg:h-full"
             >
               <Icon
                 name="calendar"
                 size={20}
-                className="shrink-0 text-[color:var(--color-ink)]"
+                className="shrink-0 text-[color:var(--color-muted)]"
               />
               <span className="flex min-w-0 flex-col gap-1">
                 <span className={labelClass}>{startLabel}</span>
@@ -274,12 +274,12 @@ export default function SearchFields({
             <button
               type="button"
               onClick={() => setActive(active === "date" ? null : "date")}
-              className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left transition-colors hover:bg-[color:var(--color-surface-soft)] lg:h-full"
+              className="flex h-14 min-w-0 flex-1 items-center gap-2 px-3 text-left lg:h-full"
             >
               <Icon
                 name={dayBased ? "calendar" : "clock"}
                 size={20}
-                className="shrink-0 text-[color:var(--color-ink)]"
+                className="shrink-0 text-[color:var(--color-muted)]"
               />
               <span className="flex min-w-0 flex-col gap-1">
                 <span className={labelClass}>{endLabel}</span>
