@@ -10,17 +10,14 @@ export default function ProviderFinance() {
   usePageTitle("Driver Finance");
   return (
     <PageShell>
-      <ProfileHero
-        editHref={routes.providerAccountEdit}
-        reviewHref={routes.providerReviews}
-      />
+      <ProfileHero editHref={routes.providerAccountEdit} />
       <div className="mt-6 md:mt-8">
         <SecondaryTabs tabs={providerTabs} />
       </div>
 
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <h2 className="t-h2">Finance</h2>
-        <FinanceLedger />
+        <FinanceLedger role="driver" />
       </div>
     </PageShell>
   );

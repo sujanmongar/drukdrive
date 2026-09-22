@@ -1,22 +1,32 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Icon from "./Icon";
 import Button from "./Button";
 import EmptyState from "./EmptyState";
-import WriteReviewModal from "./WriteReviewModal";
+import VehicleImage from "./VehicleImage";
+import WriteReviewModal, { type ReviewTarget } from "./WriteReviewModal";
 import { useReviews } from "../lib/reviews";
+import {
+  bookings,
+  driverBookings,
+  vehicles,
+  type Review,
+} from "../data/mockData";
 import { card } from "../lib/ui";
 
 function Stars({ rating }: { rating: number }) {
   return (
-    <div className="flex items-center gap-0.5">
-      {Array.from({ length: 5 }).map((_, i) => (
+    <div
+      className="flex items-center gap-0.5"
+      aria-label={`${rating} out of 5 stars`}
+    >
+      {[1, 2, 3, 4, 5].map((n) => (
         <Icon
-          key={i}
+          key={n}
           name="star"
           size={14}
           className={
-            i < rating
+            n <= rating
               ? "fill-current text-[color:var(--color-star)]"
               : "text-[color:var(--color-border)]"
           }
@@ -26,86 +36,174 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-// The reviews page body for both roles: title with the average, a write
-// button, then one card per review.
-export default function ReviewsList() {
-  const { reviews } = useReviews();
-  // "Rate your experience" notifications land here with ?write=1.
+const vehicleOf = (id: string) => vehicles.find((v) => v.id === id);
+const vehicleName = (id: string) => vehicleOf(id)?.name ?? "Vehicle";
+const categoryOf = (id: string) => vehicleOf(id)?.category ?? "Prime SUV";
+
+function ReviewCard({ r, showAuthor }: { r: Review; showAuthor: boolean }) {
+  return (
+    <div className={`${card} flex gap-4 p-4`}>
+      {showAuthor ? (
+        <img
+          src={r.avatar}
+          alt=""
+          className="size-11 shrink-0 rounded-full object-cover"
+        />
+      ) : (
+        <span className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[color:var(--color-surface-soft)]">
+          <VehicleImage
+            vehicleId={r.vehicleId}
+            category={categoryOf(r.vehicleId)}
+            transparent
+            className="size-full p-1"
+          />
+        </span>
+      )}
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
+            {showAuthor ? r.author : vehicleName(r.vehicleId)}
+          </p>
+          <span className="t-caption">{r.date}</span>
+        </div>
+        <div className="mt-1 flex flex-wrap items-center gap-2">
+          <Stars rating={r.rating} />
+          <span className="t-caption">
+            {showAuthor ? vehicleName(r.vehicleId) : `Booking ${r.bookingId}`}
+          </span>
+        </div>
+        <p className="mt-2 t-body-sm">{r.comment}</p>
+      </div>
+    </div>
+  );
+}
+
+// Drivers see what riders said about their vehicles. Renters see the trips
+// they can still review and the reviews they have written; only a completed
+// trip of their own can be reviewed, once.
+export default function ReviewsList({ role }: { role: "customer" | "driver" }) {
+  const { reviews, isReviewed } = useReviews();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [writing, setWriting] = useState(searchParams.get("write") === "1");
-  const avgRating = reviews.length
-    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(
-        1,
-      )
-    : "0.0";
+
+  const mine = useMemo(() => {
+    const ids = new Set(
+      (role === "driver" ? driverBookings : bookings).map((b) => b.id),
+    );
+    return reviews.filter((r) => ids.has(r.bookingId));
+  }, [reviews, role]);
+
+  const pending: ReviewTarget[] =
+    role === "customer"
+      ? bookings
+          .filter((b) => b.status === "Completed" && !isReviewed(b.id))
+          .map((b) => ({
+            bookingId: b.id,
+            vehicleId: b.vehicleId,
+            vehicleName: vehicleName(b.vehicleId),
+            trip: `${b.date} · ${b.pickup} → ${b.dropoff}`,
+          }))
+      : [];
+
+  // Notifications link here with ?write=<bookingId>.
+  const requested = searchParams.get("write");
+  const [writing, setWriting] = useState<ReviewTarget | null>(
+    () => pending.find((p) => p.bookingId === requested) ?? null,
+  );
+  function closeWriter() {
+    setWriting(null);
+    if (searchParams.has("write")) {
+      searchParams.delete("write");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }
+
+  const avg = mine.length
+    ? (mine.reduce((s, r) => s + r.rating, 0) / mine.length).toFixed(1)
+    : null;
 
   return (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="t-h2">Reviews</h2>
-          {reviews.length > 0 && (
-            <p className="mt-1 flex items-center gap-1.5 t-body-sm text-[color:var(--color-muted)]">
+      <h2 className="t-h2">Reviews</h2>
+      <p className="mt-1 flex items-center gap-1.5 t-body-sm text-[color:var(--color-muted)]">
+        {role === "driver" ? (
+          avg ? (
+            <>
               <Icon
                 name="star"
                 size={14}
                 className="fill-current text-[color:var(--color-star)]"
               />
               <span className="font-semibold text-[color:var(--color-ink)]">
-                {avgRating}
-              </span>{" "}
-              avg. of {reviews.length}
-            </p>
-          )}
-        </div>
-        <Button variant="primary" size="md" onClick={() => setWriting(true)}>
-          Write review
-        </Button>
-      </div>
+                {avg}
+              </span>
+              from {mine.length} rider review{mine.length > 1 ? "s" : ""}
+            </>
+          ) : (
+            "What riders say about your vehicles."
+          )
+        ) : (
+          "Rate the vehicles you've travelled in."
+        )}
+      </p>
 
-      {reviews.length === 0 ? (
-        <EmptyState
-          icon="star"
-          title="No reviews yet"
-          description="Reviews show up here once a trip has been rated."
-        />
-      ) : (
-        <div className="mt-6 flex flex-col gap-4">
-          {reviews.map((r) => (
-            <div key={r.id} className={`${card} flex gap-4 p-4`}>
-              <img
-                src={r.avatar}
-                alt={r.author}
-                className="size-11 shrink-0 rounded-full object-cover"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center justify-between gap-2">
+      {pending.length > 0 && (
+        <section className="mt-6">
+          <h3 className="t-h4">Waiting for your review</h3>
+          <div className="mt-3 flex flex-col gap-3">
+            {pending.map((p) => (
+              <div
+                key={p.bookingId}
+                className={`${card} flex flex-wrap items-center gap-4 p-4`}
+              >
+                <span className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[color:var(--color-surface-soft)]">
+                  <VehicleImage
+                    vehicleId={p.vehicleId}
+                    category={categoryOf(p.vehicleId)}
+                    transparent
+                    className="size-full p-1"
+                  />
+                </span>
+                <div className="min-w-0 flex-1">
                   <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
-                    {r.author}
+                    {p.vehicleName}
                   </p>
-                  <span className="t-caption">{r.date}</span>
+                  <p className="t-caption">{p.trip}</p>
                 </div>
-                <div className="mt-1">
-                  <Stars rating={r.rating} />
-                </div>
-                <p className="mt-2 t-body-sm">{r.comment}</p>
+                <Button size="md" onClick={() => setWriting(p)}>
+                  Write review
+                </Button>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </section>
       )}
 
-      {writing && (
-        <WriteReviewModal
-          onClose={() => {
-            setWriting(false);
-            if (searchParams.has("write")) {
-              searchParams.delete("write");
-              setSearchParams(searchParams, { replace: true });
+      {mine.length > 0 ? (
+        <section className="mt-8">
+          {role === "customer" && <h3 className="t-h4">Your reviews</h3>}
+          <div
+            className={`${role === "customer" ? "mt-3" : "mt-0"} flex flex-col gap-4`}
+          >
+            {mine.map((r) => (
+              <ReviewCard key={r.id} r={r} showAuthor={role === "driver"} />
+            ))}
+          </div>
+        </section>
+      ) : (
+        pending.length === 0 && (
+          <EmptyState
+            icon="star"
+            title="No reviews yet"
+            description={
+              role === "driver"
+                ? "Riders can review your vehicle once their trip is complete."
+                : "You can review a vehicle once your trip with it is complete."
             }
-          }}
-        />
+          />
+        )
       )}
+
+      {writing && <WriteReviewModal target={writing} onClose={closeWriter} />}
     </>
   );
 }

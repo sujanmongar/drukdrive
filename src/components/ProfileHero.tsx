@@ -2,15 +2,17 @@ import Icon from "./Icon";
 import Button from "./Button";
 import { useCurrentUser } from "../lib/currentUser";
 import { routes } from "../lib/routes";
+import { useAuth } from "../lib/auth";
 
 export default function ProfileHero({
   editHref = routes.accountProfileEdit,
-  reviewHref = routes.accountReviews,
 }: {
   editHref?: string;
-  reviewHref?: string;
 }) {
   const { user: currentUser } = useCurrentUser();
+  // Only renters review, and only vehicles they travelled in; the reviews
+  // page lists which trips are waiting.
+  const canReview = useAuth().role === "customer";
   return (
     <div className="mx-auto flex max-w-[1280px] flex-col gap-6 px-4 pt-8 sm:flex-row sm:items-start sm:justify-between md:px-10 md:pt-10">
       <div className="flex items-start gap-5">
@@ -36,16 +38,16 @@ export default function ProfileHero({
             </span>
           </div>
           {/* Phones: under the details, on the same column. */}
-          <div className="mt-2 sm:hidden">
-            <Button variant="link" to={reviewHref}>
+          <div className={`mt-2 sm:hidden ${canReview ? "" : "hidden"}`}>
+            <Button variant="link" to={routes.accountReviews}>
               <Icon name="edit" size={16} />
               Write review
             </Button>
           </div>
         </div>
       </div>
-      <div className="hidden sm:block">
-        <Button variant="link" to={reviewHref}>
+      <div className={`hidden ${canReview ? "sm:block" : ""}`}>
+        <Button variant="link" to={routes.accountReviews}>
           <Icon name="edit" size={16} />
           Write review
         </Button>

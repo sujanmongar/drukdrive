@@ -16,7 +16,7 @@ export default function AccountFinance() {
 
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <h2 className="t-h2">Finance</h2>
-        <FinanceLedger />
+        <FinanceLedger role="customer" />
       </div>
     </PageShell>
   );

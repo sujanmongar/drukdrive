@@ -8,19 +8,18 @@ import {
 } from "react";
 import { reviews as defaultReviews, type Review } from "../data/mockData";
 
-// Reviews written from within the app — persisted to localStorage so
-// "Write review" actually adds a real, visible review instead of being a
-// dead button.
-const STORAGE_KEY = "drukdrive:reviews";
+// Reviews written from within the app, persisted to localStorage. Each one
+// belongs to a completed booking, so a trip can be reviewed once.
+// v2: reviews gained bookingId/vehicleId; older stored lists are dropped.
+const STORAGE_KEY = "drukdrive:reviews:v2";
+
+type NewReview = Omit<Review, "id" | "date">;
 
 type ReviewsContextValue = {
   reviews: Review[];
-  addReview: (review: {
-    author: string;
-    avatar: string;
-    rating: number;
-    comment: string;
-  }) => void;
+  addReview: (review: NewReview) => void;
+  /** True once this booking has a review. */
+  isReviewed: (bookingId: string) => boolean;
 };
 
 const ReviewsContext = createContext<ReviewsContextValue | null>(null);
@@ -46,19 +45,19 @@ export function ReviewsProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       reviews,
-      addReview: (review: {
-        author: string;
-        avatar: string;
-        rating: number;
-        comment: string;
-      }) => {
+      isReviewed: (bookingId: string) =>
+        reviews.some((r) => r.bookingId === bookingId),
+      addReview: (review: NewReview) => {
         const newReview: Review = {
           id: `r${Date.now()}`,
-          date: new Date().toLocaleDateString(undefined, {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          }),
+          // "22 Sep 2026", the same shape as the seeded reviews.
+          date: new Date()
+            .toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })
+            .replace("Sept", "Sep"),
           ...review,
         };
         setReviews((prev) => [newReview, ...prev]);

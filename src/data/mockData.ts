@@ -318,7 +318,7 @@ export const bookings: Booking[] = [
     vehicleId: "hyundai-santa-fe",
     pickup: "Paro Airport",
     dropoff: "Thimphu, City Centre",
-    date: "12 Oct, 13:00",
+    date: "Sat 19 Sep, 13:00",
     status: "Completed",
     total: 54,
     bookingType: "Daily Rides",
@@ -328,7 +328,7 @@ export const bookings: Booking[] = [
     vehicleId: "toyota-hiace-bus",
     pickup: "Thimphu, Clock Tower Square",
     dropoff: "Thimphu, Clock Tower Square",
-    date: "27 Nov, 09:34",
+    date: "Fri 4 Sep, 09:30",
     status: "Cancelled",
     total: 53,
     bookingType: "Rental",
@@ -373,15 +373,18 @@ export const notifications: Notification[] = [
   {
     id: "n4",
     title: "Trip completed",
-    body: "Hope you enjoyed your trip! Rate your experience.",
+    body: "How was your Hyundai Santa Fe from Paro Airport? Rate your trip.",
     time: "3d ago",
     read: true,
-    href: `${routes.accountReviews}?write=1`,
+    href: `${routes.accountReviews}?write=GI1671177201`,
   },
 ];
 
 export type Review = {
   id: string;
+  /** The completed booking this review is for; one review per booking. */
+  bookingId: string;
+  vehicleId: string;
   author: string;
   avatar: string;
   rating: number;
@@ -389,71 +392,44 @@ export type Review = {
   comment: string;
 };
 
+// Reviews riders left on this driver's vehicles, one per completed trip.
+// The customer side starts with none: Karma has one finished trip still
+// waiting for a review.
 export const reviews: Review[] = [
   {
     id: "r1",
-    author: "Sonam Wangmo",
-    avatar: "https://i.pravatar.cc/80?img=47",
-    rating: 5,
-    date: "2 Oct 2024",
-    comment:
-      "Smooth booking experience and the driver was extremely professional. Highly recommend!",
-  },
-  {
-    id: "r2",
+    bookingId: "HBTTB0982764",
+    vehicleId: "toyota-hiace-bus",
     author: "Tenzin Namgay",
     avatar: "https://i.pravatar.cc/80?img=12",
     rating: 4,
-    date: "18 Sep 2024",
+    date: "8 Sep 2026",
     comment:
       "Great vehicle condition, arrived a little late but overall a good trip.",
   },
   {
-    id: "r3",
-    author: "Karma Choden",
+    id: "r2",
+    bookingId: "HBTTB7741203",
+    vehicleId: "toyota-prado-gx",
+    author: "Pema Yangzom",
     avatar: "https://i.pravatar.cc/80?img=32",
     rating: 5,
-    date: "3 Sep 2024",
+    date: "24 Aug 2026",
     comment:
-      "Best car rental service in Thimphu. Will book again for our next trip.",
+      "Clean car and a careful driver on the Dochula road. Will book again.",
+  },
+  {
+    id: "r3",
+    bookingId: "HBTTB6619087",
+    vehicleId: "toyota-prado-gx",
+    author: "Sonam Wangmo",
+    avatar: "https://i.pravatar.cc/80?img=47",
+    rating: 5,
+    date: "9 Aug 2026",
+    comment:
+      "Smooth pick-up at the airport and the driver was extremely professional.",
   },
 ];
-
-export const financeSummary = {
-  totalEarnings: 3240,
-  pending: 420,
-  withdrawn: 2820,
-  transactions: [
-    {
-      id: "t1",
-      label: "Booking GI1671177263",
-      date: "24 Sep 2024",
-      amount: 58,
-      status: "Credited",
-    },
-    {
-      id: "t2",
-      label: "Booking GI1671177201",
-      date: "12 Oct 2024",
-      amount: 54,
-      status: "Credited",
-    },
-    {
-      id: "t3",
-      label: "Withdrawal to bank",
-      date: "1 Oct 2024",
-      amount: -500,
-      status: "Processed",
-    },
-    {
-      id: "t4",
-      label: "Booking GI1671176980",
-      date: "27 Nov 2024",
-      amount: 53,
-      status: "Pending",
-    },
-  ],
-};
 
 export type DriverVehicle = {
   id: string;
@@ -512,7 +488,7 @@ export type DriverBooking = {
   pickup: string;
   dropoff: string;
   date: string;
-  status: "Upcoming" | "Confirmed" | "Cancelled";
+  status: "Upcoming" | "Completed" | "Cancelled";
 };
 
 export const driverBookings: DriverBooking[] = [
@@ -522,17 +498,8 @@ export const driverBookings: DriverBooking[] = [
     vehicleId: "toyota-prado-gx",
     pickup: "International Airport, Paro",
     dropoff: "Terminal, Phuentsholing",
-    date: "Sat 12 Dec' 22, 10:00",
+    date: "Sat 3 Oct, 10:00",
     status: "Upcoming",
-  },
-  {
-    id: "HBTTB0982764",
-    riderName: "Tenzin Namgay",
-    vehicleId: "toyota-hiace-bus",
-    pickup: "Terminal, Phuentsholing",
-    dropoff: "Terminal, Phuentsholing",
-    date: "Mon 08 Dec' 22, 08:00",
-    status: "Confirmed",
   },
   {
     id: "HBTTB9283434",
@@ -540,8 +507,35 @@ export const driverBookings: DriverBooking[] = [
     vehicleId: "toyota-prado-gx",
     pickup: "Clock Tower, Thimphu",
     dropoff: "International Airport, Paro",
-    date: "Wed 19 Dec' 22, 11:00",
+    date: "Sat 19 Sep, 11:00",
     status: "Cancelled",
+  },
+  {
+    id: "HBTTB0982764",
+    riderName: "Tenzin Namgay",
+    vehicleId: "toyota-hiace-bus",
+    pickup: "Terminal, Phuentsholing",
+    dropoff: "Terminal, Phuentsholing",
+    date: "Mon 7 Sep, 08:00",
+    status: "Completed",
+  },
+  {
+    id: "HBTTB7741203",
+    riderName: "Pema Yangzom",
+    vehicleId: "toyota-prado-gx",
+    pickup: "Norzin Lam, Thimphu",
+    dropoff: "Dochula Pass",
+    date: "Sun 23 Aug, 09:00",
+    status: "Completed",
+  },
+  {
+    id: "HBTTB6619087",
+    riderName: "Sonam Wangmo",
+    vehicleId: "toyota-prado-gx",
+    pickup: "International Airport, Paro",
+    dropoff: "Clock Tower, Thimphu",
+    date: "Sat 8 Aug, 14:00",
+    status: "Completed",
   },
 ];
 
@@ -558,19 +552,19 @@ export type DriverNotification = {
 export const driverNotifications: DriverNotification[] = [
   {
     id: "dn1",
-    title: "New booking request",
-    body: "Sonam Wangmo booked your Toyota Prado GX for Paro → Phuentsholing, Sat 12 Dec.",
+    title: "New booking",
+    body: "Sonam Wangmo booked your Toyota Prado GX for Paro → Phuentsholing, Sat 3 Oct.",
     time: "2h ago",
     read: false,
     href: routes.providerBookingDetail("HBTTB5984458"),
   },
   {
     id: "dn2",
-    title: "Booking on hold",
-    body: "Trip from Paro to Thimphu, Wed 24 Jan to Sun 28 Jan, is awaiting rider confirmation.",
-    time: "1d ago",
+    title: "Booking cancelled",
+    body: "Karma Choden cancelled Sat 19 Sep, Thimphu → Paro. The cancellation fee is in your ledger.",
+    time: "3d ago",
     read: false,
-    href: routes.providerBookings,
+    href: routes.providerBookingDetail("HBTTB9283434"),
   },
   {
     id: "dn3",
@@ -583,8 +577,8 @@ export const driverNotifications: DriverNotification[] = [
   {
     id: "dn4",
     title: "Trip completed",
-    body: "Your trip with Tenzin Namgay is complete. Payment has been credited to your ledger.",
-    time: "4d ago",
+    body: "Your trip with Tenzin Namgay is complete. The fare is credited to your ledger.",
+    time: "15d ago",
     read: true,
     href: routes.providerFinance,
   },

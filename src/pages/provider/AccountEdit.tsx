@@ -20,10 +20,7 @@ export default function ProviderAccountEdit() {
 
   return (
     <PageShell>
-      <ProfileHero
-        editHref={routes.providerAccountEdit}
-        reviewHref={routes.providerReviews}
-      />
+      <ProfileHero editHref={routes.providerAccountEdit} />
       <div className="mt-6 md:mt-8">
         <SecondaryTabs tabs={providerTabs} />
       </div>

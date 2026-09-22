@@ -19,6 +19,7 @@ import {
 import { formatDropoff, formatPickup, parseBooking } from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { useReviews } from "../../lib/reviews";
 import {
   card,
   inlineLink,
@@ -61,6 +62,7 @@ export default function Confirmation() {
   const dropoff = fromCheckout ? booking.dropoff : record.dropoff;
   const date = fromCheckout ? formatPickup(booking) : record.date;
   const dropoffWhen = fromCheckout ? formatDropoff(booking) : undefined;
+  const { isReviewed } = useReviews();
   const [status, setStatus] = useState<"Upcoming" | "Completed" | "Cancelled">(
     fromCheckout ? "Upcoming" : record.status,
   );
@@ -71,6 +73,8 @@ export default function Confirmation() {
     ? booking.type === "self-drive"
     : record.bookingType === "Self Drive";
   const bookingId = id ?? record.id;
+  // A finished trip of the renter's own that has no review yet.
+  const canReview = status === "Completed" && !isReviewed(bookingId);
   const method = searchParams.get("method");
   const travelerName = searchParams.get("travelerName");
   // Exact addresses typed on the details step; the trip stops above are
@@ -273,7 +277,21 @@ export default function Confirmation() {
         )}
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Button variant="primary" size="lg" to={routes.accountBookings}>
+          {canReview && (
+            <Button
+              variant="primary"
+              size="lg"
+              to={`${routes.accountReviews}?write=${bookingId}`}
+            >
+              <Icon name="star" size={16} />
+              Write a review
+            </Button>
+          )}
+          <Button
+            variant={canReview ? "ghost" : "primary"}
+            size="lg"
+            to={routes.accountBookings}
+          >
             My bookings
           </Button>
           <Button variant="ghost" size="lg" to={routes.home}>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import PageShell from "../../components/PageShell";
 import SecondaryTabs from "../../components/SecondaryTabs";
 import ProfileHero from "../../components/ProfileHero";
@@ -31,10 +30,7 @@ export default function ProviderVehicles() {
 
   return (
     <PageShell>
-      <ProfileHero
-        editHref={routes.providerAccountEdit}
-        reviewHref={routes.providerReviews}
-      />
+      <ProfileHero editHref={routes.providerAccountEdit} />
       <div className="mt-6 md:mt-8">
         <SecondaryTabs tabs={providerTabs} />
       </div>
@@ -133,14 +129,6 @@ export default function ProviderVehicles() {
                     <div
                       className={`absolute right-4 top-14 z-40 w-40 ${menu}`}
                     >
-                      <Link
-                        to={`${routes.providerVehicleAdd}?edit=${v.id}`}
-                        onClick={() => setOpenMenu(null)}
-                        className={menuItem}
-                      >
-                        <Icon name="edit" size={15} />
-                        Edit
-                      </Link>
                       <button
                         type="button"
                         className={`${menuItem} text-[color:var(--color-danger)]!`}

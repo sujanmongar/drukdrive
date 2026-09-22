@@ -47,7 +47,7 @@ export default function ProviderBookingDetail() {
             </div>
             <StatusBadge
               status={
-                booking.status === "Upcoming" ? "Not confirmed" : booking.status
+                booking.status === "Upcoming" ? "Confirmed" : booking.status
               }
             />
           </div>

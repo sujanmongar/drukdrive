@@ -111,7 +111,7 @@ export default function BookingsList({
 
               <div className="flex items-center justify-between gap-3 sm:shrink-0">
                 <StatusBadge
-                  status={b.status === "Upcoming" ? "Not confirmed" : b.status}
+                  status={b.status === "Upcoming" ? "Confirmed" : b.status}
                 />
                 <Icon
                   name="chevron-right"

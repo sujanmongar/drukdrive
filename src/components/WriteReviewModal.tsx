@@ -5,7 +5,23 @@ import { useCurrentUser } from "../lib/currentUser";
 import { useReviews } from "../lib/reviews";
 import { fieldError, label, sheet, textarea } from "../lib/ui";
 
-export default function WriteReviewModal({ onClose }: { onClose: () => void }) {
+export type ReviewTarget = {
+  bookingId: string;
+  vehicleId: string;
+  vehicleName: string;
+  /** e.g. "Sat 19 Sep · Paro Airport → Thimphu" */
+  trip: string;
+};
+
+// Only reached for a completed booking of the renter's own, so the review
+// is always about a vehicle they actually travelled in.
+export default function WriteReviewModal({
+  target,
+  onClose,
+}: {
+  target: ReviewTarget;
+  onClose: () => void;
+}) {
   const { user } = useCurrentUser();
   const { addReview } = useReviews();
   const [rating, setRating] = useState(5);
@@ -21,6 +37,8 @@ export default function WriteReviewModal({ onClose }: { onClose: () => void }) {
       return;
     }
     addReview({
+      bookingId: target.bookingId,
+      vehicleId: target.vehicleId,
       author: user.name,
       avatar: user.avatar,
       rating,
@@ -44,9 +62,12 @@ export default function WriteReviewModal({ onClose }: { onClose: () => void }) {
         className={`${sheet} relative flex w-full max-w-[440px] flex-col p-5 sm:rounded-b-3xl`}
       >
         <div className="flex items-center justify-between">
-          <h2 id="write-review-title" className="t-h3">
-            Write a review
-          </h2>
+          <div className="min-w-0">
+            <h2 id="write-review-title" className="t-h3">
+              Review {target.vehicleName}
+            </h2>
+            <p className="mt-0.5 t-caption">{target.trip}</p>
+          </div>
           <button
             type="button"
             onClick={onClose}
