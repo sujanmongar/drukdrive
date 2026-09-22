@@ -9,14 +9,18 @@ import { routes } from "../lib/routes";
 // rather than seeing the customer UI while "in driver mode," and vice versa.
 export default function RouteGuard({
   role,
+  allowGuest = false,
   children,
 }: {
   role?: Role;
+  /** Signed-out visitors may see the page too (the wishlist). */
+  allowGuest?: boolean;
   children: ReactNode;
 }) {
   const { isLoggedIn, role: currentRole } = useAuth();
 
   if (!isLoggedIn) {
+    if (allowGuest) return <>{children}</>;
     return <Navigate to={routes.signIn} replace />;
   }
 

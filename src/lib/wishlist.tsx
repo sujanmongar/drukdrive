@@ -11,7 +11,7 @@ import { useAuth } from "./auth";
 const STORAGE_KEY = "drukdrive:wishlist";
 
 type WishlistContextValue = {
-  /** Saving is for signed-in customers; the page behind it needs an account. */
+  /** Guests and customers can save; drivers have no use for it. */
   enabled: boolean;
   ids: string[];
   isSaved: (id: string) => boolean;
@@ -39,7 +39,8 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   }, [ids]);
 
   const { isLoggedIn, role } = useAuth();
-  const enabled = isLoggedIn && role === "customer";
+  // Guests save on this device; the same list is there after they sign in.
+  const enabled = !(isLoggedIn && role === "driver");
 
   const value = useMemo(
     () => ({

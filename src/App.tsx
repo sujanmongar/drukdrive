@@ -95,7 +95,7 @@ export default function App() {
         <Route
           path={routes.accountWishlist}
           element={
-            <RouteGuard role="customer">
+            <RouteGuard role="customer" allowGuest>
               <AccountWishlist />
             </RouteGuard>
           }

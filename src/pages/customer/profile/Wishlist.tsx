@@ -7,23 +7,42 @@ import { vehicles } from "../../../data/mockData";
 import { useWishlist } from "../../../lib/wishlist";
 import { accountTabs } from "./_tabs";
 import { usePageTitle } from "../../../hooks/usePageTitle";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../../lib/auth";
+import { routes } from "../../../lib/routes";
+import { inlineLink } from "../../../lib/ui";
 
 export default function AccountWishlist() {
   usePageTitle("Wishlist");
   const { ids } = useWishlist();
+  const { isLoggedIn } = useAuth();
   const saved = vehicles.filter((v) => ids.includes(v.id));
 
   return (
     <PageShell>
-      <ProfileHero />
-      <div className="mt-6 md:mt-8">
-        <SecondaryTabs tabs={accountTabs} />
-      </div>
+      {isLoggedIn && (
+        <>
+          <ProfileHero />
+          <div className="mt-6 md:mt-8">
+            <SecondaryTabs tabs={accountTabs} />
+          </div>
+        </>
+      )}
 
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <h2 className="t-h2">Wishlist</h2>
         <p className="mt-1 t-body-sm text-[color:var(--color-muted)]">
-          Vehicles you've saved for later.
+          {isLoggedIn ? (
+            "Vehicles you've saved for later."
+          ) : (
+            <>
+              Saved on this device.{" "}
+              <Link to={routes.signIn} className={inlineLink}>
+                Sign in
+              </Link>{" "}
+              to keep your list with your account.
+            </>
+          )}
         </p>
 
         {saved.length === 0 ? (
