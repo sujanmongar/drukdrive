@@ -3,6 +3,7 @@ import Icon from "./Icon";
 import { currencies, useCurrency } from "../lib/currency";
 import { languages, useLanguage } from "../lib/language";
 import { menuItem } from "../lib/ui";
+import { t } from "../lib/i18n";
 
 type View = "root" | "language" | "currency";
 
@@ -28,7 +29,7 @@ export default function PreferenceLists() {
       : currencies.map((c) => ({
           key: c.code,
           lead: c.flag,
-          label: c.label,
+          label: t(c.label),
           selected: c.code === currency,
         }));
 
@@ -40,7 +41,7 @@ export default function PreferenceLists() {
           className={`${menuItem} font-semibold`}
         >
           <Icon name="chevron-left" size={16} />
-          {isLanguage ? "Language" : "Currency"}
+          {isLanguage ? t("Language") : t("Currency")}
         </button>
         <div className="border-t border-[color:var(--color-border)] pt-1">
           {options.map((o) => (
@@ -93,7 +94,7 @@ export default function PreferenceLists() {
         <span className="w-[1.05rem] text-center t-body-sm font-semibold text-[color:var(--color-muted)]">
           {activeCurrency.symbol.replace(".", "")}
         </span>
-        {activeCurrency.label}
+        {t(activeCurrency.label)}
         <Icon
           name="chevron-right"
           size={15}

@@ -1,8 +1,15 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Icon from "./Icon";
+import { t, tx } from "../lib/i18n";
 
-const baseSteps = ["Search", "Review", "Details", "Payment", "Confirmation"];
+const baseSteps = [
+  tx("Search"),
+  tx("Review"),
+  "Details",
+  tx("Payment"),
+  tx("Confirmation"),
+];
 
 // Numbered discs with the label beside each and a short rule between —
 // centred on every width. A completed step is a link back to that page
@@ -41,10 +48,10 @@ export default function BookingStepper({
       wrap.scrollLeft += delta;
     };
     const raf = requestAnimationFrame(centre);
-    const t = window.setTimeout(centre, 400);
+    const timer = window.setTimeout(centre, 400);
     return () => {
       cancelAnimationFrame(raf);
-      window.clearTimeout(t);
+      window.clearTimeout(timer);
     };
   }, [current]);
 
@@ -55,7 +62,7 @@ export default function BookingStepper({
     >
       <ol
         className="mx-auto flex w-max items-center gap-2 sm:gap-4"
-        aria-label="Booking progress"
+        aria-label={t("Booking progress")}
       >
         <li aria-hidden className="w-[calc(50vw-4rem)] shrink-0 md:hidden" />
         {steps.map((label, i) => {
@@ -86,7 +93,7 @@ export default function BookingStepper({
                     : ""
               }`}
             >
-              {label}
+              {t(label)}
             </span>
           );
           return (
@@ -104,7 +111,7 @@ export default function BookingStepper({
                 <Link
                   to={href}
                   className="flex min-h-11 items-center gap-2 rounded-lg transition-opacity duration-150 hover:opacity-80"
-                  aria-label={`Back to ${label}`}
+                  aria-label={t("Back to {step}", { step: t(label) })}
                 >
                   {disc}
                   {text}

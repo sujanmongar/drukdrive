@@ -13,31 +13,32 @@ import {
 import { currencies, useCurrency } from "../lib/currency";
 import { languages, useLanguage } from "../lib/language";
 import { routes } from "../lib/routes";
+import { t, tx } from "../lib/i18n";
 
 const columns = [
   {
-    title: "Company",
+    title: tx("Company"),
     links: [
-      { label: "About", to: routes.about },
-      { label: "Blog", to: routes.blog },
-      { label: "Privacy", to: routes.privacyPolicy },
-      { label: "Terms & Conditions", to: routes.termsOfService },
+      { label: tx("About"), to: routes.about },
+      { label: tx("Blog"), to: routes.blog },
+      { label: tx("Privacy"), to: routes.privacyPolicy },
+      { label: tx("Terms & Conditions"), to: routes.termsOfService },
     ],
   },
   {
-    title: "Contact",
+    title: tx("Contact"),
     links: [
-      { label: "Help/FAQ", to: routes.help },
-      { label: "Affiliates", to: routes.affiliates },
-      { label: "Advertise with us", to: routes.advertise },
+      { label: tx("Help/FAQ"), to: routes.help },
+      { label: tx("Affiliates"), to: routes.affiliates },
+      { label: tx("Advertise with us"), to: routes.advertise },
     ],
   },
   {
-    title: "More",
+    title: tx("More"),
     links: [
-      { label: "Rewards", to: routes.rewards },
-      { label: "Partners", to: routes.partners },
-      { label: "Career", to: routes.careers },
+      { label: tx("Rewards"), to: routes.rewards },
+      { label: tx("Partners"), to: routes.partners },
+      { label: tx("Career"), to: routes.careers },
     ],
   },
 ];
@@ -59,9 +60,9 @@ const socials: { name: SocialName; label: string }[] = [
 ];
 
 const bottomLinks = [
-  { label: "Terms & Conditions", to: routes.termsOfService },
-  { label: "Privacy Policy", to: routes.privacyPolicy },
-  { label: "Refund Policy", to: routes.refundPolicy },
+  { label: tx("Terms & Conditions"), to: routes.termsOfService },
+  { label: tx("Privacy Policy"), to: routes.privacyPolicy },
+  { label: tx("Refund Policy"), to: routes.refundPolicy },
 ];
 
 export default function Footer() {
@@ -78,18 +79,19 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-2">
             <Link
               to={routes.home}
-              aria-label="DrukDrive home"
+              aria-label={t("DrukDrive home")}
               className="-m-2 inline-flex p-2"
             >
               <DrukDriveLogo className="h-7 w-auto text-white" />
             </Link>
             <p className="t-body-sm mt-4 max-w-[280px] text-white/70">
-              Compare and book vehicles from trusted local operators across
-              Bhutan.
+              {t(
+                "Compare and book vehicles from trusted local operators across Bhutan.",
+              )}
             </p>
 
             <p className="t-label mb-3 mt-7 uppercase text-white/50">
-              Follow us
+              {t("Follow us")}
             </p>
             <div className="flex gap-3">
               {socials.map((s) => (
@@ -108,9 +110,9 @@ export default function Footer() {
           </div>
 
           {columns.map((col) => (
-            <nav key={col.title} aria-label={col.title}>
+            <nav key={col.title} aria-label={t(col.title)}>
               <p className="t-label mb-3 uppercase text-white/50">
-                {col.title}
+                {t(col.title)}
               </p>
               <ul className="flex flex-col">
                 {col.links.map((l) => (
@@ -119,7 +121,7 @@ export default function Footer() {
                       to={l.to}
                       className="t-body-sm -ml-1 inline-flex min-h-11 items-center rounded-lg px-1 text-white/70 transition-colors duration-150 hover:text-white"
                     >
-                      {l.label}
+                      {t(l.label)}
                     </Link>
                   </li>
                 ))}
@@ -128,11 +130,13 @@ export default function Footer() {
           ))}
 
           <div className="col-span-2 md:col-span-1">
-            <p className="t-label mb-3 uppercase text-white/50">Preferences</p>
+            <p className="t-label mb-3 uppercase text-white/50">
+              {t("Preferences")}
+            </p>
             <div className="flex flex-col gap-2.5">
               <div className="relative">
                 <select
-                  aria-label="Language"
+                  aria-label={t("Language")}
                   value={language}
                   onChange={(e) =>
                     setLanguage(e.target.value as typeof language)
@@ -157,7 +161,7 @@ export default function Footer() {
               </div>
               <div className="relative">
                 <select
-                  aria-label="Currency"
+                  aria-label={t("Currency")}
                   value={currency}
                   onChange={(e) =>
                     setCurrency(e.target.value as typeof currency)
@@ -170,7 +174,7 @@ export default function Footer() {
                       value={c.code}
                       className="text-[color:var(--color-ink)]"
                     >
-                      {c.code} — {c.label}
+                      {c.code} — {t(c.label)}
                     </option>
                   ))}
                 </select>
@@ -183,7 +187,7 @@ export default function Footer() {
             </div>
 
             <p className="t-label mb-3 mt-7 uppercase text-white/50">
-              We accept
+              {t("We accept")}
             </p>
             <div className="flex flex-wrap gap-2">
               {(
@@ -265,11 +269,15 @@ export default function Footer() {
               to={l.to}
               className="-ml-2 inline-flex min-h-11 items-center px-2 transition-colors duration-150 hover:text-white"
             >
-              {l.label}
+              {t(l.label)}
             </Link>
           ))}
         </div>
-        <p>© 2024–{new Date().getFullYear()} DrukDrive. All rights reserved.</p>
+        <p>
+          {t("© 2024–{year} DrukDrive. All rights reserved.", {
+            year: new Date().getFullYear(),
+          })}
+        </p>
       </div>
     </footer>
   );

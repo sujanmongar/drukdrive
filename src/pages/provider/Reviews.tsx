@@ -5,9 +5,10 @@ import ReviewsList from "../../components/ReviewsList";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { t } from "../../lib/i18n";
 
 export default function ProviderReviews() {
-  usePageTitle("Driver Reviews");
+  usePageTitle(t("Driver Reviews"));
 
   return (
     <PageShell>

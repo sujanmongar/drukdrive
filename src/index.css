@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", "Noto Sans Devanagari", "Noto Serif Tibetan", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Manrope", "Noto Sans Devanagari", "Noto Serif Tibetan", ui-sans-serif, system-ui, sans-serif;
 
   /* brand */
   --color-ink: #14181d;
@@ -678,4 +678,17 @@ button:not(:disabled):active,
   border: 2px solid var(--color-ink);
   box-shadow: var(--shadow-card);
   cursor: pointer;
+}
+
+/* Dzongkha letters stack vowel signs above and below the line; give every
+   role a little more line height so they are never clipped. Devanagari's
+   top bar sits fine on the default heights. */
+html[lang="dz"] body {
+  line-height: 1.75;
+}
+html[lang="dz"] :is(.t-h1, .t-h2, .t-h3, .t-h4) {
+  line-height: 1.45;
+}
+html[lang="dz"] :is(.t-body-lg, .t-body, .t-body-sm, .t-caption, .t-label) {
+  line-height: 1.75;
 }

@@ -12,21 +12,22 @@ import NotificationsDropdown from "./NotificationsDropdown";
 import { useWishlist } from "../lib/wishlist";
 import Button from "./Button";
 import { menu, menuItem } from "../lib/ui";
+import { t, tx } from "../lib/i18n";
 
 const customerLinks: { to: string; label: string; icon: IconName }[] = [
-  { to: routes.accountBookings, label: "Bookings", icon: "car" },
-  { to: routes.accountWishlist, label: "Wishlist", icon: "heart" },
-  { to: routes.accountReviews, label: "Reviews", icon: "star" },
-  { to: routes.accountFinance, label: "Finance", icon: "wallet" },
-  { to: routes.accountProfile, label: "Account", icon: "user" },
+  { to: routes.accountBookings, label: tx("Bookings"), icon: "car" },
+  { to: routes.accountWishlist, label: tx("Wishlist"), icon: "heart" },
+  { to: routes.accountReviews, label: tx("Reviews"), icon: "star" },
+  { to: routes.accountFinance, label: tx("Finance"), icon: "wallet" },
+  { to: routes.accountProfile, label: tx("Account"), icon: "user" },
 ];
 
 const driverLinks: { to: string; label: string; icon: IconName }[] = [
-  { to: routes.providerBookings, label: "Bookings", icon: "car" },
-  { to: routes.providerReviews, label: "Reviews", icon: "star" },
-  { to: routes.providerVehicles, label: "My Vehicle", icon: "car" },
-  { to: routes.providerFinance, label: "Finance", icon: "wallet" },
-  { to: routes.providerAccount, label: "Account", icon: "user" },
+  { to: routes.providerBookings, label: tx("Bookings"), icon: "car" },
+  { to: routes.providerReviews, label: tx("Reviews"), icon: "star" },
+  { to: routes.providerVehicles, label: tx("My Vehicle"), icon: "car" },
+  { to: routes.providerFinance, label: tx("Finance"), icon: "wallet" },
+  { to: routes.providerAccount, label: tx("Account"), icon: "user" },
 ];
 
 // Airbnb-style "switch to hosting" — DrukDrive's rider/driver equivalent.
@@ -36,13 +37,13 @@ const switchTarget: Record<
 > = {
   customer: {
     role: "driver",
-    label: "Switch to Driving",
+    label: tx("Switch to Driving"),
     to: routes.providerBookings,
     icon: "car",
   },
   driver: {
     role: "customer",
-    label: "Switch to Riding",
+    label: tx("Switch to Riding"),
     to: routes.home,
     icon: "user",
   },
@@ -58,7 +59,7 @@ function WishlistButton({ compact = false }: { compact?: boolean }) {
   return (
     <Link
       to={routes.accountWishlist}
-      aria-label="Wishlist"
+      aria-label={t("Wishlist")}
       className={`relative ${headerControl} ${compact ? "size-10" : "size-[42px]"}`}
     >
       <Icon
@@ -85,7 +86,7 @@ function Logo() {
   return (
     <Link
       to={homeHref}
-      aria-label="DrukDrive home"
+      aria-label={t("DrukDrive home")}
       className="flex shrink-0 items-center"
     >
       <DrukDriveLogo className="h-7 w-auto text-[color:var(--color-ink)]" />
@@ -121,7 +122,7 @@ function AccountMenu({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label="Account menu"
+        aria-label={t("Account menu")}
         className={`icon-btn icon-btn-avatar overflow-hidden ${compact ? "size-10" : "size-[42px]"}`}
       >
         {isLoggedIn ? (
@@ -143,7 +144,7 @@ function AccountMenu({
       {open && (
         <>
           <button
-            aria-label="Close"
+            aria-label={t("Close")}
             className="fixed inset-0 z-40 cursor-default"
             onClick={() => setOpen(false)}
           />
@@ -172,7 +173,7 @@ function AccountMenu({
                   className={`${menuItem} border-b border-[color:var(--color-border)] font-semibold`}
                 >
                   <Icon name={target.icon} size={17} />
-                  {target.label}
+                  {t(target.label)}
                 </button>
 
                 <div className="py-1">
@@ -184,7 +185,7 @@ function AccountMenu({
                       className={menuItem}
                     >
                       <Icon name={l.icon} size={17} />
-                      {l.label}
+                      {t(l.label)}
                     </Link>
                   ))}
                 </div>
@@ -198,7 +199,7 @@ function AccountMenu({
               >
                 <Button to={routes.signIn} fullWidth>
                   <Icon name="user" size={16} />
-                  Login / Signup
+                  {t("Login / Signup")}
                 </Button>
               </div>
             )}
@@ -217,7 +218,7 @@ function AccountMenu({
                 className={`${menuItem} border-t border-[color:var(--color-border)] font-semibold text-[color:var(--color-danger)]!`}
               >
                 <Icon name="logout" size={17} />
-                Sign out
+                {t("Sign out")}
               </button>
             )}
           </div>
@@ -274,7 +275,7 @@ export default function Header({
       <div className="flex h-[64px] items-center justify-between px-4 md:hidden">
         <Link
           to={homeHref}
-          aria-label="DrukDrive home"
+          aria-label={t("DrukDrive home")}
           className="-ml-2 flex min-h-11 items-center px-2"
         >
           <DrukDriveLogo className="h-5 w-auto text-[color:var(--color-ink)]" />

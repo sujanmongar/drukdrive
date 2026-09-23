@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { tx } from "./i18n";
 
 // Simple client-side currency switcher. All prices in mockData.ts are in
 // USD; this converts for display only (no backend, fixed approximate rates).
@@ -22,15 +23,21 @@ export const currencies: {
     code: "BTN",
     symbol: "Nu.",
     flag: "🇧🇹",
-    label: "Bhutanese ngultrum",
+    label: tx("Bhutanese ngultrum"),
     rateFromUsd: 83,
   },
-  { code: "USD", symbol: "$", flag: "🇺🇸", label: "US dollar", rateFromUsd: 1 },
+  {
+    code: "USD",
+    symbol: "$",
+    flag: "🇺🇸",
+    label: tx("US dollar"),
+    rateFromUsd: 1,
+  },
   {
     code: "INR",
     symbol: "₹",
     flag: "🇮🇳",
-    label: "Indian rupee",
+    label: tx("Indian rupee"),
     rateFromUsd: 83,
   },
 ];

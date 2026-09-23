@@ -4,6 +4,7 @@ import Button from "./Button";
 import { useCurrentUser } from "../lib/currentUser";
 import { useReviews } from "../lib/reviews";
 import { fieldError, label, sheet, textarea } from "../lib/ui";
+import { t, tn } from "../lib/i18n";
 
 export type ReviewTarget = {
   bookingId: string;
@@ -50,7 +51,7 @@ export default function WriteReviewModal({
   return (
     <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-4">
       <button
-        aria-label="Close"
+        aria-label={t("Close")}
         className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
         onClick={onClose}
       />
@@ -64,14 +65,14 @@ export default function WriteReviewModal({
         <div className="flex items-center justify-between">
           <div className="min-w-0">
             <h2 id="write-review-title" className="t-h3">
-              Review {target.vehicleName}
+              {t("Review {vehicle}", { vehicle: target.vehicleName })}
             </h2>
             <p className="mt-0.5 t-caption">{target.trip}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="icon-btn icon-btn-filled -mr-1 size-10"
           >
             <Icon
@@ -82,7 +83,7 @@ export default function WriteReviewModal({
           </button>
         </div>
 
-        <p className={`mt-4 ${label}`}>Your rating</p>
+        <p className={`mt-4 ${label}`}>{t("Your rating")}</p>
         <div className="flex items-center gap-1.5">
           {[1, 2, 3, 4, 5].map((n) => (
             <button
@@ -91,7 +92,7 @@ export default function WriteReviewModal({
               onClick={() => setRating(n)}
               onMouseEnter={() => setHoverRating(n)}
               onMouseLeave={() => setHoverRating(0)}
-              aria-label={`${n} star${n > 1 ? "s" : ""}`}
+              aria-label={tn(n, "{n} star", "{n} stars")}
               className="p-0.5"
             >
               <Icon
@@ -108,18 +109,20 @@ export default function WriteReviewModal({
         </div>
 
         <label className="mt-4 block">
-          <span className={label}>Your review</span>
+          <span className={label}>{t("Your review")}</span>
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             rows={4}
-            placeholder="Share how your trip went..."
+            placeholder={t("Share how your trip went...")}
             className={`${textarea} resize-none ${
               touched && !isValid ? "border-[color:var(--color-danger)]" : ""
             }`}
           />
           {touched && !isValid && (
-            <p className={fieldError}>Write a few words before submitting.</p>
+            <p className={fieldError}>
+              {t("Write a few words before submitting.")}
+            </p>
           )}
         </label>
 
@@ -130,7 +133,7 @@ export default function WriteReviewModal({
           className="mt-5"
           onClick={handleSubmit}
         >
-          Submit review
+          {t("Submit review")}
         </Button>
       </div>
     </div>

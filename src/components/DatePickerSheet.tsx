@@ -6,21 +6,17 @@ import AnchoredPopover from "./AnchoredPopover";
 import { TIME_OPTIONS } from "../lib/timeOptions";
 import { input, metaLabel, metaValue } from "../lib/ui";
 import Button from "./Button";
+import { t, tx } from "../lib/i18n";
 
-const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+import { formatDate } from "../lib/dates";
+const WEEKDAYS = [
+  tx("Mon"),
+  tx("Tue"),
+  tx("Wed"),
+  tx("Thu"),
+  tx("Fri"),
+  tx("Sat"),
+  tx("Sun"),
 ];
 
 function daysInMonth(year: number, month: number) {
@@ -34,7 +30,7 @@ function mondayIndex(year: number, month: number, day: number) {
 }
 
 function formatShort(date: Date) {
-  return `${date.toLocaleDateString(undefined, { weekday: "short" })}, ${date.getDate()} ${MONTH_NAMES[date.getMonth()].slice(0, 3)}`;
+  return formatDate(date, "weekday");
 }
 
 function MonthGrid({
@@ -69,7 +65,7 @@ function MonthGrid({
   return (
     <div>
       <p className="mb-3 t-body font-semibold text-[color:var(--color-ink)]">
-        {MONTH_NAMES[month]} {year}
+        {formatDate(new Date(year, month, 1), "month")}
       </p>
       <div className="grid grid-cols-7 gap-y-2 text-center">
         {cells.map((d, i) => {
@@ -115,8 +111,8 @@ export default function DatePickerSheet({
   initialDropoff,
   initialPickupTime = "10:00",
   initialDropoffTime = "13:00",
-  pickupLabel = "Pick up",
-  dropoffLabel = "Drop off",
+  pickupLabel = t("Pick up"),
+  dropoffLabel = t("Drop off"),
   onConfirm,
   onClose,
 }: {
@@ -187,13 +183,15 @@ export default function DatePickerSheet({
   }
 
   const title = (
-    <h2 className="t-h3">Select {mode === "range" ? "dates" : "a date"}</h2>
+    <h2 className="t-h3">
+      {mode === "range" ? t("Select dates") : t("Select a date")}
+    </h2>
   );
 
   const weekdayRow = (
     <div className="grid shrink-0 grid-cols-7 gap-y-2 border-b border-[color:var(--color-border)] px-4 py-3 text-center t-label uppercase text-[color:var(--color-muted)]">
       {WEEKDAYS.map((w) => (
-        <span key={w}>{w}</span>
+        <span key={w}>{t(w)}</span>
       ))}
     </div>
   );
@@ -223,7 +221,7 @@ export default function DatePickerSheet({
       <div>
         <p className={metaLabel}>{label}</p>
         <p className={`mt-0.5 ${metaValue}`}>
-          {date ? formatShort(date) : "Select date"}
+          {date ? formatShort(date) : t("Select date")}
         </p>
         <div className="relative mt-2">
           <Icon
@@ -234,11 +232,11 @@ export default function DatePickerSheet({
           <select
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            aria-label={`${label} time`}
+            aria-label={t("{label} time", { label })}
             className={`${input} cursor-pointer appearance-none pl-10 pr-9`}
           >
-            {TIME_OPTIONS.map((t) => (
-              <option key={t}>{t}</option>
+            {TIME_OPTIONS.map((time) => (
+              <option key={time}>{time}</option>
             ))}
           </select>
           <Icon
@@ -259,7 +257,7 @@ export default function DatePickerSheet({
       disabled={!pickupDate || (mode === "range" && !dropoffDate)}
       className="h-12"
     >
-      Select
+      {t("Select")}
     </Button>
   );
 
@@ -269,7 +267,7 @@ export default function DatePickerSheet({
     return (
       <>
         <button
-          aria-label="Close"
+          aria-label={t("Close")}
           onClick={onClose}
           className="fixed inset-0 z-[59] cursor-default"
         />
@@ -309,7 +307,7 @@ export default function DatePickerSheet({
   return createPortal(
     <>
       <button
-        aria-label="Close"
+        aria-label={t("Close")}
         onClick={onClose}
         className="animate-scrim-in fixed inset-0 z-[59] cursor-default bg-black/40"
       />
@@ -319,7 +317,7 @@ export default function DatePickerSheet({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="icon-btn icon-btn-filled -mr-1 size-10"
           >
             <Icon

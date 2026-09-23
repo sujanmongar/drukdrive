@@ -4,6 +4,7 @@ import Button from "./Button";
 import { card, fieldError, input as inputClass } from "../lib/ui";
 import { PROMO_CODES } from "../lib/pricing";
 import { useCurrency } from "../lib/currency";
+import { t, tr, tx } from "../lib/i18n";
 
 // Promo code entry, its own card beside the price summary. A valid code is
 // handed up and lives in the URL so every later step honours it.
@@ -27,7 +28,7 @@ export default function PromoCard({
       setError("");
       onChange(code);
     } else {
-      setError("That code isn't valid.");
+      setError(tx("That code isn't valid."));
       onChange(null);
     }
   }
@@ -43,8 +44,8 @@ export default function PromoCard({
           />
           <input
             type="text"
-            placeholder="Enter promo code"
-            aria-label="Promo code"
+            placeholder={t("Enter promo code")}
+            aria-label={t("Promo code")}
             aria-invalid={!!error}
             aria-describedby="promo-feedback"
             value={input}
@@ -56,7 +57,7 @@ export default function PromoCard({
           />
         </span>
         <Button type="button" onClick={apply} className="h-12 shrink-0 px-5">
-          Apply
+          {t("Apply")}
         </Button>
       </div>
       <div id="promo-feedback" role="status">
@@ -64,18 +65,23 @@ export default function PromoCard({
           <p className="mt-3 flex items-center gap-1.5 t-body-sm font-semibold text-[color:var(--color-success-deep)]">
             <Icon name="check-circle" size={16} />
             <span>
-              {promoCode} applied —{" "}
-              <span className="t-amount text-[color:var(--color-success-deep)]">
-                {format(discount)}
-              </span>{" "}
-              off
+              {tr("{code} applied — {amount} off", {
+                code: promoCode,
+                amount: (
+                  <span className="t-amount text-[color:var(--color-success-deep)]">
+                    {format(discount)}
+                  </span>
+                ),
+              })}
             </span>
           </p>
         )}
-        {error && <p className={`${fieldError} mt-3`}>{error}</p>}
+        {error && <p className={`${fieldError} mt-3`}>{t(error)}</p>}
         {!promoCode && !error && (
           <p className="mt-3 t-caption">
-            Try DRUK10 for 10% off your first booking.
+            {t("Try {code} for 10% off your first booking.", {
+              code: "DRUK10",
+            })}
           </p>
         )}
       </div>

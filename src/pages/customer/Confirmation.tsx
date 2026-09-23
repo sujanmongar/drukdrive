@@ -16,10 +16,16 @@ import {
   paymentSplit,
   promoDiscount,
 } from "../../lib/pricing";
-import { formatDropoff, formatPickup, parseBooking } from "../../lib/booking";
+import {
+  formatDropoff,
+  formatPickup,
+  parseBooking,
+  paymentMethodLabel,
+} from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { useReviews } from "../../lib/reviews";
+import { t, tr } from "../../lib/i18n";
 import {
   card,
   inlineLink,
@@ -29,11 +35,12 @@ import {
   dangerAction,
 } from "../../lib/ui";
 
+import { formatStored } from "../../lib/dates";
 // The booking's own page. Reached from checkout (step 5, with the booking in
 // the URL) and from My Bookings (a stored record). One column, its own
 // shape: the confirmation, the trip, what was paid, and what to do next.
 export default function Confirmation() {
-  usePageTitle("Booking confirmed");
+  usePageTitle(t("Booking confirmed"));
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
@@ -60,7 +67,7 @@ export default function Confirmation() {
 
   const pickup = fromCheckout ? booking.pickup : record.pickup;
   const dropoff = fromCheckout ? booking.dropoff : record.dropoff;
-  const date = fromCheckout ? formatPickup(booking) : record.date;
+  const date = fromCheckout ? formatPickup(booking) : formatStored(record.date);
   const dropoffWhen = fromCheckout ? formatDropoff(booking) : undefined;
   const { isReviewed } = useReviews();
   const [status, setStatus] = useState<"Upcoming" | "Completed" | "Cancelled">(
@@ -89,46 +96,60 @@ export default function Confirmation() {
 
   const nextSteps = selfDrive
     ? [
-        `Collect the car at ${pickupAddress || pickup} on ${date}. Bring your licence, passport or CID and a card for the deposit.`,
+        t(
+          "Collect the car at {place} on {date}. Bring your licence, passport or CID and a card for the deposit.",
+          { place: pickupAddress || pickup, date },
+        ),
         ...(split.later > 0
           ? [
-              <>
-                Pay the remaining{" "}
-                <span className="t-amount">{format(split.later)}</span> at the
-                desk when you collect the car.
-              </>,
+              tr(
+                "Pay the remaining {amount} at the desk when you collect the car.",
+                {
+                  amount: (
+                    <span className="t-amount">{format(split.later)}</span>
+                  ),
+                },
+              ),
             ]
           : []),
-        "Return with a full tank; the deposit is released within 3 days.",
+        t("Return with a full tank; the deposit is released within 3 days."),
       ]
     : [
-        "The driver's name and number are shared 2 hours before pick-up by SMS and WhatsApp.",
-        split.later > 0 ? (
-          <>
-            Pay the remaining{" "}
-            <span className="t-amount">{format(split.later)}</span> to the
-            driver at pick-up.
-          </>
-        ) : (
-          "Nothing more to pay on the day."
+        t(
+          "The driver's name and number are shared 2 hours before pick-up by SMS and WhatsApp.",
         ),
+        split.later > 0
+          ? tr("Pay the remaining {amount} to the driver at pick-up.", {
+              amount: <span className="t-amount">{format(split.later)}</span>,
+            })
+          : t("Nothing more to pay on the day."),
       ];
 
   const receipt: { label: string; value: string; amount?: boolean }[] = [
-    ...(method ? [{ label: "Paid by", value: method }] : []),
+    ...(method
+      ? [{ label: t("Paid by"), value: paymentMethodLabel(method) }]
+      : []),
     {
-      label: status === "Cancelled" ? "Refund" : "Paid now",
+      label: status === "Cancelled" ? t("Refund") : t("Paid now"),
       value: format(split.now),
       amount: true,
     },
     ...(split.later > 0 && status !== "Cancelled"
-      ? [{ label: "Due at pick-up", value: format(split.later), amount: true }]
+      ? [
+          {
+            label: t("Due at pick-up"),
+            value: format(split.later),
+            amount: true,
+          },
+        ]
       : []),
     ...(fare.deposit > 0 && fromCheckout
       ? [
           {
-            label: "Deposit at collection",
-            value: `${format(fare.deposit)} · refundable`,
+            label: t("Deposit at collection"),
+            value: t("{amount} · refundable", {
+              amount: format(fare.deposit),
+            }),
             amount: true,
           },
         ]
@@ -136,18 +157,23 @@ export default function Confirmation() {
     ...(chosenAddOns.length
       ? [
           {
-            label: "Add-ons",
-            value: chosenAddOns.map((a) => a.name).join(", "),
+            label: t("Add-ons"),
+            value: chosenAddOns.map((a) => t(a.name)).join(", "),
           },
         ]
       : []),
     ...(travelerName
-      ? [{ label: selfDrive ? "Driver" : "Traveller", value: travelerName }]
+      ? [
+          {
+            label: selfDrive ? t("Driver") : t("Traveller"),
+            value: travelerName,
+          },
+        ]
       : []),
     ...(pickupAddress
       ? [
           {
-            label: selfDrive ? "Collection address" : "Pickup address",
+            label: selfDrive ? t("Collection address") : t("Pickup address"),
             value: pickupAddress,
           },
         ]
@@ -155,7 +181,7 @@ export default function Confirmation() {
     ...(dropoffAddress
       ? [
           {
-            label: selfDrive ? "Return address" : "Drop-off address",
+            label: selfDrive ? t("Return address") : t("Drop-off address"),
             value: dropoffAddress,
           },
         ]
@@ -170,7 +196,7 @@ export default function Confirmation() {
             <BookingStepper
               current={5}
               allDone
-              detailsLabel={selfDrive ? "Driver details" : "Your details"}
+              detailsLabel={selfDrive ? t("Driver details") : t("Your details")}
             />
           </div>
         )}
@@ -191,26 +217,28 @@ export default function Confirmation() {
           </span>
           <h1 className="t-h2 mt-5">
             {status === "Cancelled"
-              ? "Booking cancelled"
+              ? t("Booking cancelled")
               : status === "Completed"
-                ? "Trip completed"
-                : "Booking confirmed"}
+                ? t("Trip completed")
+                : t("Booking confirmed")}
           </h1>
           <p className="mt-2 t-body">
             {status === "Cancelled"
-              ? "Your refund is on its way to the card or account you paid with."
+              ? t(
+                  "Your refund is on its way to the card or account you paid with.",
+                )
               : status === "Completed"
-                ? "Thanks for riding with DrukDrive."
-                : "Your e-ticket has been sent to your email."}
+                ? t("Thanks for riding with DrukDrive.")
+                : t("Your e-ticket has been sent to your email.")}
           </p>
           <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-[color:var(--color-surface-soft)] px-3.5 py-1.5 t-caption">
-            Reference
+            {t("Reference")}
             <span className={reference}>{bookingId}</span>
           </p>
         </div>
 
         <div className="mt-10 flex items-center justify-between gap-3">
-          <h2 className="t-h3">{typeLabel}</h2>
+          <h2 className="t-h3">{t(typeLabel)}</h2>
           <StatusBadge status={status === "Upcoming" ? "Confirmed" : status} />
         </div>
         <div className="mt-4">
@@ -223,7 +251,7 @@ export default function Confirmation() {
           />
         </div>
 
-        <h2 className="mt-10 t-h3">Payment</h2>
+        <h2 className="mt-10 t-h3">{t("Payment")}</h2>
         <dl className={`${card} mt-4 overflow-hidden`}>
           {receipt.map((row, i) => (
             <div
@@ -241,28 +269,28 @@ export default function Confirmation() {
           <div className="flex flex-wrap gap-2 border-t border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] px-4 py-3">
             <Button variant="ghost" size="sm" to={invoiceUrl}>
               <Icon name="download" size={15} />
-              Invoice
+              {t("Invoice")}
             </Button>
             <Button variant="ghost" size="sm" onClick={() => window.print()}>
               <Icon name="download" size={15} />
-              Print
+              {t("Print")}
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => {
-                window.location.href = `mailto:?subject=${encodeURIComponent(`DrukDrive booking ${bookingId}`)}`;
+                window.location.href = `mailto:?subject=${encodeURIComponent(t("DrukDrive booking {id}", { id: bookingId }))}`;
               }}
             >
               <Icon name="mail" size={15} />
-              Email
+              {t("Email")}
             </Button>
           </div>
         </dl>
 
         {status === "Upcoming" && (
           <>
-            <h2 className="mt-10 t-h3">What happens next</h2>
+            <h2 className="mt-10 t-h3">{t("What happens next")}</h2>
             <ol className={`${card} mt-4 flex flex-col gap-3 p-5`}>
               {nextSteps.map((step, i) => (
                 <li key={i} className="flex items-start gap-3 t-body">
@@ -284,7 +312,7 @@ export default function Confirmation() {
               to={`${routes.accountReviews}?write=${bookingId}`}
             >
               <Icon name="star" size={16} />
-              Write a review
+              {t("Write a review")}
             </Button>
           )}
           <Button
@@ -292,10 +320,10 @@ export default function Confirmation() {
             size="lg"
             to={routes.accountBookings}
           >
-            My bookings
+            {t("My bookings")}
           </Button>
           <Button variant="ghost" size="lg" to={routes.home}>
-            Book another
+            {t("Book another")}
           </Button>
           {status === "Upcoming" && (
             <button
@@ -303,16 +331,21 @@ export default function Confirmation() {
               onClick={() => setCancelOpen(true)}
               className={`${dangerAction} sm:ml-auto`}
             >
-              Cancel booking
+              {t("Cancel booking")}
             </button>
           )}
         </div>
         <p className="mt-4 t-caption">
-          Free cancellation up to 24 hours before pick-up. See the{" "}
-          <Link to={routes.refundPolicy} className={inlineLink}>
-            refund policy
-          </Link>
-          .
+          {tr(
+            "Free cancellation up to 24 hours before pick-up. See the {policy}.",
+            {
+              policy: (
+                <Link to={routes.refundPolicy} className={inlineLink}>
+                  {t("refund policy")}
+                </Link>
+              ),
+            },
+          )}
         </p>
       </div>
 
@@ -320,7 +353,7 @@ export default function Confirmation() {
         createPortal(
           <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-4">
             <button
-              aria-label="Close"
+              aria-label={t("Close")}
               className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
               onClick={() => setCancelOpen(false)}
             />
@@ -328,20 +361,25 @@ export default function Confirmation() {
               className={`${sheet} relative w-full p-6 sm:max-w-[440px] sm:rounded-3xl`}
             >
               <div className="flex items-start justify-between gap-3">
-                <h2 className="t-h3">Cancel this booking?</h2>
+                <h2 className="t-h3">{t("Cancel this booking?")}</h2>
                 <button
                   type="button"
                   onClick={() => setCancelOpen(false)}
-                  aria-label="Close"
+                  aria-label={t("Close")}
                   className="icon-btn icon-btn-filled -mr-1 -mt-1 size-10 shrink-0"
                 >
                   <Icon name="close" size={20} />
                 </button>
               </div>
               <p className="mt-2 t-body">
-                You&rsquo;ll get{" "}
-                <span className="t-amount">{format(split.now)}</span> back to
-                the way you paid, usually within 3 to 5 working days.
+                {tr(
+                  "You’ll get {amount} back to the way you paid, usually within 3 to 5 working days.",
+                  {
+                    amount: (
+                      <span className="t-amount">{format(split.now)}</span>
+                    ),
+                  },
+                )}
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row-reverse">
                 <Button
@@ -353,14 +391,14 @@ export default function Confirmation() {
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                 >
-                  Yes, cancel booking
+                  {t("Yes, cancel booking")}
                 </Button>
                 <Button
                   variant="secondary"
                   size="lg"
                   onClick={() => setCancelOpen(false)}
                 >
-                  Keep booking
+                  {t("Keep booking")}
                 </Button>
               </div>
             </div>

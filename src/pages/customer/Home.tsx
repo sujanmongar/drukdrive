@@ -26,8 +26,12 @@ import {
   isDayBased,
 } from "../../lib/booking";
 import type { SearchValue } from "../../lib/booking";
+import { t } from "../../lib/i18n";
 
+import { formatDate } from "../../lib/dates";
+import { usePageTitle } from "../../hooks/usePageTitle";
 export default function Home() {
+  usePageTitle(t("Book a ride across Bhutan"));
   const navigate = useNavigate();
   const { role } = useAuth();
   const [search, setSearch] = useState<SearchValue>(() =>
@@ -103,7 +107,7 @@ export default function Home() {
         <div className="animate-fade-up relative mx-auto max-w-[1280px] px-4 pb-14 pt-10 md:px-10 md:pb-20 md:pt-16">
           <div>
             <h1 className="t-h1 max-w-[280px] sm:max-w-md md:max-w-[560px]">
-              Go anywhere in Bhutan.
+              {t("Go anywhere in Bhutan.")}
             </h1>
 
             {/* The type strip floats over the top edge of the search card,
@@ -127,7 +131,7 @@ export default function Home() {
                         onClick={handleSearch}
                         className="h-14 px-8"
                       >
-                        Search
+                        {t("Search")}
                       </Button>
                     </div>
                   }
@@ -140,7 +144,7 @@ export default function Home() {
                 onClick={handleSearch}
                 className="mt-5 h-14 lg:hidden"
               >
-                Search
+                {t("Search")}
               </Button>
             </div>
           </div>
@@ -151,7 +155,10 @@ export default function Home() {
         {/* Recent searches */}
         <section className="section-y">
           <Reveal>
-            <SectionHeader title="Recent searches" trackRef={recentTrackRef} />
+            <SectionHeader
+              title={t("Recent searches")}
+              trackRef={recentTrackRef}
+            />
             <div
               ref={recentTrackRef}
               className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-8 pt-3 md:-mx-6 md:px-6"
@@ -175,7 +182,8 @@ export default function Home() {
                     <span className="flex flex-col gap-1">
                       <span className="t-h4 whitespace-nowrap">{s.title}</span>
                       <span className="t-caption whitespace-nowrap">
-                        {s.subtitle}
+                        {s.route},{" "}
+                        {formatDate(new Date(`${s.date}T00:00:00`), "day")}
                       </span>
                     </span>
                   </button>
@@ -191,7 +199,7 @@ export default function Home() {
       <section className="section-y bg-[color:var(--color-surface-subtle)]">
         <Reveal>
           <div className="mx-auto max-w-[1280px] px-4 md:px-10">
-            <SectionHeader title="Popular cars" trackRef={carsTrackRef} />
+            <SectionHeader title={t("Popular cars")} trackRef={carsTrackRef} />
             <div
               ref={carsTrackRef}
               className="carousel-track -mx-4 -mb-8 flex gap-5 overflow-x-auto px-4 pb-8 pt-3 md:-mx-6 md:px-6"
@@ -213,34 +221,39 @@ export default function Home() {
         {/* Popular car types — photo tiles, paged by the header arrows. */}
         <section className="section-y">
           <Reveal>
-            <SectionHeader title="Popular car types" trackRef={typesTrackRef} />
+            <SectionHeader
+              title={t("Popular car types")}
+              trackRef={typesTrackRef}
+            />
             <div
               ref={typesTrackRef}
               className="carousel-track -mx-4 -mb-8 flex gap-4 overflow-x-auto px-4 pb-8 pt-3 md:-mx-6 md:gap-5 md:px-6"
             >
-              {popularCarTypes.map((t) => (
+              {popularCarTypes.map((ct) => (
                 <button
-                  key={t.category}
+                  key={ct.category}
                   type="button"
                   onClick={() =>
                     navigate(
-                      `${routes.search}?category=${encodeURIComponent(t.category)}`,
+                      `${routes.search}?category=${encodeURIComponent(ct.category)}`,
                     )
                   }
                   className="group shrink-0 basis-[86%] cursor-pointer text-left sm:basis-[220px] lg:basis-[calc((100%-3.75rem)/4)]"
                 >
                   <div className="flex aspect-[5/4] items-center justify-center overflow-hidden rounded-2xl bg-[color:var(--color-surface-sunken)] transition-colors duration-150 group-hover:bg-[color:var(--color-surface-soft)]">
                     <VehicleImage
-                      vehicleId={t.vehicleId}
-                      category={t.category}
+                      vehicleId={ct.vehicleId}
+                      category={ct.category}
                       transparent
                       className="size-full p-5 transition-transform duration-200 group-hover:scale-[1.06]"
                     />
                   </div>
-                  <p className="t-h4 mt-3">{t.label}</p>
+                  <p className="t-h4 mt-3">{t(ct.label)}</p>
                   <p className="t-caption">
-                    {vehicles.filter((v) => v.category === t.category).length}{" "}
-                    available
+                    {t("{n} available", {
+                      n: vehicles.filter((v) => v.category === ct.category)
+                        .length,
+                    })}
                   </p>
                 </button>
               ))}
@@ -252,7 +265,7 @@ export default function Home() {
         <section className="section-y">
           <Reveal>
             <h2 className="t-h3 mb-6 text-center md:mb-8">
-              Frequently asked questions
+              {t("Frequently asked questions")}
             </h2>
             <div className="mx-auto flex max-w-[860px] flex-col gap-3">
               {faqs.map((f, i) => {
@@ -274,7 +287,7 @@ export default function Home() {
                       aria-expanded={open}
                       className="flex w-full items-center justify-between gap-5 p-5 text-left md:p-6"
                     >
-                      <span className="t-h4">{f.q}</span>
+                      <span className="t-h4">{t(f.q)}</span>
                       <span
                         className={`flex size-9 shrink-0 items-center justify-center rounded-full transition-all duration-200 ${
                           open
@@ -294,7 +307,7 @@ export default function Home() {
                     >
                       <div className="min-h-0 overflow-hidden">
                         <p className="t-body-lg px-5 pb-6 text-[color:var(--color-muted)] md:px-6">
-                          {f.a}
+                          {t(f.a)}
                         </p>
                       </div>
                     </div>
@@ -310,11 +323,9 @@ export default function Home() {
           <Reveal>
             <h2 className="t-h3 mb-4">DrukDrive</h2>
             <p className="t-body-lg max-w-[860px] text-[color:var(--color-muted)]">
-              DrukDrive partners with trusted local operators across Bhutan to
-              make it easy to find, compare and book the right vehicle for your
-              trip — from daily rides around Thimphu to multi-day rentals and
-              self-drive rentals for exploring the valleys and dzongkhags
-              beyond.
+              {t(
+                "DrukDrive partners with trusted local operators across Bhutan to make it easy to find, compare and book the right vehicle for your trip — from daily rides around Thimphu to multi-day rentals and self-drive rentals for exploring the valleys and dzongkhags beyond.",
+              )}
             </p>
           </Reveal>
         </section>

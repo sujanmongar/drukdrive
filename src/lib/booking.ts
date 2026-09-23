@@ -7,6 +7,7 @@ import {
   formatDayHour,
 } from "./tripDuration";
 import { formatTripDate } from "./formatTripDate";
+import { t, tn } from "./i18n";
 
 export type ClientType = "local" | "tourist";
 
@@ -84,7 +85,7 @@ export function rideHours(b: SearchValue): number {
 export function durationLabel(b: SearchValue): string {
   if (isDayBased(b.type)) {
     const days = bookingDays(b);
-    return `${days} day${days === 1 ? "" : "s"}`;
+    return tn(days, "{n} day", "{n} days");
   }
   return formatDayHour({ days: 0, hours: rideHours(b) });
 }
@@ -161,4 +162,11 @@ export function formatPickup(b: SearchValue) {
 }
 export function formatDropoff(b: SearchValue) {
   return formatTripDate(b.dropoffDate, b.dropoffTime);
+}
+
+/** The payment method rides in the URL in English ("Net Banking (Bank of
+ *  Bhutan)"); this shows it in the current language. */
+export function paymentMethodLabel(method: string) {
+  const bank = method.match(/^Net Banking \((.+)\)$/)?.[1];
+  return bank ? t("Net Banking ({bank})", { bank }) : t(method);
 }

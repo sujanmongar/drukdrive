@@ -5,9 +5,10 @@ import FinanceLedger from "../../components/FinanceLedger";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { t } from "../../lib/i18n";
 
 export default function ProviderFinance() {
-  usePageTitle("Driver Finance");
+  usePageTitle(t("Driver Finance"));
   return (
     <PageShell>
       <ProfileHero editHref={routes.providerAccountEdit} />
@@ -16,7 +17,7 @@ export default function ProviderFinance() {
       </div>
 
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
-        <h2 className="t-h2">Finance</h2>
+        <h2 className="t-h2">{t("Finance")}</h2>
         <FinanceLedger role="driver" />
       </div>
     </PageShell>

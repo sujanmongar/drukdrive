@@ -25,6 +25,7 @@ import { routes } from "../../lib/routes";
 import { vehicles } from "../../data/mockData";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { t, tn, tr, tx } from "../../lib/i18n";
 import {
   bookingToParams,
   formatDropoff,
@@ -51,6 +52,7 @@ import {
   otpDigit,
 } from "../../lib/ui";
 
+import { formatDate } from "../../lib/dates";
 type PaymentMethod = "card" | "netbanking" | "paypal";
 
 // RMA payment gateway banks. Logos live in /public/logos; a drawn mark is
@@ -69,7 +71,7 @@ const assignedDriver = {
   rating: 4.9,
   trips: 312,
   since: 2019,
-  languages: "Dzongkha, English, Hindi",
+  languages: tx("Dzongkha, English, Hindi"),
   plate: "BP-1-A1234",
 };
 
@@ -80,17 +82,11 @@ const OTP_LENGTH = 6;
 function formatDob(iso: string) {
   if (!iso) return "";
   const d = new Date(`${iso}T00:00:00`);
-  return Number.isNaN(d.getTime())
-    ? iso
-    : d.toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      });
+  return Number.isNaN(d.getTime()) ? iso : formatDate(d, "full");
 }
 
 export default function Payment() {
-  usePageTitle("Payment");
+  usePageTitle(t("Payment"));
   const navigate = useNavigate();
   const { format } = useCurrency();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -98,7 +94,8 @@ export default function Payment() {
   const vehicle =
     vehicles.find((v) => v.id === booking.vehicleId) ?? vehicles[0];
   const selfDrive = booking.type === "self-drive";
-  const detailsLabel = selfDrive ? "Driver details" : "Your details";
+  // English: BookingStepper translates it where it shows it.
+  const detailsLabel = selfDrive ? tx("Driver details") : tx("Your details");
 
   const { pickup, dropoff } = booking;
   const date = formatPickup(booking);
@@ -172,53 +169,61 @@ export default function Payment() {
   }
 
   const methods: { value: PaymentMethod; title: string }[] = [
-    { value: "card", title: "Credit or debit card" },
-    { value: "netbanking", title: "Net banking" },
+    { value: "card", title: t("Credit or debit card") },
+    { value: "netbanking", title: t("Net banking") },
     { value: "paypal", title: "PayPal" },
   ];
 
   const terms = (
     <p className="mt-3 text-center t-caption">
-      By paying you accept DrukDrive&rsquo;s{" "}
-      <Link
-        to={routes.termsOfService}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={inlineLink}
-      >
-        Terms of Service
-      </Link>{" "}
-      and{" "}
-      <Link
-        to={routes.refundPolicy}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={inlineLink}
-      >
-        Refund Policy
-      </Link>
-      .
+      {tr("By paying you accept DrukDrive’s {terms} and {refund}.", {
+        terms: (
+          <Link
+            to={routes.termsOfService}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={inlineLink}
+          >
+            {t("Terms of Service")}
+          </Link>
+        ),
+        refund: (
+          <Link
+            to={routes.refundPolicy}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={inlineLink}
+          >
+            {t("Refund Policy")}
+          </Link>
+        ),
+      })}
     </p>
   );
 
   const driverCard = selfDrive ? (
     <div className="flex flex-col gap-2 t-body">
       <p>
-        Collect{" "}
-        <span className="font-semibold text-[color:var(--color-ink)]">
-          {vehicle.name}
-        </span>{" "}
-        at{" "}
-        <span className="font-semibold text-[color:var(--color-ink)]">
-          {pickup}
-        </span>{" "}
-        on {date}.
+        {tr("Collect {vehicle} at {pickup} on {date}.", {
+          vehicle: (
+            <span className="font-semibold text-[color:var(--color-ink)]">
+              {vehicle.name}
+            </span>
+          ),
+          pickup: (
+            <span className="font-semibold text-[color:var(--color-ink)]">
+              {pickup}
+            </span>
+          ),
+          date,
+        })}
       </p>
       <p>
-        Bring your driving licence, your passport or CID, and a card for the
-        refundable deposit.
+        {t(
+          "Bring your driving licence, your passport or CID, and a card for the refundable deposit.",
+        )}
       </p>
-      <p>The car is handed over with a full tank; return it full.</p>
+      <p>{t("The car is handed over with a full tank; return it full.")}</p>
     </div>
   ) : (
     <div>
@@ -243,27 +248,27 @@ export default function Payment() {
               {assignedDriver.rating.toFixed(1)}/5
             </span>
             <span className="border-l border-[color:var(--color-border)] pl-2 t-body-sm text-[color:var(--color-ink)]">
-              {assignedDriver.trips} trips
+              {tn(assignedDriver.trips, "{n} trip", "{n} trips")}
             </span>
           </div>
         </div>
       </div>
       <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-[color:var(--color-border)] pt-4 sm:grid-cols-3">
         <div>
-          <dt className={metaLabel}>Vehicle</dt>
+          <dt className={metaLabel}>{t("Vehicle")}</dt>
           <dd className={metaValue}>{vehicle.name}</dd>
         </div>
         <div>
-          <dt className={metaLabel}>Number plate</dt>
+          <dt className={metaLabel}>{t("Number plate")}</dt>
           <dd className={`${metaValue} tabular`}>{assignedDriver.plate}</dd>
         </div>
         <div>
-          <dt className={metaLabel}>Driving since</dt>
+          <dt className={metaLabel}>{t("Driving since")}</dt>
           <dd className={metaValue}>{assignedDriver.since}</dd>
         </div>
         <div className="col-span-2 sm:col-span-3">
-          <dt className={metaLabel}>Speaks</dt>
-          <dd className={metaValue}>{assignedDriver.languages}</dd>
+          <dt className={metaLabel}>{t("Speaks")}</dt>
+          <dd className={metaValue}>{t(assignedDriver.languages)}</dd>
         </div>
       </dl>
       <p
@@ -274,8 +279,9 @@ export default function Payment() {
           size={15}
           className="mt-0.5 shrink-0 text-[color:var(--color-ink)]"
         />
-        The driver&rsquo;s number is shared 2 hours before pick-up. Until then,
-        our support line is there for anything.
+        {t(
+          "The driver’s number is shared 2 hours before pick-up. Until then, our support line is there for anything.",
+        )}
       </p>
     </div>
   );
@@ -283,24 +289,31 @@ export default function Payment() {
   // What was entered on the previous step, with a way back to change it.
   const detailRows: [string, string][] = (
     [
-      ["Name", `${q("travelerTitle")} ${travelerName}`.trim()],
-      ["Phone", q("travelerPhone")],
-      ["Email", q("travelerEmail")],
-      ["Passport or CID", q("travelerId")],
-      ["Flight", q("flight")],
-      ["Driving licence", q("licence")],
-      ["Date of birth", formatDob(q("dob"))],
-      [selfDrive ? "Collection address" : "Pickup address", q("pickupAddress")],
-      [selfDrive ? "Return address" : "Drop-off address", q("dropoffAddress")],
+      [t("Name"), `${t(q("travelerTitle"))} ${travelerName}`.trim()],
+      [t("Phone"), q("travelerPhone")],
+      [t("Email"), q("travelerEmail")],
+      [t("Passport or CID"), q("travelerId")],
+      [t("Flight"), q("flight")],
+      [t("Driving licence"), q("licence")],
+      [t("Date of birth"), formatDob(q("dob"))],
+      [
+        selfDrive ? t("Collection address") : t("Pickup address"),
+        q("pickupAddress"),
+      ],
+      [
+        selfDrive ? t("Return address") : t("Drop-off address"),
+        q("dropoffAddress"),
+      ],
     ] as [string, string][]
   ).filter(([, v]) => v);
 
   const otpPanel = (
     <div className="p-4 sm:p-5">
-      <p className="t-h4">Request sent to {bank}</p>
+      <p className="t-h4">{t("Request sent to {bank}", { bank })}</p>
       <p className="mt-1 t-body-sm">
-        Approve the payment in your banking app, then enter the one-time code
-        your bank sent you.
+        {t(
+          "Approve the payment in your banking app, then enter the one-time code your bank sent you.",
+        )}
       </p>
       <div className="mt-5 flex justify-between gap-2 sm:justify-start">
         {digits.map((d, i) => (
@@ -318,7 +331,7 @@ export default function Payment() {
               if (e.key === "Backspace" && !digits[i] && i > 0)
                 otpRefs.current[i - 1]?.focus();
             }}
-            aria-label={`Digit ${i + 1}`}
+            aria-label={t("Digit {n}", { n: i + 1 })}
             className={`${otpDigit} border-[color:var(--color-border)]`}
           />
         ))}
@@ -333,7 +346,7 @@ export default function Payment() {
           }}
           className="self-start sm:self-auto"
         >
-          Use a different method
+          {t("Use a different method")}
         </Button>
         <Button
           variant="primary"
@@ -341,7 +354,7 @@ export default function Payment() {
           disabled={digits.some((d) => !d)}
           onClick={() => finish(`Net Banking (${bank})`)}
         >
-          Confirm payment
+          {t("Confirm payment")}
         </Button>
       </div>
       {terms}
@@ -350,7 +363,7 @@ export default function Payment() {
 
   const methodList = (
     <fieldset className="flex flex-col">
-      <legend className="sr-only">Payment method</legend>
+      <legend className="sr-only">{t("Payment method")}</legend>
       {methods.map((m) => {
         const active = method === m.value;
         return (
@@ -439,18 +452,18 @@ export default function Payment() {
             {active && m.value === "card" && (
               <div className="grid grid-cols-1 gap-4 border-t border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] p-4 sm:grid-cols-2 sm:p-5">
                 <label className="sm:col-span-2">
-                  <span className={labelClass}>Name on card</span>
+                  <span className={labelClass}>{t("Name on card")}</span>
                   <input
                     type="text"
                     value={cardName}
                     onChange={(e) => setCardName(e.target.value)}
-                    placeholder="As printed on the card"
+                    placeholder={t("As printed on the card")}
                     className={inputClass}
                     autoComplete="cc-name"
                   />
                 </label>
                 <label className="sm:col-span-2">
-                  <span className={labelClass}>Card number</span>
+                  <span className={labelClass}>{t("Card number")}</span>
                   <input
                     type="text"
                     inputMode="numeric"
@@ -462,19 +475,19 @@ export default function Payment() {
                   />
                 </label>
                 <label>
-                  <span className={labelClass}>Expiry</span>
+                  <span className={labelClass}>{t("Expiry")}</span>
                   <input
                     type="text"
                     inputMode="numeric"
                     value={expiry}
                     onChange={(e) => setExpiry(e.target.value)}
-                    placeholder="MM / YY"
+                    placeholder={t("MM / YY")}
                     className={inputClass}
                     autoComplete="cc-exp"
                   />
                 </label>
                 <label>
-                  <span className={labelClass}>CVV</span>
+                  <span className={labelClass}>{t("CVV")}</span>
                   <input
                     type="password"
                     inputMode="numeric"
@@ -492,7 +505,7 @@ export default function Payment() {
             {active && m.value === "netbanking" && (
               <div className="flex flex-col gap-4 border-t border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] p-4 sm:p-5">
                 <label>
-                  <span className={labelClass}>Select your bank</span>
+                  <span className={labelClass}>{t("Select your bank")}</span>
                   <span className="relative block">
                     <select
                       value={bank}
@@ -521,16 +534,16 @@ export default function Payment() {
                 </label>
                 <label>
                   <span className={labelClass}>
-                    Bank account number{" "}
+                    {t("Bank account number")}{" "}
                     <span className={labelNote}>
-                      (savings, current or overdraft)
+                      {t("(savings, current or overdraft)")}
                     </span>
                   </span>
                   <span className="relative block">
                     <input
                       type="text"
                       inputMode="numeric"
-                      placeholder="Account number"
+                      placeholder={t("Account number")}
                       value={accountNumber}
                       onChange={(e) => setAccountNumber(e.target.value)}
                       className={`${inputClass} pr-28`}
@@ -547,9 +560,9 @@ export default function Payment() {
                   </span>
                 </label>
                 <p className="t-caption">
-                  A payment request is sent to your bank. Approve it in mBoB,
-                  mPay or your bank&rsquo;s app and enter the one-time code it
-                  sends you.
+                  {t(
+                    "A payment request is sent to your bank. Approve it in mBoB, mPay or your bank’s app and enter the one-time code it sends you.",
+                  )}
                 </p>
                 <Button
                   variant="primary"
@@ -557,7 +570,9 @@ export default function Payment() {
                   fullWidth
                   onClick={() => setOtpStage(true)}
                 >
-                  Send request for {format(amountDue)}
+                  {t("Send request for {amount}", {
+                    amount: format(amountDue),
+                  })}
                 </Button>
                 {terms}
               </div>
@@ -566,9 +581,14 @@ export default function Payment() {
             {active && m.value === "paypal" && (
               <div className="border-t border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] p-4 sm:p-5">
                 <p className="t-body-sm">
-                  You&rsquo;ll be taken to PayPal to approve{" "}
-                  <span className="t-amount">{format(amountDue)}</span>, then
-                  brought back here.
+                  {tr(
+                    "You’ll be taken to PayPal to approve {amount}, then brought back here.",
+                    {
+                      amount: (
+                        <span className="t-amount">{format(amountDue)}</span>
+                      ),
+                    },
+                  )}
                 </p>
                 <a
                   href="https://www.paypal.com/checkoutnow"
@@ -600,12 +620,12 @@ export default function Payment() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            aria-label="Back"
+            aria-label={t("Back")}
             className="icon-btn -ml-2 size-10"
           >
             <Icon name="chevron-left" size={22} />
           </button>
-          <h1 className="t-h2">Payment</h1>
+          <h1 className="t-h2">{t("Payment")}</h1>
         </div>
 
         <div className="mb-8">
@@ -647,17 +667,21 @@ export default function Payment() {
           main={
             <>
               <h2 className="t-h3">
-                {selfDrive ? "Collecting the car" : "Your driver"}
+                {selfDrive ? t("Collecting the car") : t("Your driver")}
               </h2>
               <div className={`${card} mt-4 p-5`}>{driverCard}</div>
 
               {travelerName && (
                 <>
                   <div className="mt-10 flex items-center justify-between gap-3">
-                    <h2 className="t-h3">{detailsLabel}</h2>
+                    <h2 className="t-h3">{t(detailsLabel)}</h2>
                     <Link
                       to={detailsHref}
-                      aria-label={`Edit ${detailsLabel.toLowerCase()}`}
+                      aria-label={
+                        selfDrive
+                          ? t("Edit driver details")
+                          : t("Edit your details")
+                      }
                       className="icon-btn icon-btn-filled size-10"
                     >
                       <Icon name="edit" size={16} />
@@ -676,7 +700,7 @@ export default function Payment() {
                 </>
               )}
 
-              <h2 className="mt-10 t-h3">Add-ons</h2>
+              <h2 className="mt-10 t-h3">{t("Add-ons")}</h2>
               <div className="mt-4 flex flex-col gap-4">
                 {addOns.map((addOn) => (
                   <AddOnCard
@@ -695,7 +719,7 @@ export default function Payment() {
                 ))}
               </div>
 
-              <h2 className="mt-10 t-h3">Payment method</h2>
+              <h2 className="mt-10 t-h3">{t("Payment method")}</h2>
               <div className={`${card} mt-4 overflow-hidden`}>
                 {otpStage ? otpPanel : methodList}
               </div>
@@ -707,7 +731,7 @@ export default function Payment() {
                     size="lg"
                     onClick={() => finish("Credit Card")}
                   >
-                    Pay {format(amountDue)}
+                    {t("Pay {amount}", { amount: format(amountDue) })}
                   </Button>
                   {terms}
                 </div>
@@ -723,14 +747,13 @@ export default function Payment() {
           <div className="flex flex-col items-start">
             <span className="t-h3 t-amount">{format(amountDue)}</span>
             <span className="t-caption">
-              {balance > 0 ? (
-                <>
-                  of <span className="t-amount">{format(netPayable)}</span>{" "}
-                  total
-                </>
-              ) : (
-                "incl. taxes & fees"
-              )}
+              {balance > 0
+                ? tr("of {amount} total", {
+                    amount: (
+                      <span className="t-amount">{format(netPayable)}</span>
+                    ),
+                  })
+                : t("incl. taxes & fees")}
             </span>
           </div>
           <Button
@@ -738,7 +761,7 @@ export default function Payment() {
             size="lg"
             onClick={() => finish("Credit Card")}
           >
-            Pay now
+            {t("Pay now")}
           </Button>
         </div>
       )}

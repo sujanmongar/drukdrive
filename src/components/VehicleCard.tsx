@@ -10,6 +10,7 @@ import { displayPrice } from "../lib/pricing";
 import { useWishlist } from "../lib/wishlist";
 import { cardLink } from "../lib/ui";
 import Button from "./Button";
+import { t } from "../lib/i18n";
 
 export default function VehicleCard({
   vehicle,
@@ -53,7 +54,9 @@ export default function VehicleCard({
         {canSave && (
           <button
             type="button"
-            aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
+            aria-label={
+              saved ? t("Remove from wishlist") : t("Save to wishlist")
+            }
             aria-pressed={saved}
             onClick={(e) => {
               e.preventDefault();
@@ -73,7 +76,9 @@ export default function VehicleCard({
       <div className="p-4">
         <p className="t-h4 truncate">{vehicle.name}</p>
         <p className="t-caption mb-2">
-          or similar {vehicleClassOf[vehicle.category]}
+          {t("or similar {class}", {
+            class: t(vehicleClassOf[vehicle.category]),
+          })}
         </p>
         <div className="t-caption mb-2 flex items-center gap-x-2 gap-y-1 text-[color:var(--color-ink)]">
           <span className="flex items-center gap-1.5">
@@ -100,7 +105,7 @@ export default function VehicleCard({
             {dayBased && vehicle.strikePrice && (
               <div className="flex items-baseline gap-1.5">
                 <span className="t-caption font-semibold text-[color:var(--color-danger)]">
-                  {discountPct}% off
+                  {t("{pct}% off", { pct: discountPct ?? 0 })}
                 </span>
                 <span className="t-caption t-amount font-normal text-[color:var(--color-muted)] line-through">
                   {format(vehicle.strikePrice)}
@@ -109,7 +114,7 @@ export default function VehicleCard({
             )}
             <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
               <span className="t-h3 t-amount">{format(price.amount)}</span>
-              <span className="t-caption">{price.unit}</span>
+              <span className="t-caption">{t(price.unit)}</span>
             </div>
             <p className="t-caption">{price.note}</p>
           </div>
@@ -119,7 +124,7 @@ export default function VehicleCard({
             onClick={(e) => e.stopPropagation()}
           >
             <Button to={detailsHref} className="px-5">
-              Book Now
+              {t("Book Now")}
             </Button>
           </div>
         </div>

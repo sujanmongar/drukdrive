@@ -33,6 +33,7 @@ import { useCurrency } from "../../lib/currency";
 import { useAuth } from "../../lib/auth";
 import { useCurrentUser } from "../../lib/currentUser";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { t, tr, tx } from "../../lib/i18n";
 import {
   card,
   fieldError,
@@ -46,7 +47,7 @@ import {
 // Step 3 of checkout: who is travelling (or who is driving, on self drive).
 // The trip itself was settled on the review step and travels in the URL.
 export default function ReviewBooking() {
-  usePageTitle("Details");
+  usePageTitle(t("Details"));
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { format } = useCurrency();
@@ -89,7 +90,7 @@ export default function ReviewBooking() {
   const { total } = fare;
   const addOns = addOnsFor(booking.type);
   const selfDrive = booking.type === "self-drive";
-  const detailsLabel = selfDrive ? "Driver details" : "Your details";
+  const detailsLabel = selfDrive ? t("Driver details") : t("Your details");
   const askFlight = needsFlightNumber(pickup, dropoff);
   const discount = promoDiscount(promoCode, total);
   const netPayable = Math.round((total - discount) * 100) / 100;
@@ -165,49 +166,54 @@ export default function ReviewBooking() {
   const form = (
     <>
       <h2 className="t-h3">
-        {selfDrive ? "Driver information" : "Personal information"}
+        {selfDrive ? t("Driver information") : t("Personal information")}
       </h2>
       {!isLoggedIn && (
         <p className="mt-1 t-body-sm">
-          Have an account?{" "}
-          <Link to={routes.signIn} className={inlineLink}>
-            Sign in
-          </Link>{" "}
-          to fill this in for you.
+          {tr("Have an account? {signIn} to fill this in for you.", {
+            signIn: (
+              <Link to={routes.signIn} className={inlineLink}>
+                {t("Sign in")}
+              </Link>
+            ),
+          })}
         </p>
       )}
 
       <div className={`${card} mt-4 p-4 sm:p-5`}>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-[110px_1fr]">
           <label>
-            <span className={labelClass}>Title</span>
+            <span className={labelClass}>{t("Title")}</span>
             <select
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className={inputClass}
             >
-              {["Mr", "Mrs", "Ms"].map((t) => (
-                <option key={t}>{t}</option>
+              {[tx("Mr"), tx("Mrs"), tx("Ms")].map((x) => (
+                <option key={x} value={x}>
+                  {t(x)}
+                </option>
               ))}
             </select>
           </label>
           <label>
-            <span className={labelClass}>Full name *</span>
+            <span className={labelClass}>{t("Full name *")}</span>
             <input
               type="text"
-              placeholder="As on your passport or CID"
+              placeholder={t("As on your passport or CID")}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               className={`${inputClass} ${touched && !fullName.trim() ? errorClass : ""}`}
             />
-            {touched && !fullName.trim() && err("Full name is required.")}
+            {touched && !fullName.trim() && err(t("Full name is required."))}
           </label>
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label>
             <span className={labelClass}>
-              Phone * <span className={labelNote}>(WhatsApp preferred)</span>
+              {t("Phone *")}{" "}
+              <span className={labelNote}>{t("(WhatsApp preferred)")}</span>
             </span>
             <input
               type="tel"
@@ -216,12 +222,14 @@ export default function ReviewBooking() {
               onChange={(e) => setPhone(e.target.value)}
               className={`${inputClass} ${touched && !phone.trim() ? errorClass : ""}`}
             />
-            {touched && !phone.trim() && err("Phone number is required.")}
+            {touched && !phone.trim() && err(t("Phone number is required."))}
           </label>
           <label>
             <span className={labelClass}>
-              Email *{" "}
-              <span className={labelNote}>(your e-ticket goes here)</span>
+              {t("Email *")}{" "}
+              <span className={labelNote}>
+                {t("(your e-ticket goes here)")}
+              </span>
             </span>
             <input
               type="email"
@@ -230,18 +238,18 @@ export default function ReviewBooking() {
               onChange={(e) => setEmail(e.target.value)}
               className={`${inputClass} ${touched && !email.trim() ? errorClass : ""}`}
             />
-            {touched && !email.trim() && err("Email is required.")}
+            {touched && !email.trim() && err(t("Email is required."))}
           </label>
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label>
             <span className={labelClass}>
-              {selfDrive ? "Collection address *" : "Pickup address *"}
+              {selfDrive ? t("Collection address *") : t("Pickup address *")}
             </span>
             <input
               type="text"
-              placeholder="Address or landmark"
+              placeholder={t("Address or landmark")}
               value={pickupAddress}
               onChange={(e) => setPickupAddress(e.target.value)}
               className={`${inputClass} ${touched && !pickupAddress.trim() ? errorClass : ""}`}
@@ -249,12 +257,12 @@ export default function ReviewBooking() {
           </label>
           <label>
             <span className={labelClass}>
-              {selfDrive ? "Return address" : "Drop-off address"}{" "}
-              <span className={labelNote}>(optional)</span>
+              {selfDrive ? t("Return address") : t("Drop-off address")}{" "}
+              <span className={labelNote}>{t("(optional)")}</span>
             </span>
             <input
               type="text"
-              placeholder="Address or landmark"
+              placeholder={t("Address or landmark")}
               value={dropoffAddress}
               onChange={(e) => setDropoffAddress(e.target.value)}
               className={inputClass}
@@ -264,97 +272,112 @@ export default function ReviewBooking() {
 
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label>
-            <span className={labelClass}>Passport or CID number *</span>
+            <span className={labelClass}>{t("Passport or CID number *")}</span>
             <input
               type="text"
-              placeholder="For the driver to verify you"
+              placeholder={t("For the driver to verify you")}
               value={identity}
               onChange={(e) => setIdentity(e.target.value)}
               className={`${inputClass} ${touched && !identity.trim() ? errorClass : ""}`}
             />
             {touched &&
               !identity.trim() &&
-              err("A passport or CID number is required.")}
+              err(t("A passport or CID number is required."))}
           </label>
           {askFlight && (
             <label>
               <span className={labelClass}>
-                Flight number <span className={labelNote}>(optional)</span>
+                {t("Flight number")}{" "}
+                <span className={labelNote}>{t("(optional)")}</span>
               </span>
               <input
                 type="text"
-                placeholder="e.g. KB 205"
+                placeholder={t("e.g. {flight}", { flight: "KB 205" })}
                 value={flight}
                 onChange={(e) => setFlight(e.target.value)}
                 className={inputClass}
               />
               <p className={fieldHint}>
-                So your driver can track a delayed flight.
+                {t("So your driver can track a delayed flight.")}
               </p>
             </label>
           )}
           {selfDrive && (
             <>
               <label>
-                <span className={labelClass}>Driving licence number *</span>
+                <span className={labelClass}>
+                  {t("Driving licence number *")}
+                </span>
                 <input
                   type="text"
-                  placeholder="Bhutanese or Indian licence"
+                  placeholder={t("Bhutanese or Indian licence")}
                   value={licence}
                   onChange={(e) => setLicence(e.target.value)}
                   className={`${inputClass} ${touched && !licence.trim() ? errorClass : ""}`}
                 />
               </label>
               <label>
-                <span className={labelClass}>Date of birth *</span>
+                <span className={labelClass}>{t("Date of birth *")}</span>
                 <input
                   type="date"
                   value={dob}
                   onChange={(e) => setDob(e.target.value)}
                   className={`${inputClass} ${touched && !dob.trim() ? errorClass : ""}`}
                 />
-                <p className={fieldHint}>Drivers must be 21 or over.</p>
+                <p className={fieldHint}>{t("Drivers must be 21 or over.")}</p>
               </label>
             </>
           )}
         </div>
 
         <p className="mt-4 t-body-sm text-[color:var(--color-muted)]">
-          <span className="font-semibold text-[color:var(--color-ink-soft)]">
-            Note:
-          </span>{" "}
-          Your information is used for driver verification, trip updates and
-          your booking confirmation.
+          {tr(
+            "{note} Your information is used for driver verification, trip updates and your booking confirmation.",
+            {
+              note: (
+                <span className="font-semibold text-[color:var(--color-ink-soft)]">
+                  {t("Note:")}
+                </span>
+              ),
+            },
+          )}
         </p>
         <p className="mt-3 t-body-sm text-[color:var(--color-muted)]">
-          By continuing you agree to DrukDrive&rsquo;s{" "}
-          <Link
-            to={routes.privacyPolicy}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={inlineLink}
-          >
-            Privacy Policy
-          </Link>
-          ,{" "}
-          <Link
-            to={routes.userAgreement}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={inlineLink}
-          >
-            User Agreement
-          </Link>{" "}
-          and{" "}
-          <Link
-            to={routes.termsOfService}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={inlineLink}
-          >
-            Terms of Service
-          </Link>
-          .
+          {tr(
+            "By continuing you agree to DrukDrive’s {privacy}, {agreement} and {terms}.",
+            {
+              privacy: (
+                <Link
+                  to={routes.privacyPolicy}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={inlineLink}
+                >
+                  {t("Privacy Policy")}
+                </Link>
+              ),
+              agreement: (
+                <Link
+                  to={routes.userAgreement}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={inlineLink}
+                >
+                  {t("User Agreement")}
+                </Link>
+              ),
+              terms: (
+                <Link
+                  to={routes.termsOfService}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={inlineLink}
+                >
+                  {t("Terms of Service")}
+                </Link>
+              ),
+            },
+          )}
         </p>
       </div>
     </>
@@ -367,7 +390,7 @@ export default function ReviewBooking() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            aria-label="Back"
+            aria-label={t("Back")}
             className="icon-btn -ml-2 size-10"
           >
             <Icon name="chevron-left" size={22} />
@@ -416,7 +439,7 @@ export default function ReviewBooking() {
             <>
               {form}
 
-              <h2 className="mt-10 t-h3">Add-ons</h2>
+              <h2 className="mt-10 t-h3">{t("Add-ons")}</h2>
               <div className="mt-4 flex flex-col gap-4">
                 {addOns.map((addOn) => (
                   <AddOnCard
@@ -437,7 +460,7 @@ export default function ReviewBooking() {
 
               <div className="mt-8 hidden justify-end lg:flex">
                 <Button variant="primary" size="lg" onClick={handleProceed}>
-                  Continue to payment
+                  {t("Continue to payment")}
                 </Button>
               </div>
             </>
@@ -450,18 +473,17 @@ export default function ReviewBooking() {
         <a href="#price-summary" className="flex flex-col items-start">
           <span className="t-h3 t-amount">{format(amountDue)}</span>
           <span className="whitespace-nowrap t-caption">
-            {split.later > 0 ? (
-              <>
-                Pay now · of{" "}
-                <span className="t-amount">{format(netPayable)}</span>
-              </>
-            ) : (
-              "incl. taxes & fees"
-            )}
+            {split.later > 0
+              ? tr("Pay now · of {amount}", {
+                  amount: (
+                    <span className="t-amount">{format(netPayable)}</span>
+                  ),
+                })
+              : t("incl. taxes & fees")}
           </span>
         </a>
         <Button variant="primary" size="lg" onClick={handleProceed}>
-          Continue
+          {t("Continue")}
         </Button>
       </div>
     </PageShell>

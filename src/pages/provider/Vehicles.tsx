@@ -13,17 +13,20 @@ import { routes } from "../../lib/routes";
 import { useCurrency } from "../../lib/currency";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { t, tn } from "../../lib/i18n";
 import { card, menu, menuItem, metaLabel } from "../../lib/ui";
 
 export default function ProviderVehicles() {
-  usePageTitle("My Vehicle");
+  usePageTitle(t("My Vehicle"));
   const { vehicles: driverVehicles, removeVehicle } = useDriverVehicles();
   const { format } = useCurrency();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
   function handleRemove(id: string, name: string) {
     setOpenMenu(null);
-    if (window.confirm(`Remove ${name} from your fleet?`)) {
+    if (
+      window.confirm(t("Remove {vehicle} from your fleet?", { vehicle: name }))
+    ) {
       removeVehicle(id);
     }
   }
@@ -37,20 +40,20 @@ export default function ProviderVehicles() {
 
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <div className="flex items-center justify-between">
-          <h2 className="t-h2">My Vehicle</h2>
+          <h2 className="t-h2">{t("My Vehicle")}</h2>
           <Button to={routes.providerVehicleAdd} variant="primary" size="md">
-            Add new
+            {t("Add new")}
           </Button>
         </div>
 
         {driverVehicles.length === 0 ? (
           <EmptyState
             icon="car"
-            title="No vehicles yet"
-            description="Add a vehicle to start receiving bookings."
+            title={t("No vehicles yet")}
+            description={t("Add a vehicle to start receiving bookings.")}
             action={
               <Button to={routes.providerVehicleAdd} variant="primary">
-                Add your first vehicle
+                {t("Add your first vehicle")}
               </Button>
             }
           />
@@ -68,7 +71,7 @@ export default function ProviderVehicles() {
                     onClick={() =>
                       setOpenMenu((cur) => (cur === v.id ? null : v.id))
                     }
-                    aria-label="Vehicle options"
+                    aria-label={t("Vehicle options")}
                     className="icon-btn icon-btn-filled size-10 shrink-0"
                   >
                     <Icon name="more" size={18} />
@@ -85,27 +88,27 @@ export default function ProviderVehicles() {
                 <div className="flex flex-1 flex-col px-5 pb-5">
                   <p className="t-h4 truncate">{v.name}</p>
                   <p className="mt-0.5 t-caption">
-                    {vehicleClassOf[v.category]} ·{" "}
+                    {t(vehicleClassOf[v.category])} ·{" "}
                     <span className="tabular">{v.plate}</span>
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 t-body-sm text-[color:var(--color-ink)]">
                     <span className="flex items-center gap-1.5">
                       <Icon name="seat" size={15} strokeWidth={2.2} />
-                      {v.seats} seats
+                      {tn(v.seats, "{n} seat", "{n} seats")}
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Icon name="fuel" size={15} strokeWidth={2.2} />
-                      {v.fuel}
+                      {t(v.fuel)}
                     </span>
                   </div>
                   <div className="mt-4 flex items-end justify-between border-t border-[color:var(--color-border)] pt-4">
                     <div>
-                      <p className={metaLabel}>Your rate</p>
+                      <p className={metaLabel}>{t("Your rate")}</p>
                       <p>
                         <span className="t-h4 t-amount">
                           {format(v.pricePerDay)}
                         </span>{" "}
-                        <span className="t-caption">/day</span>
+                        <span className="t-caption">{t("/day")}</span>
                       </p>
                     </div>
                     <Button
@@ -114,7 +117,7 @@ export default function ProviderVehicles() {
                       to={`${routes.providerVehicleAdd}?edit=${v.id}`}
                     >
                       <Icon name="edit" size={15} />
-                      Edit
+                      {t("Edit")}
                     </Button>
                   </div>
                 </div>
@@ -122,7 +125,7 @@ export default function ProviderVehicles() {
                 {openMenu === v.id && (
                   <>
                     <button
-                      aria-label="Close"
+                      aria-label={t("Close")}
                       className="fixed inset-0 z-30 cursor-default"
                       onClick={() => setOpenMenu(null)}
                     />
@@ -135,7 +138,7 @@ export default function ProviderVehicles() {
                         onClick={() => handleRemove(v.id, v.name)}
                       >
                         <Icon name="trash" size={15} />
-                        Remove
+                        {t("Remove")}
                       </button>
                     </div>
                   </>

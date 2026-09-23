@@ -6,6 +6,7 @@ import { useMediaQuery } from "../hooks/useMediaQuery";
 import AnchoredPopover from "./AnchoredPopover";
 import EmptyState from "./EmptyState";
 import { iconTile, input, rowHover } from "../lib/ui";
+import { t } from "../lib/i18n";
 
 // Mobile (or no anchor given): full-screen sheet. Desktop with an anchorRef:
 // portaled dropdown anchored to the trigger's live position — never clipped
@@ -55,7 +56,7 @@ export default function LocationPickerSheet({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close"
+          aria-label={t("Close")}
           className="icon-btn icon-btn-filled -mr-1 size-10 shrink-0 md:hidden"
         >
           <Icon
@@ -69,8 +70,8 @@ export default function LocationPickerSheet({
         {results.length === 0 ? (
           <EmptyState
             icon="location"
-            title="No locations found"
-            description="Try another town or landmark name."
+            title={t("No locations found")}
+            description={t("Try another town or landmark name.")}
             className="m-4"
           />
         ) : (
@@ -105,7 +106,7 @@ export default function LocationPickerSheet({
     return (
       <>
         <button
-          aria-label="Close"
+          aria-label={t("Close")}
           onClick={onClose}
           className="fixed inset-0 z-[59] cursor-default"
         />
@@ -119,7 +120,7 @@ export default function LocationPickerSheet({
   return createPortal(
     <>
       <button
-        aria-label="Close"
+        aria-label={t("Close")}
         onClick={onClose}
         className="animate-scrim-in fixed inset-0 z-[59] cursor-default bg-black/40"
       />

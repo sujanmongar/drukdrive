@@ -6,9 +6,10 @@ import { routes } from "../../lib/routes";
 import { actionLink } from "../../lib/ui";
 import { currentUser } from "../../data/mockData";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { t } from "../../lib/i18n";
 
 export default function ForgotPassword() {
-  usePageTitle("Forgot password");
+  usePageTitle(t("Forgot password"));
   const navigate = useNavigate();
   const [value, setValue] = useState(currentUser.email);
 
@@ -18,24 +19,25 @@ export default function ForgotPassword() {
   };
 
   return (
-    <AuthShell title="Reset your password" back>
+    <AuthShell title={t("Reset your password")} back>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <p className="text-center t-body-sm">
-          We will send you a reset OTP on your registered e-mail ID or mobile
-          number.
+          {t(
+            "We will send you a reset OTP on your registered e-mail ID or mobile number.",
+          )}
         </p>
         <AuthInput
           icon="mail"
           type="text"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="Email or phone number"
+          placeholder={t("Email or phone number")}
         />
         <Button type="submit" size="lg" fullWidth className="mt-2">
-          Send reset code
+          {t("Send reset code")}
         </Button>
         <Link to={routes.signIn} className={`${actionLink} mt-1 self-center`}>
-          Back to sign in
+          {t("Back to sign in")}
         </Link>
       </form>
       <AuthTerms />

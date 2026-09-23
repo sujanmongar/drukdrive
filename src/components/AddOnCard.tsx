@@ -4,18 +4,19 @@ import Icon from "./Icon";
 import Button from "./Button";
 import { card, sheet } from "../lib/ui";
 import type { AddOn } from "../lib/pricing";
+import { t } from "../lib/i18n";
 
 function InfoBody({ addOn }: { addOn: AddOn }) {
   return (
     <>
       <h4 className="t-label uppercase text-[color:var(--color-muted)]">
-        What it&rsquo;s for
+        {t("What it’s for")}
       </h4>
       <p className="mt-1 t-body-sm text-[color:var(--color-ink)]">
-        {addOn.purpose}
+        {t(addOn.purpose)}
       </p>
       <h4 className="mt-4 t-label uppercase text-[color:var(--color-muted)]">
-        How it works
+        {t("How it works")}
       </h4>
       <ol className="mt-1 flex flex-col gap-1.5 t-body-sm">
         {addOn.howItWorks.map((step, i) => (
@@ -23,7 +24,7 @@ function InfoBody({ addOn }: { addOn: AddOn }) {
             <span className="tabular shrink-0 font-semibold text-[color:var(--color-ink)]">
               {i + 1}.
             </span>
-            {step}
+            {t(step)}
           </li>
         ))}
       </ol>
@@ -55,14 +56,14 @@ export default function AddOnCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="t-h4">{addOn.name}</h3>
-          <p className="mt-1 t-body-sm">{addOn.description}</p>
+          <h3 className="t-h4">{t(addOn.name)}</h3>
+          <p className="mt-1 t-body-sm">{t(addOn.description)}</p>
         </div>
         <div className="relative shrink-0">
           <button
             type="button"
             onClick={() => setInfoOpen((v) => !v)}
-            aria-label={`About ${addOn.name}`}
+            aria-label={t("About {addon}", { addon: t(addOn.name) })}
             aria-expanded={infoOpen}
             className="icon-btn -mr-2 -mt-2 size-9 text-[color:var(--color-muted)]"
           >
@@ -72,7 +73,7 @@ export default function AddOnCard({
           {infoOpen && (
             <>
               <button
-                aria-label="Close"
+                aria-label={t("Close")}
                 className="fixed inset-0 z-40 hidden cursor-default lg:block"
                 onClick={() => setInfoOpen(false)}
               />
@@ -87,7 +88,7 @@ export default function AddOnCard({
       <div className="mt-4 flex items-center justify-between gap-4">
         <p>
           <span className="block t-body-lg t-amount">{price}</span>
-          <span className="block t-caption">per day</span>
+          <span className="block t-caption">{t("per day")}</span>
         </p>
         <Button
           variant={added ? "secondary" : "primary"}
@@ -99,10 +100,10 @@ export default function AddOnCard({
           {added ? (
             <span className="flex items-center gap-1.5">
               <Icon name="check" size={16} strokeWidth={2.5} />
-              Added
+              {t("Added")}
             </span>
           ) : (
-            "Add"
+            t("Add")
           )}
         </Button>
       </div>
@@ -112,7 +113,7 @@ export default function AddOnCard({
         createPortal(
           <div className="fixed inset-0 z-[70] flex items-end lg:hidden">
             <button
-              aria-label="Close"
+              aria-label={t("Close")}
               className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
               onClick={() => setInfoOpen(false)}
             />
@@ -120,11 +121,11 @@ export default function AddOnCard({
               className={`${sheet} relative w-full pb-[max(1.25rem,env(safe-area-inset-bottom))]`}
             >
               <div className="flex items-center justify-between px-5 pb-3 pt-5">
-                <h2 className="t-h3">{addOn.name}</h2>
+                <h2 className="t-h3">{t(addOn.name)}</h2>
                 <button
                   type="button"
                   onClick={() => setInfoOpen(false)}
-                  aria-label="Close"
+                  aria-label={t("Close")}
                   className="icon-btn icon-btn-filled size-10"
                 >
                   <Icon name="close" size={20} />

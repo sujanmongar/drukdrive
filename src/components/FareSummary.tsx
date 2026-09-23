@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Icon from "./Icon";
+import { t } from "../lib/i18n";
 
 export type FareLine = { label: string; value: string; success?: boolean };
 
@@ -22,7 +23,7 @@ export default function FareSummary({
         aria-expanded={open}
         className="flex min-h-11 w-full items-center justify-between gap-3 t-body-sm font-semibold text-[color:var(--color-ink)]"
       >
-        Fare summary
+        {t("Fare summary")}
         <Icon
           name="chevron-down"
           size={18}
@@ -48,7 +49,7 @@ export default function FareSummary({
             </div>
           ))}
           <div className="flex justify-between gap-4 border-t border-[color:var(--color-border)] pt-2 t-body-sm font-semibold text-[color:var(--color-ink)]">
-            <dt>Total</dt>
+            <dt>{t("Total")}</dt>
             <dd className="t-amount">{total}</dd>
           </div>
         </dl>

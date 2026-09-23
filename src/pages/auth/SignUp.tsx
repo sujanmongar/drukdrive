@@ -10,9 +10,10 @@ import Button from "../../components/Button";
 import { routes } from "../../lib/routes";
 import { inlineLink } from "../../lib/ui";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { t, tr } from "../../lib/i18n";
 
 export default function SignUp() {
-  usePageTitle("Sign up");
+  usePageTitle(t("Sign up"));
   const navigate = useNavigate();
   const [method, setMethod] = useState<AuthMethod>("email");
   const [name, setName] = useState("");
@@ -26,7 +27,7 @@ export default function SignUp() {
   };
 
   return (
-    <AuthShell title="Create an account">
+    <AuthShell title={t("Create an account")}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <MethodTabs value={method} onChange={setMethod} />
         <AuthInput
@@ -34,7 +35,7 @@ export default function SignUp() {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Full name"
+          placeholder={t("Full name")}
         />
         {method === "email" ? (
           <AuthInput
@@ -42,7 +43,7 @@ export default function SignUp() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email address"
+            placeholder={t("Email address")}
           />
         ) : (
           <AuthInput
@@ -50,7 +51,7 @@ export default function SignUp() {
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="+975 Phone number"
+            placeholder={t("+975 Phone number")}
           />
         )}
         <AuthInput
@@ -58,17 +59,20 @@ export default function SignUp() {
           password
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
+          placeholder={t("Password")}
         />
         <Button type="submit" size="lg" fullWidth className="mt-2">
-          Continue
+          {t("Continue")}
         </Button>
       </form>
       <p className="mt-6 text-center t-body-sm">
-        Already have an account?{" "}
-        <Link to={routes.signIn} className={inlineLink}>
-          Sign in
-        </Link>
+        {tr("Already have an account? {signIn}", {
+          signIn: (
+            <Link to={routes.signIn} className={inlineLink}>
+              {t("Sign in")}
+            </Link>
+          ),
+        })}
       </p>
       <AuthTerms />
     </AuthShell>

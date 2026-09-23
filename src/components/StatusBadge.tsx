@@ -1,23 +1,26 @@
+import { t, tx } from "../lib/i18n";
+
+// The English status is the key; the badge shows t(status).
 const styles: Record<string, string> = {
-  Upcoming:
+  [tx("Upcoming")]:
     "bg-[color:var(--color-info-bg)] text-[color:var(--color-info-text)]",
-  Completed:
+  [tx("Completed")]:
     "bg-[color:var(--color-success-bg)] text-[color:var(--color-success)]",
-  Cancelled:
+  [tx("Cancelled")]:
     "bg-[color:var(--color-danger-bg)] text-[color:var(--color-danger)]",
-  Active:
+  [tx("Active")]:
     "bg-[color:var(--color-success-bg)] text-[color:var(--color-success)]",
-  "Under review":
+  [tx("Under review")]:
     "bg-[color:var(--color-warning-bg)] text-[color:var(--color-warning)]",
-  "Not confirmed":
+  [tx("Not confirmed")]:
     "bg-[color:var(--color-info-bg)] text-[color:var(--color-info-text)]",
-  Confirmed:
+  [tx("Confirmed")]:
     "bg-[color:var(--color-success-bg)] text-[color:var(--color-success)]",
-  Pending:
+  [tx("Pending")]:
     "bg-[color:var(--color-warning-bg)] text-[color:var(--color-warning)]",
-  Credited:
+  [tx("Credited")]:
     "bg-[color:var(--color-success-bg)] text-[color:var(--color-success)]",
-  Processed:
+  [tx("Processed")]:
     "bg-[color:var(--color-info-bg)] text-[color:var(--color-info-text)]",
 };
 
@@ -26,7 +29,7 @@ export default function StatusBadge({ status }: { status: string }) {
     <span
       className={`rounded-full px-2.5 py-1 t-label ${styles[status] ?? "bg-[color:var(--color-surface-soft)] text-[color:var(--color-muted)]"}`}
     >
-      {status}
+      {t(status)}
     </span>
   );
 }

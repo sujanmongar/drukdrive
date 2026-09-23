@@ -7,14 +7,15 @@ export type VehicleCategory =
 // Rental-industry style class shown under a car's name ("or similar Compact"),
 // so the listing reads as a class of vehicle rather than that exact car.
 export const vehicleClassOf: Record<VehicleCategory, string> = {
-  "Prime SUV": "Luxury SUV",
-  "Sedan SUV": "Compact",
-  "Mini Bus": "People Carrier",
-  Bus: "Coach",
-  "Two Wheels": "Motorbike",
+  "Prime SUV": tx("Luxury SUV"),
+  "Sedan SUV": tx("Compact"),
+  "Mini Bus": tx("People Carrier"),
+  Bus: tx("Coach"),
+  "Two Wheels": tx("Motorbike"),
 };
 
 import { routes, type BookingType } from "../lib/routes";
+import { tx } from "../lib/i18n";
 
 /** Which vehicles make sense for a booking type: no self-driving a bus, no
  *  bike taxis on chauffeured trips. */
@@ -25,6 +26,27 @@ export function vehiclesForType(list: Vehicle[], type: BookingType): Vehicle[] {
     );
   return list.filter((v) => v.category !== "Two Wheels");
 }
+
+// The fixed labels in the unions below (category, fuel, gearbox, status)
+// stay English in the data because code compares them; this list only
+// registers them for translation. Screens show them with t(value).
+export const unionLabels = [
+  tx("Prime SUV"),
+  tx("Sedan SUV"),
+  tx("Mini Bus"),
+  tx("Bus"),
+  tx("Two Wheels"),
+  tx("Petrol"),
+  tx("Diesel"),
+  tx("Electric"),
+  tx("Automatic"),
+  tx("Manual"),
+  tx("Upcoming"),
+  tx("Completed"),
+  tx("Cancelled"),
+  tx("Active"),
+  tx("Under review"),
+];
 
 export type Vehicle = {
   id: string;
@@ -54,7 +76,7 @@ export const vehicles: Vehicle[] = [
     transmission: "Automatic",
     ac: true,
     location: "Thimphu",
-    type: "Tourist Standard Vehicle",
+    type: tx("Tourist Standard Vehicle"),
     pricePerDay: 58,
     strikePrice: 68,
     rating: 4.8,
@@ -70,7 +92,7 @@ export const vehicles: Vehicle[] = [
     transmission: "Manual",
     ac: true,
     location: "Thimphu",
-    type: "Tourist Standard Vehicle",
+    type: tx("Tourist Standard Vehicle"),
     pricePerDay: 56,
     rating: 4.6,
     reviewCount: 58,
@@ -85,7 +107,7 @@ export const vehicles: Vehicle[] = [
     transmission: "Manual",
     ac: true,
     location: "Paro",
-    type: "Tourist Standard Vehicle",
+    type: tx("Tourist Standard Vehicle"),
     pricePerDay: 53,
     rating: 4.5,
     reviewCount: 41,
@@ -100,7 +122,7 @@ export const vehicles: Vehicle[] = [
     transmission: "Automatic",
     ac: true,
     location: "Punakha",
-    type: "Tourist Standard Vehicle",
+    type: tx("Tourist Standard Vehicle"),
     pricePerDay: 54,
     strikePrice: 60,
     rating: 4.7,
@@ -116,7 +138,7 @@ export const vehicles: Vehicle[] = [
     transmission: "Automatic",
     ac: true,
     location: "Thimphu",
-    type: "Tourist Standard Vehicle",
+    type: tx("Tourist Standard Vehicle"),
     pricePerDay: 62,
     rating: 4.9,
     reviewCount: 210,
@@ -131,7 +153,7 @@ export const vehicles: Vehicle[] = [
     transmission: "Automatic",
     ac: true,
     location: "Paro",
-    type: "Tourist Standard Vehicle",
+    type: tx("Tourist Standard Vehicle"),
     pricePerDay: 50,
     rating: 4.6,
     reviewCount: 74,
@@ -146,7 +168,7 @@ export const vehicles: Vehicle[] = [
     transmission: "Manual",
     ac: false,
     location: "Thimphu",
-    type: "Self Drive Vehicle",
+    type: tx("Self Drive Vehicle"),
     pricePerDay: 22,
     rating: 4.7,
     reviewCount: 39,
@@ -161,7 +183,7 @@ export const vehicles: Vehicle[] = [
     transmission: "Manual",
     ac: true,
     location: "Thimphu",
-    type: "Tourist Standard Vehicle",
+    type: tx("Tourist Standard Vehicle"),
     pricePerDay: 45,
     rating: 4.4,
     reviewCount: 53,
@@ -176,7 +198,7 @@ export const vehicles: Vehicle[] = [
     transmission: "Manual",
     ac: true,
     location: "Punakha",
-    type: "Tourist Standard Vehicle",
+    type: tx("Tourist Standard Vehicle"),
     pricePerDay: 60,
     strikePrice: 66,
     rating: 4.5,
@@ -192,7 +214,7 @@ export const vehicles: Vehicle[] = [
     transmission: "Automatic",
     ac: true,
     location: "Paro",
-    type: "Tourist Standard Vehicle",
+    type: tx("Tourist Standard Vehicle"),
     pricePerDay: 48,
     rating: 4.6,
     reviewCount: 61,
@@ -207,7 +229,7 @@ export const vehicles: Vehicle[] = [
     transmission: "Manual",
     ac: true,
     location: "Thimphu",
-    type: "Tourist Standard Vehicle",
+    type: tx("Tourist Standard Vehicle"),
     pricePerDay: 47,
     rating: 4.3,
     reviewCount: 29,
@@ -218,7 +240,8 @@ export const recentSearches = [
   {
     id: "s1",
     title: "Toyota Prado GX",
-    subtitle: "Thimphu → Punakha, 11 Dec",
+    route: "Thimphu → Punakha",
+    date: "2026-12-11",
     vehicleId: "toyota-prado-gx",
     pickup: "Thimphu, Druk School",
     dropoff: "Punakha, Khuruthang Taxi Parking",
@@ -226,7 +249,8 @@ export const recentSearches = [
   {
     id: "s2",
     title: "Hyundai Santa Fe",
-    subtitle: "Thimphu → Paro, 27 Nov",
+    route: "Thimphu → Paro",
+    date: "2026-11-27",
     vehicleId: "hyundai-santa-fe",
     pickup: "Thimphu, Memorial Chorten",
     dropoff: "Paro, International Airport",
@@ -234,7 +258,8 @@ export const recentSearches = [
   {
     id: "s3",
     title: "Toyota Hiace Bus",
-    subtitle: "Phuentsholing → Thimphu, 12 Oct",
+    route: "Phuentsholing → Thimphu",
+    date: "2026-10-12",
     vehicleId: "toyota-hiace-bus",
     pickup: "Phuentsholing, Terminal",
     dropoff: "Thimphu, Clock Tower Square",
@@ -246,53 +271,82 @@ export const popularCarTypes: {
   label: string;
   vehicleId: string;
 }[] = [
-  { category: "Prime SUV", label: "Prime SUV", vehicleId: "toyota-prado-gx" },
-  { category: "Mini Bus", label: "Mini Bus", vehicleId: "toyota-hiace-bus" },
-  { category: "Bus", label: "Bus", vehicleId: "toyota-coaster-bus" },
-  { category: "Sedan SUV", label: "Sedan SUV", vehicleId: "hyundai-santa-fe" },
+  {
+    category: "Prime SUV",
+    label: tx("Prime SUV"),
+    vehicleId: "toyota-prado-gx",
+  },
+  {
+    category: "Mini Bus",
+    label: tx("Mini Bus"),
+    vehicleId: "toyota-hiace-bus",
+  },
+  { category: "Bus", label: tx("Bus"), vehicleId: "toyota-coaster-bus" },
+  {
+    category: "Sedan SUV",
+    label: tx("Sedan SUV"),
+    vehicleId: "hyundai-santa-fe",
+  },
 ];
 
 export const faqs = [
   {
-    q: "Which kinds of cars can I hire on DrukDrive?",
-    a: "On DrukDrive you can find deals on all types of car hire, including small, medium, large, SUV, van, luxury, people movers and commercial vehicles.",
+    q: tx("Which kinds of cars can I hire on DrukDrive?"),
+    a: tx(
+      "On DrukDrive you can find deals on all types of car hire, including small, medium, large, SUV, van, luxury, people movers and commercial vehicles.",
+    ),
   },
   {
-    q: "How do I find the best car hire deals?",
-    a: "Compare prices across verified local operators and filter by vehicle type, seats and price to find the best deal for your trip.",
+    q: tx("How do I find the best car hire deals?"),
+    a: tx(
+      "Compare prices across verified local operators and filter by vehicle type, seats and price to find the best deal for your trip.",
+    ),
   },
   {
-    q: "Is there a speed limit?",
-    a: "Yes — speed limits in Bhutan are generally 50 km/h in towns and 30-80 km/h on highways depending on the road.",
+    q: tx("Is there a speed limit?"),
+    a: tx(
+      "Yes — speed limits in Bhutan are generally 50 km/h in towns and 30-80 km/h on highways depending on the road.",
+    ),
   },
   {
-    q: "Are there any restricted areas?",
-    a: "Some regions require a permit. Your driver or the DrukDrive support team can help arrange the right permits.",
+    q: tx("Are there any restricted areas?"),
+    a: tx(
+      "Some regions require a permit. Your driver or the DrukDrive support team can help arrange the right permits.",
+    ),
   },
   {
-    q: "Can new drivers hire a car?",
-    a: "Most self-drive rentals require a minimum of 1 year of driving experience and a valid international license.",
+    q: tx("Can new drivers hire a car?"),
+    a: tx(
+      "Most self-drive rentals require a minimum of 1 year of driving experience and a valid international license.",
+    ),
   },
   {
-    q: "Can I return a hire car to a different location?",
-    a: "Yes, one-way rentals are available for an additional drop-off fee depending on distance.",
+    q: tx("Can I return a hire car to a different location?"),
+    a: tx(
+      "Yes, one-way rentals are available for an additional drop-off fee depending on distance.",
+    ),
   },
   {
-    q: "Can I extend / cancel / modify?",
-    a: "You can modify or cancel most bookings free of charge up to 24 hours before pickup from My Bookings.",
+    q: tx("Can I extend / cancel / modify?"),
+    a: tx(
+      "You can modify or cancel most bookings free of charge up to 24 hours before pickup from My Bookings.",
+    ),
   },
   {
-    q: "Booking criteria & documents?",
-    a: "You'll need a valid ID, driving license (for self-drive) and the reference ID sent to your email after booking.",
+    q: tx("Booking criteria & documents?"),
+    a: tx(
+      "You'll need a valid ID, driving license (for self-drive) and the reference ID sent to your email after booking.",
+    ),
   },
   {
-    q: "What is the minimum age to hire a car?",
-    a: "The minimum age to hire a self-drive vehicle is 21 years old.",
+    q: tx("What is the minimum age to hire a car?"),
+    a: tx("The minimum age to hire a self-drive vehicle is 21 years old."),
   },
 ];
 
 export type Booking = {
   id: string;
+  /** date: local ISO date-time, e.g. "2026-09-24T10:00"; shown with formatDateTime(). */
   vehicleId: string;
   pickup: string;
   dropoff: string;
@@ -308,30 +362,30 @@ export const bookings: Booking[] = [
     vehicleId: "toyota-prado-gx",
     pickup: "Thimphu, Druk School",
     dropoff: "Punakha, Taxi Parking",
-    date: "Thu 24 Sep, 10:00",
+    date: "2026-09-24T10:00",
     status: "Upcoming",
     total: 58,
-    bookingType: "Daily Rides",
+    bookingType: tx("Daily Rides"),
   },
   {
     id: "GI1671177201",
     vehicleId: "hyundai-santa-fe",
     pickup: "Paro Airport",
     dropoff: "Thimphu, City Centre",
-    date: "Sat 19 Sep, 13:00",
+    date: "2026-09-19T13:00",
     status: "Completed",
     total: 54,
-    bookingType: "Daily Rides",
+    bookingType: tx("Daily Rides"),
   },
   {
     id: "GI1671176980",
     vehicleId: "toyota-hiace-bus",
     pickup: "Thimphu, Clock Tower Square",
     dropoff: "Thimphu, Clock Tower Square",
-    date: "Fri 4 Sep, 09:30",
+    date: "2026-09-04T09:30",
     status: "Cancelled",
     total: 53,
-    bookingType: "Rental",
+    bookingType: tx("Rental"),
   },
 ];
 
@@ -348,33 +402,35 @@ export type Notification = {
 export const notifications: Notification[] = [
   {
     id: "n1",
-    title: "Booking confirmed",
-    body: "Your ride with Toyota Prado GX is confirmed for 24 Sep.",
-    time: "2h ago",
+    title: tx("Booking confirmed"),
+    body: tx("Your ride with Toyota Prado GX is confirmed for 24 Sep."),
+    time: tx("2h ago"),
     read: false,
     href: routes.confirmation("GI1671177263"),
   },
   {
     id: "n2",
-    title: "Payment received",
-    body: "We received your payment of $58.00 for booking GI1671177263.",
-    time: "2h ago",
+    title: tx("Payment received"),
+    body: tx("We received your payment of $58.00 for booking GI1671177263."),
+    time: tx("2h ago"),
     read: false,
     href: routes.invoice("GI1671177263"),
   },
   {
     id: "n3",
-    title: "Driver assigned",
-    body: "Karma Dorji has been assigned as your driver.",
-    time: "1d ago",
+    title: tx("Driver assigned"),
+    body: tx("Karma Dorji has been assigned as your driver."),
+    time: tx("1d ago"),
     read: true,
     href: routes.confirmation("GI1671177263"),
   },
   {
     id: "n4",
-    title: "Trip completed",
-    body: "How was your Hyundai Santa Fe from Paro Airport? Rate your trip.",
-    time: "3d ago",
+    title: tx("Trip completed"),
+    body: tx(
+      "How was your Hyundai Santa Fe from Paro Airport? Rate your trip.",
+    ),
+    time: tx("3d ago"),
     read: true,
     href: `${routes.accountReviews}?write=GI1671177201`,
   },
@@ -403,7 +459,7 @@ export const reviews: Review[] = [
     author: "Tenzin Namgay",
     avatar: "https://i.pravatar.cc/80?img=12",
     rating: 4,
-    date: "8 Sep 2026",
+    date: "2026-09-08",
     comment:
       "Great vehicle condition, arrived a little late but overall a good trip.",
   },
@@ -414,7 +470,7 @@ export const reviews: Review[] = [
     author: "Pema Yangzom",
     avatar: "https://i.pravatar.cc/80?img=32",
     rating: 5,
-    date: "24 Aug 2026",
+    date: "2026-08-24",
     comment:
       "Clean car and a careful driver on the Dochula road. Will book again.",
   },
@@ -425,7 +481,7 @@ export const reviews: Review[] = [
     author: "Sonam Wangmo",
     avatar: "https://i.pravatar.cc/80?img=47",
     rating: 5,
-    date: "9 Aug 2026",
+    date: "2026-08-09",
     comment:
       "Smooth pick-up at the airport and the driver was extremely professional.",
   },
@@ -473,7 +529,7 @@ export const currentUser = {
   avatar: "https://i.pravatar.cc/160?img=68",
   location: "Zilukha, Thimphu",
   joinedYear: 2022,
-  gender: "Male",
+  gender: tx("Male"),
   address: "Chang Gidaphu, Thimphu",
   bio: "I love exploring Bhutan's mountain roads.",
 };
@@ -498,7 +554,7 @@ export const driverBookings: DriverBooking[] = [
     vehicleId: "toyota-prado-gx",
     pickup: "International Airport, Paro",
     dropoff: "Terminal, Phuentsholing",
-    date: "Sat 3 Oct, 10:00",
+    date: "2026-10-03T10:00",
     status: "Upcoming",
   },
   {
@@ -507,7 +563,7 @@ export const driverBookings: DriverBooking[] = [
     vehicleId: "toyota-prado-gx",
     pickup: "Clock Tower, Thimphu",
     dropoff: "International Airport, Paro",
-    date: "Sat 19 Sep, 11:00",
+    date: "2026-09-19T11:00",
     status: "Cancelled",
   },
   {
@@ -516,7 +572,7 @@ export const driverBookings: DriverBooking[] = [
     vehicleId: "toyota-hiace-bus",
     pickup: "Terminal, Phuentsholing",
     dropoff: "Terminal, Phuentsholing",
-    date: "Mon 7 Sep, 08:00",
+    date: "2026-09-07T08:00",
     status: "Completed",
   },
   {
@@ -525,7 +581,7 @@ export const driverBookings: DriverBooking[] = [
     vehicleId: "toyota-prado-gx",
     pickup: "Norzin Lam, Thimphu",
     dropoff: "Dochula Pass",
-    date: "Sun 23 Aug, 09:00",
+    date: "2026-08-23T09:00",
     status: "Completed",
   },
   {
@@ -534,7 +590,7 @@ export const driverBookings: DriverBooking[] = [
     vehicleId: "toyota-prado-gx",
     pickup: "International Airport, Paro",
     dropoff: "Clock Tower, Thimphu",
-    date: "Sat 8 Aug, 14:00",
+    date: "2026-08-08T14:00",
     status: "Completed",
   },
 ];
@@ -552,33 +608,41 @@ export type DriverNotification = {
 export const driverNotifications: DriverNotification[] = [
   {
     id: "dn1",
-    title: "New booking",
-    body: "Sonam Wangmo booked your Toyota Prado GX for Paro → Phuentsholing, Sat 3 Oct.",
-    time: "2h ago",
+    title: tx("New booking"),
+    body: tx(
+      "Sonam Wangmo booked your Toyota Prado GX for Paro → Phuentsholing, Sat 3 Oct.",
+    ),
+    time: tx("2h ago"),
     read: false,
     href: routes.providerBookingDetail("HBTTB5984458"),
   },
   {
     id: "dn2",
-    title: "Booking cancelled",
-    body: "Karma Choden cancelled Sat 19 Sep, Thimphu → Paro. The cancellation fee is in your ledger.",
-    time: "3d ago",
+    title: tx("Booking cancelled"),
+    body: tx(
+      "Karma Choden cancelled Sat 19 Sep, Thimphu → Paro. The cancellation fee is in your ledger.",
+    ),
+    time: tx("3d ago"),
     read: false,
     href: routes.providerBookingDetail("HBTTB9283434"),
   },
   {
     id: "dn3",
-    title: "Vehicle under review",
-    body: "Your Toyota Hiace Bus listing is being reviewed and will go live shortly.",
-    time: "2d ago",
+    title: tx("Vehicle under review"),
+    body: tx(
+      "Your Toyota Hiace Bus listing is being reviewed and will go live shortly.",
+    ),
+    time: tx("2d ago"),
     read: true,
     href: routes.providerVehicles,
   },
   {
     id: "dn4",
-    title: "Trip completed",
-    body: "Your trip with Tenzin Namgay is complete. The fare is credited to your ledger.",
-    time: "15d ago",
+    title: tx("Trip completed"),
+    body: tx(
+      "Your trip with Tenzin Namgay is complete. The fare is credited to your ledger.",
+    ),
+    time: tx("15d ago"),
     read: true,
     href: routes.providerFinance,
   },

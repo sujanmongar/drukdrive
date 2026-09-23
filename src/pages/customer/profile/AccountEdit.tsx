@@ -10,12 +10,13 @@ import { routes } from "../../../lib/routes";
 import { quietLink } from "../../../lib/ui";
 import { accountTabs } from "./_tabs";
 import { usePageTitle } from "../../../hooks/usePageTitle";
+import { t } from "../../../lib/i18n";
 
 export default function AccountProfileEdit() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const security = searchParams.get("section") === "security";
-  const title = security ? "Login & security" : "Personal info";
+  const title = security ? t("Login & security") : t("Personal info");
   usePageTitle(title);
 
   return (
@@ -33,7 +34,7 @@ export default function AccountProfileEdit() {
                 to={routes.accountProfile}
                 className={`inline-flex min-h-11 items-center ${quietLink}`}
               >
-                Account
+                {t("Account")}
               </Link>
               <Icon name="chevron-right" size={14} />
               <span>{title}</span>
@@ -41,7 +42,7 @@ export default function AccountProfileEdit() {
             <h2 className="mt-1 t-h2">{title}</h2>
           </div>
           <Button variant="secondary" size="sm" onClick={() => navigate(-1)}>
-            Back
+            {t("Back")}
           </Button>
         </div>
 

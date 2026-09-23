@@ -50,14 +50,9 @@ export function ReviewsProvider({ children }: { children: ReactNode }) {
       addReview: (review: NewReview) => {
         const newReview: Review = {
           id: `r${Date.now()}`,
-          // "22 Sep 2026", the same shape as the seeded reviews.
-          date: new Date()
-            .toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            })
-            .replace("Sept", "Sep"),
+          // ISO date like the seeded reviews; formatted in the site
+          // language where it is shown.
+          date: new Date().toISOString().slice(0, 10),
           ...review,
         };
         setReviews((prev) => [newReview, ...prev]);

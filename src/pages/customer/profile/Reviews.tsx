@@ -4,9 +4,10 @@ import ProfileHero from "../../../components/ProfileHero";
 import ReviewsList from "../../../components/ReviewsList";
 import { accountTabs } from "./_tabs";
 import { usePageTitle } from "../../../hooks/usePageTitle";
+import { t } from "../../../lib/i18n";
 
 export default function AccountReviews() {
-  usePageTitle("Reviews");
+  usePageTitle(t("Reviews"));
 
   return (
     <PageShell>

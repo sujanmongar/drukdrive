@@ -6,36 +6,37 @@ import type { AccountCard } from "../../../components/AccountCardsGrid";
 import { routes } from "../../../lib/routes";
 import { accountTabs } from "./_tabs";
 import { usePageTitle } from "../../../hooks/usePageTitle";
+import { t, tx } from "../../../lib/i18n";
 
 const cards: AccountCard[] = [
   {
     icon: "user",
-    title: "Personal info",
-    description: "Provide personal details and how we can reach you",
+    title: tx("Personal info"),
+    description: tx("Provide personal details and how we can reach you"),
     to: routes.accountProfileEdit,
   },
   {
     icon: "lock",
-    title: "Login & security",
-    description: "Update your password and secure your account",
+    title: tx("Login & security"),
+    description: tx("Update your password and secure your account"),
     to: `${routes.accountProfileEdit}?section=security`,
   },
   {
     icon: "wallet",
-    title: "Payment & payouts",
-    description: "Review payments, payouts, coupons, gift cards, and taxes",
+    title: tx("Payment & payouts"),
+    description: tx("Review payments, payouts, coupons, gift cards, and taxes"),
     to: routes.accountFinance,
   },
   {
     icon: "info",
-    title: "Global preferences",
-    description: "Set your default language, currency, and timezone",
+    title: tx("Global preferences"),
+    description: tx("Set your default language, currency, and timezone"),
     to: routes.accountPreferences,
   },
 ];
 
 export default function AccountProfile() {
-  usePageTitle("Account");
+  usePageTitle(t("Account"));
   return (
     <PageShell>
       <ProfileHero />
@@ -44,7 +45,7 @@ export default function AccountProfile() {
       </div>
 
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
-        <h2 className="t-h2">Account</h2>
+        <h2 className="t-h2">{t("Account")}</h2>
         <AccountCardsGrid cards={cards} />
       </div>
     </PageShell>

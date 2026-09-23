@@ -5,9 +5,10 @@ import NotificationsList from "../../components/NotificationsList";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { t } from "../../lib/i18n";
 
 export default function ProviderNotifications() {
-  usePageTitle("Driver Notifications");
+  usePageTitle(t("Driver Notifications"));
 
   return (
     <PageShell>

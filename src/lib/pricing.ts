@@ -5,6 +5,7 @@
 import type { Booking, SearchValue } from "./booking";
 import type { BookingType } from "./routes";
 import { bookingDays, isDayBased, isRoundTrip, rideHours } from "./booking";
+import { t, tn, tx } from "./i18n";
 
 export const TAX_RATE = 0.1;
 /** Hours in a chargeable day; a daily ride is billed by the hour at this rate. */
@@ -29,47 +30,69 @@ export type AddOn = {
 export const addOns: AddOn[] = [
   {
     id: "lmc",
-    name: "Last-minute cancellation",
-    description:
+    name: tx("Last-minute cancellation"),
+    description: tx(
       "Cancel free of charge up until 1 hour before pick-up instead of 24 hours.",
+    ),
     pricePerDay: 3.5,
-    purpose:
+    purpose: tx(
       "For plans that might change — a delayed flight, a shifted meeting, a change of heart.",
+    ),
     howItWorks: [
-      "Without it, a booking cancelled inside 24 hours of pick-up forfeits the amount paid.",
-      "With it, you can cancel from your bookings page up to 1 hour before pick-up and the amount paid is refunded in full.",
-      "The add-on fee itself is not refundable.",
+      tx(
+        "Without it, a booking cancelled inside 24 hours of pick-up forfeits the amount paid.",
+      ),
+      tx(
+        "With it, you can cancel from your bookings page up to 1 hour before pick-up and the amount paid is refunded in full.",
+      ),
+      tx("The add-on fee itself is not refundable."),
     ],
     // A same-day ride is small enough that the 24-hour rule is fine.
     availableFor: (type) => type !== "daily",
   },
   {
     id: "rsa",
-    name: "Roadside assistance",
-    description:
+    name: tx("Roadside assistance"),
+    description: tx(
       "24/7 help on the road — breakdown, flat tyre or a replacement vehicle sent to you.",
+    ),
     pricePerDay: 2,
-    purpose:
+    purpose: tx(
       "For long mountain routes where the nearest garage can be hours away.",
+    ),
     howItWorks: [
-      "Call the DrukDrive helpline any time during your trip; the number is on your booking confirmation.",
-      "We send the nearest partner mechanic for a breakdown, flat tyre or battery.",
-      "If the vehicle can't continue, a replacement is sent to you at no extra cost.",
+      tx(
+        "Call the DrukDrive helpline any time during your trip; the number is on your booking confirmation.",
+      ),
+      tx(
+        "We send the nearest partner mechanic for a breakdown, flat tyre or battery.",
+      ),
+      tx(
+        "If the vehicle can't continue, a replacement is sent to you at no extra cost.",
+      ),
     ],
     availableFor: () => true,
   },
   {
     id: "guide",
-    name: "Licensed guide",
-    description:
+    name: tx("Licensed guide"),
+    description: tx(
       "A licensed Bhutanese guide travels with you — required for most sights outside Thimphu and Paro.",
+    ),
     pricePerDay: 25,
-    purpose:
+    purpose: tx(
       "For visitors touring beyond Thimphu and Paro, where a licensed guide is required at dzongs and monasteries.",
+    ),
     howItWorks: [
-      "A guide licensed by the Department of Tourism joins you from the first pick-up.",
-      "They handle route permits and entry at monuments, and speak English and Dzongkha.",
-      "The guide's meals and accommodation on overnight trips are included in this price.",
+      tx(
+        "A guide licensed by the Department of Tourism joins you from the first pick-up.",
+      ),
+      tx(
+        "They handle route permits and entry at monuments, and speak English and Dzongkha.",
+      ),
+      tx(
+        "The guide's meals and accommodation on overnight trips are included in this price.",
+      ),
     ],
     availableFor: (type) => type === "rental",
   },
@@ -132,9 +155,9 @@ export function computeFare(
 
   if (isDayBased(booking.type)) {
     base = r2(pricePerDay * days);
-    unit = `${days} day${days === 1 ? "" : "s"}`;
+    unit = tn(days, "{n} day", "{n} days");
     lines.push({
-      label: `${fmt(pricePerDay)} × ${unit}`,
+      label: t("{price} × {unit}", { price: fmt(pricePerDay), unit }),
       amount: base,
       kind: "base",
     });
@@ -144,9 +167,13 @@ export function computeFare(
     const hourly = r2(pricePerDay / HOURS_PER_DAY);
     const hours = rideHours(booking);
     base = r2(hourly * hours);
-    unit = `${hours} hr${hours === 1 ? "" : "s"}${isRoundTrip(booking) ? ", round trip" : ""}`;
+    unit = isRoundTrip(booking)
+      ? tn(hours, "{n} hr, round trip", "{n} hrs, round trip")
+      : tn(hours, "{n} hr", "{n} hrs");
     lines.push({
-      label: `${fmt(hourly)}/hr × ${hours} hr${hours === 1 ? "" : "s"}`,
+      label: tn(hours, "{price}/hr × {n} hr", "{price}/hr × {n} hrs", {
+        price: fmt(hourly),
+      }),
       amount: base,
       kind: "base",
     });
@@ -157,11 +184,11 @@ export function computeFare(
     if (!booking.addOnIds.includes(a.id)) continue;
     const amt = r2(a.pricePerDay * days);
     addOnsTotal = r2(addOnsTotal + amt);
-    lines.push({ label: a.name, amount: amt, kind: "addon" });
+    lines.push({ label: t(a.name), amount: amt, kind: "addon" });
   }
 
   const taxes = r2((base + addOnsTotal) * TAX_RATE);
-  lines.push({ label: "Taxes & fees", amount: taxes, kind: "tax" });
+  lines.push({ label: t("Taxes & fees"), amount: taxes, kind: "tax" });
   const total = r2(base + addOnsTotal + taxes);
   const deposit =
     booking.type === "self-drive" ? r2(pricePerDay * DEPOSIT_DAYS) : 0;
@@ -185,11 +212,12 @@ export function displayPrice(
   pricePerDay: number,
 ): { amount: number; unit: string; note: string } {
   if (isDayBased(search.type)) {
-    return { amount: pricePerDay, unit: "/day", note: "+ taxes & fees" };
+    // unit stays English (callers compare it); show it with t(price.unit).
+    return { amount: pricePerDay, unit: tx("/day"), note: t("+ taxes & fees") };
   }
   const { total } = computeFare(
     { ...search, vehicleId: null, addOnIds: [] },
     pricePerDay,
   );
-  return { amount: total, unit: "/trip", note: "incl. taxes & fees" };
+  return { amount: total, unit: tx("/trip"), note: t("incl. taxes & fees") };
 }

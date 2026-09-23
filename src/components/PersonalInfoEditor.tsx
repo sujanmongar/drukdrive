@@ -6,6 +6,7 @@ import { useCurrentUser } from "../lib/currentUser";
 import { useAuth } from "../lib/auth";
 import { routes } from "../lib/routes";
 import { input, label, textarea, dangerAction } from "../lib/ui";
+import { t, tx } from "../lib/i18n";
 
 function maskEmail(email: string) {
   const [user, domain] = email.split("@");
@@ -59,7 +60,9 @@ export default function PersonalInfoEditor() {
   function handleDelete() {
     if (
       window.confirm(
-        "Delete your account? This can't be undone in this prototype either — you'll be signed out.",
+        t(
+          "Delete your account? This can't be undone in this prototype either — you'll be signed out.",
+        ),
       )
     ) {
       logout();
@@ -73,16 +76,31 @@ export default function PersonalInfoEditor() {
     display: string;
     type: FieldType;
   }[] = [
-    { key: "gender", label: "Gender", display: user.gender, type: "select" },
+    {
+      key: "gender",
+      label: t("Gender"),
+      display: t(user.gender),
+      type: "select",
+    },
     {
       key: "email",
-      label: "Email address",
+      label: t("Email address"),
       display: maskEmail(user.email),
       type: "email",
     },
-    { key: "phone", label: "Phone number", display: user.phone, type: "tel" },
-    { key: "address", label: "Address", display: user.address, type: "text" },
-    { key: "bio", label: "Bio", display: user.bio, type: "textarea" },
+    {
+      key: "phone",
+      label: t("Phone number"),
+      display: user.phone,
+      type: "tel",
+    },
+    {
+      key: "address",
+      label: t("Address"),
+      display: user.address,
+      type: "text",
+    },
+    { key: "bio", label: t("Bio"), display: user.bio, type: "textarea" },
   ];
 
   return (
@@ -90,11 +108,12 @@ export default function PersonalInfoEditor() {
       <div className="border-b border-[color:var(--color-border)] pb-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className={rowLabel}>Legal name</p>
+            <p className={rowLabel}>{t("Legal name")}</p>
             {editingName ? (
               <p className="mt-0.5 t-caption">
-                This is the name on your travel document, which could be a
-                license or a passport.
+                {t(
+                  "This is the name on your travel document, which could be a license or a passport.",
+                )}
               </p>
             ) : (
               <p className="mt-0.5 t-body-sm">{user.name}</p>
@@ -102,7 +121,7 @@ export default function PersonalInfoEditor() {
           </div>
           {!editingName && (
             <Button variant="link" onClick={startEditName} className="shrink-0">
-              Edit
+              {t("Edit")}
             </Button>
           )}
         </div>
@@ -111,7 +130,7 @@ export default function PersonalInfoEditor() {
           <div className="mt-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <label>
-                <span className={label}>First name</span>
+                <span className={label}>{t("First name")}</span>
                 <input
                   type="text"
                   value={first}
@@ -120,7 +139,7 @@ export default function PersonalInfoEditor() {
                 />
               </label>
               <label>
-                <span className={label}>Last name</span>
+                <span className={label}>{t("Last name")}</span>
                 <input
                   type="text"
                   value={last}
@@ -131,10 +150,10 @@ export default function PersonalInfoEditor() {
             </div>
             <div className="mt-4 flex items-center gap-4">
               <Button variant="primary" size="md" onClick={saveName}>
-                Save
+                {t("Save")}
               </Button>
               <Button variant="link" onClick={() => setEditingName(false)}>
-                Cancel
+                {t("Cancel")}
               </Button>
             </div>
           </div>
@@ -161,7 +180,7 @@ export default function PersonalInfoEditor() {
                 onClick={() => startEditField(row.key)}
                 className="shrink-0"
               >
-                Edit
+                {t("Edit")}
               </Button>
             )}
           </div>
@@ -174,8 +193,15 @@ export default function PersonalInfoEditor() {
                   onChange={(e) => setDraft(e.target.value)}
                   className={input}
                 >
-                  {["Male", "Female", "Other", "Prefer not to say"].map((g) => (
-                    <option key={g}>{g}</option>
+                  {[
+                    tx("Male"),
+                    tx("Female"),
+                    tx("Other"),
+                    tx("Prefer not to say"),
+                  ].map((g) => (
+                    <option key={g} value={g}>
+                      {t(g)}
+                    </option>
                   ))}
                 </select>
               ) : row.type === "textarea" ? (
@@ -195,10 +221,10 @@ export default function PersonalInfoEditor() {
               )}
               <div className="mt-3 flex items-center gap-4">
                 <Button variant="primary" size="md" onClick={saveField}>
-                  Save
+                  {t("Save")}
                 </Button>
                 <Button variant="link" onClick={() => setEditingField(null)}>
-                  Cancel
+                  {t("Cancel")}
                 </Button>
               </div>
             </div>
@@ -212,7 +238,7 @@ export default function PersonalInfoEditor() {
         className={`-mx-4 mt-8 ${dangerAction}`}
       >
         <Icon name="trash" size={15} />
-        Delete account
+        {t("Delete account")}
       </button>
     </div>
   );

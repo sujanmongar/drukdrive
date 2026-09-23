@@ -3,6 +3,7 @@ import Icon from "./Icon";
 import SearchFields from "./SearchFields";
 import Button from "./Button";
 import type { SearchValue } from "../lib/booking";
+import { t } from "../lib/i18n";
 
 export type EditSearchValue = SearchValue;
 
@@ -22,17 +23,17 @@ export default function EditSearchModal({
   return (
     <div className="fixed inset-0 z-[55] flex items-start justify-center p-0 sm:items-center sm:p-4">
       <button
-        aria-label="Close"
+        aria-label={t("Close")}
         className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
         onClick={onClose}
       />
       <div className="animate-popover relative flex h-full w-full flex-col bg-white shadow-modal sm:h-auto sm:max-w-[440px] sm:rounded-3xl">
         <div className="flex items-center justify-between gap-4 border-b border-[color:var(--color-border)] px-4 py-3">
-          <h2 className="t-h3">Edit your search</h2>
+          <h2 className="t-h3">{t("Edit your search")}</h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="icon-btn icon-btn-filled -mr-1 size-10"
           >
             <Icon
@@ -54,7 +55,7 @@ export default function EditSearchModal({
             onClick={() => onSearch(value)}
             className="h-14"
           >
-            Search
+            {t("Search")}
           </Button>
         </div>
       </div>

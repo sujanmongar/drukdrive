@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import Icon from "./Icon";
 import type { IconName } from "./Icon";
+import { t } from "../lib/i18n";
 
 export type SecondaryTab = { to: string; label: string; icon: IconName };
 
@@ -27,10 +28,10 @@ export default function SecondaryTabs({ tabs }: { tabs: SecondaryTab[] }) {
         ref={rowRef}
         className="scrollbar-hide mx-auto flex max-w-[1280px] gap-6 overflow-x-auto px-4 md:gap-8 md:px-10"
       >
-        {tabs.map((t) => (
+        {tabs.map((tab) => (
           <NavLink
-            key={t.to}
-            to={t.to}
+            key={tab.to}
+            to={tab.to}
             className={({ isActive }) =>
               `flex min-h-11 shrink-0 items-center gap-2 border-b-2 py-4 t-body-sm font-semibold transition-colors duration-150 ${
                 isActive
@@ -39,8 +40,8 @@ export default function SecondaryTabs({ tabs }: { tabs: SecondaryTab[] }) {
               }`
             }
           >
-            <Icon name={t.icon} size={18} />
-            {t.label}
+            <Icon name={tab.icon} size={18} />
+            {t(tab.label)}
           </NavLink>
         ))}
       </div>

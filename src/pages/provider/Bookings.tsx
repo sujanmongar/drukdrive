@@ -10,9 +10,10 @@ import { useDriverVehicles } from "../../lib/driverVehicles";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { t, tx } from "../../lib/i18n";
 
 export default function ProviderBookings() {
-  usePageTitle("Driver Bookings");
+  usePageTitle(t("Driver Bookings"));
   const { vehicles: driverVehicles } = useDriverVehicles();
 
   const groups = useMemo(() => {
@@ -22,9 +23,10 @@ export default function ProviderBookings() {
       vehicle:
         driverVehicles.find((v) => v.id === b.vehicleId) ?? driverVehicles[0],
     }));
+    // Group names stay English (they are the filter state); the list shows t(name).
     return {
-      Current: items.filter((b) => b.status === "Upcoming"),
-      Past: items.filter((b) => b.status !== "Upcoming"),
+      [tx("Current")]: items.filter((b) => b.status === "Upcoming"),
+      [tx("Past")]: items.filter((b) => b.status !== "Upcoming"),
     };
   }, [driverVehicles]);
 

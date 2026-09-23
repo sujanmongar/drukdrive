@@ -28,24 +28,26 @@ import {
   reference,
   sheet,
 } from "../lib/ui";
+import { t, tn, tr, tx } from "../lib/i18n";
 
+import { formatDate } from "../lib/dates";
 type Role = "customer" | "driver";
 type Tab = "Ledger" | "Report" | "Credit Notes" | "Debit Notes";
-const tabs: Tab[] = ["Ledger", "Report", "Credit Notes", "Debit Notes"];
+const tabs = [
+  tx("Ledger"),
+  tx("Report"),
+  tx("Credit Notes"),
+  tx("Debit Notes"),
+] as Tab[];
 
 const PAYOUTS_KEY = "drukdrive:payouts";
 
 const monthKey = (iso: string) => iso.slice(0, 7);
 const monthName = (key: string) =>
-  new Date(`${key}-01T00:00:00`).toLocaleDateString("en-GB", {
-    month: "long",
-    year: "numeric",
-  });
-// Fixed month names: some browsers print "Sept" in en-GB, the app says "Sep".
-const MONTHS = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ");
+  formatDate(new Date(`${key}-01T00:00:00`), "month");
 const dayLabel = (iso: string) => {
   const [y, m, d] = iso.split("-").map(Number);
-  return `${d} ${MONTHS[m - 1]} ${y}`;
+  return formatDate(new Date(y, m - 1, d), "full");
 };
 
 // Payouts a driver requests here, kept in the browser so the ledger still
@@ -119,7 +121,11 @@ export default function FinanceLedger({ role }: { role: Role }) {
   const sum = (k: LedgerKind[]) =>
     r2(all.filter((e) => k.includes(e.kind)).reduce((s, e) => s + e.amount, 0));
   const fmtBalance = (b: number) =>
-    b === 0 ? format(0) : `${format(Math.abs(b))} ${b > 0 ? "Cr" : "Dr"}`;
+    b === 0
+      ? format(0)
+      : b > 0
+        ? t("{amount} Cr", { amount: format(b) })
+        : t("{amount} Dr", { amount: format(-b) });
 
   // Right-edge fade on phones while the table has more columns to show.
   const tableWrapRef = useRef<HTMLDivElement>(null);
@@ -156,21 +162,25 @@ export default function FinanceLedger({ role }: { role: Role }) {
 
   const legend =
     role === "driver"
-      ? "Trip fares and cancellation fees are credits; DrukDrive's service fee and payouts are debits. The balance is what you can withdraw."
-      : "Bookings and extra charges are debits; your payments and credit notes are credits. A Dr balance is what you still owe.";
+      ? t(
+          "Trip fares and cancellation fees are credits; DrukDrive's service fee and payouts are debits. The balance is what you can withdraw.",
+        )
+      : t(
+          "Bookings and extra charges are debits; your payments and credit notes are credits. A Dr balance is what you still owe.",
+        );
 
   return (
     <>
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
         <div className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto px-4 md:mx-0 md:px-0">
-          {tabs.map((t) => (
+          {tabs.map((tb) => (
             <button
-              key={t}
+              key={tb}
               type="button"
-              onClick={() => setTab(t)}
-              className={`${chip(tab === t)} shrink-0`}
+              onClick={() => setTab(tb)}
+              className={`${chip(tab === tb)} shrink-0`}
             >
-              {t}
+              {t(tb)}
             </button>
           ))}
         </div>
@@ -182,7 +192,7 @@ export default function FinanceLedger({ role }: { role: Role }) {
             disabled={closing <= 0}
           >
             <Icon name="wallet" size={16} />
-            Withdraw {format(Math.max(closing, 0))}
+            {t("Withdraw {amount}", { amount: format(Math.max(closing, 0)) })}
           </Button>
         )}
       </div>
@@ -199,12 +209,12 @@ export default function FinanceLedger({ role }: { role: Role }) {
                 className={chip(filtered)}
               >
                 <Icon name="filter" size={16} />
-                {filtered ? "Filtered" : "Filter"}
+                {filtered ? t("Filtered") : t("Filter")}
               </button>
               {filterOpen && (
                 <>
                   <button
-                    aria-label="Close"
+                    aria-label={t("Close")}
                     className="fixed inset-0 z-10 cursor-default"
                     onClick={() => setFilterOpen(false)}
                   />
@@ -212,7 +222,7 @@ export default function FinanceLedger({ role }: { role: Role }) {
                     className={`${menu} absolute right-0 z-20 mt-2 w-64 p-3`}
                   >
                     <label className="block">
-                      <span className={label}>Type</span>
+                      <span className={label}>{t("Type")}</span>
                       <select
                         value={kind}
                         onChange={(e) =>
@@ -220,22 +230,22 @@ export default function FinanceLedger({ role }: { role: Role }) {
                         }
                         className={input}
                       >
-                        <option value="all">All entries</option>
+                        <option value="all">{t("All entries")}</option>
                         {kindFilters[role].map((k) => (
                           <option key={k} value={k}>
-                            {kindLabel[k]}
+                            {t(kindLabel[k])}
                           </option>
                         ))}
                       </select>
                     </label>
                     <label className="mt-3 block">
-                      <span className={label}>Month</span>
+                      <span className={label}>{t("Month")}</span>
                       <select
                         value={month}
                         onChange={(e) => setMonth(e.target.value)}
                         className={input}
                       >
-                        <option value="all">All months</option>
+                        <option value="all">{t("All months")}</option>
                         {months.map((m) => (
                           <option key={m} value={m}>
                             {monthName(m)}
@@ -254,14 +264,14 @@ export default function FinanceLedger({ role }: { role: Role }) {
                           setMonth("all");
                         }}
                       >
-                        Clear
+                        {t("Clear")}
                       </Button>
                       <Button
                         size="md"
                         type="button"
                         onClick={() => setFilterOpen(false)}
                       >
-                        Done
+                        {t("Done")}
                       </Button>
                     </div>
                   </div>
@@ -273,8 +283,8 @@ export default function FinanceLedger({ role }: { role: Role }) {
           {rows.length === 0 ? (
             <EmptyState
               icon="wallet"
-              title="No entries match"
-              description="Try another type or month, or clear the filter."
+              title={t("No entries match")}
+              description={t("Try another type or month, or clear the filter.")}
             />
           ) : (
             <div className={`${card} relative mt-4 overflow-hidden`}>
@@ -285,17 +295,21 @@ export default function FinanceLedger({ role }: { role: Role }) {
                 <table className="w-full min-w-[760px] t-body-sm">
                   <thead>
                     <tr className="border-b border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] text-left t-caption">
-                      <th className="px-4 py-3 font-semibold">Date</th>
-                      <th className="px-4 py-3 font-semibold">Reference</th>
-                      <th className="px-4 py-3 font-semibold">Particulars</th>
-                      <th className="px-4 py-3 text-right font-semibold">
-                        Debit
+                      <th className="px-4 py-3 font-semibold">{t("Date")}</th>
+                      <th className="px-4 py-3 font-semibold">
+                        {t("Reference")}
+                      </th>
+                      <th className="px-4 py-3 font-semibold">
+                        {t("Particulars")}
                       </th>
                       <th className="px-4 py-3 text-right font-semibold">
-                        Credit
+                        {t("Debit")}
                       </th>
                       <th className="px-4 py-3 text-right font-semibold">
-                        Balance
+                        {t("Credit")}
+                      </th>
+                      <th className="px-4 py-3 text-right font-semibold">
+                        {t("Balance")}
                       </th>
                     </tr>
                   </thead>
@@ -317,7 +331,7 @@ export default function FinanceLedger({ role }: { role: Role }) {
                           </td>
                           <td className="px-4 py-3">
                             <span className="font-semibold text-[color:var(--color-ink)]">
-                              {kindLabel[r.kind]}
+                              {t(kindLabel[r.kind])}
                             </span>
                             {r.bookingId && (
                               <span className="t-caption">
@@ -331,7 +345,7 @@ export default function FinanceLedger({ role }: { role: Role }) {
                               </span>
                             )}
                             <span className="block t-caption">
-                              {r.particulars}
+                              {t(r.particulars)}
                             </span>
                           </td>
                           <td className="whitespace-nowrap px-4 py-3 text-right t-amount">
@@ -353,7 +367,7 @@ export default function FinanceLedger({ role }: { role: Role }) {
                         className="px-4 py-3 font-semibold text-[color:var(--color-ink)]"
                         colSpan={3}
                       >
-                        {filtered ? "Total of shown entries" : "Total"}
+                        {filtered ? t("Total of shown entries") : t("Total")}
                       </td>
                       <td className="whitespace-nowrap px-4 py-3 text-right t-amount">
                         {format(totalDebit)}
@@ -384,16 +398,16 @@ export default function FinanceLedger({ role }: { role: Role }) {
           <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
             {(role === "driver"
               ? [
-                  ["Trip fares", sum(["fare", "cancellation-fee"])],
-                  ["Service fees", sum(["service-fee"])],
-                  ["Paid out", sum(["payout"])],
-                  ["Available", closing],
+                  [t("Trip fares"), sum(["fare", "cancellation-fee"])],
+                  [t("Service fees"), sum(["service-fee"])],
+                  [t("Paid out"), sum(["payout"])],
+                  [t("Available"), closing],
                 ]
               : [
-                  ["Charged", sum(["charge", "debit-note"])],
-                  ["Paid", sum(["payment"])],
-                  ["Refunded", sum(["refund"])],
-                  ["Balance due", Math.max(-closing, 0)],
+                  [t("Charged"), sum(["charge", "debit-note"])],
+                  [t("Paid"), sum(["payment"])],
+                  [t("Refunded"), sum(["refund"])],
+                  [t("Balance due"), Math.max(-closing, 0)],
                 ]
             ).map(([k, v]) => (
               <div key={k as string} className={`${card} p-4`}>
@@ -404,21 +418,28 @@ export default function FinanceLedger({ role }: { role: Role }) {
           </div>
           {role === "driver" && upcoming.length > 0 && (
             <p className={fieldHint}>
-              Coming up: {format(upcomingFares)} from {upcoming.length} booked
-              trip
-              {upcoming.length > 1 ? "s" : ""}, credited after each trip.
+              {tn(
+                upcoming.length,
+                "Coming up: {amount} from {n} booked trip, credited after each trip.",
+                "Coming up: {amount} from {n} booked trips, credited after each trip.",
+                { amount: format(upcomingFares) },
+              )}
             </p>
           )}
-          <h3 className="mt-8 t-h4">By month</h3>
+          <h3 className="mt-8 t-h4">{t("By month")}</h3>
           <div className={`${card} mt-3 overflow-x-auto`}>
             <table className="w-full min-w-[520px] t-body-sm">
               <thead>
                 <tr className="border-b border-[color:var(--color-border)] bg-[color:var(--color-surface-subtle)] text-left t-caption">
-                  <th className="px-4 py-3 font-semibold">Month</th>
-                  <th className="px-4 py-3 text-right font-semibold">Debit</th>
-                  <th className="px-4 py-3 text-right font-semibold">Credit</th>
+                  <th className="px-4 py-3 font-semibold">{t("Month")}</th>
                   <th className="px-4 py-3 text-right font-semibold">
-                    Closing balance
+                    {t("Debit")}
+                  </th>
+                  <th className="px-4 py-3 text-right font-semibold">
+                    {t("Credit")}
+                  </th>
+                  <th className="px-4 py-3 text-right font-semibold">
+                    {t("Closing balance")}
                   </th>
                 </tr>
               </thead>
@@ -467,15 +488,27 @@ export default function FinanceLedger({ role }: { role: Role }) {
           const help =
             tab === "Credit Notes"
               ? role === "driver"
-                ? "A credit note appears if DrukDrive refunds a service fee to you."
-                : "A credit note appears when a booking is cancelled or reduced."
+                ? t(
+                    "A credit note appears if DrukDrive refunds a service fee to you.",
+                  )
+                : t(
+                    "A credit note appears when a booking is cancelled or reduced.",
+                  )
               : role === "driver"
-                ? "DrukDrive's service fee on each trip is issued as a debit note."
-                : "A debit note appears when a trip costs more than booked, such as extra hours.";
+                ? t(
+                    "DrukDrive's service fee on each trip is issued as a debit note.",
+                  )
+                : t(
+                    "A debit note appears when a trip costs more than booked, such as extra hours.",
+                  );
           return list.length === 0 ? (
             <EmptyState
               icon="wallet"
-              title={`No ${tab.toLowerCase()}`}
+              title={
+                tab === "Credit Notes"
+                  ? t("No credit notes")
+                  : t("No debit notes")
+              }
               description={help}
             />
           ) : (
@@ -489,10 +522,11 @@ export default function FinanceLedger({ role }: { role: Role }) {
                   >
                     <div className="min-w-0">
                       <p className={reference}>{n.id}</p>
-                      <p className="mt-0.5 t-body-sm">{n.particulars}</p>
+                      <p className="mt-0.5 t-body-sm">{t(n.particulars)}</p>
                       <p className="mt-1 t-caption">
                         {dayLabel(n.date)}
-                        {n.bookingId && ` · Booking ${n.bookingId}`}
+                        {n.bookingId &&
+                          ` · ${t("Booking {id}", { id: n.bookingId })}`}
                       </p>
                     </div>
                     <p className="shrink-0 t-h4 t-amount">{format(n.amount)}</p>
@@ -512,6 +546,7 @@ export default function FinanceLedger({ role }: { role: Role }) {
               id: `PO-${Date.now().toString().slice(-6)}`,
               date: new Date().toISOString().slice(0, 10),
               kind: "payout",
+              // Stored in English (it matches the data text); t() shows it.
               particulars: `Payout to ${payoutAccount}`,
               amount,
               status: "Pending",
@@ -544,17 +579,17 @@ function WithdrawSheet({
   const n = Number(value);
   const error =
     !value.trim() || Number.isNaN(n)
-      ? "Enter an amount."
+      ? t("Enter an amount.")
       : n <= 0
-        ? "Enter more than zero."
+        ? t("Enter more than zero.")
         : n > max
-          ? `You can withdraw up to ${format(available)}.`
+          ? t("You can withdraw up to {amount}.", { amount: format(available) })
           : "";
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-4">
       <button
-        aria-label="Close"
+        aria-label={t("Close")}
         className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
         onClick={onClose}
       />
@@ -566,12 +601,12 @@ function WithdrawSheet({
       >
         <div className="flex items-center justify-between">
           <h2 id="withdraw-title" className="t-h3">
-            Withdraw
+            {t("Withdraw")}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="icon-btn icon-btn-filled -mr-1 size-10"
           >
             <Icon
@@ -582,14 +617,19 @@ function WithdrawSheet({
           </button>
         </div>
         <p className="mt-1 t-body-sm">
-          Available:{" "}
-          <span className="t-amount font-semibold text-[color:var(--color-ink)]">
-            {format(available)}
-          </span>
+          {tr("Available: {amount}", {
+            amount: (
+              <span className="t-amount font-semibold text-[color:var(--color-ink)]">
+                {format(available)}
+              </span>
+            ),
+          })}
         </p>
 
         <label className="mt-5 block">
-          <span className={label}>Amount ({currency})</span>
+          <span className={label}>
+            {t("Amount ({currency})", { currency })}
+          </span>
           <input
             type="text"
             inputMode="decimal"
@@ -606,7 +646,9 @@ function WithdrawSheet({
           >
             {touched && error
               ? error
-              : `Paid to ${payoutAccount} within 2 working days.`}
+              : t("Paid to {account} within 2 working days.", {
+                  account: payoutAccount,
+                })}
           </p>
         </label>
 
@@ -619,7 +661,7 @@ function WithdrawSheet({
             if (!error) onConfirm(r2(n / rate));
           }}
         >
-          Request payout
+          {t("Request payout")}
         </Button>
       </div>
     </div>

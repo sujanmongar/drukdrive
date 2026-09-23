@@ -1,3 +1,5 @@
+import { t } from "../lib/i18n";
+
 const accentByCategory: Record<string, string> = {
   "Prime SUV": "#94a3b8",
   "Sedan SUV": "#a5b4c4",
@@ -50,7 +52,7 @@ export default function VehicleImage({
       >
         <img
           src={photo}
-          alt={category ?? ""}
+          alt={category ? t(category) : ""}
           loading="lazy"
           className={
             fit === "cover"

@@ -8,6 +8,7 @@ import { useWishlist } from "../lib/wishlist";
 import { rowHover, sheet } from "../lib/ui";
 import Button from "./Button";
 import EmptyState from "./EmptyState";
+import { t, tn } from "../lib/i18n";
 
 // Saved cars in a bottom sheet, so comparing them mid-search never navigates
 // away from the results. "View all" is the way out to the full account page.
@@ -25,7 +26,7 @@ export default function WishlistSheet({
   return (
     <div className="fixed inset-0 z-[60] flex items-end justify-center">
       <button
-        aria-label="Close"
+        aria-label={t("Close")}
         className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
         onClick={onClose}
       />
@@ -34,12 +35,14 @@ export default function WishlistSheet({
       >
         <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
           <h2 className="t-h3">
-            Wishlist{saved.length > 0 ? ` (${saved.length})` : ""}
+            {saved.length > 0
+              ? t("Wishlist ({n})", { n: saved.length })
+              : t("Wishlist")}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close wishlist"
+            aria-label={t("Close wishlist")}
             className="icon-btn icon-btn-filled -mr-1 size-10"
           >
             <Icon
@@ -54,8 +57,10 @@ export default function WishlistSheet({
           {saved.length === 0 ? (
             <EmptyState
               icon="heart"
-              title="No saved cars yet"
-              description="Tap the heart on any car to keep it here for comparison."
+              title={t("No saved cars yet")}
+              description={t(
+                "Tap the heart on any car to keep it here for comparison.",
+              )}
               className="m-4"
             />
           ) : (
@@ -82,19 +87,22 @@ export default function WishlistSheet({
                     >
                       <p className="t-h4 truncate">{vehicle.name}</p>
                       <p className="t-caption truncate">
-                        {vehicle.location} &middot; {vehicle.seats} seats
+                        {vehicle.location} &middot;{" "}
+                        {tn(vehicle.seats, "{n} seat", "{n} seats")}
                       </p>
                       <p className="flex items-baseline gap-x-1.5">
                         <span className="t-h3 t-amount">
                           {format(vehicle.pricePerDay)}
                         </span>
-                        <span className="t-caption">/day</span>
+                        <span className="t-caption">{t("/day")}</span>
                       </p>
                     </Link>
                     <button
                       type="button"
                       onClick={() => toggle(vehicle.id)}
-                      aria-label={`Remove ${vehicle.name} from wishlist`}
+                      aria-label={t("Remove {vehicle} from wishlist", {
+                        vehicle: vehicle.name,
+                      })}
                       className="icon-btn icon-btn-filled size-10 shrink-0"
                     >
                       <Icon
@@ -119,7 +127,7 @@ export default function WishlistSheet({
             fullWidth
             className="h-12"
           >
-            View all
+            {t("View all")}
           </Button>
         </div>
       </div>

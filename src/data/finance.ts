@@ -1,3 +1,5 @@
+import { tx } from "../lib/i18n";
+
 // Account statements for both sides of the marketplace, built from the
 // same bookings the rest of the app shows. Amounts are USD, like every
 // price in mockData, and are formatted for display by useCurrency().
@@ -43,15 +45,15 @@ export const sideOf: Record<LedgerKind, Side> = {
 };
 
 export const kindLabel: Record<LedgerKind, string> = {
-  charge: "Booking",
-  payment: "Payment",
-  "credit-note": "Credit note",
-  "debit-note": "Debit note",
-  refund: "Refund",
-  fare: "Trip fare",
-  "cancellation-fee": "Cancellation fee",
-  "service-fee": "Service fee",
-  payout: "Payout",
+  charge: tx("Booking"),
+  payment: tx("Payment"),
+  "credit-note": tx("Credit note"),
+  "debit-note": tx("Debit note"),
+  refund: tx("Refund"),
+  fare: tx("Trip fare"),
+  "cancellation-fee": tx("Cancellation fee"),
+  "service-fee": tx("Service fee"),
+  payout: tx("Payout"),
 };
 
 /** Filter choices per side, in the order they read best. */
@@ -68,7 +70,7 @@ export const customerLedger: LedgerEntry[] = [
     date: "2026-08-28",
     kind: "charge",
     bookingId: "GI1671176980",
-    particulars: "Rental · Toyota Hiace Bus, 1 day",
+    particulars: tx("Rental · Toyota Hiace Bus, 1 day"),
     amount: 53,
   },
   {
@@ -76,7 +78,7 @@ export const customerLedger: LedgerEntry[] = [
     date: "2026-08-28",
     kind: "payment",
     bookingId: "GI1671176980",
-    particulars: "Half now · Bank of Bhutan net banking",
+    particulars: tx("Half now · Bank of Bhutan net banking"),
     amount: 26.5,
   },
   {
@@ -84,7 +86,7 @@ export const customerLedger: LedgerEntry[] = [
     date: "2026-09-01",
     kind: "credit-note",
     bookingId: "GI1671176980",
-    particulars: "Cancelled more than 24 h before pick-up",
+    particulars: tx("Cancelled more than 24 h before pick-up"),
     amount: 53,
   },
   {
@@ -92,7 +94,7 @@ export const customerLedger: LedgerEntry[] = [
     date: "2026-09-03",
     kind: "refund",
     bookingId: "GI1671176980",
-    particulars: "Refund to Bank of Bhutan ••3310",
+    particulars: tx("Refund to Bank of Bhutan ••3310"),
     amount: 26.5,
   },
   {
@@ -100,7 +102,7 @@ export const customerLedger: LedgerEntry[] = [
     date: "2026-09-17",
     kind: "charge",
     bookingId: "GI1671177201",
-    particulars: "Daily ride · Hyundai Santa Fe, Paro Airport → Thimphu",
+    particulars: tx("Daily ride · Hyundai Santa Fe, Paro Airport → Thimphu"),
     amount: 54,
   },
   {
@@ -108,7 +110,7 @@ export const customerLedger: LedgerEntry[] = [
     date: "2026-09-17",
     kind: "payment",
     bookingId: "GI1671177201",
-    particulars: "Paid in full · Visa ••4242",
+    particulars: tx("Paid in full · Visa ••4242"),
     amount: 54,
   },
   {
@@ -116,7 +118,7 @@ export const customerLedger: LedgerEntry[] = [
     date: "2026-09-19",
     kind: "debit-note",
     bookingId: "GI1671177201",
-    particulars: "1 extra hour on the trip",
+    particulars: tx("1 extra hour on the trip"),
     amount: 6,
   },
   {
@@ -124,7 +126,7 @@ export const customerLedger: LedgerEntry[] = [
     date: "2026-09-19",
     kind: "payment",
     bookingId: "GI1671177201",
-    particulars: "Extra hour paid to the driver · mBoB",
+    particulars: tx("Extra hour paid to the driver · mBoB"),
     amount: 6,
   },
   {
@@ -132,7 +134,7 @@ export const customerLedger: LedgerEntry[] = [
     date: "2026-09-22",
     kind: "charge",
     bookingId: "GI1671177263",
-    particulars: "Daily ride · Toyota Prado GX, Thimphu → Punakha",
+    particulars: tx("Daily ride · Toyota Prado GX, Thimphu → Punakha"),
     amount: 58,
   },
   {
@@ -140,7 +142,7 @@ export const customerLedger: LedgerEntry[] = [
     date: "2026-09-22",
     kind: "payment",
     bookingId: "GI1671177263",
-    particulars: "Paid in full · Visa ••4242",
+    particulars: tx("Paid in full · Visa ••4242"),
     amount: 58,
   },
 ];
@@ -161,7 +163,7 @@ export const driverLedger: LedgerEntry[] = [
     date: "2026-08-08",
     kind: "service-fee",
     bookingId: "HBTTB6619087",
-    particulars: "DrukDrive service fee, 10%",
+    particulars: tx("DrukDrive service fee, 10%"),
     amount: 5.8,
   },
   {
@@ -177,14 +179,14 @@ export const driverLedger: LedgerEntry[] = [
     date: "2026-08-23",
     kind: "service-fee",
     bookingId: "HBTTB7741203",
-    particulars: "DrukDrive service fee, 10%",
+    particulars: tx("DrukDrive service fee, 10%"),
     amount: 5.8,
   },
   {
     id: "PO-260825",
     date: "2026-08-25",
     kind: "payout",
-    particulars: "Payout to Bank of Bhutan ••4821",
+    particulars: tx("Payout to Bank of Bhutan ••4821"),
     amount: 104.4,
   },
   {
@@ -192,7 +194,7 @@ export const driverLedger: LedgerEntry[] = [
     date: "2026-09-07",
     kind: "fare",
     bookingId: "HBTTB0982764",
-    particulars: "Tenzin Namgay · Phuentsholing round trip",
+    particulars: tx("Tenzin Namgay · Phuentsholing round trip"),
     amount: 53,
   },
   {
@@ -200,7 +202,7 @@ export const driverLedger: LedgerEntry[] = [
     date: "2026-09-07",
     kind: "service-fee",
     bookingId: "HBTTB0982764",
-    particulars: "DrukDrive service fee, 10%",
+    particulars: tx("DrukDrive service fee, 10%"),
     amount: 5.3,
   },
   {
@@ -208,7 +210,7 @@ export const driverLedger: LedgerEntry[] = [
     date: "2026-09-19",
     kind: "cancellation-fee",
     bookingId: "HBTTB9283434",
-    particulars: "Karma Choden cancelled within 24 h · 25% of the fare",
+    particulars: tx("Karma Choden cancelled within 24 h · 25% of the fare"),
     amount: 14.5,
   },
   {
@@ -216,7 +218,7 @@ export const driverLedger: LedgerEntry[] = [
     date: "2026-09-19",
     kind: "service-fee",
     bookingId: "HBTTB9283434",
-    particulars: "DrukDrive service fee, 10%",
+    particulars: tx("DrukDrive service fee, 10%"),
     amount: 1.45,
   },
 ];

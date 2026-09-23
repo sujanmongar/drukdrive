@@ -12,6 +12,7 @@ import { currencies } from "../../lib/currency";
 import { routes } from "../../lib/routes";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { t, tx } from "../../lib/i18n";
 import {
   card,
   fieldError,
@@ -21,15 +22,17 @@ import {
   rowHover,
 } from "../../lib/ui";
 
+type VehicleType =
+  "SUV" | "Sedan" | "Hatchback" | "Bus" | "Minibus" | "Minivan";
+// The English type is the select value; the option shows t(type).
 const vehicleTypes = [
-  "SUV",
-  "Sedan",
-  "Hatchback",
-  "Bus",
-  "Minibus",
-  "Minivan",
-] as const;
-type VehicleType = (typeof vehicleTypes)[number];
+  tx("SUV"),
+  tx("Sedan"),
+  tx("Hatchback"),
+  tx("Bus"),
+  tx("Minibus"),
+  tx("Minivan"),
+] as VehicleType[];
 
 const categoryByType: Record<VehicleType, VehicleCategory> = {
   SUV: "Prime SUV",
@@ -73,7 +76,7 @@ function YesNo({
             onChange={() => onChange(v)}
             className="size-5 accent-[color:var(--color-ink)]"
           />
-          {v ? "Yes" : "No"}
+          {v ? t("Yes") : t("No")}
         </label>
       ))}
     </div>
@@ -89,7 +92,7 @@ function Dropzone({ label }: { label: string }) {
         className="text-[color:var(--color-muted)]"
       />
       <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
-        Drag your photo here
+        {t("Drag your photo here")}
       </p>
       <p className="t-caption">{label}</p>
     </div>
@@ -108,7 +111,11 @@ export default function ProviderVehicleAdd() {
   const editingVehicle = editId
     ? driverVehicles.find((v) => v.id === editId)
     : undefined;
-  usePageTitle(editingVehicle ? `Edit ${editingVehicle.name}` : "Add Vehicle");
+  usePageTitle(
+    editingVehicle
+      ? t("Edit {vehicle}", { vehicle: editingVehicle.name })
+      : t("Add Vehicle"),
+  );
 
   const [vehicleName, setVehicleName] = useState(editingVehicle?.name ?? "");
   const [type, setType] = useState<VehicleType>(
@@ -180,22 +187,22 @@ export default function ProviderVehicleAdd() {
 
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
         <div className="flex items-center justify-between">
-          <h2 className="t-h2">My Vehicle</h2>
+          <h2 className="t-h2">{t("My Vehicle")}</h2>
           <Button variant="ghost" size="md" to={routes.providerVehicles}>
-            Cancel
+            {t("Cancel")}
           </Button>
         </div>
 
         <div className={`mt-6 max-w-2xl ${card} p-6`}>
           <h3 className="t-h4">
-            {editingVehicle ? "Edit vehicle" : "Add vehicle"}
+            {editingVehicle ? t("Edit vehicle") : t("Add vehicle")}
           </h3>
 
           <label className="mt-5 block">
-            <span className={labelClass}>Vehicle name *</span>
+            <span className={labelClass}>{t("Vehicle name *")}</span>
             <input
               type="text"
-              placeholder="e.g. Toyota Prado GX"
+              placeholder={t("e.g. Toyota Prado GX")}
               value={vehicleName}
               onChange={(e) => setVehicleName(e.target.value)}
               className={`${input} ${touched && !vehicleName.trim() ? "border-[color:var(--color-danger)]" : ""}`}
@@ -204,19 +211,21 @@ export default function ProviderVehicleAdd() {
 
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label>
-              <span className={labelClass}>Type</span>
+              <span className={labelClass}>{t("Type")}</span>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as VehicleType)}
                 className={input}
               >
-                {vehicleTypes.map((t) => (
-                  <option key={t}>{t}</option>
+                {vehicleTypes.map((vt) => (
+                  <option key={vt} value={vt}>
+                    {t(vt)}
+                  </option>
                 ))}
               </select>
             </label>
             <label>
-              <span className={labelClass}>Brand</span>
+              <span className={labelClass}>{t("Brand")}</span>
               <select
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
@@ -238,7 +247,7 @@ export default function ProviderVehicleAdd() {
 
           <div className="mt-5">
             <p className="mb-2 t-body-sm">
-              Or pick a common model to prefill the name.
+              {t("Or pick a common model to prefill the name.")}
             </p>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
               {vehicleTemplates.map((v) => (
@@ -274,7 +283,7 @@ export default function ProviderVehicleAdd() {
 
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label>
-              <span className={labelClass}>Model year</span>
+              <span className={labelClass}>{t("Model year")}</span>
               <input
                 type="text"
                 value={modelYear}
@@ -283,14 +292,16 @@ export default function ProviderVehicleAdd() {
               />
             </label>
             <label>
-              <span className={labelClass}>Transmission</span>
+              <span className={labelClass}>{t("Transmission")}</span>
               <select
                 value={transmission}
                 onChange={(e) => setTransmission(e.target.value)}
                 className={input}
               >
-                {["Automatic", "Manual"].map((t) => (
-                  <option key={t}>{t}</option>
+                {[tx("Automatic"), tx("Manual")].map((m) => (
+                  <option key={m} value={m}>
+                    {t(m)}
+                  </option>
                 ))}
               </select>
             </label>
@@ -298,19 +309,21 @@ export default function ProviderVehicleAdd() {
 
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label>
-              <span className={labelClass}>Fuel type</span>
+              <span className={labelClass}>{t("Fuel type")}</span>
               <select
                 value={fuelType}
                 onChange={(e) => setFuelType(e.target.value)}
                 className={input}
               >
-                {["Petrol", "Diesel", "Electric"].map((f) => (
-                  <option key={f}>{f}</option>
+                {[tx("Petrol"), tx("Diesel"), tx("Electric")].map((f) => (
+                  <option key={f} value={f}>
+                    {t(f)}
+                  </option>
                 ))}
               </select>
             </label>
             <label>
-              <span className={labelClass}>Seats</span>
+              <span className={labelClass}>{t("Seats")}</span>
               <input
                 type="number"
                 min={1}
@@ -323,12 +336,14 @@ export default function ProviderVehicleAdd() {
           </div>
 
           <div className="mt-5">
-            <span className={labelClass}>Do you have AC in your vehicle?</span>
+            <span className={labelClass}>
+              {t("Do you have AC in your vehicle?")}
+            </span>
             <YesNo value={hasAc} onChange={setHasAc} />
           </div>
 
           <label className="mt-5 block">
-            <span className={labelClass}>Vehicle number *</span>
+            <span className={labelClass}>{t("Vehicle number *")}</span>
             <input
               type="text"
               placeholder="BP-1-F0987"
@@ -340,27 +355,27 @@ export default function ProviderVehicleAdd() {
 
           <div className="mt-5">
             <span className={labelClass}>
-              Do you have premium vehicle insurance?
+              {t("Do you have premium vehicle insurance?")}
             </span>
             <YesNo value={hasInsurance} onChange={setHasInsurance} />
           </div>
 
           {hasInsurance && (
             <div className="mt-4">
-              <Dropzone label="Upload insurance here" />
+              <Dropzone label={t("Upload insurance here")} />
             </div>
           )}
 
           <div className="mt-5">
             <span className={labelClass}>
-              Upload vehicle registration certificate (RC)
+              {t("Upload vehicle registration certificate (RC)")}
             </span>
-            <Dropzone label="Upload RC here" />
+            <Dropzone label={t("Upload RC here")} />
           </div>
 
           <div className="mt-6">
-            <h3 className="t-h4">Set your price</h3>
-            <p className="t-caption">You can change it anytime</p>
+            <h3 className="t-h4">{t("Set your price")}</h3>
+            <p className="t-caption">{t("You can change it anytime")}</p>
             <div
               className={`mt-3 flex flex-col items-center gap-1 ${inset} py-6`}
             >
@@ -374,19 +389,19 @@ export default function ProviderVehicleAdd() {
                   className="h-12 w-28 rounded-xl border border-transparent bg-transparent text-center outline-none transition-colors duration-150 hover:border-[color:var(--color-border)] focus:border-[color:var(--color-ink)]"
                 />
               </div>
-              <span className="t-caption">per day</span>
+              <span className="t-caption">{t("per day")}</span>
             </div>
             {touched && !(Number(price) > 0) && (
-              <p className={fieldError}>Enter a price greater than 0.</p>
+              <p className={fieldError}>{t("Enter a price greater than 0.")}</p>
             )}
           </div>
 
           <div className="mt-6 flex gap-3">
             <Button variant="primary" size="lg" onClick={handleSave}>
-              Save
+              {t("Save")}
             </Button>
             <Button variant="ghost" size="lg" to={routes.providerVehicles}>
-              Cancel
+              {t("Cancel")}
             </Button>
           </div>
         </div>

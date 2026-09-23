@@ -1,3 +1,5 @@
+import { tx } from "./i18n";
+
 // Central route path constants. Import these instead of hard-coding strings
 // so every page links to the same paths.
 
@@ -59,7 +61,7 @@ export const routes = {
 export type BookingType = "daily" | "rental" | "self-drive";
 
 export const bookingTypeLabels: Record<BookingType, string> = {
-  daily: "Daily Rides",
-  rental: "Rental",
-  "self-drive": "Self Drive",
+  daily: tx("Daily Rides"),
+  rental: tx("Rental"),
+  "self-drive": tx("Self Drive"),
 };

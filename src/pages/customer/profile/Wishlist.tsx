@@ -11,9 +11,10 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../../lib/auth";
 import { routes } from "../../../lib/routes";
 import { inlineLink } from "../../../lib/ui";
+import { t, tr } from "../../../lib/i18n";
 
 export default function AccountWishlist() {
-  usePageTitle("Wishlist");
+  usePageTitle(t("Wishlist"));
   const { ids } = useWishlist();
   const { isLoggedIn } = useAuth();
   const saved = vehicles.filter((v) => ids.includes(v.id));
@@ -30,26 +31,29 @@ export default function AccountWishlist() {
       )}
 
       <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-10 md:py-14">
-        <h2 className="t-h2">Wishlist</h2>
+        <h2 className="t-h2">{t("Wishlist")}</h2>
         <p className="mt-1 t-body-sm text-[color:var(--color-muted)]">
-          {isLoggedIn ? (
-            "Vehicles you've saved for later."
-          ) : (
-            <>
-              Saved on this device.{" "}
-              <Link to={routes.signIn} className={inlineLink}>
-                Sign in
-              </Link>{" "}
-              to keep your list with your account.
-            </>
-          )}
+          {isLoggedIn
+            ? t("Vehicles you've saved for later.")
+            : tr(
+                "Saved on this device. {signIn} to keep your list with your account.",
+                {
+                  signIn: (
+                    <Link to={routes.signIn} className={inlineLink}>
+                      {t("Sign in")}
+                    </Link>
+                  ),
+                },
+              )}
         </p>
 
         {saved.length === 0 ? (
           <EmptyState
             icon="heart"
-            title="No saved vehicles yet"
-            description="Tap the heart icon on any vehicle to save it here for later."
+            title={t("No saved vehicles yet")}
+            description={t(
+              "Tap the heart icon on any vehicle to save it here for later.",
+            )}
           />
         ) : (
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

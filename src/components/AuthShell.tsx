@@ -4,6 +4,7 @@ import PageShell from "./PageShell";
 import Icon, { type IconName } from "./Icon";
 import { routes } from "../lib/routes";
 import { inlineLink, input } from "../lib/ui";
+import { t, tr, tx } from "../lib/i18n";
 
 // The one card every auth page sits in: a round close/back button, the
 // page title, an optional line under it, then the page's own content.
@@ -27,7 +28,7 @@ export default function AuthShell({
           <button
             type="button"
             onClick={() => navigate(-1)}
-            aria-label={back ? "Back" : "Close"}
+            aria-label={back ? t("Back") : t("Close")}
             className="icon-btn icon-btn-filled absolute left-4 top-4 size-10"
           >
             <Icon
@@ -59,8 +60,8 @@ export function MethodTabs({
   onChange: (m: AuthMethod) => void;
 }) {
   const tabs: [AuthMethod, string][] = [
-    ["email", "Email"],
-    ["phone", "Phone"],
+    ["email", tx("Email")],
+    ["phone", tx("Phone")],
   ];
   return (
     <div className="mb-5 flex gap-2 rounded-xl border border-[color:var(--color-border)] bg-white p-1">
@@ -76,7 +77,7 @@ export function MethodTabs({
               : "text-[color:var(--color-muted)] hover:bg-[color:var(--color-surface-soft)] hover:text-[color:var(--color-ink)]"
           }`}
         >
-          {label}
+          {t(label)}
         </button>
       ))}
     </div>
@@ -110,7 +111,7 @@ export function AuthInput({
           type="button"
           onClick={() => setShow((v) => !v)}
           className="icon-btn absolute right-2 top-1/2 size-10 -translate-y-1/2 text-[color:var(--color-muted)]"
-          aria-label={show ? "Hide password" : "Show password"}
+          aria-label={show ? t("Hide password") : t("Show password")}
         >
           <Icon name={show ? "eye-off" : "eye"} size={18} />
         </button>
@@ -123,25 +124,28 @@ export function AuthInput({
 export function AuthTerms() {
   return (
     <p className="mt-6 text-center t-caption">
-      By continuing, you agree our{" "}
-      <Link
-        to={routes.termsOfService}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={inlineLink}
-      >
-        Terms of Services
-      </Link>{" "}
-      and{" "}
-      <Link
-        to={routes.privacyPolicy}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={inlineLink}
-      >
-        Privacy Policy
-      </Link>
-      .
+      {tr("By continuing, you agree our {terms} and {privacy}.", {
+        terms: (
+          <Link
+            to={routes.termsOfService}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={inlineLink}
+          >
+            {t("Terms of Services")}
+          </Link>
+        ),
+        privacy: (
+          <Link
+            to={routes.privacyPolicy}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={inlineLink}
+          >
+            {t("Privacy Policy")}
+          </Link>
+        ),
+      })}
     </p>
   );
 }

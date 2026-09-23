@@ -8,13 +8,11 @@ import Button from "./Button";
 import type { EditSearchValue } from "./EditSearchModal";
 import { useWishlist } from "../lib/wishlist";
 import { bookingTypeLabels } from "../lib/routes";
+import { t } from "../lib/i18n";
 
-function formatDate(d: Date) {
-  return d.toLocaleDateString(undefined, {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  });
+import { formatDate } from "../lib/dates";
+function formatDay(d: Date) {
+  return formatDate(d, "weekday");
 }
 
 // Replaces the default logo/nav Header on the search results page.
@@ -38,7 +36,7 @@ export default function SearchSummaryHeader({
   const { enabled: wishlistEnabled, ids: wishlistIds } = useWishlist();
   const [draft, setDraft] = useState<EditSearchValue>(search);
   const [wishlistOpen, setWishlistOpen] = useState(false);
-  const dateLabel = formatDate(search.pickupDate);
+  const dateLabel = formatDay(search.pickupDate);
 
   function handleUpdate() {
     onSearch(draft);
@@ -52,7 +50,7 @@ export default function SearchSummaryHeader({
           <button
             type="button"
             onClick={() => navigate(-1)}
-            aria-label="Back"
+            aria-label={t("Back")}
             className="icon-btn icon-btn-filled size-9 shrink-0"
           >
             <Icon
@@ -76,7 +74,7 @@ export default function SearchSummaryHeader({
               )}
             </p>
             <p className="truncate t-caption">
-              {bookingTypeLabels[search.type]} &middot; {dateLabel},{" "}
+              {t(bookingTypeLabels[search.type])} &middot; {dateLabel},{" "}
               {search.pickupTime}
             </p>
           </div>
@@ -84,7 +82,7 @@ export default function SearchSummaryHeader({
           <button
             type="button"
             onClick={onEditMobile}
-            aria-label="Edit search"
+            aria-label={t("Edit search")}
             className="icon-btn icon-btn-filled size-9 shrink-0"
           >
             <Icon name="edit" size={15} />
@@ -94,7 +92,7 @@ export default function SearchSummaryHeader({
             <button
               type="button"
               onClick={() => setWishlistOpen(true)}
-              aria-label="Wishlist"
+              aria-label={t("Wishlist")}
               className="icon-btn icon-btn-filled relative size-9 shrink-0"
             >
               <Icon
@@ -138,7 +136,7 @@ export default function SearchSummaryHeader({
                   className="h-14 shrink-0"
                 >
                   <Icon name="search" size={16} />
-                  Update
+                  {t("Update")}
                 </Button>
               }
             />

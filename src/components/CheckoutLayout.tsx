@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { t } from "../lib/i18n";
 
 // The one grid every checkout step uses. Desktop: two independent columns —
 // the car card and the step's own content flow down the left; pick-up/drop-off,
@@ -31,19 +32,19 @@ export default function CheckoutLayout({
         <div className="order-2">{trip}</div>
         {price && (
           <div className="order-4 lg:mt-8">
-            <h2 className="t-h3">Price summary</h2>
+            <h2 className="t-h3">{t("Price summary")}</h2>
             <div className="mt-4">{price}</div>
           </div>
         )}
         {promo && (
           <div className="order-5 lg:mt-8">
-            <h2 className="t-h3">Promo code</h2>
+            <h2 className="t-h3">{t("Promo code")}</h2>
             <div className="mt-4">{promo}</div>
           </div>
         )}
         {help && (
           <div className="order-6 lg:mt-8">
-            <h2 className="t-h3">Need a hand?</h2>
+            <h2 className="t-h3">{t("Need a hand?")}</h2>
             <div className="mt-4">{help}</div>
           </div>
         )}

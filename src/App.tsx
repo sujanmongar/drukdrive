@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { routes } from "./lib/routes";
 import RouteGuard from "./components/RouteGuard";
+import { t } from "./lib/i18n";
 
 const SignIn = lazy(() => import("./pages/auth/SignIn"));
 const SignUp = lazy(() => import("./pages/auth/SignUp"));
@@ -57,7 +58,7 @@ function PageFallback() {
       <div
         className="size-8 animate-spin rounded-full border-4 border-[color:var(--color-border)] border-t-[color:var(--color-ink)]"
         role="status"
-        aria-label="Loading"
+        aria-label={t("Loading")}
       />
     </div>
   );

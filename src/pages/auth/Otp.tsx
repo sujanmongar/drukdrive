@@ -13,6 +13,7 @@ import { useCurrentUser } from "../../lib/currentUser";
 import { useAuth } from "../../lib/auth";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { otpDigit } from "../../lib/ui";
+import { t, tr } from "../../lib/i18n";
 
 const OTP_LENGTH = 6;
 
@@ -21,7 +22,7 @@ type LocationState = {
 } | null;
 
 export default function Otp() {
-  usePageTitle("Verify OTP");
+  usePageTitle(t("Verify OTP"));
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
@@ -102,14 +103,14 @@ export default function Otp() {
     <div className="mt-6 flex items-center justify-between t-body-sm">
       <span>
         {secondsLeft > 0
-          ? `Time remaining ${secondsLeft}s`
+          ? t("Time remaining {n}s", { n: secondsLeft })
           : justResent
-            ? "OTP resent"
+            ? t("OTP resent")
             : ""}
       </span>
       <span className="flex items-center gap-2">
         <span className="text-[color:var(--color-muted)]">
-          Didn&rsquo;t receive?
+          {t("Didn’t receive?")}
         </span>
         <Button
           variant="link"
@@ -117,7 +118,7 @@ export default function Otp() {
           onClick={handleResend}
           disabled={secondsLeft > 0}
         >
-          Resend OTP
+          {t("Resend OTP")}
         </Button>
       </span>
     </div>
@@ -125,22 +126,21 @@ export default function Otp() {
 
   return (
     <AuthShell
-      title="Verify your mobile number"
+      title={t("Verify your mobile number")}
       back
-      subtitle={
-        <>
-          OTP has been sent to{" "}
+      subtitle={tr("OTP has been sent to {phone}", {
+        phone: (
           <span className="font-semibold text-[color:var(--color-ink)]">
             {currentUser.phone}
           </span>
-        </>
-      }
+        ),
+      })}
     >
       <form onSubmit={handleSubmit} className="flex flex-col">
         {boxes}
         {resendRow}
         <Button type="submit" size="lg" fullWidth className="mt-6">
-          Verify
+          {t("Verify")}
         </Button>
       </form>
     </AuthShell>

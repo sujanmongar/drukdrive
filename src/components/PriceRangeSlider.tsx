@@ -1,3 +1,5 @@
+import { t } from "../lib/i18n";
+
 // Dual-handle range slider for picking a [min, max] window — the selected
 // span is highlighted between the two draggable handles.
 export default function PriceRangeSlider({
@@ -34,7 +36,7 @@ export default function PriceRangeSlider({
           onChange={(e) => onChange([Math.min(Number(e.target.value), hi), hi])}
           className="dual-range absolute inset-x-0 w-full"
           style={{ zIndex: lo >= hi ? 2 : 1 }}
-          aria-label="Minimum price"
+          aria-label={t("Minimum price")}
         />
         <input
           type="range"
@@ -44,7 +46,7 @@ export default function PriceRangeSlider({
           onChange={(e) => onChange([lo, Math.max(Number(e.target.value), lo)])}
           className="dual-range absolute inset-x-0 w-full"
           style={{ zIndex: 1 }}
-          aria-label="Maximum price"
+          aria-label={t("Maximum price")}
         />
       </div>
       <div className="mt-1.5 flex justify-between t-caption">

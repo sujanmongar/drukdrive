@@ -4,9 +4,10 @@ import ProfileHero from "../../../components/ProfileHero";
 import NotificationsList from "../../../components/NotificationsList";
 import { accountTabs } from "./_tabs";
 import { usePageTitle } from "../../../hooks/usePageTitle";
+import { t } from "../../../lib/i18n";
 
 export default function AccountNotifications() {
-  usePageTitle("Notifications");
+  usePageTitle(t("Notifications"));
 
   return (
     <PageShell>

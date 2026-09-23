@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import Icon from "./Icon";
 import Button from "./Button";
 import { rowHover } from "../lib/ui";
+import { t } from "../lib/i18n";
 
 // One collapsible group in the Filters sidebar/sheet. The whole header row
 // is the toggle — a 44px-tall target — with Clear as its own button beside
@@ -47,7 +48,7 @@ export default function FilterSection({
               onClick={onClear}
               className="mx-0 shrink-0 lg:min-h-9"
             >
-              Clear
+              {t("Clear")}
             </Button>
           )}
         </div>

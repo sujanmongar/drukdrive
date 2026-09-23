@@ -3,6 +3,7 @@ import Button from "./Button";
 import Icon from "./Icon";
 import { useCurrentUser } from "../lib/currentUser";
 import { card, fieldError, input, label } from "../lib/ui";
+import { t, tx } from "../lib/i18n";
 
 // Password, phone verification and sessions — the security half of the
 // account, separate from personal details.
@@ -18,13 +19,15 @@ export default function LoginSecurityEditor() {
   return (
     <div className="mt-6 flex flex-col gap-6">
       <section className={`${card} p-5 sm:p-6`}>
-        <h3 className="t-h4">Password</h3>
+        <h3 className="t-h4">{t("Password")}</h3>
         <p className="mt-1 t-body-sm">
-          Use at least 8 characters. You&rsquo;ll stay signed in on this device.
+          {t(
+            "Use at least 8 characters. You’ll stay signed in on this device.",
+          )}
         </p>
         <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <label>
-            <span className={label}>Current password</span>
+            <span className={label}>{t("Current password")}</span>
             <input
               type="password"
               value={current}
@@ -34,7 +37,7 @@ export default function LoginSecurityEditor() {
             />
           </label>
           <label>
-            <span className={label}>New password</span>
+            <span className={label}>{t("New password")}</span>
             <input
               type="password"
               value={next}
@@ -44,7 +47,7 @@ export default function LoginSecurityEditor() {
             />
           </label>
           <label>
-            <span className={label}>Confirm new password</span>
+            <span className={label}>{t("Confirm new password")}</span>
             <input
               type="password"
               value={confirm}
@@ -53,7 +56,7 @@ export default function LoginSecurityEditor() {
               autoComplete="new-password"
             />
             {confirm && next !== confirm && (
-              <p className={fieldError}>Passwords don&rsquo;t match.</p>
+              <p className={fieldError}>{t("Passwords don’t match.")}</p>
             )}
           </label>
         </div>
@@ -69,12 +72,12 @@ export default function LoginSecurityEditor() {
               setConfirm("");
             }}
           >
-            Update password
+            {t("Update password")}
           </Button>
           {saved && (
             <span className="flex items-center gap-1.5 t-body-sm font-semibold text-[color:var(--color-success)]">
               <Icon name="check-circle" size={16} />
-              Password updated
+              {t("Password updated")}
             </span>
           )}
         </div>
@@ -84,11 +87,13 @@ export default function LoginSecurityEditor() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h3 id="two-step-title" className="t-h4">
-              Two-step verification
+              {t("Two-step verification")}
             </h3>
             <p className="mt-1 t-body-sm">
-              A one-time code is sent to {user.phone} whenever you sign in on a
-              new device.
+              {t(
+                "A one-time code is sent to {phone} whenever you sign in on a new device.",
+                { phone: user.phone },
+              )}
             </p>
           </div>
           <button
@@ -107,18 +112,18 @@ export default function LoginSecurityEditor() {
       </section>
 
       <section className={`${card} p-5 sm:p-6`}>
-        <h3 className="t-h4">Where you&rsquo;re signed in</h3>
+        <h3 className="t-h4">{t("Where you’re signed in")}</h3>
         <ul className="mt-4 divide-y divide-[color:var(--color-border)]">
           {[
             {
               device: "iPhone · Safari",
               place: "Thimphu, Bhutan",
-              when: "This device",
+              when: tx("This device"),
             },
             {
               device: "MacBook · Chrome",
               place: "Paro, Bhutan",
-              when: "2 days ago",
+              when: tx("2 days ago"),
             },
           ].map((s) => (
             <li
@@ -130,7 +135,7 @@ export default function LoginSecurityEditor() {
                   {s.device}
                 </p>
                 <p className="t-caption">
-                  {s.place} · {s.when}
+                  {s.place} · {t(s.when)}
                 </p>
               </div>
               {s.when !== "This device" && (
@@ -138,7 +143,7 @@ export default function LoginSecurityEditor() {
                   type="button"
                   className="min-h-11 rounded-xl px-3 t-body-sm font-semibold text-[color:var(--color-danger)] transition-colors duration-150 hover:bg-[color:var(--color-danger-bg)]"
                 >
-                  Sign out
+                  {t("Sign out")}
                 </button>
               )}
             </li>

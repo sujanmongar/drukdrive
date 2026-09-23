@@ -4,6 +4,7 @@ import Icon from "./Icon";
 import StatusBadge from "./StatusBadge";
 import VehicleImage from "./VehicleImage";
 import EmptyState from "./EmptyState";
+import { t } from "../lib/i18n";
 import {
   card,
   chip,
@@ -13,6 +14,7 @@ import {
   rowHover,
 } from "../lib/ui";
 
+import { formatStored } from "../lib/dates";
 export type BookingListItem = {
   id: string;
   href: string;
@@ -39,9 +41,9 @@ export default function BookingsList({
   return (
     <>
       <div className="flex items-center justify-between">
-        <h2 className="t-h2">Bookings</h2>
+        <h2 className="t-h2">{t("Bookings")}</h2>
         <span className="t-body-sm text-[color:var(--color-muted)]">
-          {total} in total
+          {t("{n} in total", { n: total })}
         </span>
       </div>
 
@@ -53,7 +55,7 @@ export default function BookingsList({
             onClick={() => setFilter(f)}
             className={`shrink-0 ${chip(filter === f)}`}
           >
-            {f} ({groups[f].length})
+            {t(f)} ({groups[f].length})
           </button>
         ))}
       </div>
@@ -61,8 +63,10 @@ export default function BookingsList({
       {filtered.length === 0 ? (
         <EmptyState
           icon="car"
-          title={`No ${filter.toLowerCase()} bookings yet`}
-          description="Bookings show up here as soon as they're made."
+          title={t("No {group} bookings yet", {
+            group: t(filter).toLowerCase(),
+          })}
+          description={t("Bookings show up here as soon as they're made.")}
         />
       ) : (
         <div
@@ -81,20 +85,20 @@ export default function BookingsList({
                   className="size-12 rounded-xl"
                 />
                 <div>
-                  <p className={metaLabel}>Booking ID</p>
+                  <p className={metaLabel}>{t("Booking ID")}</p>
                   <p className={reference}>#{b.id}</p>
                   <p className="t-caption font-semibold text-[color:var(--color-ink-soft)]">
                     {b.vehicle.name}
                   </p>
                   {b.bookingType && (
-                    <p className="t-caption">{b.bookingType}</p>
+                    <p className="t-caption">{t(b.bookingType)}</p>
                   )}
                 </div>
               </div>
 
               <div className="flex flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
                 <div>
-                  <p className={metaLabel}>Pick up</p>
+                  <p className={metaLabel}>{t("Pick up")}</p>
                   <p className={metaValue}>{b.pickup}</p>
                 </div>
                 <Icon
@@ -103,10 +107,10 @@ export default function BookingsList({
                   className="hidden shrink-0 text-[color:var(--color-muted)] sm:block"
                 />
                 <div>
-                  <p className={metaLabel}>Drop off</p>
+                  <p className={metaLabel}>{t("Drop off")}</p>
                   <p className={metaValue}>{b.dropoff}</p>
                 </div>
-                <p className="t-caption sm:ml-auto">{b.date}</p>
+                <p className="t-caption sm:ml-auto">{formatStored(b.date)}</p>
               </div>
 
               <div className="flex items-center justify-between gap-3 sm:shrink-0">

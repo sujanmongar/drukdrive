@@ -2,6 +2,7 @@ import FareSummary from "./FareSummary";
 import type { Fare } from "../lib/pricing";
 import { currencies, useCurrency } from "../lib/currency";
 import { card, inset } from "../lib/ui";
+import { t } from "../lib/i18n";
 
 // The one price card used on Review, Details, Payment and Confirmation:
 // total, the fare breakdown behind a chevron, and how the payment splits.
@@ -31,8 +32,8 @@ export default function PriceSummaryCard({
   const balanceLabel =
     laterLabel ??
     (fare.deposit > 0
-      ? "The other half, at the desk when you collect the car"
-      : "The other half, to the driver by mBoB, card or cash");
+      ? t("The other half, at the desk when you collect the car")
+      : t("The other half, to the driver by mBoB, card or cash"));
   const { format, currency } = useCurrency();
   const nu = currencies.find((c) => c.code === "BTN")!;
   const inNu = (usd: number) =>
@@ -42,7 +43,7 @@ export default function PriceSummaryCard({
     <div id={id} className={`${card} scroll-mt-24 p-5`}>
       <p className="t-h2 t-amount">{format(netPayable)}</p>
       <p className="t-body-sm text-[color:var(--color-muted)]">
-        Total for {fare.unit}, taxes and fees included
+        {t("Total for {unit}, taxes and fees included", { unit: fare.unit })}
         {showNu && (
           <>
             <span className="block">
@@ -57,13 +58,13 @@ export default function PriceSummaryCard({
           total={format(netPayable)}
           lines={[
             ...fare.lines.map((l) => ({
-              label: l.label,
+              label: t(l.label),
               value: format(l.amount),
             })),
             ...(discount > 0 && promoCode
               ? [
                   {
-                    label: `Promo ${promoCode}`,
+                    label: t("Promo {code}", { code: promoCode }),
                     value: `−${format(discount)}`,
                     success: true,
                   },
@@ -77,12 +78,12 @@ export default function PriceSummaryCard({
         <div className="flex items-center justify-between gap-3">
           <dt>
             <span className="block t-body-sm font-semibold text-[color:var(--color-ink)]">
-              Pay now
+              {t("Pay now")}
             </span>
             <span className="block t-caption">
               {payLater > 0
-                ? "Half the fare, to confirm your booking"
-                : "The full fare, to confirm your booking"}
+                ? t("Half the fare, to confirm your booking")
+                : t("The full fare, to confirm your booking")}
               {showNu && (
                 <>
                   <span className="block">
@@ -98,7 +99,7 @@ export default function PriceSummaryCard({
           <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2">
             <dt>
               <span className="block t-body-sm font-semibold text-[color:var(--color-ink)]">
-                Pay at pick-up
+                {t("Pay at pick-up")}
               </span>
               <span className="block t-caption">
                 {balanceLabel}
@@ -118,10 +119,10 @@ export default function PriceSummaryCard({
           <div className="flex items-center justify-between gap-3 border-t border-[color:var(--color-border)] pt-2">
             <dt>
               <span className="block t-body-sm font-semibold text-[color:var(--color-ink)]">
-                Deposit at collection
+                {t("Deposit at collection")}
               </span>
               <span className="block t-caption">
-                Refundable, released within 3 days of return
+                {t("Refundable, released within 3 days of return")}
               </span>
             </dt>
             <dd className="shrink-0 t-body t-amount">{format(fare.deposit)}</dd>

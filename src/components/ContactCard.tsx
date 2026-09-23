@@ -1,6 +1,7 @@
 import Icon from "./Icon";
 import SocialIcon from "./SocialIcon";
 import { actionLink, card } from "../lib/ui";
+import { t } from "../lib/i18n";
 
 const PHONE = "+975 17 617 107";
 const PHONE_HREF = "tel:+97517617107";
@@ -28,7 +29,7 @@ export default function ContactCard() {
         >
           <Icon name="phone" size={20} strokeWidth={2.2} />
           <span className="t-body-sm font-semibold text-[color:var(--color-success-deep)]">
-            Call us
+            {t("Call us")}
           </span>
         </a>
       </div>
@@ -37,7 +38,7 @@ export default function ContactCard() {
       </p>
       <dl className="mt-4 flex flex-col gap-1.5 border-t border-[color:var(--color-border)] pt-4 t-caption">
         <div className="flex items-center justify-between gap-3">
-          <dt>Email</dt>
+          <dt>{t("Email")}</dt>
           <dd>
             <a
               href="mailto:support@drukdrive.bt"
@@ -48,9 +49,9 @@ export default function ContactCard() {
           </dd>
         </div>
         <div className="flex items-center justify-between gap-3">
-          <dt>Hours</dt>
+          <dt>{t("Hours")}</dt>
           <dd className="font-semibold text-[color:var(--color-ink)]">
-            7:00–22:00, every day
+            {t("{hours}, every day", { hours: "7:00–22:00" })}
           </dd>
         </div>
       </dl>

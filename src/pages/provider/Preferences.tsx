@@ -9,9 +9,10 @@ import { routes } from "../../lib/routes";
 import { quietLink } from "../../lib/ui";
 import { providerTabs } from "./_tabs";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { t } from "../../lib/i18n";
 
 export default function ProviderPreferences() {
-  usePageTitle("Global preferences");
+  usePageTitle(t("Global preferences"));
   const navigate = useNavigate();
 
   return (
@@ -29,15 +30,15 @@ export default function ProviderPreferences() {
                 to={routes.providerAccount}
                 className={`inline-flex min-h-11 items-center ${quietLink}`}
               >
-                Account
+                {t("Account")}
               </Link>
               <Icon name="chevron-right" size={14} />
-              <span>Global preferences</span>
+              <span>{t("Global preferences")}</span>
             </div>
-            <h2 className="mt-1 t-h2">Global preferences</h2>
+            <h2 className="mt-1 t-h2">{t("Global preferences")}</h2>
           </div>
           <Button variant="secondary" size="sm" onClick={() => navigate(-1)}>
-            Back
+            {t("Back")}
           </Button>
         </div>
 

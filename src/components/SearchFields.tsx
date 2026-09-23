@@ -7,7 +7,9 @@ import DatePickerSheet from "./DatePickerSheet";
 import type { SearchValue } from "../lib/booking";
 import { daysBetween } from "../lib/tripDuration";
 import { durationLabel, isDayBased } from "../lib/booking";
+import { t, tx } from "../lib/i18n";
 
+import { formatDate } from "../lib/dates";
 // The one search form used on Home, the results header and the edit-search
 // sheet. Every booking type gets the same fields — pick-up, an optional
 // different drop-off, and a pick-up / drop-off date and time — so the types
@@ -40,11 +42,11 @@ export default function SearchFields({
 
   const differentDropoff = value.dropoff !== value.pickup;
   const dayBased = isDayBased(value.type);
-  const startLabel = value.type === "self-drive" ? "Collect" : "Pick up";
-  const endLabel = value.type === "self-drive" ? "Return" : "Drop off";
+  const startLabel = value.type === "self-drive" ? t("Collect") : t("Pick up");
+  const endLabel = value.type === "self-drive" ? t("Return") : t("Drop off");
 
   function fmtDate(d: Date) {
-    return d.toLocaleDateString(undefined, { day: "numeric", month: "short" });
+    return formatDate(d, "day");
   }
 
   function setDifferentDropoff(on: boolean) {
@@ -79,7 +81,7 @@ export default function SearchFields({
     if (value.type === "daily" && daysBetween(r.pickup, dropoffDate) > 0) {
       next = { ...next, type: "rental" };
       setNote(
-        "Overnight trips are booked as a rental — we've switched you over.",
+        tx("Overnight trips are booked as a rental — we've switched you over."),
       );
     } else {
       setNote(null);
@@ -110,19 +112,19 @@ export default function SearchFields({
           onChange={setDifferentDropoff}
           label={
             selfDrive
-              ? "Return the car to a different location"
-              : "Drop off at a different location"
+              ? t("Return the car to a different location")
+              : t("Drop off at a different location")
           }
         />
         {showDuration && (
           <p className="hidden t-body-sm font-semibold text-[color:var(--color-success)] lg:block">
-            Duration: {durationLabel(value)}
+            {t("Duration: {duration}", { duration: durationLabel(value) })}
           </p>
         )}
       </div>
       {showDuration && (
         <p className="order-3 mt-3 text-center t-body-sm font-semibold text-[color:var(--color-success)] lg:hidden">
-          Duration: {durationLabel(value)}
+          {t("Duration: {duration}", { duration: durationLabel(value) })}
         </p>
       )}
 
@@ -148,18 +150,18 @@ export default function SearchFields({
               <span className={labelClass}>
                 {selfDrive
                   ? differentDropoff
-                    ? "Collect at"
-                    : "Collect & return at"
+                    ? t("Collect at")
+                    : t("Collect & return at")
                   : differentDropoff
-                    ? "Pick up"
-                    : "Pick up & drop off"}
+                    ? t("Pick up")
+                    : t("Pick up & drop off")}
               </span>
               <span className={valueClass}>{value.pickup}</span>
             </span>
           </button>
           {active === "pickup" && (
             <LocationPickerSheet
-              label={selfDrive ? "Collect at" : "Pick up"}
+              label={selfDrive ? t("Collect at") : t("Pick up")}
               anchorRef={anchored ? pickupRef : undefined}
               onSelect={(v) => {
                 onChange({
@@ -186,7 +188,7 @@ export default function SearchFields({
                 dropoff: value.pickup,
               })
             }
-            aria-label="Swap pick-up and drop-off"
+            aria-label={t("Swap pick-up and drop-off")}
             className={`icon-btn icon-btn-filled z-10 -my-[26px] mr-3 size-9 self-end border-2 border-white ${
               row
                 ? "lg:mx-[-26px] lg:my-0 lg:mr-[-26px] lg:mt-[10px] lg:self-start"
@@ -220,7 +222,7 @@ export default function SearchFields({
               />
               <span className="flex min-w-0 flex-col gap-1">
                 <span className={labelClass}>
-                  {selfDrive ? "Return at" : "Drop off"}
+                  {selfDrive ? t("Return at") : t("Drop off")}
                 </span>
                 <span
                   className={
@@ -229,13 +231,13 @@ export default function SearchFields({
                       : "t-body-sm text-[color:var(--color-muted)]"
                   }
                 >
-                  {value.dropoff || "Choose a place"}
+                  {value.dropoff || t("Choose a place")}
                 </span>
               </span>
             </button>
             {active === "dropoff" && (
               <LocationPickerSheet
-                label={selfDrive ? "Return at" : "Drop off"}
+                label={selfDrive ? t("Return at") : t("Drop off")}
                 anchorRef={anchored ? dropoffRef : undefined}
                 onSelect={(v) => {
                   onChange({ ...value, dropoff: v });
@@ -309,7 +311,7 @@ export default function SearchFields({
 
       {note && (
         <p className="order-4 mt-2 t-caption text-[color:var(--color-ink-soft)]">
-          {note}
+          {t(note)}
         </p>
       )}
     </div>

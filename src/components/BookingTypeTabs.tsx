@@ -2,6 +2,7 @@ import Icon from "./Icon";
 import type { IconName } from "./Icon";
 import type { BookingType } from "../lib/routes";
 import { bookingTypeLabels } from "../lib/routes";
+import { t } from "../lib/i18n";
 
 const order: { type: BookingType; icon: IconName }[] = [
   { type: "daily", icon: "car" },
@@ -22,7 +23,7 @@ export default function BookingTypeTabs({
   return (
     <div
       role="group"
-      aria-label="Booking type"
+      aria-label={t("Booking type")}
       className="scrollbar-hide inline-flex max-w-full gap-0.5 overflow-x-auto rounded-xl bg-white p-1 shadow-pop sm:gap-1 sm:p-1.5"
     >
       {order.map(({ type, icon }) => {
@@ -45,7 +46,7 @@ export default function BookingTypeTabs({
               strokeWidth={active ? 2.2 : 1.9}
               className="shrink-0"
             />
-            {bookingTypeLabels[type]}
+            {t(bookingTypeLabels[type])}
           </button>
         );
       })}

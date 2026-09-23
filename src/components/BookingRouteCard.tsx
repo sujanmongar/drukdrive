@@ -2,6 +2,7 @@ import Icon from "./Icon";
 import VehicleImage from "./VehicleImage";
 import VehicleSpecs from "./VehicleSpecs";
 import { card, metaLabel } from "../lib/ui";
+import { t } from "../lib/i18n";
 import { vehicleClassOf } from "../data/mockData";
 import type { Vehicle } from "../data/mockData";
 import {
@@ -40,7 +41,9 @@ export function VehicleSummaryCard({ vehicle }: Pick<Props, "vehicle">) {
           <div className="min-w-0 flex-1">
             <h3 className="t-h4 truncate">{vehicle.name}</h3>
             <p className="t-caption">
-              or similar {vehicleClassOf[vehicle.category]}
+              {t("or similar {class}", {
+                class: t(vehicleClassOf[vehicle.category]),
+              })}
             </p>
 
             <div className="t-caption mt-2.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[color:var(--color-ink)]">
@@ -88,22 +91,22 @@ export function StopsCard({
   const stops = [
     {
       key: "pickup",
-      label: "Pick up",
+      label: t("Pick up"),
       place: pickup,
-      when: date || "Time to be confirmed",
+      when: date || t("Time to be confirmed"),
     },
     {
       key: "dropoff",
-      label: "Drop off",
+      label: t("Drop off"),
       place: dropoff,
-      when: dropoffWhen || "On arrival",
+      when: dropoffWhen || t("On arrival"),
     },
   ];
 
   return (
     <>
       {/* Pick-up and drop-off: title outside the card, like every other section. */}
-      <h2 className="t-h3">Pick-up and drop-off</h2>
+      <h2 className="t-h3">{t("Pick-up and drop-off")}</h2>
       <div className={`${card} mt-4 p-4 sm:p-5`}>
         <ol>
           {stops.map((stop, i) => (

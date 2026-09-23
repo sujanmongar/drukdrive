@@ -3,6 +3,7 @@ import Button from "./Button";
 import { useCurrentUser } from "../lib/currentUser";
 import { routes } from "../lib/routes";
 import { useAuth } from "../lib/auth";
+import { t } from "../lib/i18n";
 
 export default function ProfileHero({
   editHref = routes.accountProfileEdit,
@@ -22,10 +23,14 @@ export default function ProfileHero({
           className="size-20 shrink-0 rounded-full bg-[color:var(--color-surface-soft)] object-cover md:size-24"
         />
         <div>
-          <h1 className="t-h1">Welcome, {currentUser.name.split(" ")[0]}</h1>
-          <p className="mt-1 t-caption">Joined in {currentUser.joinedYear}</p>
+          <h1 className="t-h1">
+            {t("Welcome, {name}", { name: currentUser.name.split(" ")[0] })}
+          </h1>
+          <p className="mt-1 t-caption">
+            {t("Joined in {year}", { year: currentUser.joinedYear })}
+          </p>
           <Button variant="link" to={editHref} className="mt-1">
-            Edit profile
+            {t("Edit profile")}
           </Button>
           <div className="mt-3 flex flex-col gap-1.5 t-body-sm sm:flex-row sm:items-center sm:gap-4">
             <span className="flex items-center gap-1.5">
@@ -41,7 +46,7 @@ export default function ProfileHero({
           <div className={`mt-2 sm:hidden ${canReview ? "" : "hidden"}`}>
             <Button variant="link" to={routes.accountReviews}>
               <Icon name="edit" size={16} />
-              Write review
+              {t("Write review")}
             </Button>
           </div>
         </div>
@@ -49,7 +54,7 @@ export default function ProfileHero({
       <div className={`hidden ${canReview ? "sm:block" : ""}`}>
         <Button variant="link" to={routes.accountReviews}>
           <Icon name="edit" size={16} />
-          Write review
+          {t("Write review")}
         </Button>
       </div>
     </div>

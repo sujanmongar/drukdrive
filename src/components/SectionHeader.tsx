@@ -1,5 +1,6 @@
 import type { RefObject } from "react";
 import Icon from "./Icon";
+import { t } from "../lib/i18n";
 
 // Section title with optional prev/next controls sitting top-right. The
 // controls page whatever carousel track they are handed.
@@ -39,7 +40,7 @@ export default function SectionHeader({
               key={direction}
               type="button"
               onClick={() => page(direction)}
-              aria-label={direction === -1 ? "Previous" : "Next"}
+              aria-label={direction === -1 ? t("Previous") : t("Next")}
               className="icon-btn icon-btn-arrow size-10"
             >
               <Icon

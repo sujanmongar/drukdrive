@@ -9,9 +9,10 @@ import { bookings, vehicles } from "../../../data/mockData";
 import { routes } from "../../../lib/routes";
 import { accountTabs } from "./_tabs";
 import { usePageTitle } from "../../../hooks/usePageTitle";
+import { t, tx } from "../../../lib/i18n";
 
 export default function AccountBookings() {
-  usePageTitle("My Bookings");
+  usePageTitle(t("My Bookings"));
 
   const groups = useMemo(() => {
     const items: BookingListItem[] = bookings.map((b) => ({
@@ -21,9 +22,9 @@ export default function AccountBookings() {
     }));
     const upcoming = items.filter((b) => b.status === "Upcoming");
     return {
-      Current: upcoming.slice(0, 1),
-      Upcoming: upcoming.slice(1),
-      Past: items.filter((b) => b.status !== "Upcoming"),
+      [tx("Current")]: upcoming.slice(0, 1),
+      [tx("Upcoming")]: upcoming.slice(1),
+      [tx("Past")]: items.filter((b) => b.status !== "Upcoming"),
     };
   }, []);
 

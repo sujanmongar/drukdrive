@@ -1,3 +1,5 @@
+import { t, tn } from "./i18n";
+
 // Rough estimated driving duration between Bhutan towns, for the "Duration"
 // hint on the Daily Rides search widget — no live routing API, so this is a
 // static lookup keyed by city pair (approximate real-world drive times).
@@ -27,9 +29,9 @@ export function estimateDurationHours(pickup: string, dropoff: string): number {
 }
 
 export function formatDurationHours(hours: number): string {
-  if (hours < 1) return `${Math.round(hours * 60)} mins`;
-  if (Number.isInteger(hours)) return `${hours} hr${hours === 1 ? "" : "s"}`;
-  return `${hours.toFixed(1)} hrs`;
+  if (hours < 1) return t("{n} mins", { n: Math.round(hours * 60) });
+  if (Number.isInteger(hours)) return tn(hours, "{n} hr", "{n} hrs");
+  return t("{n} hrs", { n: hours.toFixed(1) });
 }
 
 // Whole calendar days between two dates (ignoring time-of-day) — for
@@ -50,14 +52,26 @@ export function combineDateTime(date: Date, time: string): Date {
 
 // Precise day+hour breakdown between two date-times — for Self Drive's
 // "Duration: N days M hrs".
-export function daysHoursBetween(start: Date, end: Date): { days: number; hours: number } {
-  const totalHours = Math.max(0, Math.round((end.getTime() - start.getTime()) / 3_600_000));
+export function daysHoursBetween(
+  start: Date,
+  end: Date,
+): { days: number; hours: number } {
+  const totalHours = Math.max(
+    0,
+    Math.round((end.getTime() - start.getTime()) / 3_600_000),
+  );
   return { days: Math.floor(totalHours / 24), hours: totalHours % 24 };
 }
 
-export function formatDayHour({ days, hours }: { days: number; hours: number }): string {
+export function formatDayHour({
+  days,
+  hours,
+}: {
+  days: number;
+  hours: number;
+}): string {
   const parts: string[] = [];
-  if (days > 0) parts.push(`${days} day${days === 1 ? "" : "s"}`);
-  if (hours > 0 || days === 0) parts.push(`${hours} hr${hours === 1 ? "" : "s"}`);
+  if (days > 0) parts.push(tn(days, "{n} day", "{n} days"));
+  if (hours > 0 || days === 0) parts.push(tn(hours, "{n} hr", "{n} hrs"));
   return parts.join(" ");
 }

@@ -13,12 +13,14 @@ import {
   type Review,
 } from "../data/mockData";
 import { card } from "../lib/ui";
+import { t, tr } from "../lib/i18n";
 
+import { formatStored } from "../lib/dates";
 function Stars({ rating }: { rating: number }) {
   return (
     <div
       className="flex items-center gap-0.5"
-      aria-label={`${rating} out of 5 stars`}
+      aria-label={t("{rating} out of 5 stars", { rating })}
     >
       {[1, 2, 3, 4, 5].map((n) => (
         <Icon
@@ -37,7 +39,7 @@ function Stars({ rating }: { rating: number }) {
 }
 
 const vehicleOf = (id: string) => vehicles.find((v) => v.id === id);
-const vehicleName = (id: string) => vehicleOf(id)?.name ?? "Vehicle";
+const vehicleName = (id: string) => vehicleOf(id)?.name ?? t("Vehicle");
 const categoryOf = (id: string) => vehicleOf(id)?.category ?? "Prime SUV";
 
 function ReviewCard({ r, showAuthor }: { r: Review; showAuthor: boolean }) {
@@ -64,12 +66,14 @@ function ReviewCard({ r, showAuthor }: { r: Review; showAuthor: boolean }) {
           <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
             {showAuthor ? r.author : vehicleName(r.vehicleId)}
           </p>
-          <span className="t-caption">{r.date}</span>
+          <span className="t-caption">{formatStored(r.date)}</span>
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-2">
           <Stars rating={r.rating} />
           <span className="t-caption">
-            {showAuthor ? vehicleName(r.vehicleId) : `Booking ${r.bookingId}`}
+            {showAuthor
+              ? vehicleName(r.vehicleId)
+              : t("Booking {id}", { id: r.bookingId })}
           </span>
         </div>
         <p className="mt-2 t-body-sm">{r.comment}</p>
@@ -100,7 +104,7 @@ export default function ReviewsList({ role }: { role: "customer" | "driver" }) {
             bookingId: b.id,
             vehicleId: b.vehicleId,
             vehicleName: vehicleName(b.vehicleId),
-            trip: `${b.date} · ${b.pickup} → ${b.dropoff}`,
+            trip: `${formatStored(b.date)} · ${b.pickup} → ${b.dropoff}`,
           }))
       : [];
 
@@ -120,10 +124,13 @@ export default function ReviewsList({ role }: { role: "customer" | "driver" }) {
   const avg = mine.length
     ? (mine.reduce((s, r) => s + r.rating, 0) / mine.length).toFixed(1)
     : null;
+  const avgEl = (
+    <span className="font-semibold text-[color:var(--color-ink)]">{avg}</span>
+  );
 
   return (
     <>
-      <h2 className="t-h2">Reviews</h2>
+      <h2 className="t-h2">{t("Reviews")}</h2>
       <p className="mt-1 flex items-center gap-1.5 t-body-sm text-[color:var(--color-muted)]">
         {role === "driver" ? (
           avg ? (
@@ -133,22 +140,24 @@ export default function ReviewsList({ role }: { role: "customer" | "driver" }) {
                 size={14}
                 className="fill-current text-[color:var(--color-star)]"
               />
-              <span className="font-semibold text-[color:var(--color-ink)]">
-                {avg}
-              </span>
-              from {mine.length} rider review{mine.length > 1 ? "s" : ""}
+              {mine.length === 1
+                ? tr("{avg} from {n} rider review", { avg: avgEl, n: 1 })
+                : tr("{avg} from {n} rider reviews", {
+                    avg: avgEl,
+                    n: mine.length,
+                  })}
             </>
           ) : (
-            "What riders say about your vehicles."
+            t("What riders say about your vehicles.")
           )
         ) : (
-          "Rate the vehicles you've travelled in."
+          t("Rate the vehicles you've travelled in.")
         )}
       </p>
 
       {pending.length > 0 && (
         <section className="mt-6">
-          <h3 className="t-h4">Waiting for your review</h3>
+          <h3 className="t-h4">{t("Waiting for your review")}</h3>
           <div className="mt-3 flex flex-col gap-3">
             {pending.map((p) => (
               <div
@@ -170,7 +179,7 @@ export default function ReviewsList({ role }: { role: "customer" | "driver" }) {
                   <p className="t-caption">{p.trip}</p>
                 </div>
                 <Button size="md" onClick={() => setWriting(p)}>
-                  Write review
+                  {t("Write review")}
                 </Button>
               </div>
             ))}
@@ -180,7 +189,7 @@ export default function ReviewsList({ role }: { role: "customer" | "driver" }) {
 
       {mine.length > 0 ? (
         <section className="mt-8">
-          {role === "customer" && <h3 className="t-h4">Your reviews</h3>}
+          {role === "customer" && <h3 className="t-h4">{t("Your reviews")}</h3>}
           <div
             className={`${role === "customer" ? "mt-3" : "mt-0"} flex flex-col gap-4`}
           >
@@ -193,11 +202,15 @@ export default function ReviewsList({ role }: { role: "customer" | "driver" }) {
         pending.length === 0 && (
           <EmptyState
             icon="star"
-            title="No reviews yet"
+            title={t("No reviews yet")}
             description={
               role === "driver"
-                ? "Riders can review your vehicle once their trip is complete."
-                : "You can review a vehicle once your trip with it is complete."
+                ? t(
+                    "Riders can review your vehicle once their trip is complete.",
+                  )
+                : t(
+                    "You can review a vehicle once your trip with it is complete.",
+                  )
             }
           />
         )

@@ -37,14 +37,15 @@ import {
   parseSearch,
 } from "../../lib/booking";
 import { displayPrice } from "../../lib/pricing";
+import { t, tn, tx } from "../../lib/i18n";
 
 type SortOption = "recommended" | "price-low" | "price-high" | "rating";
 
 const sortOptions: { value: SortOption; label: string }[] = [
-  { value: "recommended", label: "Recommended" },
-  { value: "price-low", label: "Price: Low to High" },
-  { value: "price-high", label: "Price: High to Low" },
-  { value: "rating", label: "Rating" },
+  { value: "recommended", label: tx("Recommended") },
+  { value: "price-low", label: tx("Price: Low to High") },
+  { value: "price-high", label: tx("Price: High to Low") },
+  { value: "rating", label: tx("Rating") },
 ];
 
 type CapacityRange = { label: string; min: number; max: number };
@@ -102,7 +103,7 @@ function ExpandableCheckboxList({
       {visible.map((option) => (
         <CheckboxRow
           key={option}
-          label={option}
+          label={t(option)}
           checked={selected.includes(option)}
           onChange={() => onToggle(option)}
         />
@@ -113,7 +114,7 @@ function ExpandableCheckboxList({
           onClick={() => setExpanded((v) => !v)}
           className="lg:min-h-9"
         >
-          {expanded ? "View less" : "View more"}
+          {expanded ? t("View less") : t("View more")}
         </Button>
       )}
     </div>
@@ -121,7 +122,7 @@ function ExpandableCheckboxList({
 }
 
 export default function SearchResults() {
-  usePageTitle("Search results");
+  usePageTitle(t("Search results"));
   const { format } = useCurrency();
   const [initialParams] = useSearchParams();
 
@@ -132,8 +133,8 @@ export default function SearchResults() {
 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 700);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setLoading(false), 700);
+    return () => clearTimeout(timer);
   }, []);
 
   const [sortOpen, setSortOpen] = useState(false);
@@ -284,14 +285,29 @@ export default function SearchResults() {
   }
 
   const days = bookingDays(search);
+  const headingVars = {
+    count: results.length,
+    from: cityOf(search.pickup),
+    to: cityOf(search.dropoff),
+  };
   const heading =
     search.type === "rental"
-      ? `Found ${results.length} cars with driver for ${days} day${days === 1 ? "" : "s"} from ${cityOf(search.pickup)}`
+      ? tn(
+          days,
+          "Found {count} cars with driver for {n} day from {from}",
+          "Found {count} cars with driver for {n} days from {from}",
+          headingVars,
+        )
       : search.type === "self-drive"
-        ? `Found ${results.length} cars to drive yourself for ${days} day${days === 1 ? "" : "s"} from ${cityOf(search.pickup)}`
+        ? tn(
+            days,
+            "Found {count} cars to drive yourself for {n} day from {from}",
+            "Found {count} cars to drive yourself for {n} days from {from}",
+            headingVars,
+          )
         : isRoundTrip(search)
-          ? `Found ${results.length} cabs for a round trip from ${cityOf(search.pickup)}`
-          : `Found ${results.length} cabs from ${cityOf(search.pickup)} to ${cityOf(search.dropoff)}`;
+          ? t("Found {count} cabs for a round trip from {from}", headingVars)
+          : t("Found {count} cabs from {from} to {to}", headingVars);
 
   function clearAllFilters() {
     setSelectedTypes([]);
@@ -306,7 +322,7 @@ export default function SearchResults() {
   const filterPanel = (
     <div className="flex flex-col">
       <FilterSection
-        title="Vehicle type"
+        title={t("Vehicle type")}
         hasSelection={selectedTypes.length > 0}
         onClear={() => setSelectedTypes([])}
       >
@@ -318,7 +334,7 @@ export default function SearchResults() {
       </FilterSection>
 
       <FilterSection
-        title="Brand"
+        title={t("Brand")}
         hasSelection={selectedBrands.length > 0}
         onClear={() => setSelectedBrands([])}
       >
@@ -332,7 +348,7 @@ export default function SearchResults() {
       </FilterSection>
 
       <FilterSection
-        title="Capacity"
+        title={t("Capacity")}
         hasSelection={capacity !== null}
         onClear={() => setCapacity(null)}
       >
@@ -346,7 +362,7 @@ export default function SearchResults() {
               }
               className={chip(capacity === range.label)}
             >
-              {range.label}
+              {t("{min} to {max}", { min: range.min, max: range.max })}
             </button>
           ))}
         </div>
@@ -356,7 +372,7 @@ export default function SearchResults() {
       {search.type === "self-drive" && (
         <>
           <FilterSection
-            title="Fuel Type"
+            title={t("Fuel Type")}
             hasSelection={selectedFuels.length > 0}
             onClear={() => setSelectedFuels([])}
           >
@@ -369,7 +385,7 @@ export default function SearchResults() {
             />
           </FilterSection>
           <FilterSection
-            title="Transmission"
+            title={t("Transmission")}
             hasSelection={selectedTransmissions.length > 0}
             onClear={() => setSelectedTransmissions([])}
           >
@@ -385,7 +401,7 @@ export default function SearchResults() {
       )}
 
       <FilterSection
-        title={dayBased ? "Price / day" : "Price / trip"}
+        title={dayBased ? t("Price / day") : t("Price / trip")}
         hasSelection={priceRange !== null}
         onClear={() => setPriceRange(null)}
       >
@@ -399,7 +415,7 @@ export default function SearchResults() {
       </FilterSection>
 
       <FilterSection
-        title="Ratings"
+        title={t("Ratings")}
         hasSelection={minRating !== null}
         onClear={() => setMinRating(null)}
         divider={false}
@@ -420,7 +436,7 @@ export default function SearchResults() {
             onClick={() => setMinRating(null)}
             className={chip(minRating === null)}
           >
-            All
+            {t("All")}
           </button>
         </div>
       </FilterSection>
@@ -460,14 +476,14 @@ export default function SearchResults() {
           >
             <div className={`${card} p-5`}>
               <div className="mb-3 flex min-h-9 items-center justify-between">
-                <h2 className="t-h3">Filters</h2>
+                <h2 className="t-h3">{t("Filters")}</h2>
                 {activeFilterCount > 0 && (
                   <Button
                     variant="link"
                     onClick={clearAllFilters}
                     className="lg:min-h-9"
                   >
-                    Clear all
+                    {t("Clear all")}
                   </Button>
                 )}
               </div>
@@ -482,10 +498,10 @@ export default function SearchResults() {
                 <div
                   className="size-10 animate-spin rounded-full border-4 border-[color:var(--color-border)] border-t-[color:var(--color-ink)]"
                   role="status"
-                  aria-label="Loading results"
+                  aria-label={t("Loading results")}
                 />
                 <p className="t-body-sm text-[color:var(--color-muted)]">
-                  Finding the best rides for you&hellip;
+                  {t("Finding the best rides for you…")}
                 </p>
               </div>
             ) : (
@@ -494,7 +510,7 @@ export default function SearchResults() {
                     row. Both sit directly in the (tall) results column — a
                     short wrapper would cap how far the sticky row can travel. */}
                 <h1 className="t-h2 mb-3 lg:hidden">
-                  Found {results.length} cars
+                  {t("Found {count} cars", { count: results.length })}
                 </h1>
                 <div
                   className="sticky z-20 -mx-4 mb-4 flex items-center justify-between gap-3 border-b border-[color:var(--color-border)] bg-white px-4 py-2 lg:hidden"
@@ -505,9 +521,11 @@ export default function SearchResults() {
                     onClick={() => setSortOpen(true)}
                     className={`-mx-2 flex h-11 flex-col justify-center rounded-xl px-2 text-left ${rowHover}`}
                   >
-                    <span className={metaLabel}>Sorted by</span>
+                    <span className={metaLabel}>{t("Sorted by")}</span>
                     <span className={`flex items-center gap-1 ${metaValue}`}>
-                      {sortOptions.find((o) => o.value === sort)?.label}
+                      {t(
+                        sortOptions.find((o) => o.value === sort)?.label ?? "",
+                      )}
                       <Icon name="chevron-down" size={14} />
                     </span>
                   </button>
@@ -515,7 +533,7 @@ export default function SearchResults() {
                   <div className="flex items-center gap-2">
                     <Button variant="ghost" onClick={() => setFilterOpen(true)}>
                       <Icon name="filter" size={16} />
-                      Filter
+                      {t("Filter")}
                       {activeFilterCount > 0 && (
                         <span className="flex size-4 items-center justify-center rounded-full bg-[color:var(--color-ink)] t-label text-white">
                           {activeFilterCount}
@@ -538,16 +556,19 @@ export default function SearchResults() {
                         onClick={() => setSortOpen((v) => !v)}
                         className={`-mr-2 flex min-h-9 items-center gap-1.5 rounded-xl px-2 t-body-sm ${rowHover}`}
                       >
-                        Sorted by
+                        {t("Sorted by")}
                         <span className="font-semibold text-[color:var(--color-ink)]">
-                          {sortOptions.find((o) => o.value === sort)?.label}
+                          {t(
+                            sortOptions.find((o) => o.value === sort)?.label ??
+                              "",
+                          )}
                         </span>
                         <Icon name="chevron-down" size={14} />
                       </button>
                       {sortOpen && (
                         <>
                           <button
-                            aria-label="Close"
+                            aria-label={t("Close")}
                             className="fixed inset-0 z-10 cursor-default"
                             onClick={() => setSortOpen(false)}
                           />
@@ -568,7 +589,7 @@ export default function SearchResults() {
                                     : ""
                                 }`}
                               >
-                                {opt.label}
+                                {t(opt.label)}
                                 {sort === opt.value && (
                                   <Icon name="check" size={14} />
                                 )}
@@ -584,11 +605,13 @@ export default function SearchResults() {
                 {results.length === 0 ? (
                   <EmptyState
                     icon="car"
-                    title="No vehicles match these filters"
-                    description="Try removing a filter or widening the price range."
+                    title={t("No vehicles match these filters")}
+                    description={t(
+                      "Try removing a filter or widening the price range.",
+                    )}
                     action={
                       <Button variant="link" onClick={clearAllFilters}>
-                        Clear filters
+                        {t("Clear filters")}
                       </Button>
                     }
                     className=""
@@ -621,7 +644,7 @@ export default function SearchResults() {
                       <div
                         className="size-7 animate-spin rounded-full border-[3px] border-[color:var(--color-border)] border-t-[color:var(--color-ink)]"
                         role="status"
-                        aria-label="Loading more results"
+                        aria-label={t("Loading more results")}
                       />
                     )}
                   </div>
@@ -636,7 +659,7 @@ export default function SearchResults() {
       {filterOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center lg:hidden">
           <button
-            aria-label="Close filters"
+            aria-label={t("Close filters")}
             className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
             onClick={() => setFilterOpen(false)}
           />
@@ -644,7 +667,7 @@ export default function SearchResults() {
             className={`${sheet} relative flex h-[88svh] w-full flex-col overflow-hidden`}
           >
             <div className="flex shrink-0 items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
-              <h2 className="t-h3">Filters</h2>
+              <h2 className="t-h3">{t("Filters")}</h2>
               <div className="flex items-center gap-1">
                 {activeFilterCount > 0 ? (
                   <Button
@@ -652,13 +675,13 @@ export default function SearchResults() {
                     onClick={clearAllFilters}
                     className="mx-0"
                   >
-                    Clear all
+                    {t("Clear all")}
                   </Button>
                 ) : null}
                 <button
                   type="button"
                   onClick={() => setFilterOpen(false)}
-                  aria-label="Close filters"
+                  aria-label={t("Close filters")}
                   className="icon-btn icon-btn-filled -mr-1 size-10"
                 >
                   <Icon
@@ -679,7 +702,7 @@ export default function SearchResults() {
                 onClick={() => setFilterOpen(false)}
                 className="h-12"
               >
-                See {results.length} cars
+                {t("See {count} cars", { count: results.length })}
               </Button>
             </div>
           </div>
@@ -690,7 +713,7 @@ export default function SearchResults() {
       {sortOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center lg:hidden">
           <button
-            aria-label="Close"
+            aria-label={t("Close")}
             className="animate-scrim-in absolute inset-0 cursor-default bg-black/40"
             onClick={() => setSortOpen(false)}
           />
@@ -698,11 +721,11 @@ export default function SearchResults() {
             className={`${sheet} relative w-full pb-[env(safe-area-inset-bottom)]`}
           >
             <div className="flex items-center justify-between border-b border-[color:var(--color-border)] px-4 py-4">
-              <h2 className="t-h3">Sort by</h2>
+              <h2 className="t-h3">{t("Sort by")}</h2>
               <button
                 type="button"
                 onClick={() => setSortOpen(false)}
-                aria-label="Close sort options"
+                aria-label={t("Close sort options")}
                 className="icon-btn icon-btn-filled -mr-1 size-10"
               >
                 <Icon
@@ -737,7 +760,7 @@ export default function SearchResults() {
                   <span
                     className={`t-body-sm ${sort === opt.value ? "font-semibold text-[color:var(--color-ink)]" : ""}`}
                   >
-                    {opt.label}
+                    {t(opt.label)}
                   </span>
                 </button>
               ))}

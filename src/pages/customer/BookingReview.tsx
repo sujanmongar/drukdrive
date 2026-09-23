@@ -31,13 +31,14 @@ import {
 } from "../../lib/booking";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { t, tr, tx } from "../../lib/i18n";
 import { card } from "../../lib/ui";
 
 // Step 1 of checkout: everything about the trip, before any personal
 // details are asked for. Add-ons chosen here travel to the next steps as
 // an `addons` query param so the price summary can include them.
 export default function BookingReview() {
-  usePageTitle("Review your booking");
+  usePageTitle(t("Review your booking"));
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
@@ -95,19 +96,19 @@ export default function BookingReview() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            aria-label="Back"
+            aria-label={t("Back")}
             className="icon-btn -ml-2 size-10"
           >
             <Icon name="chevron-left" size={22} />
           </button>
-          <h1 className="t-h2">Review your booking</h1>
+          <h1 className="t-h2">{t("Review your booking")}</h1>
         </div>
 
         <div className="mb-8">
           <BookingStepper
             current={2}
             hrefs={[searchHref]}
-            detailsLabel={selfDrive ? "Driver details" : "Your details"}
+            detailsLabel={selfDrive ? tx("Driver details") : tx("Your details")}
           />
         </div>
 
@@ -133,8 +134,9 @@ export default function BookingReview() {
               />
               {booking.type === "rental" && (
                 <p className="mt-2 px-1 t-caption">
-                  Bhutan&rsquo;s Sustainable Development Fee is not included;
-                  visitors pay it with their visa.
+                  {t(
+                    "Bhutan’s Sustainable Development Fee is not included; visitors pay it with their visa.",
+                  )}
                 </p>
               )}
             </>
@@ -148,24 +150,27 @@ export default function BookingReview() {
                     <Icon name="info" size={20} />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="t-h4">Licence check</p>
+                    <p className="t-h4">{t("Licence check")}</p>
                     <p className="mt-1 t-body-sm">
-                      Bhutan accepts Bhutanese and Indian driving licences only,
-                      not international driving permits.
+                      {t(
+                        "Bhutan accepts Bhutanese and Indian driving licences only, not international driving permits.",
+                      )}
                     </p>
                     <div className="mt-2">
                       <Checkbox
                         align="start"
                         checked={licenceConfirmed}
                         onChange={setLicenceConfirmed}
-                        label="I hold a valid Bhutanese or Indian driving licence and am 21 or over."
+                        label={t(
+                          "I hold a valid Bhutanese or Indian driving licence and am 21 or over.",
+                        )}
                       />
                     </div>
                   </div>
                 </div>
               )}
 
-              <h2 className="mt-10 t-h3">What&rsquo;s included</h2>
+              <h2 className="mt-10 t-h3">{t("What’s included")}</h2>
               <div className={`${card} mt-4 p-5`}>
                 <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                   {inclusions.map((item) => (
@@ -176,13 +181,13 @@ export default function BookingReview() {
                         strokeWidth={2.5}
                         className="mt-0.5 shrink-0 text-[color:var(--color-success)]"
                       />
-                      {item}
+                      {t(item)}
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <h2 className="mt-10 t-h3">Add-ons</h2>
+              <h2 className="mt-10 t-h3">{t("Add-ons")}</h2>
               <div className="mt-4 flex flex-col gap-4">
                 {addOns.map((addOn) => (
                   <AddOnCard
@@ -202,7 +207,7 @@ export default function BookingReview() {
                   aria-expanded={notesOpen}
                   className="flex min-h-14 w-full items-center justify-between gap-3 px-5 text-left"
                 >
-                  <span className="t-h3">Read before you book</span>
+                  <span className="t-h3">{t("Read before you book")}</span>
                   <Icon
                     name="chevron-down"
                     size={20}
@@ -214,11 +219,11 @@ export default function BookingReview() {
                     {notes.map((note, i) => (
                       <div key={note.title} className={i > 0 ? "mt-4" : ""}>
                         <h4 className="t-body font-semibold text-[color:var(--color-ink)]">
-                          {note.title}
+                          {t(note.title)}
                         </h4>
                         <ul className="mt-2 list-disc space-y-1.5 pl-4 t-body">
                           {note.items.map((item) => (
-                            <li key={item}>{item}</li>
+                            <li key={item}>{t(item)}</li>
                           ))}
                         </ul>
                       </div>
@@ -234,7 +239,7 @@ export default function BookingReview() {
                   onClick={handleContinue}
                   disabled={licenceGate}
                 >
-                  Continue to details
+                  {t("Continue to details")}
                 </Button>
               </div>
             </>
@@ -247,14 +252,13 @@ export default function BookingReview() {
         <div className="flex flex-col items-start">
           <span className="t-h3 t-amount">{format(netPayable)}</span>
           <span className="t-caption">
-            {fare.deposit > 0 ? (
-              <>
-                + <span className="t-amount">{format(fare.deposit)}</span>{" "}
-                deposit
-              </>
-            ) : (
-              "incl. taxes & fees"
-            )}
+            {fare.deposit > 0
+              ? tr("+ {amount} deposit", {
+                  amount: (
+                    <span className="t-amount">{format(fare.deposit)}</span>
+                  ),
+                })
+              : t("incl. taxes & fees")}
           </span>
         </div>
         <Button
@@ -263,7 +267,7 @@ export default function BookingReview() {
           onClick={handleContinue}
           disabled={licenceGate}
         >
-          Continue
+          {t("Continue")}
         </Button>
       </div>
     </PageShell>

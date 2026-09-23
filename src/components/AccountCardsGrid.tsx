@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Icon from "./Icon";
 import type { IconName } from "./Icon";
 import { cardLink } from "../lib/ui";
+import { t } from "../lib/i18n";
 
 export type AccountCard = {
   icon: IconName;
@@ -27,8 +28,8 @@ export default function AccountCardsGrid({ cards }: { cards: AccountCard[] }) {
             className="text-[color:var(--color-ink)]"
           />
           <div>
-            <p className="t-h4">{c.title}</p>
-            <p className="mt-1.5 t-body-sm">{c.description}</p>
+            <p className="t-h4">{t(c.title)}</p>
+            <p className="mt-1.5 t-body-sm">{t(c.description)}</p>
           </div>
         </Link>
       ))}

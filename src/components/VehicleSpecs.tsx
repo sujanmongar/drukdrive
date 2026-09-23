@@ -1,5 +1,6 @@
 import Icon from "./Icon";
 import type { Vehicle } from "../data/mockData";
+import { t, tn } from "../lib/i18n";
 
 // Compact at-a-glance spec strip: a bold icon carries the meaning, the text
 // beside it is just the value (5, A, 4, …) rather than a spelled-out label.
@@ -18,17 +19,21 @@ export default function VehicleSpecs({
     {
       name: "seat",
       value: String(vehicle.seats),
-      title: `${vehicle.seats} seats`,
+      title: tn(vehicle.seats, "{n} seat", "{n} seats"),
     },
     {
       name: "gearbox",
       value: vehicle.transmission === "Automatic" ? "A" : "M",
-      title: vehicle.transmission,
+      title: t(vehicle.transmission),
     },
-    { name: "fuel", value: vehicle.fuel.charAt(0), title: vehicle.fuel },
+    { name: "fuel", value: vehicle.fuel.charAt(0), title: t(vehicle.fuel) },
   ];
   if (vehicle.ac)
-    items.push({ name: "snowflake", value: "A/C", title: "Air conditioning" });
+    items.push({
+      name: "snowflake",
+      value: "A/C",
+      title: t("Air conditioning"),
+    });
 
   return (
     // Single line, always: the strip is a scannable at-a-glance row, so it

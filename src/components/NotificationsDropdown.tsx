@@ -4,6 +4,7 @@ import Icon from "./Icon";
 import EmptyState from "./EmptyState";
 import { menu, menuItem } from "../lib/ui";
 import { useNotifications } from "../lib/notifications";
+import { t } from "../lib/i18n";
 
 // Header bell: the three latest notifications, each opening the page it is
 // about, and "View all" for the full list.
@@ -27,8 +28,8 @@ export default function NotificationsDropdown({
         onClick={() => setOpen((v) => !v)}
         aria-label={
           unreadCount > 0
-            ? `Notifications, ${unreadCount} unread`
-            : "Notifications"
+            ? t("Notifications, {n} unread", { n: unreadCount })
+            : t("Notifications")
         }
         aria-expanded={open}
         className={`icon-btn relative ${compact ? "size-10" : "size-[42px]"}`}
@@ -46,7 +47,7 @@ export default function NotificationsDropdown({
       {open && (
         <>
           <button
-            aria-label="Close"
+            aria-label={t("Close")}
             className="fixed inset-0 z-40 cursor-default"
             onClick={() => setOpen(false)}
           />
@@ -55,14 +56,14 @@ export default function NotificationsDropdown({
           >
             <div className="border-b border-[color:var(--color-border)] px-4 py-3">
               <p className="t-body-sm font-semibold text-[color:var(--color-ink)]">
-                Notifications
+                {t("Notifications")}
               </p>
             </div>
             {latest.length === 0 ? (
               <EmptyState
                 icon="bell"
-                title="No notifications yet"
-                description="Booking updates and messages show up here."
+                title={t("No notifications yet")}
+                description={t("Booking updates and messages show up here.")}
                 className="m-2"
               />
             ) : (
@@ -81,20 +82,20 @@ export default function NotificationsDropdown({
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center gap-2">
                       <span className="t-body-sm font-semibold text-[color:var(--color-ink)]">
-                        {n.title}
+                        {t(n.title)}
                       </span>
                       {!n.read && (
                         <span
-                          aria-label="Unread"
+                          aria-label={t("Unread")}
                           className="size-2 shrink-0 rounded-full bg-[color:var(--color-danger)]"
                         />
                       )}
                     </span>
                     <span className="mt-0.5 line-clamp-2 block t-caption">
-                      {n.body}
+                      {t(n.body)}
                     </span>
                   </span>
-                  <span className="shrink-0 t-caption">{n.time}</span>
+                  <span className="shrink-0 t-caption">{t(n.time)}</span>
                 </Link>
               ))
             )}
@@ -103,7 +104,7 @@ export default function NotificationsDropdown({
               onClick={() => setOpen(false)}
               className={`${menuItem} justify-center font-semibold`}
             >
-              View all
+              {t("View all")}
             </Link>
           </div>
         </>

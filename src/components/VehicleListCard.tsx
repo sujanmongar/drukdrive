@@ -10,6 +10,7 @@ import { displayPrice } from "../lib/pricing";
 import { useWishlist } from "../lib/wishlist";
 import { cardLink } from "../lib/ui";
 import Button from "./Button";
+import { t, tn } from "../lib/i18n";
 
 // The one search-result card. Image left, details beside it (heart above
 // the name), then the price and Book Now: below a divider on phones, in
@@ -39,7 +40,7 @@ export default function VehicleListCard({
       {dayBased && vehicle.strikePrice && (
         <div className="flex items-baseline gap-1.5 whitespace-nowrap">
           <span className="t-caption font-semibold text-[color:var(--color-danger)]">
-            {discountPct}% off
+            {t("{pct}% off", { pct: discountPct ?? 0 })}
           </span>
           <span className="t-caption t-amount font-normal text-[color:var(--color-muted)] line-through">
             {format(vehicle.strikePrice)}
@@ -48,7 +49,7 @@ export default function VehicleListCard({
       )}
       <div className="flex items-baseline gap-x-1.5 whitespace-nowrap">
         <span className="t-h3 t-amount">{format(price.amount)}</span>
-        <span className="t-caption">{price.unit}</span>
+        <span className="t-caption">{t(price.unit)}</span>
       </div>
       <p className="t-caption whitespace-nowrap">{price.note}</p>
     </div>
@@ -59,7 +60,7 @@ export default function VehicleListCard({
     // click reaching the card, which would navigate twice.
     <span className="contents" onClick={(e) => e.stopPropagation()}>
       <Button to={detailsHref} className="h-12 shrink-0 px-7">
-        Book Now
+        {t("Book Now")}
       </Button>
     </span>
   );
@@ -86,7 +87,9 @@ export default function VehicleListCard({
           {canSave && (
             <button
               type="button"
-              aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
+              aria-label={
+                saved ? t("Remove from wishlist") : t("Save to wishlist")
+              }
               aria-pressed={saved}
               onClick={(e) => {
                 e.preventDefault();
@@ -106,7 +109,9 @@ export default function VehicleListCard({
         <div className="min-w-0 flex-1">
           <p className="t-h4 truncate">{vehicle.name}</p>
           <p className="t-caption">
-            or similar {vehicleClassOf[vehicle.category]}
+            {t("or similar {class}", {
+              class: t(vehicleClassOf[vehicle.category]),
+            })}
           </p>
 
           <div className="t-caption mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[color:var(--color-ink)]">
@@ -127,7 +132,7 @@ export default function VehicleListCard({
               {vehicle.rating.toFixed(1)}/5
             </span>
             <span className="border-l border-[color:var(--color-border)] pl-2.5 t-caption text-[color:var(--color-ink)]">
-              {vehicle.reviewCount} ratings
+              {tn(vehicle.reviewCount, "{n} rating", "{n} ratings")}
             </span>
           </div>
         </div>

@@ -12,14 +12,21 @@ import {
   isAddOnId,
   promoDiscount,
 } from "../../lib/pricing";
-import { formatDropoff, formatPickup, parseBooking } from "../../lib/booking";
+import {
+  formatDropoff,
+  formatPickup,
+  parseBooking,
+  paymentMethodLabel,
+} from "../../lib/booking";
 import { bookingTypeLabels } from "../../lib/routes";
 import { useCurrency } from "../../lib/currency";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { card, inset, metaLabel, metaValue, reference } from "../../lib/ui";
+import { t, tn, tr, tx } from "../../lib/i18n";
 
+import { formatStored } from "../../lib/dates";
 export default function Invoice() {
-  usePageTitle("Invoice");
+  usePageTitle(t("Invoice"));
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const { format } = useCurrency();
@@ -41,7 +48,7 @@ export default function Invoice() {
   const travelerName = searchParams.get("travelerName") || currentUser.name;
   const travelerEmail = searchParams.get("travelerEmail") || currentUser.email;
   const travelerPhone = searchParams.get("travelerPhone") || currentUser.phone;
-  const method = searchParams.get("method") || "Credit Card";
+  const method = searchParams.get("method") || tx("Credit Card");
 
   const vehicleName = liveVehicle
     ? liveVehicle.name
@@ -58,8 +65,8 @@ export default function Invoice() {
     : null;
   const bookingDate = liveVehicle
     ? `${formatPickup(booking)} → ${formatDropoff(booking)}`
-    : historicalBooking.date;
-  const unit = fare ? fare.unit : "1 day";
+    : formatStored(historicalBooking.date);
+  const unit = fare ? fare.unit : tn(1, "{n} day", "{n} days");
   const typeLabel = liveVehicle
     ? bookingTypeLabels[booking.type]
     : historicalBooking.bookingType;
@@ -98,11 +105,11 @@ export default function Invoice() {
             onClick={() => window.history.back()}
           >
             <Icon name="arrow-left" size={18} />
-            Back
+            {t("Back")}
           </Button>
           <Button variant="ghost" size="sm" onClick={() => window.print()}>
             <Icon name="download" size={16} />
-            Download PDF
+            {t("Download PDF")}
           </Button>
         </div>
 
@@ -113,29 +120,36 @@ export default function Invoice() {
             className={`${inset} flex flex-wrap items-center justify-between gap-4 px-5 py-4`}
           >
             <DrukDriveLogo className="h-6 w-auto text-[color:var(--color-ink)]" />
-            <p className="t-h3">Invoice</p>
+            <p className="t-h3">{t("Invoice")}</p>
           </div>
 
           <div className="mt-5 flex flex-wrap items-start justify-between gap-4 border-b border-[color:var(--color-border)] pb-6 t-body-sm">
             <div>
               <p className="text-[color:var(--color-muted)]">
-                Invoice No: <span className={reference}>DD-{bookingId}</span>
+                {tr("Invoice No: {id}", {
+                  id: <span className={reference}>DD-{bookingId}</span>,
+                })}
               </p>
               <p className="text-[color:var(--color-muted)]">
-                Booking ID: <span className={reference}>{bookingId}</span>
+                {tr("Booking ID: {id}", {
+                  id: <span className={reference}>{bookingId}</span>,
+                })}
               </p>
               <p className="text-[color:var(--color-muted)]">
-                Date:{" "}
-                <span className="font-semibold text-[color:var(--color-ink)]">
-                  {bookingDate}
-                </span>
+                {tr("Date: {date}", {
+                  date: (
+                    <span className="font-semibold text-[color:var(--color-ink)]">
+                      {bookingDate}
+                    </span>
+                  ),
+                })}
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-4 border-b border-[color:var(--color-border)] py-6 sm:grid-cols-2">
             <div>
-              <p className={metaLabel}>Invoiced To</p>
+              <p className={metaLabel}>{t("Invoiced To")}</p>
               <p className={`${metaValue} mt-1`}>{travelerName}</p>
               <p className="t-body-sm text-[color:var(--color-muted)]">
                 {currentUser.address}
@@ -148,7 +162,7 @@ export default function Invoice() {
               </p>
             </div>
             <div className="sm:text-right">
-              <p className={metaLabel}>Pay To</p>
+              <p className={metaLabel}>{t("Pay To")}</p>
               <p className={`${metaValue} mt-1`}>DrukDrive</p>
               <p className="t-body-sm text-[color:var(--color-muted)]">
                 Norzin Lam, Thimphu 11001
@@ -163,18 +177,20 @@ export default function Invoice() {
           </div>
 
           <div className="border-b border-[color:var(--color-border)] py-6">
-            <p className={`${metaLabel} mb-1`}>Payment Method</p>
-            <p className={metaValue}>{method}</p>
+            <p className={`${metaLabel} mb-1`}>{t("Payment Method")}</p>
+            <p className={metaValue}>{paymentMethodLabel(method)}</p>
           </div>
 
           <div className="py-6">
-            <h2 className="mb-3 t-h3">Booking Summary</h2>
+            <h2 className="mb-3 t-h3">{t("Booking Summary")}</h2>
             <table className="w-full t-body-sm">
               <thead>
                 <tr className="border-b border-[color:var(--color-border)] text-left t-caption font-semibold">
-                  <th className="pb-2 font-semibold">Description</th>
-                  <th className="pb-2 font-semibold">Booked for</th>
-                  <th className="pb-2 text-right font-semibold">Amount</th>
+                  <th className="pb-2 font-semibold">{t("Description")}</th>
+                  <th className="pb-2 font-semibold">{t("Booked for")}</th>
+                  <th className="pb-2 text-right font-semibold">
+                    {t("Amount")}
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -184,7 +200,7 @@ export default function Invoice() {
                     className="border-b border-[color:var(--color-border)]"
                   >
                     <td className="py-3 text-[color:var(--color-ink)]">
-                      {i === 0 ? `${vehicleName} · ${typeLabel}` : l.label}
+                      {i === 0 ? `${vehicleName} · ${t(typeLabel)}` : l.label}
                       {i === 0 && fare && (
                         <span className="block t-caption">{l.label}</span>
                       )}
@@ -203,23 +219,27 @@ export default function Invoice() {
             <div className="mt-4 flex justify-end">
               <div className="w-full space-y-2 sm:max-w-[280px]">
                 <div className="flex justify-between px-3 t-body-sm">
-                  <span>Sub Total</span>
+                  <span>{t("Sub Total")}</span>
                   <span className="t-amount">{format(baseFare)}</span>
                 </div>
                 <div className="flex justify-between px-3 t-body-sm">
-                  <span>Taxes &amp; Fees</span>
+                  <span>{t("Taxes & Fees")}</span>
                   <span className="t-amount">{format(taxes)}</span>
                 </div>
                 <div className="h-px bg-[color:var(--color-border)]" />
                 <div
                   className={`${inset} flex justify-between px-3 py-2.5 t-body-sm font-semibold text-[color:var(--color-ink)]`}
                 >
-                  <span>Total</span>
+                  <span>{t("Total")}</span>
                   <span className="t-amount">{format(total)}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between px-3 t-body-sm font-semibold text-[color:var(--color-success-deep)]">
-                    <span>Discount{promoCode ? ` (${promoCode})` : ""}</span>
+                    <span>
+                      {promoCode
+                        ? t("Discount ({code})", { code: promoCode })
+                        : t("Discount")}
+                    </span>
                     <span className="t-amount text-[color:var(--color-success-deep)]">
                       -{format(discount)}
                     </span>
@@ -228,26 +248,33 @@ export default function Invoice() {
                 <div
                   className={`${inset} flex justify-between px-3 py-2.5 t-body-sm font-semibold text-[color:var(--color-ink)]`}
                 >
-                  <span>Net Payable</span>
+                  <span>{t("Net Payable")}</span>
                   <span className="t-amount">{format(netPayable)}</span>
                 </div>
                 {balance > 0 && (
                   <>
                     <div className="flex justify-between px-3 t-body-sm">
-                      <span>Paid now</span>
+                      <span>{t("Paid now")}</span>
                       <span className="t-amount">{format(amountPaid)}</span>
                     </div>
                     <div className="flex justify-between px-3 t-body-sm font-semibold text-[color:var(--color-ink)]">
-                      <span>Balance due at pick-up</span>
+                      <span>{t("Balance due at pick-up")}</span>
                       <span className="t-amount">{format(balance)}</span>
                     </div>
                   </>
                 )}
                 {fare && fare.deposit > 0 && (
                   <p className="px-3 t-caption">
-                    A refundable deposit of{" "}
-                    <span className="t-amount">{format(fare.deposit)}</span> is
-                    held at collection and is not part of this invoice.
+                    {tr(
+                      "A refundable deposit of {amount} is held at collection and is not part of this invoice.",
+                      {
+                        amount: (
+                          <span className="t-amount">
+                            {format(fare.deposit)}
+                          </span>
+                        ),
+                      },
+                    )}
                   </p>
                 )}
               </div>
@@ -256,34 +283,37 @@ export default function Invoice() {
 
           <div className="grid grid-cols-1 gap-2 border-t border-[color:var(--color-border)] py-6 sm:grid-cols-2">
             <div className="flex items-baseline justify-between gap-4 sm:block">
-              <span className={`${metaLabel} shrink-0`}>Transaction Date</span>
+              <span className={`${metaLabel} shrink-0`}>
+                {t("Transaction Date")}
+              </span>
               <span className={`${metaValue} text-right sm:block sm:text-left`}>
                 {bookingDate}
               </span>
             </div>
             <div className="flex items-baseline justify-between gap-4 sm:block">
-              <span className={metaLabel}>Method</span>
+              <span className={metaLabel}>{t("Method")}</span>
               <span className={`${metaValue} text-right sm:block sm:text-left`}>
-                {method}
+                {paymentMethodLabel(method)}
               </span>
             </div>
             <div className="flex items-baseline justify-between gap-4 sm:block">
-              <span className={metaLabel}>Transaction ID</span>
+              <span className={metaLabel}>{t("Transaction ID")}</span>
               <span className={`${reference} ml-2 sm:ml-0 sm:block`}>
                 HBTTB{bookingId.slice(-7)}
               </span>
             </div>
             <div className="flex items-baseline justify-between gap-4 sm:block">
-              <span className={metaLabel}>Status</span>
+              <span className={metaLabel}>{t("Status")}</span>
               <span className="ml-2 t-body-sm font-semibold text-[color:var(--color-success-deep)] sm:ml-0 sm:block">
-                Paid
+                {t("Paid")}
               </span>
             </div>
           </div>
 
           <div className="border-t border-[color:var(--color-border)] pt-6 text-center t-caption">
-            Thank you for booking with DrukDrive. This is a computer-generated
-            invoice.
+            {t(
+              "Thank you for booking with DrukDrive. This is a computer-generated invoice.",
+            )}
           </div>
         </div>
 
@@ -295,7 +325,7 @@ export default function Invoice() {
             fullWidth
           >
             <Icon name="download" size={16} />
-            Print Receipt
+            {t("Print Receipt")}
           </Button>
           <Button
             variant="primary"
@@ -303,7 +333,7 @@ export default function Invoice() {
             to={routes.accountBookings}
             fullWidth
           >
-            Back to my bookings
+            {t("Back to my bookings")}
           </Button>
         </div>
       </div>
